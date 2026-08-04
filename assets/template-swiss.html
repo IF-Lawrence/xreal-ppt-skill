@@ -73,6 +73,13 @@
     --weight-body:400;
     --weight-label:500;
     --weight-emphasis:600;
+    --chrome-body-logo-width:max(60px,5.2vw);
+    --chrome-body-label-size:calc(var(--chrome-body-logo-width) * .26);
+    --chrome-feature-logo-width:max(72px,6.8vw);
+    --chrome-feature-label-size:calc(var(--chrome-feature-logo-width) * .26);
+    --cover-title-size:min(7.2vw,12.6vh);
+    --page-title-size:min(4.5vw,7.8vh);
+    --body-copy-leading:1.48;
     /* 兼容既有组件接口：全部指向同一 deck 主字体，禁止据此拆分中英文 */
     --sans:var(--deck-font);
     --sans-zh:var(--deck-font);
@@ -114,6 +121,9 @@
     --deck-font:var(--font-xreal);
     --weight-display:500;
     --weight-title:500;
+    --cover-title-size:min(5.6vw,9.8vh);
+    --page-title-size:min(3.8vw,6.6vh);
+    --body-copy-leading:1.4;
   }
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{
@@ -124,7 +134,7 @@
     -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility
   }
 
-  /* ============ WebGL 网格背景 ============ */
+  /* ============ 遗留背景 canvas（XREAL canvas-mode 永久禁用） ============ */
   canvas.bg{position:fixed;inset:0;width:100vw;height:100vh;z-index:0;display:block;opacity:.55;mix-blend-mode:multiply;pointer-events:none}
   body.dark-bg canvas.bg{mix-blend-mode:screen;opacity:.42}
   body.low-power canvas.bg{display:none!important}
@@ -290,6 +300,15 @@
     line-height:1.55;
     opacity:.7;
   }
+  .xreal-cover-title{
+    font-family:var(--deck-font);font-weight:var(--weight-display);
+    font-size:var(--cover-title-size);line-height:.98;letter-spacing:-.03em
+  }
+  .xreal-page-title{
+    font-family:var(--deck-font);font-weight:var(--weight-title);
+    font-size:var(--page-title-size);line-height:1.02;letter-spacing:-.03em
+  }
+  .xreal-support-copy{line-height:var(--body-copy-leading)}
   .meta{
     font-family:var(--mono);
     font-size:max(14px,.82vw);
@@ -610,10 +629,6 @@
   body.dark-bg #nav .dot{background:rgba(255,255,255,.32)}
   body.dark-bg #nav .dot.active{background:var(--accent)}
 
-  #hint{position:fixed;bottom:2.4vh;right:2.5vw;z-index:30;font-family:var(--mono);font-size:14px;letter-spacing:normal;text-transform:none;opacity:.4}
-  body.dark-bg #hint{color:var(--paper);opacity:.4}
-  body.low-power #hint{color:var(--accent);opacity:.72}
-  body.dark-bg.low-power #hint{color:var(--paper);opacity:.72}
 
   /* ESC 索引页: 动画元素强制可见 (覆盖 motion-ready 的 opacity:0) */
   #overview [data-anim]{opacity:1!important;transform:none!important}
@@ -688,14 +703,14 @@
     font-size:14vw;line-height:.92;letter-spacing:-.045em;
     font-feature-settings:"tnum"
   }
-  .kpi-thin .unit{font-size:.3em;font-weight:var(--weight-label);opacity:.55;margin-left:.15em;vertical-align:.6em}
+  .kpi-thin .unit{display:inline-block;font-size:.3em;font-weight:var(--weight-label);line-height:1;opacity:.55;margin-left:.15em;vertical-align:baseline}
   .kpi-thin.accent{color:var(--accent)}
   .kpi-thin-sm{
     font-family:var(--sans);font-weight:var(--weight-title);
     font-size:5.6vw;line-height:1.04;letter-spacing:-.03em;
     font-feature-settings:"tnum"
   }
-  .kpi-thin-sm .unit{font-size:.3em;font-weight:var(--weight-label);opacity:.55;margin-left:.12em;vertical-align:.45em}
+  .kpi-thin-sm .unit{display:inline-block;font-size:.3em;font-weight:var(--weight-label);line-height:1;opacity:.55;margin-left:.12em;vertical-align:baseline}
 
   /* 4 列细线 KPI 行 — 顶部一根 hairline,内部不再加竖线 */
   /* 4 列 KPI: 用纵向分割线建立网格感 (Carbon 2x grid 模数) */
@@ -711,7 +726,7 @@
   .kpi-row-4 > .kpi-cell:first-child{padding-left:0;border-left:none}
   .kpi-cell .lbl{font-family:var(--mono);font-size:max(14px,.78vw);letter-spacing:normal;text-transform:none;opacity:.55;margin-bottom:1.2vh}
   .kpi-cell .nb{font-family:var(--sans);font-weight:var(--weight-emphasis);font-size:3.2vw;line-height:1;letter-spacing:-.025em;font-feature-settings:"tnum"}
-  .kpi-cell .nb .unit{font-size:.32em;font-weight:var(--weight-label);opacity:.6;margin-left:.1em;vertical-align:.4em}
+  .kpi-cell .nb .unit{display:inline-block;font-size:.32em;font-weight:var(--weight-label);line-height:1;opacity:.6;margin-left:.1em;vertical-align:baseline}
   .kpi-cell .note{font-family:var(--sans),var(--sans-zh);font-size:max(16px,.92vw);line-height:1.5;opacity:.7;margin-top:1.2vh}
 
   /* 时间线轴 — 通用 axis token, 横纵共享
@@ -908,7 +923,7 @@
   .bar-tower .lbl{font-family:var(--mono);font-size:max(14px,.82vw);letter-spacing:normal;text-transform:none;opacity:.65;margin-bottom:1vh}
   .bar-tower .nb{font-family:var(--sans);font-weight:var(--weight-emphasis);font-size:max(20px,2.8vw);line-height:1;letter-spacing:-.03em;font-feature-settings:"tnum"}
   .bar-tower .body-block.b-accent .nb{font-weight:700}
-  .bar-tower .nb .unit{font-size:.36em;font-weight:var(--weight-label);opacity:.7;margin-left:.08em;vertical-align:.4em}
+  .bar-tower .nb .unit{display:inline-block;font-size:.36em;font-weight:var(--weight-label);line-height:1;opacity:.7;margin-left:.08em;vertical-align:baseline}
   .bar-tower .sub{font-family:var(--sans),var(--sans-zh);font-size:max(16px,.92vw);opacity:.75;margin-top:1.2vh;line-height:1.5}
   .bar-tower .cap{background:var(--grey-1);color:var(--ink)}
   .bar-tower .material-symbols-outlined{font-size:1.6vw}
@@ -1096,6 +1111,47 @@
     text-align:center;flex:0 0 auto
   }
 
+  /* XREAL Pie: SVG 只承载扇形几何，标签与数值全部使用 HTML */
+  .xreal-pie-layout{
+    display:grid;grid-template-columns:minmax(280px,5fr) minmax(320px,7fr);
+    gap:5vw;align-items:center;flex:1;min-height:0
+  }
+  .xreal-pie{display:block;width:min(31vw,48vh);height:auto;justify-self:center}
+  .xreal-pie .segment{stroke:var(--paper);stroke-width:2}
+  .xreal-pie .segment.critical{fill:var(--brand-red)}
+  .xreal-pie .segment.ink{fill:var(--ink)}
+  .xreal-pie .segment.grey{fill:var(--grey-3)}
+  .xreal-pie .segment.silver{fill:var(--brand-silver)}
+  .xreal-pie-legend{display:flex;flex-direction:column;border-top:1px solid var(--border-strong)}
+  .xreal-pie-item{
+    display:grid;grid-template-columns:12px minmax(0,1fr) auto;
+    gap:1vw;align-items:baseline;padding:1.6vh 0;border-bottom:1px solid var(--border-subtle)
+  }
+  .xreal-pie-item .swatch{width:10px;height:10px;background:var(--ink)}
+  .xreal-pie-item.critical .swatch{background:var(--brand-red)}
+  .xreal-pie-item.grey .swatch{background:var(--grey-3)}
+  .xreal-pie-item.silver .swatch{background:var(--brand-silver)}
+  .xreal-pie-item .label{font-size:max(16px,1vw);font-weight:500}
+  .xreal-pie-item .value{font-size:max(18px,1.55vw);font-weight:var(--weight-emphasis);font-feature-settings:"tnum"}
+
+  /* XREAL Bento: 非对称信息网格，不做圆角卡片或 UI 面板 */
+  .xreal-bento{
+    display:grid;grid-template-columns:repeat(12,minmax(0,1fr));
+    grid-template-rows:repeat(2,minmax(0,1fr));gap:1px;
+    flex:1;min-height:0;background:var(--grey-2);border:1px solid var(--grey-2)
+  }
+  .xreal-bento > article{background:var(--paper);padding:2.4vw;display:flex;flex-direction:column;min-width:0}
+  .xreal-bento .hero{grid-column:span 6;grid-row:span 2;background:var(--ink);color:var(--paper)}
+  .xreal-bento .metric{grid-column:span 3}
+  .xreal-bento .signal{grid-column:span 3}
+  .xreal-bento .wide{grid-column:span 6}
+  .xreal-bento .eyebrow{font-size:max(14px,.78vw);font-weight:500;color:var(--text-helper)}
+  .xreal-bento .hero .eyebrow{color:rgba(255,255,255,.62)}
+  .xreal-bento h3{font-size:min(3.2vw,5.6vh);line-height:1.04;font-weight:var(--weight-title);letter-spacing:-.025em;margin-top:auto}
+  .xreal-bento .metric-value{font-size:min(4.8vw,8.4vh);line-height:.95;font-weight:var(--weight-emphasis);letter-spacing:-.035em;margin-top:auto}
+  .xreal-bento p{font-size:max(16px,.94vw);line-height:1.42;color:var(--text-secondary);margin-top:1.2vh}
+  .xreal-bento .hero p{color:rgba(255,255,255,.72)}
+
   /* 对仗对比双栏 (章节 P9) */
   .duo-compare{
     display:grid;grid-template-columns:1fr 1px 1fr;
@@ -1151,7 +1207,7 @@
 
   /* 极简页眉 — t-meta 风格 (Carbon productive label-01) */
   .canvas-card .chrome-min{
-    display:flex;justify-content:space-between;align-items:flex-start;
+    display:flex;justify-content:space-between;align-items:center;
     font-family:var(--mono);font-size:14px;font-weight:500;
     letter-spacing:normal;text-transform:none;
     color:var(--text-helper);
@@ -1163,12 +1219,15 @@
     max-width:48vw;line-height:1.5
   }
   .xreal-logo{display:block;width:max(72px,7.2vw);height:auto;flex:0 0 auto}
-  .chrome-min .brand{display:flex;align-items:center;gap:1.2vw;min-width:0}
-  .chrome-min .brand .xreal-logo{width:max(72px,6.8vw)}
+  .chrome-min .brand{display:flex;align-items:center;gap:1.2vw;min-width:0;line-height:1}
+  .chrome-min .brand .xreal-logo{width:var(--chrome-feature-logo-width)}
   .chrome-min .brand > span{
-    font-family:var(--deck-font);font-size:max(22px,2.1vw);line-height:1;
+    display:block;font-family:var(--deck-font);font-size:var(--chrome-feature-label-size);line-height:1;
     font-weight:500;letter-spacing:normal;text-transform:none
   }
+  .slide:not([data-layout="XREAL-COVER-BLACK"]):not([data-layout="XREAL-CLOSING-BLACK"]) .chrome-min .brand{gap:.9vw}
+  .slide:not([data-layout="XREAL-COVER-BLACK"]):not([data-layout="XREAL-CLOSING-BLACK"]) .chrome-min .brand .xreal-logo{width:var(--chrome-body-logo-width)}
+  .slide:not([data-layout="XREAL-COVER-BLACK"]):not([data-layout="XREAL-CLOSING-BLACK"]) .chrome-min .brand > span{font-size:var(--chrome-body-label-size)}
   .xreal-logo.logo-inverse{filter:invert(1)}
   .slide.dark .xreal-logo,.slide.accent .xreal-logo,.split-half .half.b-ink .xreal-logo,.split-half .half.b-accent .xreal-logo{filter:invert(1)}
   .slide.dark .canvas-card .chrome-min,.split-half .half.b-ink .canvas-card .chrome-min{color:rgba(255,255,255,.62)}
@@ -1197,10 +1256,6 @@
     const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
     const stored = localStorage.getItem(KEY);
     window.__lowPowerMode = stored === '1' || (stored === null && reduced);
-    function updateHint(){
-      const hint = document.getElementById('hint');
-      if(hint) hint.textContent = `← → 翻页 · B ${window.__lowPowerMode ? '动态' : '静态'} · ESC 索引`;
-    }
     window.__setLowPowerMode = function(on, opts={}){
       window.__lowPowerMode = !!on;
       document.body.classList.toggle('low-power', window.__lowPowerMode);
@@ -1208,17 +1263,14 @@
       if(window.__lowPowerMode && document.getAnimations){
         document.getAnimations().forEach(a=>a.cancel());
       }
-      updateHint();
       dispatchEvent(new CustomEvent('swiss-low-power-change', {detail:{on:window.__lowPowerMode}}));
       if(window.__playSlide) window.__playSlide(window.__currentSlideIndex || 0);
     };
     document.body.classList.toggle('low-power', window.__lowPowerMode);
-    addEventListener('DOMContentLoaded', updateHint, {once:true});
   })();
 </script>
 
 <canvas id="bg-grid" class="bg"></canvas>
-<div id="hint">← → 翻页 · B 静态 · ESC 索引</div>
 
 <div id="deck">
 
@@ -1245,19 +1297,19 @@
      - section 用 .slide.accent (满屏黑色,不是 light 白底)
      - 黑色区域保持纯黑,不加入点阵、纹理或动态装饰背景
      - 主标题反白使用 var(--weight-display),强调字可用同字重斜体而非 var(--accent)(底已是黑色,保持克制)
-     - Logo 默认独立;不要再放编号大字"01"——chrome-min 已经标 01/NN -->
+     - Logo 默认独立;页面不显示页码 -->
 <section class="slide accent" data-layout="XREAL-COVER-BLACK" data-animate="hero">
   <div class="canvas-card">
     <div class="chrome-min">
       <div class="l brand"><img class="xreal-logo" src="assets/brand/xreal-logo-black.svg" alt="XREAL"></div>
-      <div class="r">SS · 25.05.10 · 01 / NN</div>
+      <div class="r">SS · 25.05.10</div>
     </div>
 
     <!-- 主体:padding 必须为 0,不要再叠 5vw,否则左右对不齐 chrome-min -->
     <div style="flex:1;padding:0;display:grid;grid-template-rows:auto 1fr auto;gap:2.6vh">
       <div data-anim="kicker" class="t-meta" style="color:rgba(255,255,255,.78)">[必填] 章节英文 / Section title</div>
 
-      <h1 data-anim="title" style="align-self:center;font-family:var(--sans),var(--sans-zh);font-weight:var(--weight-display);font-size:min(11.6vw,19vh);line-height:.94;letter-spacing:-.025em;color:#fff">[必填] 中文主标题<br/>(≤ 12 字,可在某字加 <span style="font-style:italic;font-weight:inherit">italic</span> 微强调)</h1>
+      <h1 data-anim="title" class="xreal-cover-title" style="align-self:center;color:#fff">[必填] 中文主标题<br/>(≤ 12 字,可在某字加 <span style="font-style:italic;font-weight:inherit">italic</span> 微强调)</h1>
 
       <div data-anim="bottom" style="display:grid;grid-template-rows:auto auto;gap:1.6vh">
         <div data-anim="lead" class="lead" style="max-width:52ch;color:rgba(255,255,255,.86)">[必填] 一段 1-2 行的副标 / 引子,定调全场.</div>
@@ -1278,7 +1330,7 @@
       <!-- 左半 · 纯黑色宣言 -->
       <div class="half b-accent" style="padding:5.6vh 3.6vw 4.4vh;justify-content:space-between;position:relative;overflow:hidden">
         <div class="chrome-min" style="margin-bottom:0;position:relative;z-index:1">
-          <div class="l brand"><img class="xreal-logo" src="assets/brand/xreal-logo-black.svg" alt="XREAL"><span>NN / NN</span></div>
+          <div class="l brand"><img class="xreal-logo" src="assets/brand/xreal-logo-black.svg" alt="XREAL"></div>
           <div class="r">Closing</div>
         </div>
 
@@ -1335,7 +1387,8 @@
 <div id="nav"></div>
 
 <script>
-/* =============== WebGL 网格背景 (XREAL Style 专用) ===============
+/* =============== 遗留 WebGL 网格背景（仅兼容旧模板） ===============
+   XREAL Style 固定使用 <body class="canvas-mode">，不得启用此背景。
    极简移动网格 + 微弱点阵叠加,营造"工业感、精准感"
    - 主网格: 缓慢漂移的细线网格
    - 次级: 鼠标附近的极细点阵微扰

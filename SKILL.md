@@ -1,6 +1,6 @@
 ---
 name: guizang-ppt-skill
-description: 生成横向翻页网页 PPT（单 HTML 文件），采用唯一的 XREAL Style 视觉系统：无衬线排版、严格网格、黑白灰结构、克制的红色语义强调、直角、发丝线、点阵背景和锁定版式。适用于分享、演讲、产品发布、数据汇报、方法论和分析类网页 PPT；用户提到「XREAL Style」「瑞士风 PPT」「Swiss Style」「Helvetica」「网格」「信息图」或「horizontal swipe deck」时使用。
+description: 生成横向翻页网页 PPT（单 HTML 文件），采用唯一的 XREAL Style 视觉系统：品牌无衬线排版、严格网格、黑白灰结构、克制的红色语义强调、静态纯色背景、直角、发丝线和锁定版式。适用于分享、演讲、产品发布、数据汇报、方法论和分析类网页 PPT；用户提到「XREAL Style」「瑞士风 PPT」「Swiss Style」「Helvetica」「网格」「信息图」或「horizontal swipe deck」时使用。
 ---
 
 
@@ -8,7 +8,7 @@ description: 生成横向翻页网页 PPT（单 HTML 文件），采用唯一的
 
 生成一份**单文件 HTML**的横向翻页 PPT，唯一视觉系统是 **XREAL Style**：
 
-- WebGL 极细网格 + 点阵背景，hero 页可透出装饰场
+- 封面与封底使用静态纯黑背景，正文使用纯白、浅灰或纯黑结构；不显示 WebGL、ASCII、点阵、纹理或动态装饰背景
 - 按整套 PPT 的语言语境选择品牌字体：纯英文使用 XREAL Diatype，中文或中英混排使用 IBM Plex Sans SC
 - 12/16 列网格、非对称留白、直角纯色块和 1px hairline
 - 每份 deck 固定使用 XREAL 黑白灰品牌体系；红色只作为关键语义强调，不提供任意自定义颜色
@@ -63,7 +63,7 @@ cp "<SKILL_ROOT>/assets/fonts/"*.otf "项目/XXX/ppt/assets/fonts/"
 cp "<SKILL_ROOT>/assets/brand/xreal-logo-black.svg" "项目/XXX/ppt/assets/brand/"
 ```
 
-`template-swiss.html` 是完整可运行的单文件模板，包含 CSS、WebGL、翻页 JS、XREAL 本地字体、Google Material Symbols 图标和 `<!-- SLIDES_HERE -->` 占位符。
+`template-swiss.html` 是完整可运行的单文件模板，包含 CSS、翻页 JS、XREAL 本地字体、Google Material Symbols 图标和 `<!-- SLIDES_HERE -->` 占位符。模板固定使用 `canvas-mode`，不得移除；该模式关闭遗留背景 canvas，确保所有页面使用静态纯色背景。
 
 拷贝后立刻：
 
@@ -94,6 +94,7 @@ cp "<SKILL_ROOT>/assets/brand/xreal-logo-black.svg" "项目/XXX/ppt/assets/brand
 - 每页 `chrome-min` 的品牌位置使用 `assets/brand/xreal-logo-black.svg`
 - 封面与封底的黑色区域使用 `#000000` 纯黑底，不添加 ASCII、点阵、纹理或动态装饰背景
 - Logo 默认独立出现，不在右侧附加说明文字；确需相邻文字时，文字视觉字高与 Logo 高度一致，并使用标准字距
+- 正文页 `chrome-min` 使用紧凑导航级品牌尺寸；相邻文字字号由 Logo 宽度按视觉比例计算，并与 Logo 垂直居中。封面/封底才使用较大的品牌级尺寸
 - 删除无信息价值的装饰角标、小标题和分割线；正文 bullet 使用实心圆点，不使用短横线
 - 所有可见文字默认使用自然大小写与标准字距；英文眉题、导航、标签、图注和页脚禁止整词组全大写，也不要依赖 CSS `text-transform: uppercase`
 - 全大写只保留给 XREAL 官方字标、行业通用缩写（如 AI、AR、KPI、PPT）和短型号代码；不得把普通英文单词全大写作为装饰
@@ -102,6 +103,8 @@ cp "<SKILL_ROOT>/assets/brand/xreal-logo-black.svg" "项目/XXX/ppt/assets/brand
 - 产品图标使用 Google Material Symbols Outlined，统一 `FILL 0`，不要使用 emoji、Lucide 或手绘 SVG 图标
 - 黑、白、灰承担结构与信息层级；XREAL 红色仅用于关键数据/警示/关键操作语义，银色/金色仅作为极少量技术或价值标记
 - 不因品牌化引入渐变、阴影、圆角、玻璃拟态或多色高亮
+- 保留方向键翻页、`B` 静态模式和 `ESC` 索引功能，但不在页面右下角显示操作提示
+- 页面不显示 `01 / 09`、`06 / 07` 等页码；顺序通过底部导航和演讲结构表达
 
 ### Step 2 · 填充内容
 
@@ -117,16 +120,17 @@ cp "<SKILL_ROOT>/assets/brand/xreal-logo-black.svg" "项目/XXX/ppt/assets/brand
 
 模板是唯一的类名来源，不要凭空发明类名。常用 XREAL Style 类包括：
 
-- 排版：`h-hero`、`h-statement`、`h-xl`、`h-md`、`t-cat`、`t-meta`、`lead`、`num-mega`
+- 排版：`xreal-cover-title`、`xreal-page-title`、`xreal-support-copy`、`h-statement`、`h-md`、`t-cat`、`t-meta`、`lead`、`num-mega`
 - 网格：`grid-12`、`grid-2-9`、`grid-2-9-5`、`span-N`
 - 卡片：`card-ink`、`card-accent`、`card-fill`、`card-outlined`
-- 图表：`kpi-tower-row`、`bar-tower`、`h-bar-chart`、`timeline-v`、`timeline-h`
+- 图表：`kpi-tower-row`、`bar-tower`、`h-bar-chart`、`timeline-v`、`timeline-h`、`xreal-pie-layout`、`xreal-pie-legend`
+- 信息组：`xreal-bento`；保持直角、无阴影、无圆角，一个红色语义点
 - 装饰：`dot-mat`、`ring-mat`、`cross-mat`、`hr-hairline`
 - 图片：`frame-img`、`fit-contain`、`r-21x9`、`r-16x9`、`r-16x10`、`h-22`、`h-26`、`swiss-lined`
 
 #### 2.1 · 规划主题节奏
 
-先列出 `页码 → class → data-layout → 选用理由 → 图片槽位`，再写 HTML。每个 section 必须明确写 `light`、`dark`、`hero light` 或 `hero dark`。
+先列出 `内部页序（不渲染）→ class → data-layout → 选用理由 → 图片槽位`，再写 HTML。每个 section 必须明确写 `light`、`dark`、`hero light` 或 `hero dark`。
 
 - 连续 3 页以上同主题不允许
 - 8 页以上至少包含 1 个 `hero dark`、1 个 `hero light` 和 1 个 `dark` 正文页
@@ -145,7 +149,7 @@ cp "<SKILL_ROOT>/assets/brand/xreal-logo-black.svg" "项目/XXX/ppt/assets/brand
 | S04 / S05 / S13 / S17 | 定义、分层、三力、系统关系 |
 | S06 / S07 / S15 / S20 / S21 | KPI、排名、矩阵、账单、规格 |
 | S08 | Duo Compare；地点/路线页扩展为 XREAL Map Component |
-| S12 / S14 / S18 / S19 | Manifesto、闭环、Why Now、四卡 |
+| S12 / S14 / S18 / S19 | Manifesto、闭环；S18 可挂载 XREAL Pie，S19 可挂载 XREAL Bento |
 | S16 / S22 | 多卡简报 / 21:9 Image Hero |
 
 默认 XREAL Style locked mode：不要临时发明 P23/P24、Evidence Grid、自由 SVG 页面或未登记正文结构。只有用户明确要求实验版式时才可例外，并在验证时显式允许。

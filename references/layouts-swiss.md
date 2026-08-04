@@ -34,7 +34,7 @@
 
 **排版**
 - 字体按整套 deck 的语言语境选择：纯英文统一使用 XREAL Diatype；中文或中英混排统一使用 IBM Plex Sans SC
-- 所有组件继承 `var(--deck-font)`；禁止按字符、文本框或页面拆分字体。中英混排 deck 中的英文、数字、元数据、代码、页码和图表标签也使用 IBM Plex Sans SC
+- 所有组件继承 `var(--deck-font)`；禁止按字符、文本框或页面拆分字体。中英混排 deck 中的英文、数字、元数据、代码、日期和图表标签也使用 IBM Plex Sans SC
 - 字重按信息角色分配,不按字号反比：主标题使用 `var(--weight-display)`，页面标题使用 `var(--weight-title)`，正文 400，标签 500，关键数据 600-700
 - 纯英文 XREAL Diatype 主标题默认 500；中文或中英混排 IBM Plex Sans SC 主标题默认 600。内容文字禁止使用 100/200/300
 - 大字号收紧:`letter-spacing:-.04em` / `line-height:.9`
@@ -72,7 +72,7 @@ XREAL Style 不是网页说明页,投屏时不能出现 10-12px 的注释字。�
 | 关键 KPI / 数据 | 600-700 | 巨号 KPI、大编号、结论数字 |
 | 副标题 / lead | 400-500 | 引子、产品说明、摘要 |
 | 正文 / 描述 / caption | 400 | 正文段落、卡片描述、说明文字 |
-| meta / kicker / 图表标签 | 500 | 页码、角标、图表标签 |
+| meta / kicker / 图表标签 | 500 | 栏目、角标、图表标签 |
 
 **硬规则:**
 - 内容文字不使用 100/200/300；主标题不能因为字号大而自动变细
@@ -86,7 +86,7 @@ XREAL Style 不是网页说明页,投屏时不能出现 10-12px 的注释字。�
 **画布**
 - `.canvas-card`:`100vw × 100vh`,直角无圆角,padding `5.6vh 5vw 4.4vh`
 - `body{background:var(--paper)}` — 不用 WebGL 背景
-- 必须保留右下角 `B 静态` 快捷键。低功耗模式使用 `body.low-power`,停止 WebGL canvas RAF 与 Motion 入场动画,刷新后通过 `localStorage` 保持用户选择。
+- 必须保留 `B` 键静态模式功能,但不显示右下角操作提示。低功耗模式使用 `body.low-power`,停止 WebGL canvas RAF 与 Motion 入场动画,刷新后通过 `localStorage` 保持用户选择。
 
 ## XREAL 品牌层
 
@@ -209,7 +209,7 @@ XREAL Style 有 22 个登记版式,生成时要主动展示版式系统,不要�
 - 不允许连续 3 页使用同一种主体结构(如三页连续 S19 / 普通卡片)
 - 如果是"测试模板"或"我想看看效果",必须覆盖:封面、收尾、至少 1 个对比/时间线(S08/S11/S02)、至少 1 个结构图(S14/S17/S15)、至少 1 个图片版式(S22 或 S15/S16 图片格)
 - 图片页不等于新发明一页。单图用 S22,多图用 S15/S16 的原始网格骨架改造
-- 每页写代码前先列 `页码 → data-layout → 为什么选它 → 图片槽位`;生成后用 validator 检查
+- 每页写代码前先列 `内部页序（不渲染）→ data-layout → 为什么选它 → 图片槽位`;生成后用 validator 检查
 
 **动效原则(每页一个语义化 recipe)**
 - 不是统一 fade-up,而是**与图形语义耦合**:数字 scale 弹入、bar scaleY 拉起、SVG 圆环 stroke-dashoffset 描线、时间线节点序列点亮
@@ -240,6 +240,8 @@ XREAL Style 有 22 个登记版式,生成时要主动展示版式系统,不要�
 | 描述性小标题 | 使用品牌主字体 500、自然大小写和标准字距 | 不使用全大写或夸张 tracking 制造“科技感” |
 | 列表 bullet | 使用实心圆点 | 不使用短横线代替 bullet |
 | Logo 邻接文字 | 默认无;确有导航价值时字高匹配 Logo | 不把 deck 名、风格名接在 Logo 后 |
+| 正文页页眉品牌区 | Logo `max(60px,5.2vw)`；文字按 Logo 宽度的 `.26` 比例计算并垂直居中 | 不与页面标题争抢层级 |
+| 封面/封底品牌区 | Logo `max(72px,6.8vw)`；文字按同样视觉比例计算 | 不复制到正文页 |
 | 标题与内容 | 标题区和正文/图表之间有明显空气感 | 复杂页用 grid `gap`,不要让内容贴着标题 |
 | Timeline | 轴线在中下部,但 label 不碰底部 nav | 横向 timeline 必须同时检查上下 label 和 nav 安全区 |
 | 图片页 | 图片是证据块,要么做 S22 主视觉,要么放进 S15/S16 原始网格 | 不要使用未登记图文结构 |
@@ -280,12 +282,12 @@ XREAL Style 有 22 个登记版式,生成时要主动展示版式系统,不要�
 - `<section class="slide accent">` 满屏黑色,**不是** light 白底
 - 黑色区域保持纯黑,不插入 ASCII、点阵、纹理或动态背景
 - 主标题反白使用 `var(--weight-display)`,微强调字用同字重斜体,不额外使用红色
-- **不要**再放编号大字"01"——chrome-min 已经标 01/NN
+- 页面不显示页码，也不要再放编号大字"01"
 - Logo 默认独立,右侧不要附加 deck 名或风格说明;如确有导航文字相邻,文字标准字距且视觉字高与 Logo 一致
 - 删除无信息价值的右下角角标和底部分割线
 - 与 P9 Closing 的黑色半屏配合形成"开场全黑 ↔ 收尾半黑"结构闭环
 
-**关键类**:`.slide.accent` + `min(11.6vw,19vh)` 双约束大字
+**关键类**:`.slide.accent` + `.xreal-cover-title`
 **动效 recipe**:`hero` — 纯黑底保持静止,文字 fade-up 序列入场
 
 **示例代码(XREAL 黑色默认变体)**:
@@ -294,11 +296,11 @@ XREAL Style 有 22 个登记版式,生成时要主动展示版式系统,不要�
   <div class="canvas-card">
     <div class="chrome-min">
       <div class="l brand"><img class="xreal-logo" src="assets/brand/xreal-logo-black.svg" alt="XREAL"></div>
-      <div class="r">SS · 26.05.10 · 01 / NN</div>
+      <div class="r">SS · 26.05.10</div>
     </div>
     <div style="flex:1;padding:0;display:grid;grid-template-rows:auto 1fr auto;gap:2.6vh">
       <div data-anim="kicker" class="t-meta" style="color:rgba(255,255,255,.78)">[必填] 章节英文 / Section title</div>
-      <h1 data-anim="title" style="align-self:center;font-family:var(--sans),var(--sans-zh);font-weight:var(--weight-display);font-size:min(11.6vw,19vh);line-height:.94;letter-spacing:-.025em;color:#fff">[必填] 中文主标题<br/>(可在某字加 <span style="font-style:italic;font-weight:inherit">italic</span> 微强调)</h1>
+      <h1 data-anim="title" class="xreal-cover-title" style="align-self:center;color:#fff">[必填] 中文主标题<br/>(可在某字加 <span style="font-style:italic;font-weight:inherit">italic</span> 微强调)</h1>
       <div data-anim="bottom" style="display:grid;grid-template-rows:auto auto;gap:1.6vh">
         <div data-anim="lead" class="lead" style="max-width:52ch;color:rgba(255,255,255,.86);font-weight:400">[必填] 一段 1-2 行的副标 / 引子,定调全场.</div>
         <div style="display:flex;justify-content:space-between;align-items:end">
@@ -532,8 +534,7 @@ XREAL Style 有 22 个登记版式,生成时要主动展示版式系统,不要�
       <!-- 左半 · 纯黑色宣言 -->
       <div class="half b-accent" style="padding:5.6vh 3.6vw 4.4vh;justify-content:space-between;position:relative;overflow:hidden">
         <div class="chrome-min" style="margin-bottom:0;position:relative;z-index:1">
-          <div class="l brand"><img class="xreal-logo" src="assets/brand/xreal-logo-black.svg" alt="XREAL"><span>NN / NN</span></div>
-          <div class="r">Closing</div>
+          <div class="l brand"><img class="xreal-logo" src="assets/brand/xreal-logo-black.svg" alt="XREAL"></div>
         </div>
         <div data-anim="manifesto" style="display:flex;flex-direction:column;gap:2vh;position:relative;z-index:1">
           <h2 style="font-family:var(--sans),var(--sans-zh);font-size:min(8vw,14vh);line-height:.94;letter-spacing:-.025em;font-weight:var(--weight-display);color:#fff">[必填] Build a model.<br/>Run <span style="font-style:italic;font-weight:inherit">forever</span>.</h2>
@@ -689,6 +690,11 @@ XREAL Style 有 22 个登记版式,生成时要主动展示版式系统,不要�
 **动效 recipe**:`why-now` — 三列垂直递进 → 底部巨数 count-up
 **注意**:巨数字号统一,只用颜色(`var(--brand-red)`)突出最后一列,**不要**用粗体
 
+**登记扩展: XREAL Pie Component**
+- 当内容是 2-5 个互斥类别且总和为 100% 时，可在 S18 骨架中用 `.xreal-pie-layout` 替换三列论点区。
+- SVG 只画扇形，不写 `<text>`；右侧 `.xreal-pie-legend` 使用 HTML 分类名与数值。
+- 仅一个关键扇区使用 `var(--brand-red)`，其余使用 ink / grey / silver；禁止渐变。
+
 ---
 
 ### P19 · Four Cards · 四列均分卡
@@ -699,6 +705,12 @@ XREAL Style 有 22 个登记版式,生成时要主动展示版式系统,不要�
 **关键类**:`.four-cards` `.fc-col`
 **动效 recipe**:`four-cards` — 顶部黑线 width 0→100% → 4 列从下向上推入(每列 110ms 错开)
 **注意**:**不要**用 9px 圆形装饰点(不符合直角语言),用 `.t-meta` 文字代替
+
+**登记扩展: XREAL Bento Component**
+- 需要“一个主叙事 + 两项指标 + 一条行动说明”的摘要时，可在 S19 中使用 `.xreal-bento`。
+- 使用 12 列非对称布局：主块 6 列 × 2 行，指标块 3 列，行动块 6 列。
+- 直角、1px 间隙、无阴影、无圆角，不模拟软件卡片或按钮。
+- 黑白灰承担结构；全页只允许一个红色关键数字。
 
 ---
 
@@ -717,7 +729,7 @@ XREAL Style 有 22 个登记版式,生成时要主动展示版式系统,不要�
 
 **用途**:产品规格、benchmark 数据、性能基线展示(多 KPI + 视觉化竖线装饰)。
 **适用内容类型**:**产品规格 / benchmark / 性能基线**(必须有真实多维数据,3 KPI + 9 根竖线 = 12+ 数据点)。典型如:模型评分、API 性能、压测结果。是 deck 中数据密度最高的版式。
-**骨架**:左 4 行大标题 / 中部 3 KPI(顶部 hairline + 数字 + 单位)/ 右下 9 根高低不一的垂直竖线 / 底部巨数 + Yearly goal + 三 tag + 右下角 MP-XX + 页码。
+**骨架**:左 4 行大标题 / 中部 3 KPI(顶部 hairline + 数字 + 单位)/ 右下 9 根高低不一的垂直竖线 / 底部巨数 + Yearly goal + 三 tag；不显示页码。
 **关键类**:`.tech-spec` `.spec-title-col` `.spec-kpi-grid` `.spec-bars`(`.bar-vert`,scaleY 弹起,transform-origin:bottom)
 **动效 recipe**:`tech-spec` — hero 区淡入 → 标题入 → KPI 顶线一根根画出 → 底巨数 pop → 竖线从底部 scaleY 弹起(50ms 错开)
 **注意**:右下 bars 矩阵必须**底对齐**且**不超出右边距**

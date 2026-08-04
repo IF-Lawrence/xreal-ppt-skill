@@ -21,6 +21,7 @@ const approvedUppercaseTokens = new Set([
   'HTML', 'CSS', 'JS', 'JSON', 'API', 'SDK', 'UI', 'UX', 'KPI', 'OKR',
   'ROI', 'CAGR', 'EBITDA', 'B2B', 'B2C', 'OEM', 'ODM', 'ESG', 'URL',
   'HTTP', 'HTTPS', 'RGB', 'CMYK', 'CEO', 'CTO', 'COO', 'CFO', 'ESC',
+  'AWE', 'OST', 'TOPS', 'USB-C', 'FOV', 'EAP', 'X1S',
 ]);
 
 function overflowFix(px) {
@@ -90,6 +91,10 @@ if (wideTracking.length) {
   errors.push(`Typography tracking mismatch: positive letter-spacing exceeds 0.05em (${[...new Set(wideTracking)].join(', ')}em). Use normal tracking for labels and metadata.`);
 }
 
+if (/\bid=["']hint["']/i.test(htmlForSlides)) {
+  errors.push('Interaction chrome mismatch: visible keyboard/navigation hint is forbidden. Keep keyboard controls functional without rendering an on-canvas instruction label.');
+}
+
 slides.forEach((slide) => {
   const layout = slide.tag.match(/\bdata-layout="([^"]+)"/)?.[1];
   const visibleText = slide.html
@@ -97,10 +102,14 @@ slides.forEach((slide) => {
     .replace(/<style\b[\s\S]*?<\/style>/gi, ' ')
     .replace(/<[^>]+>/g, ' ');
   const unapprovedAllCaps = [...visibleText.matchAll(/\b[A-Z][A-Z0-9-]{2,}\b/g)]
-    .map((match) => match[0])
+    .map((match) => match[0].replace(/-+$/, ''))
     .filter((token) => !approvedUppercaseTokens.has(token) && !/^[A-Z]{1,3}\d{1,4}$/.test(token) && !/^[A-Z]{1,3}-\d{1,4}$/.test(token));
   if (unapprovedAllCaps.length) {
     errors.push(`Slide ${slide.idx}: unapproved all-caps copy (${[...new Set(unapprovedAllCaps)].join(', ')}). Use sentence/natural case; only brand marks, standard acronyms, and short model codes may stay all caps.`);
+  }
+
+  if (/\b\d{1,2}\s*\/\s*(?:\d{1,2}|NN)\b/i.test(visibleText)) {
+    errors.push(`Slide ${slide.idx}: visible page number found. XREAL Style uses navigation dots for order and does not render XX / NN counters.`);
   }
 
   if (!layout) {
@@ -130,6 +139,13 @@ slides.forEach((slide) => {
 
   if (/<svg\b[\s\S]*?<text\b/i.test(slide.html)) {
     errors.push(`Slide ${slide.idx}: SVG contains visible <text>. Put labels in HTML grid/captions, keep SVG for geometry only.`);
+  }
+
+  if (/\bxreal-pie(?:-layout)?\b/.test(slide.html) && layout !== 'S18') {
+    errors.push(`Slide ${slide.idx}: XREAL Pie Component must keep data-layout="S18".`);
+  }
+  if (/\bxreal-bento\b/.test(slide.html) && layout !== 'S19') {
+    errors.push(`Slide ${slide.idx}: XREAL Bento Component must keep data-layout="S19".`);
   }
 
   if (/\bascii-bg\b/i.test(slide.html)) {

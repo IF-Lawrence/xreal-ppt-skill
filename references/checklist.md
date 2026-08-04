@@ -28,6 +28,7 @@ node <SKILL_ROOT>/scripts/validate-swiss-deck.mjs path/to/index.html
 - 未登记版式 / 缺少 `data-layout`
 - P23/P24 实验结构
 - SVG 里写可见文字
+- 页面出现页码
 - S22 图片未绑定 `s22-hero-21x9`
 - S22 照片使用 `object-position:top center`
 
@@ -133,27 +134,29 @@ node <SKILL_ROOT>/scripts/validate-swiss-deck.mjs path/to/index.html
 
 ### 0-B-2. XREAL Style 封面 / 封底默认:纯黑背景 + 稳定主标题字重
 
-**现象**:封面用 `slide light` 白底 + 黑字 + 一个大大的"01"——同时 chrome 角标已经写了 `01 / 07`,屏幕上出现两个"01",视觉重复;白底太普通,完全没有"开场打招呼"的仪式感。
+**现象**:封面用 `slide light` 白底 + 黑字 + 一个大大的"01"，或页眉出现 `01 / 07` 等计数；数字与内容无关，形成多余角标。
 
 **根因**:layouts-swiss.md 旧版默认推荐左 ink + 右 paper 对开,实操中容易写成"白底 + 黑大字 + 编号大字",失去黑色结构块的开场冲击。
 
 **做法**(XREAL Style 必守):
 - **封面强制 `<section class="slide accent">`**(满屏黑色),不要 `slide.light`,也不要 `slide.dark`;黑色区域保持纯黑,禁止 ASCII、点阵、纹理、噪点和动态装饰背景
-- **不要再写"01"等编号大字**:`.chrome-min` 已经显示 `01 / N`,封面再放一个巨大的"01"=同义重复,直接删掉
+- **页面不显示页码**：删除页眉、Logo 后、角标和封面大字中的 `01 / N`、`NN / NN` 等计数
 - **强调字可用斜体**,但保持与主标题相同字重或升至强调字重,不要降成 Light；黑底页面默认不额外上色
 - **封底强制 `slide.split`** 双半屏,左半 `.half.b-accent` 保持纯黑(与封面结构闭环),右半 paper 白底放 3 条 takeaway;**第 03 条**仅在关键语义时用 `var(--brand-red)` 上色
 - Logo 默认独立,右侧不接 deck 名、章节名或风格说明;确有导航文字时,文字标准字距且视觉字高与 Logo 一致
+- 正文页 chrome 品牌区使用紧凑导航级尺寸；相邻文字按 Logo 宽度的 `.26` 比例计算字号，并与 Logo 垂直居中；封面/封底才使用较大品牌级尺寸
 - 普通英文眉题、导航、标签、图注和页脚使用自然大小写;禁止整词组全大写,也禁止 CSS `text-transform:uppercase`
 - 全大写只允许 XREAL 字标、行业通用缩写和短型号代码;辅助文字 `letter-spacing` 默认 normal,最大不超过 `0.05em`
 - 删除无信息价值的角标、`MANIFESTO` 式重复小标题和封面底部分割线
-- 封面/封底主标题字号双约束:`min(11.6vw,19vh)` ~ `min(8vw,14vh)`(遵守 Y ≥ X × 1.6 规则)
+- 封面主标题使用 `.xreal-cover-title`；正文页面标题使用 `.xreal-page-title`。纯英文语境自动使用更克制的字号 token，不在页面内联放大
 
 **自检命令**:
 - `rg -n "ascii-bg" index.html`——应无结果
 - `grep -E '"slide accent"' index.html | head -1`——封面应是 `slide accent` 而非 `slide light`
 - `rg -n 'data-layout="XREAL-(COVER|CLOSING)-BLACK"' index.html`——封面和封底应各命中一次
 - `grep "color:var(--accent)" index.html`——若命中行同时含 `font-style:italic` 即危险信号,改为只 italic 不上色;关键数据或警示才使用 `var(--brand-red)`
-- 目视:打开页面看封面有没有"01"等大编号——有就删
+- `rg -n '>\s*[0-9]{1,2}\s*/\s*(?:[0-9]{1,2}|NN)\s*<' index.html`——应无结果
+- 目视:打开页面看封面和页眉有没有页码——有就删
 
 ### 0-C. XREAL Style 大字号双约束:`min(Xvw, Yvh)` 中 Y ≥ X × 1.6
 
@@ -325,16 +328,16 @@ CSS 里 `.frame-img img` 已经预设 `object-position:top`，只裁底。
 
 **例外**：单张主视觉（非网格内）可以用 `aspect-ratio + max-height`，因为父容器会兜底。
 
-### 2b. 亮页面配暗 WebGL = 灰蒙蒙(主题切换没生效)
+### 2b. XREAL Style 必须保持静态纯色背景
 
-**现象**:所有 light 页面背景都像蒙了一层灰,甚至 hero light 也灰。
+**现象**:页面出现网格、点阵、噪点、shader 或动态背景，黑色封面不再纯净。
 
-**根因**:JS 根据 slide 的主题切换两张 canvas 的 opacity。如果整个 deck 开场是 hero dark,而没有任何机制能把 bg 切到 light,body 永远不加 `light-bg` 类,`canvas#bg-dark` 一直在上面。
+**根因**:移除了 `<body class="canvas-mode">`，或重新启用了模板中的遗留背景 canvas。
 
 **做法**:
-- 模板里 `go()` 函数已改为从 `classList` 推断主题(`light` / `dark`),所以 **slide 必须明确带 `light` 或 `dark` 类**。不要漏写,更不要用其他自定义主题名
-- hero 页用 `hero light` / `hero dark`,正文页用 `light` / `dark`。只写 `hero` 不带主题色是坏的
-- 一个 deck 里必须至少有一个 **非 hero 的 light 页**,确保 body 有机会加 `light-bg`
+- 保留 `<body class="canvas-mode">`，不要启用或重建背景 canvas。
+- 封面/封底黑色区域固定 `#000000`；正文只用 `var(--paper)`、`var(--grey-1)` 或 `var(--ink)`。
+- slide 仍需明确带 `light` / `dark` / `accent` / `split` 类，以便导航与反色 Logo 正确工作。
 
 ### 2b-2. 整个 deck 全是 light,没有节奏
 
@@ -405,7 +408,7 @@ CSS 里 `.frame-img img` 已经预设 `object-position:top`，只裁底。
 
 **现象**：为了"高级感"加了强阴影或黑框，瞬间变成商务 PPT。
 
-**做法**：最多 1-4px 的微圆角 + **极淡的底噪**（已在模板里）。不要加 `box-shadow`，不要加 `border`（除非 1px 极淡的灰）。
+**做法**：图片保持直角、静态纯色托底；不要加底噪、`box-shadow` 或装饰性边框。结构确有需要时只使用 1px hairline。
 
 ---
 
@@ -434,9 +437,9 @@ Hero Cover → Act Divider (hero) → 3-4 pages non-hero → Act Divider (hero)
 - **别硬翻译**，硬翻译反而生硬
 - 整个 deck 里同一个词 1 个写法
 
-### 9. 底部 chrome 的页码要一致
+### 9. 页面不显示页码
 
-用 `XX / 总页数` 的格式（比如 `05 / 27`）。**不要在右上角加动态页码**（会和 `.chrome` 重复）。
+删除顶部、底部、Logo 后和角标中的 `XX / 总页数`。底部导航圆点可保留，用于交互定位，但不显示数字计数。
 
 ### 9b. 动效系统:每一页都要有 data-anim 标记
 
@@ -466,23 +469,20 @@ Hero Cover → Act Divider (hero) → 3-4 pages non-hero → Act Divider (hero)
 
 ## 🟢 P2 · 视觉打磨
 
-### 10. WebGL 背景的遮罩透明度
+### 10. 背景只使用静态纯色
 
-**dark hero**：遮罩 12-15%（WebGL 明显透出）
-**light hero**：遮罩 16-20%（WebGL 隐约可见，不抢字）
-**普通 light/dark 页**：遮罩 92-95%（几乎不透）
+- 封面和封底黑色区域：`#000000`。
+- light 页面：`var(--paper)` 或 `var(--grey-1)`。
+- dark 页面：`var(--ink)`。
+- 不使用透明遮罩来透出 WebGL、图片纹理或动态装饰。
 
-如果页面文字非常少（hero question），遮罩可以再薄些；如果正文密集，必须加厚遮罩确保可读。
+### 11. 禁止 shader、噪点和动态装饰
 
-### 11. Light hero 的 shader 不能有强中心点
+Spiral、FBM、Holographic Dispersion、ASCII、点阵、纹理和持续 RAF 动画都不属于 XREAL Style。视觉冲击由构图、字重、留白、产品图和单一红色信号建立。
 
-**现象**：Spiral Vortex、径向涟漪在 light 主题下太显眼，像 Windows 98 屏保。
+### 12. Dark hero 保持纯黑和克制
 
-**做法**：light hero 用 FBM 域扭曲驱动的无中心流动，底色保持银/纸色（接近 #F0F0F0 / #FBF8F3），彩虹偏色 subtle（0.05 以下）。
-
-### 12. Dark hero 允许更多视觉冲击
-
-Dark hero 可以用 Holographic Dispersion（钛金色散）等带中心结构的 shader，因为黑底能容纳更多视觉信息。
+Dark hero 不添加 shader 或装饰场；通过静态纯黑背景、明确主张和必要的产品证据形成开场冲击。
 
 ### 13. 左文右图的对齐
 
@@ -523,7 +523,7 @@ Dark hero 可以用 Holographic Dispersion（钛金色散）等带中心结构�
 - 任一行 9-12 个中文字符时降到 `min(5.2vw,9.2vh)`
 - 3 行标题优先改写,不能为了标题大而挤掉下方图文内容
 
-### 14. 图片的微弱圆角
+### 14. 图片保持直角
 
 XREAL Style 必须直角: `.frame-img` 和图片本身都不要圆角、阴影或消费 app 式卡片感。
 ---
@@ -534,9 +534,9 @@ XREAL Style 必须直角: `.frame-img` 和图片本身都不要圆角、阴影�
 
 图片放在 `images/` 文件夹下，HTML 里用相对路径 `images/xxx.png`，不要用绝对路径。
 
-### 16. 页码在 `.chrome` 里写死
+### 16. 页序只由导航系统维护
 
-JS 会动态算总页数并扩展底部翻页圆点，但 `.chrome` 里的 `XX / N` 是写死的。加页/删页时要手工改 N。
+JS 动态计算总页数并扩展底部翻页圆点；页面内容层不得再写 `XX / N`。
 
 ### 17. 翻页导航要保留
 
@@ -568,9 +568,10 @@ JS 会动态算总页数并扩展底部翻页圆点，但 `.chrome` 里的 `XX /
   □ XREAL Style:封面是 `slide accent` 满屏纯黑(不是 `slide light` 白底),data-layout 为 `XREAL-COVER-BLACK`
   □ XREAL Style:封底是 `slide split` + 左 `b-accent` 纯黑 / 右 paper 3 条 takeaway,data-layout 为 `XREAL-CLOSING-BLACK`
   □ XREAL Style:`rg -n "ascii-bg" index.html` 无结果
-  □ XREAL Style:封面没有"01"等大编号(chrome 已显示 01/N,不要重复)
+  □ XREAL Style:封面、页眉、Logo 后和角标均没有页码或"01"等无语义编号
   □ XREAL Style:黑色背景上的强调字用 `font-style:italic`,禁止用额外颜色
   □ XREAL Style:Logo 默认独立;相邻文字如存在,字高与 Logo 一致且使用标准字距
+  □ XREAL Style:正文页页眉品牌区明显小于封面/封底,且不与页面标题争抢层级
   □ XREAL Style:普通英文短语使用自然大小写;全大写只用于 XREAL 字标、通用缩写和短型号代码
   □ XREAL Style:没有无信息价值的角标、重复小标题和装饰性分割线
 
@@ -592,20 +593,20 @@ JS 会动态算总页数并扩展底部翻页圆点，但 `.chrome` 里的 `XX /
 
 视觉
   □ hero 页和 non-hero 页交替
-  □ WebGL 背景在 hero 页可见
-  □ 图片有微弱圆角
+  □ hero 页使用静态纯色背景,没有 WebGL、ASCII、点阵、纹理或动态装饰
+  □ 图片和 Bento 区块保持直角
   □ 没有沉重的阴影和边框
 
 交互
   □ ← → 翻页正常
   □ 底部圆点数量与总页数匹配
-  □ chrome 里的页码和实际页号一致
+  □ 页面没有可见页码，底部圆点数量与总页数匹配
   □ ESC 键触发索引视图（如果保留）
-  □ B 键触发静态/低功耗模式,右下角提示在 `B 静态` / `B 动态` 之间切换
+  □ B 键触发静态/低功耗模式,但页面右下角不显示操作提示
 
 动效
   □ `assets/motion.min.js` 存在(本地兜底)
-  □ 低功耗模式下 WebGL canvas 不再挂 RAF 循环,当前页内容仍全部可见
+  □ 低功耗模式下当前页内容仍全部可见,且没有遗留背景 canvas 挂 RAF 循环
   □ 翻页时内容逐个淡入,不是"啪"一下全出
   □ 大引用页 `<section>` 带 `data-animate="quote"`,每行 `<span data-anim="line">`
   □ Before/After 对比页 `<section>` 带 `data-animate="directional"`,左右列标 left/right

@@ -37,7 +37,7 @@
 - 中文标准字体：IBM Plex Sans SC，文件位于 `assets/fonts/IBMPlexSansSC-*.otf`
 - 字体选择以整套 PPT 的语言语境为单位，不按字符语言拆分。
 - 纯英文 PPT：整套统一使用 XREAL Diatype。
-- 中文或中英混排 PPT：整套统一使用 IBM Plex Sans SC；其中的英文、数字、元数据、代码、页码、日期、数据标签和技术标识也使用 IBM Plex Sans SC。
+- 中文或中英混排 PPT：整套统一使用 IBM Plex Sans SC；其中的英文、数字、元数据、代码、日期、数据标签和技术标识也使用 IBM Plex Sans SC。
 - 一套 PPT 只使用一套主字体，不在不同页面、文本框或中英文字符之间切换品牌字体。
 
 字体语境：
@@ -62,7 +62,9 @@
 
 - Logo 默认放在每页 `chrome-min` 的左侧品牌位置或封面左上角。
 - Logo 默认独立出现，右侧不附加 deck 名、章节名或风格说明。
-- 只有页码、栏目名等确有导航价值的信息才可与 Logo 相邻；相邻文字使用品牌主字体、标准字距，视觉字高须与 Logo 图形字高一致。
+- 只有栏目名等确有导航价值的信息才可与 Logo 相邻；相邻文字使用品牌主字体、标准字距，视觉字高须与 Logo 图形字高一致。
+- 正文页页眉属于导航层级，必须低于页面标题：Logo 使用 `max(60px,5.2vw)`；相邻文字字号由 `calc(var(--chrome-body-logo-width) * .26)` 计算，并与 Logo 垂直居中。
+- 封面与封底可使用品牌层级尺寸：Logo 使用 `max(72px,6.8vw)`；相邻文字字号由 `calc(var(--chrome-feature-logo-width) * .26)` 计算。不要把该尺寸复制到正文页。
 - 只使用黑色 Logo；在 `dark` / `accent` 背景上通过 CSS `filter:invert(1)` 反白显示。
 - 不拉伸、不旋转、不加阴影、不放进圆角容器。
 - Logo 与页面边距对齐，不要贴屏幕边缘。
@@ -76,6 +78,8 @@
 - 全大写只用于 XREAL 官方字标、行业通用缩写（如 AI、AR、KPI、PPT）和短型号代码；`TAKEAWAYS`、`CLOSING`、`GENERIC TECH` 等普通词必须写为 `Takeaways`、`Closing`、`Generic tech`。
 - 描述性小标题与辅助文字使用标准字距，不通过大幅 tracking 制造“科技感”；默认 `letter-spacing: normal`，技术编号等特殊场景也不得超过 `0.05em`。
 - 模板不得使用 `text-transform: uppercase` 强制转换；大小写必须在内容层正确书写。
+- 页面不显示“翻页 / 静态 / 索引”等操作提示；交互功能通过键盘保留，不作为视觉元素占用画布。
+- 页面不显示页码；不得在页眉、Logo 后或角标中放置 `01 / NN` 一类计数。
 - 列表默认使用实心圆点，不使用短横线模拟 bullet。
 - 时间线节点名称使用 600 字重，说明文字保持 400，以角色差建立层级。
 
