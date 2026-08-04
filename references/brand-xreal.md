@@ -1,0 +1,93 @@
+# XREAL Style 品牌规范
+
+本文件定义 XREAL Style 的品牌化约束。它保留国际主义网格、直角、发丝线、极致字号对比和克制的品牌语义色，并统一品牌表达层。
+
+## 品牌气质
+
+理性、专业、可信、科技、先锋。页面应当冷静、克制、有结构，避免装饰堆叠、消费级圆角卡片和泛科技霓虹效果。
+
+## 颜色 Token
+
+主色系统以黑、白、灰为基础：黑色承担页面结构和主文字，灰色与白色承担层级与界面支撑；红色仅作为关键操作、重点数据和警示的少量强调，银色与金色只用于技术质感和品牌价值语义。
+
+```css
+--paper: #FFFFFF;          /* 主背景 */
+--ink: #0A0A0A;            /* 主文字 / 黑色块 */
+--pure-black: #000000;     /* 封面 / 封底黑色区域 */
+--grey-1: #F2F3F4;         /* 信息区块 */
+--grey-2: #D6DADE;         /* hairline / 边界 */
+--grey-3: #667085;         /* 辅助文字 */
+--accent: #0A0A0A;         /* 结构锚点：XREAL 黑色 */
+--brand-red: #D71920;      /* 关键操作 / 重点数据，仅语义使用 */
+--brand-silver: #A7ADB4;   /* 技术质感 / 次级标注，默认不启用 */
+--brand-gold: #B08D57;     /* 品牌价值 / 特殊荣誉，默认不启用 */
+```
+
+### 颜色使用规则
+
+- 普通正文、网格、坐标轴和辅助信息只用黑、白、灰。
+- 当前基础模板以黑色 `#0A0A0A` 作为结构锚点，不引入额外色相作为主题色。
+- 红色只允许用于明确的关键数据、警示或操作状态；同一页默认最多一个红色语义点。
+- 银色和金色只用于技术质感或品牌价值的极少量标记，不作为大面积背景。
+- 不使用渐变、投影、玻璃拟态、发光边缘或多色高亮拼贴。
+
+## 字体
+
+- 英文标准字体：XREAL Diatype，文件位于 `assets/fonts/XREALDiatype-*.otf`
+- 中文标准字体：IBM Plex Sans SC，文件位于 `assets/fonts/IBMPlexSansSC-*.otf`
+- 字体选择以整套 PPT 的语言语境为单位，不按字符语言拆分。
+- 纯英文 PPT：整套统一使用 XREAL Diatype。
+- 中文或中英混排 PPT：整套统一使用 IBM Plex Sans SC；其中的英文、数字、元数据、代码、页码、日期、数据标签和技术标识也使用 IBM Plex Sans SC。
+- 一套 PPT 只使用一套主字体，不在不同页面、文本框或中英文字符之间切换品牌字体。
+
+字体语境：
+
+| PPT 语言语境 | 全局主字体 | 推荐字重 |
+|---|---|---|
+| 纯英文 | XREAL Diatype | 主标题 Medium；正文 Regular；标签 Medium；关键数字 Medium / Bold |
+| 中文 | IBM Plex Sans SC | 主标题 SemiBold；正文 Regular / Text；标签 Medium；关键数字 SemiBold / Bold |
+| 中英混排 | IBM Plex Sans SC | 主标题 SemiBold；正文 Regular / Text；标签 Medium；关键数字 SemiBold / Bold |
+
+模板语言标记：纯英文使用 `<html lang="en">`；中文或中英混排使用 `<html lang="zh-CN">`。模板根据该标记在 deck 层级设置主字体；不要为局部英文或数字覆盖 `font-family`。
+
+字重遵循 Apple 产品页面式的角色层级，不采用“字号越大、字重越细”的反比规则：主标题需要明确、稳定，正文保持中性，标签通过 Medium 建立层级。Light / ExtraLight 字体文件仅作为资产保留，不用于默认内容样式。
+
+## Logo
+
+品牌 Logo 资产：`assets/brand/xreal-logo-black.svg`。
+
+```html
+<img class="xreal-logo" src="assets/brand/xreal-logo-black.svg" alt="XREAL">
+```
+
+- Logo 默认放在每页 `chrome-min` 的左侧品牌位置或封面左上角。
+- Logo 默认独立出现，右侧不附加 deck 名、章节名或风格说明。
+- 只有页码、栏目名等确有导航价值的信息才可与 Logo 相邻；相邻文字使用品牌主字体、标准字距，视觉字高须与 Logo 图形字高一致。
+- 只使用黑色 Logo；在 `dark` / `accent` 背景上通过 CSS `filter:invert(1)` 反白显示。
+- 不拉伸、不旋转、不加阴影、不放进圆角容器。
+- Logo 与页面边距对齐，不要贴屏幕边缘。
+
+## 背景与装饰
+
+- 封面与封底的黑色区域使用 `--pure-black: #000000`，不使用 ASCII、点阵、纹理、噪点或动态装饰背景。
+- 无信息价值的眉题、角标、风格说明和装饰性标签直接删除；不要用小标题重复主标题已经表达的内容。
+- 分割线只用于真实的结构分区、表格边界或数据刻度；标题与说明之间、封面底部等无需分区的位置不添加装饰线。
+- 可见文字默认使用自然大小写：普通英文短语使用 sentence case / natural case，不把眉题、导航、标签、图注或页脚整句写成全大写。
+- 全大写只用于 XREAL 官方字标、行业通用缩写（如 AI、AR、KPI、PPT）和短型号代码；`TAKEAWAYS`、`CLOSING`、`GENERIC TECH` 等普通词必须写为 `Takeaways`、`Closing`、`Generic tech`。
+- 描述性小标题与辅助文字使用标准字距，不通过大幅 tracking 制造“科技感”；默认 `letter-spacing: normal`，技术编号等特殊场景也不得超过 `0.05em`。
+- 模板不得使用 `text-transform: uppercase` 强制转换；大小写必须在内容层正确书写。
+- 列表默认使用实心圆点，不使用短横线模拟 bullet。
+- 时间线节点名称使用 600 字重，说明文字保持 400，以角色差建立层级。
+
+## 图标
+
+产品特性、功能模块和数据行图标使用 Google Material Symbols Outlined，遵循 Google Material Icons 的统一线性风格：
+
+```html
+<span class="material-symbols-outlined" aria-hidden="true">layers</span>
+```
+
+- 不使用 emoji。
+- 不手绘 SVG 图标；地图、流程和数据几何图形除外。
+- 同一页统一使用 Outlined，不混用 Filled、Rounded、Sharp。
+- 默认 `FILL 0`、中等字重、统一尺寸和视觉基线。
