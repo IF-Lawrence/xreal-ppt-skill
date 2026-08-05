@@ -75,6 +75,27 @@ if (!hasCjkContent && !documentLang.startsWith('en')) {
   errors.push('Font context mismatch: all-English deck must use <html lang="en"> so the whole deck uses XREAL Diatype.');
 }
 
+const englishTypographyBlock = htmlForSlides.match(/html\[lang\^?=["']en["']\]\s*\{([^}]*)\}/i)?.[1] ?? '';
+const englishChromeRatio = Number(englishTypographyBlock.match(/--chrome-label-optical-ratio\s*:\s*([0-9.]+)/i)?.[1]);
+if (documentLang.startsWith('en') && (!Number.isFinite(englishChromeRatio) || englishChromeRatio < 0.305 || englishChromeRatio > 0.32)) {
+  errors.push('English chrome mismatch: XREAL Diatype needs --chrome-label-optical-ratio around .313 so adjacent labels match the XREAL Logo visual height.');
+}
+
+const cssNumber = (name) => Number(htmlForSlides.match(new RegExp(`${name}\\s*:\\s*([0-9.]+)`, 'i'))?.[1]);
+const navDotAlpha = cssNumber('--nav-dot-alpha');
+const navDotActiveAlpha = cssNumber('--nav-dot-active-alpha');
+const navDotDarkAlpha = cssNumber('--nav-dot-dark-alpha');
+const navDotDarkActiveAlpha = cssNumber('--nav-dot-dark-active-alpha');
+if (!Number.isFinite(navDotAlpha) || navDotAlpha > 0.10 || !Number.isFinite(navDotActiveAlpha) || navDotActiveAlpha > 0.20) {
+  errors.push('Navigation contrast mismatch: light-background nav dots must remain low contrast (normal <= .10, active <= .20).');
+}
+if (!Number.isFinite(navDotDarkAlpha) || navDotDarkAlpha > 0.12 || !Number.isFinite(navDotDarkActiveAlpha) || navDotDarkActiveAlpha > 0.24) {
+  errors.push('Navigation contrast mismatch: dark-background nav dots must remain low contrast (normal <= .12, active <= .24).');
+}
+if (/#nav\s+\.dot\.active\s*\{[^}]*background\s*:\s*var\(--accent\)/i.test(htmlForSlides)) {
+  errors.push('Navigation contrast mismatch: the active dot must use low-opacity black/white, not solid var(--accent).');
+}
+
 const contentWeightSource = htmlForSlides.replace(/@font-face\s*\{[^}]*\}/gi, '');
 if (/font-weight\s*:\s*(?:100|200|300)\b/i.test(contentWeightSource)) {
   errors.push('Typography hierarchy mismatch: content uses Thin/ExtraLight/Light (100/200/300). Use role-based weights: display/title 500-600, body 400, labels 500, key data 600-700.');

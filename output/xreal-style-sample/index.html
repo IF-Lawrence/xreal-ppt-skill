@@ -74,9 +74,10 @@
     --weight-label:500;
     --weight-emphasis:600;
     --chrome-body-logo-width:max(60px,5.2vw);
-    --chrome-body-label-size:max(16px,1.55vw);
+    --chrome-label-optical-ratio:.26;
+    --chrome-body-label-size:calc(var(--chrome-body-logo-width) * var(--chrome-label-optical-ratio));
     --chrome-feature-logo-width:max(72px,6.8vw);
-    --chrome-feature-label-size:max(22px,2.1vw);
+    --chrome-feature-label-size:calc(var(--chrome-feature-logo-width) * var(--chrome-label-optical-ratio));
     /* 兼容既有组件接口：全部指向同一 deck 主字体，禁止据此拆分中英文 */
     --sans:var(--deck-font);
     --sans-zh:var(--deck-font);
@@ -113,9 +114,16 @@
 
     /* 底部分页组件安全区: 主内容最低处不要进入这条区域 */
     --nav-safe-bottom:8vh;
+    --nav-dot-alpha:.08;
+    --nav-dot-hover-alpha:.14;
+    --nav-dot-active-alpha:.18;
+    --nav-dot-dark-alpha:.10;
+    --nav-dot-dark-active-alpha:.22;
   }
   html[lang^="en"]{
     --deck-font:var(--font-xreal);
+    /* XREAL Diatype cap-height 约 0.70em，需比 IBM Plex Sans SC 放大以匹配 Logo 视觉字高 */
+    --chrome-label-optical-ratio:.313;
     --weight-display:500;
     --weight-title:500;
   }
@@ -608,11 +616,11 @@
   /* ============ 导航 ============ */
   /* 底部分页导航: 仅保留方块本身,无背景无描边 */
   #nav{position:fixed;left:50%;bottom:2vh;transform:translateX(-50%);z-index:30;display:flex;gap:10px;padding:0;background:transparent;border:0}
-  #nav .dot{width:6px;height:6px;background:rgba(0,0,0,.28);cursor:pointer;transition:all .25s ease;border:0;padding:0;border-radius:0}
-  #nav .dot:hover{background:rgba(0,0,0,.55)}
-  #nav .dot.active{background:var(--accent);width:18px}
-  body.dark-bg #nav .dot{background:rgba(255,255,255,.32)}
-  body.dark-bg #nav .dot.active{background:var(--accent)}
+  #nav .dot{width:6px;height:6px;background:rgba(0,0,0,var(--nav-dot-alpha));cursor:pointer;transition:all .25s ease;border:0;padding:0;border-radius:0}
+  #nav .dot:hover{background:rgba(0,0,0,var(--nav-dot-hover-alpha))}
+  #nav .dot.active{background:rgba(0,0,0,var(--nav-dot-active-alpha));width:18px}
+  body.dark-bg #nav .dot{background:rgba(255,255,255,var(--nav-dot-dark-alpha))}
+  body.dark-bg #nav .dot.active{background:rgba(255,255,255,var(--nav-dot-dark-active-alpha))}
 
 
   /* ESC 索引页: 动画元素强制可见 (覆盖 motion-ready 的 opacity:0) */

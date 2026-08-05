@@ -94,7 +94,7 @@ cp "<SKILL_ROOT>/assets/brand/xreal-logo-black.svg" "项目/XXX/ppt/assets/brand
 - 每页 `chrome-min` 的品牌位置使用 `assets/brand/xreal-logo-black.svg`
 - 封面与封底的黑色区域使用 `#000000` 纯黑底，不添加 ASCII、点阵、纹理或动态装饰背景
 - Logo 默认独立出现，不在右侧附加说明文字；确需相邻文字时，文字视觉字高与 Logo 高度一致，并使用标准字距
-- 正文页 `chrome-min` 使用紧凑导航级品牌尺寸；相邻文字字号由 Logo 宽度按视觉比例计算，并与 Logo 垂直居中。封面/封底才使用较大的品牌级尺寸
+- 正文页 `chrome-min` 使用紧凑导航级品牌尺寸；相邻文字字号由 Logo 宽度按字体度量分别计算，并与 Logo 垂直居中：IBM Plex Sans SC 使用 `.26`，XREAL Diatype 使用 `.313`。封面/封底才使用较大的品牌级尺寸
 - 删除无信息价值的装饰角标、小标题和分割线；正文 bullet 使用实心圆点，不使用短横线
 - 所有可见文字默认使用自然大小写与标准字距；英文眉题、导航、标签、图注和页脚禁止整词组全大写，也不要依赖 CSS `text-transform: uppercase`
 - 全大写只保留给 XREAL 官方字标、行业通用缩写（如 AI、AR、KPI、PPT）和短型号代码；不得把普通英文单词全大写作为装饰
@@ -105,6 +105,7 @@ cp "<SKILL_ROOT>/assets/brand/xreal-logo-black.svg" "项目/XXX/ppt/assets/brand
 - 不因品牌化引入渐变、阴影、圆角、玻璃拟态或多色高亮
 - 保留方向键翻页、`B` 静态模式和 `ESC` 索引功能，但不在页面右下角显示操作提示
 - 页面不显示 `01 / 09`、`06 / 07` 等页码；顺序通过底部导航和演讲结构表达
+- 底部导航只作为弱提示：亮底普通点透明度 `.08`、当前点 `.18`；暗底普通点 `.10`、当前点 `.22`。不要用不透明黑色、白色或 `var(--accent)` 显示当前点
 
 ### Step 2 · 填充内容
 
