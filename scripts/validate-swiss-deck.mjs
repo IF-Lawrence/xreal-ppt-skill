@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import path from 'node:path';
 import { createRequire } from 'node:module';
 import { pathToFileURL } from 'node:url';
@@ -72,6 +72,28 @@ if (!slides.length) {
   errors.push('No <section class="slide"> pages found.');
 }
 
+const deckDir = path.dirname(path.resolve(file));
+const imagesDir = path.join(deckDir, 'images');
+const copiedMedia = existsSync(imagesDir)
+  ? readdirSync(imagesDir, { withFileTypes: true })
+      .filter((entry) => entry.isFile() && /\.(?:png|jpe?g|webp|avif|gif)$/i.test(entry.name))
+      .map((entry) => entry.name)
+  : [];
+const mediaReferences = slides.flatMap((slide) => [...slide.html.matchAll(/<img\b[^>]*\bsrc=["']images\/([^"'?#]+)["']/gi)]
+  .map((match) => ({ slide: slide.idx, file: decodeURIComponent(match[1]) })));
+const referencedMedia = new Set(mediaReferences.map((item) => item.file));
+const unreferencedMedia = copiedMedia.filter((name) => !referencedMedia.has(name));
+if (unreferencedMedia.length) {
+  warnings.push(`Media utilization: ${unreferencedMedia.length} copied file(s) in images/ are not referenced (${unreferencedMedia.join(', ')}). Assign a semantic slot or remove them from the final output.`);
+}
+
+const coverSlides = slides.filter((slide) => /\bdata-layout="XREAL-COVER-BLACK"/.test(slide.tag));
+if (coverSlides.length !== 1) {
+  errors.push(`Front cover mismatch: expected exactly one XREAL-COVER-BLACK slide; found ${coverSlides.length}.`);
+} else if (coverSlides[0].idx !== 1) {
+  errors.push(`Front cover mismatch: XREAL-COVER-BLACK must be the first slide; found it at slide ${coverSlides[0].idx}.`);
+}
+
 const closingSlides = slides.filter((slide) => /\bdata-layout="XREAL-CLOSING-BLACK"/.test(slide.tag));
 if (closingSlides.length !== 1) {
   errors.push(`Back cover mismatch: expected exactly one XREAL-CLOSING-BLACK slide; found ${closingSlides.length}.`);
@@ -80,9 +102,37 @@ if (closingSlides.length !== 1) {
 }
 
 const documentLang = htmlForSlides.match(/<html\b[^>]*\blang="([^"]+)"/i)?.[1]?.toLowerCase() ?? '';
+const productLine = htmlForSlides.match(/<body\b[^>]*\bdata-product-line=["']([^"']+)["']/i)?.[1]?.toLowerCase() ?? '';
+const productMarkTags = [...htmlForStatic.matchAll(/<img\b(?=[^>]*\bclass=["'][^"']*\bxreal-product-mark\b[^"']*["'])[^>]*>/gi)].map((match) => match[0]);
+if (productLine) {
+  if (!productMarkTags.length) {
+    errors.push(`Product identity mismatch: body declares data-product-line="${productLine}" but no official .xreal-product-mark is used. Audit the matching 00-product-marks/ assets before falling back to typed product text.`);
+  }
+  productMarkTags.forEach((tag) => {
+    if (!/\bsrc=["']images\/[^"']+\.svg["']/i.test(tag)) {
+      errors.push('Product identity mismatch: .xreal-product-mark must use a selected local SVG copied into images/.');
+    }
+    if (!/\bdata-image-slot=["']product-mark["']/i.test(tag) || !/\bdata-media-role=["']product-identity["']/i.test(tag)) {
+      errors.push('Product identity mismatch: .xreal-product-mark must declare data-image-slot="product-mark" and data-media-role="product-identity".');
+    }
+    if (!/\balt=["'][^"']+["']/i.test(tag)) {
+      errors.push('Product identity mismatch: .xreal-product-mark requires an accessible product name in alt.');
+    }
+  });
+}
 const slideText = slides
   .map((slide) => slide.html.replace(/<script\b[\s\S]*?<\/script>/gi, '').replace(/<style\b[\s\S]*?<\/style>/gi, '').replace(/<[^>]+>/g, ' '))
   .join(' ');
+const inferredProductLines = [
+  { slug: 'one-pro', pattern: /\b(?:XREAL\s+)?One\s+Pro\b/gi },
+  { slug: 'aura', pattern: /\bXREAL\s+AURA\b/gi },
+  { slug: '1s', pattern: /\bXREAL\s+1S\b/gi },
+  { slug: 'xbx-a01+', pattern: /\bXBX\s+A01\+\b/gi },
+];
+const inferredProductLine = inferredProductLines.find(({ pattern }) => (slideText.match(pattern) || []).length >= 2)?.slug ?? '';
+if (inferredProductLine && !productLine) {
+  errors.push(`Product identity mismatch: slide content repeatedly identifies product line "${inferredProductLine}" but body has no data-product-line declaration. Run the product identity audit before media selection.`);
+}
 const hasCjkContent = /[\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff]/u.test(slideText);
 
 if (hasCjkContent && !documentLang.startsWith('zh')) {
@@ -113,11 +163,47 @@ const navDotActiveAlpha = cssNumber('--nav-dot-active-alpha');
 const navDotDarkAlpha = cssNumber('--nav-dot-dark-alpha');
 const navDotDarkActiveAlpha = cssNumber('--nav-dot-dark-active-alpha');
 const radiusSm = cssNumber('--radius-sm');
+const chromeBrandGap = cssNumber('--chrome-brand-gap');
+const chromeContentGap = cssNumber('--chrome-content-gap');
+const chromeContentGapTight = cssNumber('--chrome-content-gap-tight');
+const unitMarkOpacity = cssNumber('--unit-mark-opacity');
+const unitMarkGap = cssNumber('--unit-mark-gap');
+const unitDegreeGap = cssNumber('--unit-degree-gap');
+const briefCardPad = cssNumber('--brief-card-pad');
+const subCardPad = cssNumber('--sub-card-pad');
+const mediaScrimAlpha = cssNumber('--media-scrim-alpha');
 const baseCoverTitleVw = cssMinVw(htmlForStatic, '--cover-title-size');
 const baseSectionTitleVw = cssMinVw(htmlForStatic, '--section-hero-title-size');
 const basePageTitleVw = cssMinVw(htmlForStatic, '--page-title-size');
-if (!Number.isFinite(radiusSm) || radiusSm < 2 || radiusSm > 4) {
-  errors.push('Corner token mismatch: define --radius-sm between 2px and 4px; the XREAL template standard is 3px.');
+if (!Number.isFinite(radiusSm) || radiusSm < 7 || radiusSm > 9) {
+  errors.push('Corner token mismatch: define --radius-sm between 7px and 9px; the XREAL template standard is 8px.');
+}
+if (!Number.isFinite(chromeBrandGap) || chromeBrandGap < 1.4 || chromeBrandGap > 2.4) {
+  errors.push('Chrome spacing mismatch: define --chrome-brand-gap between 1.4vw and 2.4vw; the XREAL standard is 1.6vw so navigation text does not crowd the Logo.');
+}
+if (!Number.isFinite(chromeContentGap) || chromeContentGap < 20 || chromeContentGap > 32) {
+  errors.push('Chrome content-gap mismatch: define --chrome-content-gap between 20px and 32px; the XREAL standard is 24px so the page body does not drift downward.');
+}
+if (!Number.isFinite(chromeContentGapTight) || chromeContentGapTight < 12 || chromeContentGapTight > 24 || chromeContentGapTight >= chromeContentGap) {
+  errors.push('Tight chrome content-gap mismatch: define --chrome-content-gap-tight between 12px and 24px and smaller than --chrome-content-gap; the XREAL standard is 16px.');
+}
+if (!Number.isFinite(unitMarkOpacity) || unitMarkOpacity < .58 || unitMarkOpacity > .68) {
+  errors.push('Unit color mismatch: define --unit-mark-opacity between .58 and .68; the XREAL standard is .62 for consistent neutral unit contrast.');
+}
+if (!Number.isFinite(unitMarkGap) || unitMarkGap < .14 || unitMarkGap > .24) {
+  errors.push('Unit spacing mismatch: define --unit-mark-gap between .14em and .24em; the XREAL standard is .18em for textual units such as in and Hz.');
+}
+if (!Number.isFinite(unitDegreeGap) || unitDegreeGap < .01 || unitDegreeGap > .07) {
+  errors.push('Degree spacing mismatch: define --unit-degree-gap between .01em and .07em; the XREAL standard is .03em so ° stays attached without touching the number.');
+}
+if (!Number.isFinite(briefCardPad) || briefCardPad < 1.8 || briefCardPad > 2.6) {
+  errors.push('S16 card padding mismatch: define --brief-card-pad between 1.8vh and 2.6vh; the XREAL standard is 2.2vh on all four sides.');
+}
+if (!Number.isFinite(subCardPad) || subCardPad < 1.8 || subCardPad > 2.6) {
+  errors.push('S04 card padding mismatch: define --sub-card-pad between 1.8vh and 2.6vh; the XREAL standard is 2.2vh on all four sides.');
+}
+if (!Number.isFinite(mediaScrimAlpha) || mediaScrimAlpha < .28 || mediaScrimAlpha > .48) {
+  errors.push('Media scrim mismatch: define --media-scrim-alpha between .28 and .48; the XREAL standard is .38 for direct inverse text on full-bleed media.');
 }
 if (![baseCoverTitleVw, baseSectionTitleVw, basePageTitleVw].every(Number.isFinite) || !(basePageTitleVw < baseSectionTitleVw && baseSectionTitleVw < baseCoverTitleVw)) {
   errors.push('Title hierarchy mismatch: define --page-title-size < --section-hero-title-size < --cover-title-size so chapter Heroes remain below Index Cover.');
@@ -153,6 +239,17 @@ if (wideTracking.length) {
   errors.push(`Typography tracking mismatch: positive letter-spacing exceeds 0.05em (${[...new Set(wideTracking)].join(', ')}em). Use normal tracking for labels and metadata.`);
 }
 
+if (/<sub\b[^>]*>\s*(?:°|&deg;)\s*<\/sub>/i.test(htmlForStatic)) {
+  errors.push('Unit alignment mismatch: degree symbols must never be subscript. Use a Unicode ° immediately after the number, or <sup class="unit-degree">°</sup>.');
+}
+const displayUnitRules = [...htmlForStatic.matchAll(/([^{}]*(?:\.unit|\.stat-unit)[^{]*)\{([^}]*)\}/gi)]
+  .map((match) => match[2].match(/vertical-align\s*:\s*([^;}]+)/i)?.[1]?.trim().toLowerCase())
+  .filter(Boolean)
+  .filter((value) => value !== 'text-top' && !value.includes('var('));
+if (displayUnitRules.length) {
+  errors.push(`Unit alignment mismatch: display-number units must use the shared upper-shoulder alignment vertical-align:text-top; found ${[...new Set(displayUnitRules)].join(', ')}. Inline prose units should remain plain text on the prose baseline.`);
+}
+
 if (/\bid=["']hint["']/i.test(htmlForStatic)) {
   errors.push('Interaction chrome mismatch: visible keyboard/navigation hint is forbidden. Keep keyboard controls functional without rendering an on-canvas instruction label.');
 }
@@ -182,6 +279,7 @@ slides.forEach((slide) => {
   const variant = slide.tag.match(/\bdata-variant="([^"]+)"/)?.[1] ?? '';
   const chartEngine = slide.tag.match(/\bdata-chart-engine="([^"]+)"/)?.[1] ?? '';
   const chartKind = slide.tag.match(/\bdata-chart-kind="([^"]+)"/)?.[1] ?? '';
+  const mediaMatch = slide.tag.match(/\bdata-media-match="([^"]+)"/)?.[1] ?? '';
   const isECharts = chartEngine === 'echarts';
   const visibleText = slide.html
     .replace(/<script\b[\s\S]*?<\/script>/gi, ' ')
@@ -194,6 +292,14 @@ slides.forEach((slide) => {
     errors.push(`Slide ${slide.idx}: unapproved all-caps copy (${[...new Set(unapprovedAllCaps)].join(', ')}). Use sentence/natural case; only brand marks, standard acronyms, and short model codes may stay all caps.`);
   }
 
+  if (documentLang.startsWith('zh')) {
+    const headingBlocks = [...slide.html.matchAll(/<h[1-3]\b[^>]*>[\s\S]*?<\/h[1-3]>/gi)].map((match) => match[0]);
+    const italicChineseHeadings = headingBlocks.filter((block) => /<(?:i|em)\b|font-style\s*:\s*italic/i.test(block));
+    if (italicChineseHeadings.length) {
+      errors.push(`Slide ${slide.idx}: Chinese titles must remain upright. Remove <i>, <em>, or font-style:italic from heading content.`);
+    }
+  }
+
   if (/\b\d{1,2}\s*\/\s*(?:\d{1,2}|NN)\b/i.test(visibleText)) {
     errors.push(`Slide ${slide.idx}: visible page number found. XREAL Style uses navigation dots for order and does not render XX / NN counters.`);
   }
@@ -202,6 +308,182 @@ slides.forEach((slide) => {
     errors.push(`Slide ${slide.idx}: missing data-layout. XREAL Style locked mode requires a registered layout (S01-S08 or S10-S24) or XREAL-COVER-BLACK/XREAL-CLOSING-BLACK.`);
   } else if (!allowedLayouts.has(layout)) {
     errors.push(`Slide ${slide.idx}: data-layout="${layout}" is not registered in swiss-layout-lock.md.`);
+  }
+
+  if (layout === 'XREAL-COVER-BLACK' || layout === 'XREAL-CLOSING-BLACK') {
+    const isCover = layout === 'XREAL-COVER-BLACK';
+    const mediaClass = isCover ? 'xreal-cover-media' : 'xreal-closing-media';
+    const mediaRole = isCover ? 'cover-background' : 'closing-background';
+    const mediaSlot = mediaRole;
+    const matchingMediaTags = [...slide.html.matchAll(new RegExp(`<img\\b(?=[^>]*\\bclass=["'][^"']*\\b${mediaClass}\\b[^"']*["'])[^>]*>`, 'gi'))].map((match) => match[0]);
+    if (!/^(?:matched|none)$/.test(mediaMatch)) {
+      errors.push(`Slide ${slide.idx}: ${layout} must declare data-media-match="matched" or "none" after auditing the available media pool.`);
+    } else if (mediaMatch === 'matched') {
+      if (matchingMediaTags.length !== 1) {
+        errors.push(`Slide ${slide.idx}: data-media-match="matched" requires exactly one .${mediaClass} background image; found ${matchingMediaTags.length}.`);
+      }
+      matchingMediaTags.forEach((tag) => {
+        if (!/\bsrc=["']images\//i.test(tag)) {
+          errors.push(`Slide ${slide.idx}: .${mediaClass} must use a selected local file from images/.`);
+        }
+        if (!new RegExp(`\\bdata-image-slot=["']${mediaSlot}["']`, 'i').test(tag)) {
+          errors.push(`Slide ${slide.idx}: .${mediaClass} must declare data-image-slot="${mediaSlot}".`);
+        }
+        if (!new RegExp(`\\bdata-media-role=["']${mediaRole}["']`, 'i').test(tag)) {
+          errors.push(`Slide ${slide.idx}: .${mediaClass} must declare data-media-role="${mediaRole}".`);
+        }
+        if (!isCover && !/\bdata-media-kind=["'](?:lifestyle|conceptual|brand-kv)["']/i.test(tag)) {
+          errors.push(`Slide ${slide.idx}: closing media must declare data-media-kind="lifestyle", "conceptual", or "brand-kv". Direct product cutouts, white-background product images, and packshots are forbidden on the back cover.`);
+        }
+        if (!isCover && (!/\bdata-media-fit=["']full-bleed["']/i.test(tag) || !/\bdata-media-contrast=["']darken["']/i.test(tag))) {
+          errors.push(`Slide ${slide.idx}: closing media must use data-media-fit="full-bleed" and data-media-contrast="darken" so Thanks and the enterprise Logo remain readable.`);
+        }
+        if (!/\balt=["'][^"']+["']/i.test(tag)) {
+          errors.push(`Slide ${slide.idx}: .${mediaClass} requires a meaningful alt description.`);
+        }
+      });
+    } else if (matchingMediaTags.length) {
+      errors.push(`Slide ${slide.idx}: data-media-match="none" cannot include .${mediaClass}; change the declaration to matched or remove the media.`);
+    }
+  }
+
+  if (layout === 'S16') {
+    const briefCardTags = [...slide.html.matchAll(/<(?:article|div)\b(?=[^>]*\bclass="[^"]*\bbrief-card\b[^"]*")[^>]*>/gi)].map((match) => match[0]);
+    const accentBriefCards = briefCardTags.filter((tag) => /\bclass="[^"]*\bis-accent\b[^"]*"/i.test(tag));
+    if (accentBriefCards.length > 1) {
+      errors.push(`Slide ${slide.idx}: Multi-card Brief has ${accentBriefCards.length} accent cards. S16 defaults to equal-weight neutral cards and permits at most one semantic emphasis.`);
+    }
+    accentBriefCards.forEach((tag) => {
+      if (!/\bdata-emphasis="(?:primary|recommended|critical|risk)"/i.test(tag)) {
+        errors.push(`Slide ${slide.idx}: .brief-card.is-accent has no registered semantic reason. Add data-emphasis="primary|recommended|critical|risk", or remove is-accent when the cards are equal weight.`);
+      }
+    });
+  }
+
+  if (layout === 'S02') {
+    const timelineCount = [...slide.html.matchAll(/<div\b(?=[^>]*\bclass=["'][^"']*\btimeline-v\b[^"']*["'])[^>]*>/gi)].length;
+    const headCount = [...slide.html.matchAll(/<div\b(?=[^>]*\bclass=["'][^"']*\btl-head\b[^"']*["'])[^>]*>/gi)].length;
+    const nodeCount = [...slide.html.matchAll(/<div\b(?=[^>]*\bclass=["'][^"']*\btl-node\b[^"']*["'])[^>]*>/gi)].length;
+    const requiredPerNode = ['tl-axis', 'dot', 'yr', 'multi', 'tl-copy', 'tl-stage', 'tl-impact'];
+    if (timelineCount !== 1 || headCount !== 1) {
+      errors.push(`Slide ${slide.idx}: S02 requires one .timeline-v and one aligned .tl-head so time, metric, and stage meaning are explicit.`);
+    }
+    if (nodeCount < 2 || nodeCount > 5) {
+      errors.push(`Slide ${slide.idx}: S02 requires 2-5 .tl-node entries; found ${nodeCount}.`);
+    }
+    requiredPerNode.forEach((className) => {
+      const count = [...slide.html.matchAll(new RegExp(`<[^>]+\\bclass=["'][^"']*\\b${className}\\b[^"']*["'][^>]*>`, 'gi'))].length;
+      if (count !== nodeCount) {
+        errors.push(`Slide ${slide.idx}: S02 requires exactly one .${className} per timeline node; found ${count} for ${nodeCount} node(s).`);
+      }
+    });
+  }
+
+  if (layout === 'S04') {
+    const cardMediaTags = [...slide.html.matchAll(/<img\b(?=[^>]*\bclass=["'][^"']*\bcard-media-slot\b[^"']*["'])[^>]*>/gi)].map((match) => match[0]);
+    const mediaCards = [...slide.html.matchAll(/<article\b(?=[^>]*\bclass=["'][^"']*\bsub-card\b[^"']*\bhas-media\b[^"']*["'])[^>]*>/gi)].length;
+    if (cardMediaTags.length > 2) {
+      errors.push(`Slide ${slide.idx}: S04 uses ${cardMediaTags.length} media cards. Six Cells permits at most 1-2 sparse technical-evidence cards; do not turn every card into an image tile.`);
+    }
+    if (cardMediaTags.length !== mediaCards) {
+      errors.push(`Slide ${slide.idx}: each S04 .sub-card.has-media must contain exactly one .card-media-slot, and media-free cards must not use has-media.`);
+    }
+    cardMediaTags.forEach((tag) => {
+      if (!/\bdata-image-slot=["']s04-card-media["']/i.test(tag) || !/\bdata-media-role=["']technical-evidence["']/i.test(tag)) {
+        errors.push(`Slide ${slide.idx}: S04 .card-media-slot must declare data-image-slot="s04-card-media" and data-media-role="technical-evidence".`);
+      }
+      if (!/\bdata-media-fit=["'](?:inset|inset-prominent)["']/i.test(tag) || !/\bdata-media-contrast=["']none["']/i.test(tag)) {
+        errors.push(`Slide ${slide.idx}: S04 technical evidence must use data-media-fit="inset|inset-prominent" and data-media-contrast="none"; inset media does not sit behind text.`);
+      }
+    });
+  }
+
+  if (layout === 'S05') {
+    const layerMediaTags = [...slide.html.matchAll(/<img\b(?=[^>]*\bclass=["'][^"']*\bstack-card-media\b[^"']*["'])[^>]*>/gi)].map((match) => match[0]);
+    const mediaLayers = [...slide.html.matchAll(/<article\b(?=[^>]*\bclass=["'][^"']*\bstack-block\b[^"']*\bhas-media\b[^"']*["'])[^>]*>/gi)].length;
+    if (layerMediaTags.length > 1) {
+      errors.push(`Slide ${slide.idx}: S05 uses ${layerMediaTags.length} media layers. Three Layers permits media in at most one core layer so the hierarchy remains structural.`);
+    }
+    if (layerMediaTags.length !== mediaLayers) {
+      errors.push(`Slide ${slide.idx}: each S05 .stack-block.has-media must contain exactly one .stack-card-media, and media-free layers must not use has-media.`);
+    }
+    layerMediaTags.forEach((tag) => {
+      if (!/\bdata-image-slot=["']s05-layer-media["']/i.test(tag) || !/\bdata-media-role=["']technical-evidence["']/i.test(tag)) {
+        errors.push(`Slide ${slide.idx}: S05 .stack-card-media must declare data-image-slot="s05-layer-media" and data-media-role="technical-evidence".`);
+      }
+      const isInset = /\bdata-media-fit=["']inset["']/i.test(tag) && /\bdata-media-contrast=["']none["']/i.test(tag);
+      const isFullBleed = /\bdata-media-fit=["']full-bleed["']/i.test(tag) && /\bdata-media-contrast=["']darken["']/i.test(tag);
+      if (!isInset && !isFullBleed) {
+        errors.push(`Slide ${slide.idx}: S05 technical evidence must use either inset/none or full-bleed/darken media semantics.`);
+      }
+      if (isFullBleed && !/\bclass=["'][^"']*\bmedia-full-bleed\b/i.test(slide.html)) {
+        errors.push(`Slide ${slide.idx}: S05 full-bleed media requires .media-full-bleed on its .stack-block.`);
+      }
+    });
+  }
+
+  if (layout === 'S19') {
+    const bentoMediaTags = [...slide.html.matchAll(/<img\b(?=[^>]*\bclass=["'][^"']*\bbento-hero-media\b[^"']*["'])[^>]*>/gi)].map((match) => match[0]);
+    const mediaHeroes = [...slide.html.matchAll(/<article\b(?=[^>]*\bclass=["'][^"']*\bhero\b[^"']*\bhas-media\b[^"']*["'])[^>]*>/gi)].length;
+    if (bentoMediaTags.length > 1 || mediaHeroes > 1) {
+      errors.push(`Slide ${slide.idx}: S19 Bento permits contextual media only in its single hero card.`);
+    }
+    if (bentoMediaTags.length !== mediaHeroes) {
+      errors.push(`Slide ${slide.idx}: S19 .hero.has-media must contain exactly one .bento-hero-media.`);
+    }
+    bentoMediaTags.forEach((tag) => {
+      if (!/\bdata-image-slot=["']s19-bento-hero-media["']/i.test(tag) || !/\bdata-media-role=["']context-evidence["']/i.test(tag)) {
+        errors.push(`Slide ${slide.idx}: S19 .bento-hero-media must declare data-image-slot="s19-bento-hero-media" and data-media-role="context-evidence".`);
+      }
+      if (!/\bdata-media-fit=["']full-bleed["']/i.test(tag) || !/\bdata-media-contrast=["']darken["']/i.test(tag)) {
+        errors.push(`Slide ${slide.idx}: S19 hero media must use data-media-fit="full-bleed" and data-media-contrast="darken" because inverse text sits directly on the image.`);
+      }
+    });
+  }
+
+  if (layout === 'S17') {
+    const grammarTags = [...slide.html.matchAll(/<[^>]+\bdata-system-grammar=["'](flow|hierarchy|network|containment)["'][^>]*>/gi)];
+    const nodeCount = [...slide.html.matchAll(/<article\b(?=[^>]*\bclass=["'][^"']*\bsystem-node\b[^"']*["'])[^>]*>/gi)].length;
+    const linkCount = [...slide.html.matchAll(/<div\b(?=[^>]*\bclass=["'][^"']*\bsystem-link\b[^"']*["'])[^>]*>/gi)].length;
+    const classCount = (className) => [...slide.html.matchAll(new RegExp(`<[^>]+\\bclass=["'][^"']*\\b${className}\\b[^"']*["'][^>]*>`, 'gi'))].length;
+    ['system-copy', 'system-kicker', 'system-thesis', 'system-summary'].forEach((className) => {
+      const count = classCount(className);
+      if (count !== 1) {
+        errors.push(`Slide ${slide.idx}: S17 requires exactly one .${className}; found ${count}. Keep the left column to one audience-facing conclusion and one explanation.`);
+      }
+    });
+    ['system-roles', 'system-role'].forEach((className) => {
+      const count = classCount(className);
+      if (count) {
+        errors.push(`Slide ${slide.idx}: S17 forbids .${className}; the left column must not duplicate the stages already shown in the relationship graphic.`);
+      }
+    });
+    if (/这里表达的是|不是[^<。！？]{0,12}套圈|图的目的是|(?:this|the)\s+(?:diagram|graphic)\s+(?:shows|means|is intended)/i.test(slide.html)) {
+      errors.push(`Slide ${slide.idx}: S17 contains production-note wording. Rewrite visible copy for the audience instead of explaining how the diagram was made.`);
+    }
+    if (grammarTags.length !== 1) {
+      errors.push(`Slide ${slide.idx}: S17 requires exactly one declared data-system-grammar="flow|hierarchy|network|containment". Choose the relationship before drawing it.`);
+    } else {
+      const grammar = grammarTags[0][1].toLowerCase();
+      if (grammar === 'flow') {
+        const flowCount = classCount('system-flow');
+        if (flowCount !== 1) {
+          errors.push(`Slide ${slide.idx}: S17 flow grammar requires exactly one .system-flow container; found ${flowCount}.`);
+        }
+        if (nodeCount < 3 || nodeCount > 6 || linkCount !== nodeCount - 1) {
+          errors.push(`Slide ${slide.idx}: S17 flow grammar requires 3-6 .system-node entries and exactly nodeCount-1 .system-link connectors; found ${nodeCount} nodes and ${linkCount} links.`);
+        }
+        if (/<circle\b/i.test(slide.html)) {
+          errors.push(`Slide ${slide.idx}: S17 flow grammar cannot use concentric circles. Use explicit directional nodes and links; reserve rings for data-system-grammar="containment".`);
+        }
+      }
+      ['system-level', 'system-title', 'system-effect'].forEach((className) => {
+        const count = [...slide.html.matchAll(new RegExp(`<[^>]+\\bclass=["'][^"']*\\b${className}\\b[^"']*["'][^>]*>`, 'gi'))].length;
+        if (count !== nodeCount) {
+          errors.push(`Slide ${slide.idx}: S17 requires one .${className} per system node; found ${count} for ${nodeCount} node(s).`);
+        }
+      });
+    }
   }
 
   if (chartEngine && chartEngine !== 'echarts') {
@@ -275,7 +557,7 @@ slides.forEach((slide) => {
     const requiredClasses = ['xreal-closing-lockup', 'xreal-closing-thanks', 'xreal-closing-mark', 'xreal-closing-logo'];
     const missing = requiredClasses.filter((name) => !new RegExp(`\\b${name}\\b`).test(slide.html));
     if (!/\bclass="[^"]*\baccent\b/.test(slide.tag)) {
-      errors.push(`Slide ${slide.idx}: XREAL closing must use class="slide accent" for a full pure-black back cover.`);
+      errors.push(`Slide ${slide.idx}: XREAL closing must use class="slide accent" for the registered black-base back cover.`);
     }
     if (!/\bdata-animate="closing-thanks"/.test(slide.tag)) {
       errors.push(`Slide ${slide.idx}: XREAL closing must use data-animate="closing-thanks".`);
@@ -345,7 +627,7 @@ slides.forEach((slide) => {
   }
 
   if (/\bascii-bg\b/i.test(slide.html)) {
-    errors.push(`Slide ${slide.idx}: legacy decorative background found. XREAL cover and closing black areas must stay pure black.`);
+    errors.push(`Slide ${slide.idx}: legacy decorative background found. XREAL cover and closing may use only the black base or a semantically matched official media background.`);
   }
 
   const localImages = [...slide.html.matchAll(/<img\b[^>]*src="images\//g)];
@@ -376,6 +658,10 @@ slides.forEach((slide) => {
   });
 
   if (layout === 'S22') {
+    const titleBlockTag = slide.html.match(/<[^>]+\bdata-anim="title-block"[^>]*>/i)?.[0] ?? '';
+    if (titleBlockTag && /background(?:-color)?\s*:|\b(?:card-fill|card-ink|card-accent|hero-overlay-block)\b/i.test(titleBlockTag)) {
+      errors.push(`Slide ${slide.idx}: S22 image title must be direct high-contrast text. Remove the white/card/panel background from the title block and choose a readable text color or image crop.`);
+    }
     if (!/data-image-slot="s22-hero-21x9"/.test(slide.html)) {
       errors.push(`Slide ${slide.idx}: S22 must use data-image-slot="s22-hero-21x9".`);
     }
@@ -547,22 +833,257 @@ async function runRenderedMeasurements() {
         return out;
       };
 
+      const chromeGapChecks = (el) => Array.from(el.querySelectorAll('.chrome-min')).flatMap((node) => {
+        const next = node.nextElementSibling;
+        if (!next) return [];
+        if (next.style.marginTop === 'auto' || next.style.marginBottom === 'auto') return [];
+        const sameOffsetParent = node.offsetParent && node.offsetParent === next.offsetParent;
+        const chromeRect = node.getBoundingClientRect();
+        const nextRect = next.getBoundingClientRect();
+        const gap = sameOffsetParent
+          ? next.offsetTop - (node.offsetTop + node.offsetHeight)
+          : nextRect.top - chromeRect.bottom;
+        const tight = node.classList.contains('tight');
+        const min = tight ? 12 : 20;
+        const max = tight ? 24 : 32;
+        return gap < min - 1 || gap > max + 1
+          ? [{ node: labelFor(node), next: labelFor(next), gap: Math.round(gap), expected: `${min}-${max}px${tight ? ' tight' : ''}` }]
+          : [];
+      });
+
       const radiusChecks = (el) => Array.from(el.querySelectorAll([
           '.frame-img', '.card-fill', '.card-ink', '.card-accent', '.sub-card',
           '.stack-block', '.bar-tower .cap',
           '.h-bar-chart .row-track', '.h-bar-chart .row-fill',
           '.bar-row .bar-track', '.bar-row .bar-fill',
           '.hero-ink-col', '.force-card', '.brief-card',
-          '.xreal-bento > article',
+          '.xreal-bento',
         ].join(','))).filter((node) => {
           const r = node.getBoundingClientRect();
           if (r.width < 20 || r.height < 20) return false;
           const radius = parseFloat(getComputedStyle(node).borderTopLeftRadius);
-          return !Number.isFinite(radius) || radius < 2 || radius > 4;
+          return !Number.isFinite(radius) || radius < 7 || radius > 9;
         }).map((node) => ({
           node: labelFor(node),
           radius: getComputedStyle(node).borderTopLeftRadius,
         }));
+
+      const s19BentoChecks = (el) => Array.from(el.querySelectorAll('.xreal-bento > article')).filter((node) => {
+        const style = getComputedStyle(node);
+        return [
+          style.borderTopLeftRadius,
+          style.borderTopRightRadius,
+          style.borderBottomRightRadius,
+          style.borderBottomLeftRadius,
+        ].some((value) => Math.abs(parseFloat(value)) > .1);
+      }).map((node) => ({
+        node: labelFor(node),
+        radii: [
+          getComputedStyle(node).borderTopLeftRadius,
+          getComputedStyle(node).borderTopRightRadius,
+          getComputedStyle(node).borderBottomRightRadius,
+          getComputedStyle(node).borderBottomLeftRadius,
+        ].join(' '),
+      }));
+
+      const horizontalBarCapsuleChecks = (el) => Array.from(el.querySelectorAll([
+        '.h-bar-chart .row-track', '.h-bar-chart .row-fill',
+        '.bar-row .bar-track', '.bar-row .bar-fill',
+      ].join(','))).filter((node) => {
+        const rect = node.getBoundingClientRect();
+        if (rect.width < 2 || rect.height < 2) return false;
+        const radius = parseFloat(getComputedStyle(node).borderTopLeftRadius);
+        return !Number.isFinite(radius) || radius >= rect.height / 2 - .25;
+      }).map((node) => {
+        const rect = node.getBoundingClientRect();
+        return {
+          node: labelFor(node),
+          radius: getComputedStyle(node).borderTopLeftRadius,
+          height: `${Math.round(rect.height)}px`,
+        };
+      });
+
+      const equalCardPaddingChecks = (el) => Array.from(el.querySelectorAll('.sub-card,.brief-card')).filter((node) => {
+        const style = getComputedStyle(node);
+        const values = [style.paddingTop, style.paddingRight, style.paddingBottom, style.paddingLeft].map(parseFloat);
+        return values.some((value) => !Number.isFinite(value)) || Math.max(...values) - Math.min(...values) > 1.25;
+      }).map((node) => {
+        const style = getComputedStyle(node);
+        return {
+          node: labelFor(node),
+          padding: [style.paddingTop, style.paddingRight, style.paddingBottom, style.paddingLeft].join(' '),
+        };
+      });
+
+      const subCardCornerOffsetChecks = (el) => Array.from(el.querySelectorAll('.sub-card .nb-corner')).filter((node) => {
+        const style = getComputedStyle(node);
+        return Math.abs(parseFloat(style.top) - parseFloat(style.right)) > 1.25;
+      }).map((node) => ({
+        node: labelFor(node),
+        top: getComputedStyle(node).top,
+        right: getComputedStyle(node).right,
+      }));
+
+      const parseRgb = (value) => {
+        const parts = value.match(/[\d.]+/g)?.slice(0, 3).map(Number) ?? [];
+        return parts.length === 3 ? parts : null;
+      };
+      const luminance = (rgb) => {
+        const linear = rgb.map((channel) => {
+          const value = channel / 255;
+          return value <= .03928 ? value / 12.92 : ((value + .055) / 1.055) ** 2.4;
+        });
+        return .2126 * linear[0] + .7152 * linear[1] + .0722 * linear[2];
+      };
+      const contrast = (a, b) => {
+        const l1 = luminance(a);
+        const l2 = luminance(b);
+        return (Math.max(l1, l2) + .05) / (Math.min(l1, l2) + .05);
+      };
+      const briefContrastChecks = (el) => Array.from(el.querySelectorAll('.brief-card')).flatMap((node) => {
+        const style = getComputedStyle(node);
+        if (node.classList.contains('is-accent')) {
+          const foreground = parseRgb(style.color);
+          const background = parseRgb(style.backgroundColor);
+          const ratio = foreground && background ? contrast(foreground, background) : 0;
+          return ratio < 4.5 ? [{ node: labelFor(node), issue: `accent text contrast is ${ratio.toFixed(2)}:1` }] : [];
+        }
+        const borderWidth = parseFloat(style.borderTopWidth);
+        return style.borderTopStyle === 'none' || !Number.isFinite(borderWidth) || borderWidth < .9
+          ? [{ node: labelFor(node), issue: 'neutral card has no visible 1px boundary' }]
+          : [];
+      });
+
+      const cardMediaChecks = (el) => Array.from(el.querySelectorAll('.card-media-slot,.stack-card-media,.bento-hero-media')).flatMap((node) => {
+        const style = getComputedStyle(node);
+        const rect = node.getBoundingClientRect();
+        const parent = node.closest('article');
+        const parentRect = parent?.getBoundingClientRect();
+        const isBento = node.classList.contains('bento-hero-media');
+        const mediaFit = node.dataset.mediaFit || '';
+        const isFullBleed = mediaFit === 'full-bleed';
+        const isProminent = mediaFit === 'inset-prominent';
+        const expectedFit = isFullBleed || isProminent ? 'cover' : 'contain';
+        const issues = [];
+        if (style.objectFit !== expectedFit) issues.push(`object-fit is ${style.objectFit}; expected ${expectedFit}`);
+        if (rect.width < 80 || rect.height < 48) issues.push(`rendered media is only ${Math.round(rect.width)}×${Math.round(rect.height)}px`);
+        if (isFullBleed) {
+          const brightness = Number(style.filter.match(/brightness\(([^)]+)\)/)?.[1]);
+          const scrimStyle = parent ? getComputedStyle(parent, '::after') : null;
+          const scrimColor = scrimStyle?.backgroundColor || '';
+          const scrimImage = scrimStyle?.backgroundImage || '';
+          const scrimParts = scrimColor.match(/[\d.]+/g)?.map(Number) ?? [];
+          const scrimAlpha = scrimParts.length >= 4 ? scrimParts[3] : (scrimParts.length === 3 ? 1 : NaN);
+          if (style.position !== 'absolute') issues.push(`full-bleed media position is ${style.position}; expected absolute placement`);
+          if (parentRect && (rect.width / parentRect.width < .95 || rect.height / parentRect.height < .95)) {
+            issues.push(`full-bleed coverage is ${(rect.width / parentRect.width).toFixed(2)}× width and ${(rect.height / parentRect.height).toFixed(2)}× height; expected at least 95% on both axes`);
+          }
+          if (isBento && (!Number.isFinite(scrimAlpha) || scrimAlpha < .28 || scrimAlpha > .48)) {
+            issues.push(`dark scrim alpha is ${Number.isFinite(scrimAlpha) ? scrimAlpha : scrimColor || 'missing'}; expected .28-.48`);
+          }
+          if (!isBento && scrimImage === 'none' && (!Number.isFinite(scrimAlpha) || scrimAlpha < .28)) {
+            issues.push('S05 full-bleed media has no visible ::after scrim or gradient protecting its text');
+          }
+          if (!Number.isFinite(brightness) || brightness < .65 || brightness > .9) {
+            issues.push(`image brightness is ${Number.isFinite(brightness) ? brightness : style.filter}; with a registered scrim it should stay within .65-.90 to preserve media detail`);
+          }
+          if (!isBento && !parent?.querySelector('.layer-icon')) {
+            issues.push('S05 full-bleed media removed the .layer-icon; retain the semantic icon unless it conflicts with the media subject');
+          }
+        } else if (parentRect) {
+          const heightRatio = rect.height / parentRect.height;
+          const widthRatio = rect.width / parentRect.width;
+          const minHeight = isProminent ? .28 : .18;
+          if (heightRatio < minHeight || heightRatio > .45) {
+            issues.push(`inset height is ${(heightRatio * 100).toFixed(1)}% of its card; expected ${Math.round(minHeight * 100)}%-45% so media remains legible without crowding text`);
+          }
+          if (isProminent && widthRatio < .8) {
+            issues.push(`prominent inset width is ${(widthRatio * 100).toFixed(1)}% of its card; expected at least 80%`);
+          }
+        }
+        return issues.map((issue) => ({ node: labelFor(node), issue }));
+      });
+
+      const timelineChecks = (el) => Array.from(el.querySelectorAll('.timeline-v')).flatMap((timeline) => {
+        const issues = [];
+        const timelineRect = timeline.getBoundingClientRect();
+        const canvasRect = el.querySelector('.canvas-card')?.getBoundingClientRect();
+        if (canvasRect && timelineRect.width / canvasRect.width < .72) {
+          issues.push(`timeline uses only ${(timelineRect.width / canvasRect.width * 100).toFixed(1)}% of canvas width; expected at least 72%`);
+        }
+        const expectedAxisX = timelineRect.left + parseFloat(getComputedStyle(timeline).getPropertyValue('--tl-axis-w')) / 2;
+        timeline.querySelectorAll('.tl-node .dot').forEach((dot) => {
+          const rect = dot.getBoundingClientRect();
+          const centerX = rect.left + rect.width / 2;
+          if (rect.width < 8 || rect.height < 8) issues.push(`timeline dot renders at only ${Math.round(rect.width)}×${Math.round(rect.height)}px`);
+          if (Math.abs(centerX - expectedAxisX) > 2.5) issues.push(`timeline dot is ${Math.abs(centerX - expectedAxisX).toFixed(1)}px off the axis center`);
+        });
+        return issues.map((issue) => ({ node: labelFor(timeline), issue }));
+      });
+
+      const productIdentityChecks = (el) => Array.from(el.querySelectorAll('.xreal-product-mark')).flatMap((node) => {
+        const style = getComputedStyle(node);
+        const rect = node.getBoundingClientRect();
+        const issues = [];
+        if (node.closest('.chrome-min')) issues.push('product mark is placed inside chrome-min; enterprise XREAL Logo owns the page chrome');
+        if (style.objectFit !== 'contain') issues.push(`object-fit is ${style.objectFit}; expected contain to preserve the official mark`);
+        if (rect.width < 240 || rect.height < 24) issues.push(`rendered product mark is only ${Math.round(rect.width)}×${Math.round(rect.height)}px`);
+        const manifestoBanner = node.closest('.ink-banner-full');
+        if (el.dataset.layout === 'S12' && manifestoBanner) {
+          const bannerRect = manifestoBanner.getBoundingClientRect();
+          const widthRatio = bannerRect.width ? rect.width / bannerRect.width : 0;
+          if (widthRatio < .18 || widthRatio > .26) {
+            issues.push(`S12 manifesto mark uses ${(widthRatio * 100).toFixed(1)}% of the banner width; expected 18%-26% so it reads as an identity sign-off, not a second headline`);
+          }
+        }
+        return issues.map((issue) => ({ node: labelFor(node), issue }));
+      });
+
+      const closingMediaChecks = (el) => Array.from(el.querySelectorAll('.xreal-closing-media')).flatMap((node) => {
+        const style = getComputedStyle(node);
+        const rect = node.getBoundingClientRect();
+        const slideRect = el.getBoundingClientRect();
+        const brightness = Number(style.filter.match(/brightness\(([^)]+)\)/)?.[1]);
+        const issues = [];
+        if (style.objectFit !== 'cover') issues.push(`object-fit is ${style.objectFit}; expected cover`);
+        if (rect.width / slideRect.width < .95 || rect.height / slideRect.height < .95) issues.push('media does not cover at least 95% of the closing slide on both axes');
+        if (!Number.isFinite(brightness) || brightness < .18 || brightness > .48) issues.push(`brightness is ${Number.isFinite(brightness) ? brightness : style.filter}; expected .18-.48 so Thanks remains dominant without erasing the image`);
+        return issues.map((issue) => ({ node: labelFor(node), issue }));
+      });
+
+      const systemRelationshipChecks = (el) => Array.from(el.querySelectorAll('[data-system-grammar]')).flatMap((node) => {
+        const rect = node.getBoundingClientRect();
+        const canvasRect = el.querySelector('.canvas-card')?.getBoundingClientRect();
+        const copyRect = el.querySelector('.system-copy')?.getBoundingClientRect();
+        const issues = [];
+        if (canvasRect && rect.width / canvasRect.width < .42) issues.push(`relationship graphic uses only ${(rect.width / canvasRect.width * 100).toFixed(1)}% of the canvas width; expected at least 42%`);
+        if (copyRect && Math.abs(copyRect.top - rect.top) > 16) issues.push(`left conclusion and right relationship graphic start ${Math.abs(copyRect.top - rect.top).toFixed(1)}px apart; expected no more than 16px`);
+        node.querySelectorAll('.system-node').forEach((systemNode) => {
+          const nodeRect = systemNode.getBoundingClientRect();
+          if (nodeRect.height < 56) issues.push(`system node renders at only ${Math.round(nodeRect.height)}px high`);
+        });
+        return issues.map((issue) => ({ node: labelFor(node), issue }));
+      });
+
+      const unitAlignmentChecks = (el) => Array.from(el.querySelectorAll('.unit,.stat-unit,.unit-degree')).filter((node) => {
+        const style = getComputedStyle(node);
+        const fontSize = parseFloat(style.fontSize);
+        const gapRatio = parseFloat(style.marginLeft) / fontSize;
+        const opacity = parseFloat(style.opacity);
+        const isDegree = node.classList.contains('unit-degree');
+        const gapInvalid = isDegree ? gapRatio < .01 || gapRatio > .07 : gapRatio < .14 || gapRatio > .24;
+        return style.verticalAlign !== 'text-top'
+          || !Number.isFinite(opacity) || opacity < .58 || opacity > .68
+          || !Number.isFinite(gapRatio) || gapInvalid;
+      }).map((node) => {
+        const style = getComputedStyle(node);
+        return {
+          node: labelFor(node),
+          verticalAlign: style.verticalAlign,
+          opacity: style.opacity,
+          gapRatio: (parseFloat(style.marginLeft) / parseFloat(style.fontSize)).toFixed(2),
+        };
+      });
 
       const baselineBarChecks = (el) => Array.from(el.querySelectorAll([
           '.bar-tower .body-block',
@@ -576,8 +1097,8 @@ async function runRenderedMeasurements() {
           const topRight = parseFloat(style.borderTopRightRadius);
           const bottomLeft = parseFloat(style.borderBottomLeftRadius);
           const bottomRight = parseFloat(style.borderBottomRightRadius);
-          return !Number.isFinite(topLeft) || topLeft < 2 || topLeft > 4
-            || !Number.isFinite(topRight) || topRight < 2 || topRight > 4
+          return !Number.isFinite(topLeft) || topLeft < 7 || topLeft > 9
+            || !Number.isFinite(topRight) || topRight < 7 || topRight > 9
             || !Number.isFinite(bottomLeft) || Math.abs(bottomLeft) > .1
             || !Number.isFinite(bottomRight) || Math.abs(bottomRight) > .1;
         }).map((node) => {
@@ -592,6 +1113,40 @@ async function runRenderedMeasurements() {
             ].join(' '),
           };
         });
+
+      const dataChartChecks = (el) => {
+        const plot = el.querySelector('.chart-plot');
+        const bars = Array.from(el.querySelectorAll('.chart-bar'));
+        if (!plot || !bars.length) return [];
+        const issues = [];
+        const plotRect = plot.getBoundingClientRect();
+        const ordered = bars.slice().sort((a, b) => a.getBoundingClientRect().left - b.getBoundingClientRect().left);
+        const firstRect = ordered[0].getBoundingClientRect();
+        const lastRect = ordered[ordered.length - 1].getBoundingClientRect();
+        const leftGap = firstRect.left - plotRect.left;
+        const rightGap = plotRect.right - lastRect.right;
+        if (leftGap < 20 || rightGap < 20) {
+          issues.push(`outer plot safety is ${leftGap.toFixed(1)}px left / ${rightGap.toFixed(1)}px right; expected at least 20px on both sides`);
+        }
+        bars.forEach((bar, index) => {
+          const value = bar.querySelector('.chart-value');
+          if (!value) return;
+          const barRect = bar.getBoundingClientRect();
+          const valueRect = value.getBoundingClientRect();
+          const style = getComputedStyle(value);
+          const centerDelta = Math.abs((valueRect.left + valueRect.width / 2) - (barRect.left + barRect.width / 2));
+          const fullWidthCentered = Math.abs(parseFloat(style.left)) <= 1
+            && Math.abs(parseFloat(style.right)) <= 1
+            && style.textAlign === 'center';
+          if (!fullWidthCentered || centerDelta > 2) {
+            issues.push(`bar ${index + 1} value is ${centerDelta.toFixed(1)}px off center and uses left/right/text-align ${style.left}/${style.right}/${style.textAlign}; use a full-width centered label without horizontal transform`);
+          }
+          if (valueRect.top < plotRect.top - 1) {
+            issues.push(`bar ${index + 1} value extends ${(plotRect.top - valueRect.top).toFixed(1)}px above the plot; reserve chart-value headroom`);
+          }
+        });
+        return issues.map((issue) => ({ node: labelFor(plot), issue }));
+      };
 
       return els.map((el, index) => {
         const er = el.getBoundingClientRect();
@@ -639,8 +1194,21 @@ async function runRenderedMeasurements() {
             safeBottom,
           },
           titleGaps: titleGapChecks(el, nodes),
+          chromeGapIssues: chromeGapChecks(el),
           radiusIssues: radiusChecks(el),
+          s19BentoIssues: s19BentoChecks(el),
+          horizontalBarCapsuleIssues: horizontalBarCapsuleChecks(el),
+          equalCardPaddingIssues: equalCardPaddingChecks(el),
+          subCardCornerOffsetIssues: subCardCornerOffsetChecks(el),
+          briefContrastIssues: briefContrastChecks(el),
+          cardMediaIssues: cardMediaChecks(el),
+          timelineIssues: timelineChecks(el),
+          productIdentityIssues: productIdentityChecks(el),
+          closingMediaIssues: closingMediaChecks(el),
+          systemRelationshipIssues: systemRelationshipChecks(el),
+          unitAlignmentIssues: unitAlignmentChecks(el),
           baselineBarIssues: baselineBarChecks(el),
+          dataChartIssues: dataChartChecks(el),
           echartsIssues: Array.from(el.querySelectorAll('.xreal-echart')).filter((node) => node.dataset.echartsState !== 'ready').map((node) => ({
             state: node.dataset.echartsState || 'uninitialized',
             message: node.dataset.echartsMessage || 'Chart did not reach ready state.',
@@ -669,11 +1237,50 @@ async function runRenderedMeasurements() {
       for (const gap of m.titleGaps) {
         warnings.push(`${prefix}: M2 ${gap.title} has ${gap.gap}px gap before ${gap.next} (min ${gap.minGap}px).`);
       }
+      for (const issue of m.chromeGapIssues) {
+        errors.push(`${prefix}: ${issue.node} leaves ${issue.gap}px before ${issue.next}; expected ${issue.expected}. Keep the page header close to the first content block and remove stacked top margins that push the whole composition downward.`);
+      }
       for (const issue of m.radiusIssues) {
-        errors.push(`${prefix}: ${issue.node} uses ${issue.radius} corner radius. Card-like elements must use the shared 2-4px token (standard: --radius-sm:3px); page axes and dividers stay straight.`);
+        errors.push(`${prefix}: ${issue.node} uses ${issue.radius} corner radius. Card-like elements must use the shared 7-9px token (standard: --radius-sm:8px); page axes and dividers stay straight.`);
+      }
+      for (const issue of m.s19BentoIssues) {
+        errors.push(`${prefix}: ${issue.node} uses inner corner radii ${issue.radii}. S19 Bento rounds only the overall .xreal-bento frame; every direct article must remain square.`);
+      }
+      for (const issue of m.horizontalBarCapsuleIssues) {
+        errors.push(`${prefix}: ${issue.node} uses ${issue.radius} radius at ${issue.height} height. Horizontal bars must remain rounded rectangles, not capsules; increase bar height so radius stays below half the height.`);
+      }
+      for (const issue of m.equalCardPaddingIssues) {
+        errors.push(`${prefix}: ${issue.node} uses padding ${issue.padding}. S04/S16 cards must use one shared token so top, right, bottom, and left padding are equal.`);
+      }
+      for (const issue of m.subCardCornerOffsetIssues) {
+        errors.push(`${prefix}: ${issue.node} uses top ${issue.top} and right ${issue.right}. S04 corner numbers must use the same --sub-card-pad offset on both axes.`);
+      }
+      for (const issue of m.briefContrastIssues) {
+        errors.push(`${prefix}: ${issue.node} ${issue.issue}. Multi-card Brief requires visible neutral-card boundaries; when semantic emphasis is justified, its single accent card must keep high-contrast inverse text.`);
+      }
+      for (const issue of m.cardMediaIssues) {
+        errors.push(`${prefix}: ${issue.node} ${issue.issue}. Card media must use its registered scale: S04 supports inset or prominent inset, S05 supports inset or darkened full-bleed media with its icon retained, and S19 uses a darkened full-bleed hero image.`);
+      }
+      for (const issue of m.timelineIssues) {
+        errors.push(`${prefix}: ${issue.node} ${issue.issue}. S02 must read as a directed timeline with visible aligned nodes, shared metric columns, and explicit stage meaning.`);
+      }
+      for (const issue of m.productIdentityIssues) {
+        errors.push(`${prefix}: ${issue.node} ${issue.issue}. Use the official product mark in product-identity slots while keeping the enterprise XREAL Logo in page chrome; on S12 it remains a subordinate identity sign-off.`);
+      }
+      for (const issue of m.closingMediaIssues) {
+        errors.push(`${prefix}: ${issue.node} ${issue.issue}. Closing media should be a low-interference atmosphere layer behind Thanks, not a product display.`);
+      }
+      for (const issue of m.systemRelationshipIssues) {
+        errors.push(`${prefix}: ${issue.node} ${issue.issue}. S17 must use a top-aligned left conclusion and one dominant relationship structure, not competing information tracks.`);
+      }
+      for (const issue of m.unitAlignmentIssues) {
+        errors.push(`${prefix}: ${issue.node} uses vertical-align ${issue.verticalAlign}, opacity ${issue.opacity}, and gap ${issue.gapRatio}em. KPI/chart units must use the shared upper-right shoulder, .62 neutral opacity, .18em text-unit gap, or .03em degree gap.`);
       }
       for (const issue of m.baselineBarIssues) {
-        errors.push(`${prefix}: ${issue.node} uses corner radii ${issue.radii}. Baseline bars may round only the top corners (2-4px); bottom corners must be square and flush to the x-axis.`);
+        errors.push(`${prefix}: ${issue.node} uses corner radii ${issue.radii}. Baseline bars may round only the top corners (7-9px); bottom corners must be square and flush to the x-axis.`);
+      }
+      for (const issue of m.dataChartIssues) {
+        errors.push(`${prefix}: ${issue.node} ${issue.issue}. S23 plots must protect edge bars and top labels, and every value must stay centered through the chart-rise animation.`);
       }
       for (const issue of m.echartsIssues) {
         errors.push(`${prefix}: ECharts runtime is ${issue.state}: ${issue.message}`);

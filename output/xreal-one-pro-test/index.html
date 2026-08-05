@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>[必填] 替换为 PPT 标题 · Deck Title</title>
+<title>XREAL One Pro｜Wear Every World</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet">
@@ -51,14 +51,14 @@
     --brand-silver:#A7ADB4;   /* XREAL 技术质感语义，默认不启用 */
     --brand-gold:#B08D57;     /* XREAL 品牌价值语义，默认不启用 */
     --radius-sm:8px;          /* 内容容器 / 色块 / 图片 / 控件统一小圆角 */
-    --unit-mark-opacity:.62;  /* 展示级数值单位的统一中性对比度 */
-    --unit-mark-gap:.18em;    /* in / Hz / ms / % 等文字单位与数字的间距 */
-    --unit-degree-gap:.03em;  /* ° 与数字紧邻但不粘连 */
-    --brief-card-pad:2.2vh;   /* S16 微卡四边统一内边距 */
-    --sub-card-pad:2.2vh;     /* S04 六宫格卡片四边统一内边距 */
-    --media-scrim-alpha:.38;  /* 文字叠加 full-bleed 媒体时的统一深色蒙版 */
-    --chart-safe-inline:max(24px,1.6vw); /* S23 首末柱不得贴边或被裁切 */
-    --chart-value-headroom:max(24px,2.8vh); /* 为柱顶数值预留独立空间 */
+    --unit-mark-opacity:.62;
+    --unit-mark-gap:.18em;
+    --unit-degree-gap:.03em;
+    --brief-card-pad:2.2vh;
+    --sub-card-pad:2.2vh;
+    --media-scrim-alpha:.38;
+    --chart-safe-inline:max(24px,1.6vw);
+    --chart-value-headroom:max(24px,2.8vh);
 
     /* ============ Carbon 文本角色 token (role-based,代替 opacity) ============
        亮底:  primary 主文 / secondary 次文 / helper 辅助 / placeholder 占位
@@ -332,7 +332,6 @@
     font-family:var(--deck-font);font-weight:var(--weight-title);
     font-size:var(--page-title-size);line-height:1.02;letter-spacing:-.03em
   }
-  /* 中文标题保持正体；英文标题仍可在极少数场景使用克制的斜体强调。 */
   html[lang^="zh"] h1,html[lang^="zh"] h2,html[lang^="zh"] h3,
   html[lang^="zh"] h1 *,html[lang^="zh"] h2 *,html[lang^="zh"] h3 *,
   html[lang^="zh"] .xreal-cover-title,html[lang^="zh"] .xreal-section-title,
@@ -452,17 +451,8 @@
     margin-left:var(--unit-mark-gap);
     vertical-align:text-top;
   }
-  /* 展示级数字的单位统一挂在右上肩位；正文中的单位才随文字基线。 */
-  .unit-degree{
-    display:inline-block;font-size:.34em;line-height:1;
-    vertical-align:text-top;margin-left:var(--unit-degree-gap);letter-spacing:0;
-    opacity:var(--unit-mark-opacity);white-space:nowrap
-  }
-  .ledger-num .unit{
-    display:inline-block;font-size:.32em;font-weight:var(--weight-label);line-height:1;
-    vertical-align:text-top;margin-left:var(--unit-mark-gap);letter-spacing:0;
-    opacity:var(--unit-mark-opacity);white-space:nowrap
-  }
+  .unit-degree{display:inline-block;font-size:.34em;line-height:1;vertical-align:text-top;margin-left:var(--unit-degree-gap);letter-spacing:0;opacity:var(--unit-mark-opacity);white-space:nowrap}
+  .ledger-num .unit{display:inline-block;font-size:.32em;font-weight:var(--weight-label);line-height:1;vertical-align:text-top;margin-left:var(--unit-mark-gap);letter-spacing:0;opacity:var(--unit-mark-opacity);white-space:nowrap}
   .ledger-num .unit-degree{margin-left:var(--unit-degree-gap)}
   .kpi-hero,.kpi-big,.kpi-mid,.kpi-thin,.kpi-thin-sm,
   .kpi-cell .nb,.stat-card .stat-nb,.tl-node .multi,
@@ -715,7 +705,7 @@
   .card-accent .t-meta,.card-accent .t-cat{color:var(--accent-on)}
   .hero-ink-col,.force-card{border-radius:var(--radius-sm);overflow:hidden}
 
-  /* S16 Multi-card Brief: 默认六卡等权；仅在存在明确优先级语义时，才允许一张高对比焦点卡。 */
+  /* S16 Multi-card Brief: 当前六种兼容设备等权，不使用无依据的单卡强调。 */
   .brief-grid{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(2,1fr);gap:1.4vh 1.4vw;flex:1;align-content:stretch;margin-top:3vh}
   .brief-card{background:var(--paper);border:1px solid var(--grey-2);color:var(--ink);padding:var(--brief-card-pad);display:flex;flex-direction:column;justify-content:space-between;min-height:0;border-radius:var(--radius-sm);overflow:hidden}
   .brief-card.is-accent{background:var(--ink);border-color:var(--ink);color:var(--paper)}
@@ -1012,8 +1002,7 @@
   }
   .stack-block.has-media.media-full-bleed > :not(.stack-card-media){position:relative;z-index:2}
 
-  /* S17 relationship grammars: use a directional flow by default.
-     Reserve concentric rings for genuine containment relationships. */
+  /* S17 relationship grammars: use a directional flow by default. */
   .system-diagram{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,4fr) minmax(0,8fr);gap:4vw;align-items:start;margin-top:3vh}
   .system-copy{min-width:0;padding-top:1.2vh;max-width:30ch}
   .system-kicker{font-family:var(--deck-font);font-size:max(14px,.78vw);font-weight:var(--weight-label);color:var(--text-helper)}
@@ -1350,7 +1339,7 @@
   .slide.dark .xreal-echart[data-echarts-state="loading"]::before,
   .slide.dark .xreal-echart[data-echarts-state="error"]::before{border-color:rgba(255,255,255,.18);color:rgba(255,255,255,.55)}
 
-  /* XREAL Bento：仅整体外框使用 8px 小圆角；内部区块保持直角。 */
+  /* XREAL Bento：整体外框 8px 小圆角，内部区块直角，不模拟大圆角 UI 面板 */
   .xreal-bento{
     display:grid;grid-template-columns:repeat(12,minmax(0,1fr));
     grid-template-rows:repeat(2,minmax(0,1fr));gap:1px;
@@ -1376,6 +1365,72 @@
     filter:brightness(.78) saturate(.78)
   }
   .xreal-bento .hero.has-media > :not(.bento-hero-media){position:relative;z-index:2}
+
+  /* ============ Layout lab extensions ============
+     用于本次测试 deck 的正式 S02/S10-S15/S17/S18/S20 版式骨架。
+     只补充锁定版式缺少的局部组件，不改变全局主题 token。 */
+  .layout-lab .lab-head{display:flex;flex-direction:column;gap:1.2vh}
+  .layout-lab .lab-lead{font-size:max(18px,1.15vw);line-height:1.5;color:var(--text-secondary);max-width:52ch}
+  .layout-lab .lab-note{font-size:max(16px,.82vw);line-height:1.45;color:var(--text-helper)}
+  .layout-lab .manifesto-top{flex:1;display:grid;grid-template-columns:3fr 9fr;align-items:center;gap:3vw}
+  .layout-lab .manifesto-title{font-size:min(6vw,10.5vh);line-height:.97;letter-spacing:-.045em;font-weight:var(--weight-display);color:var(--paper)}
+  .layout-lab .manifesto-copy{max-width:32ch;font-size:max(18px,1.25vw);line-height:1.5;color:rgba(255,255,255,.78)}
+  .layout-lab .ink-banner-full{margin:0 -5vw -4.4vh;padding:3.2vh 5vw 3.4vh;background:var(--ink);color:var(--paper);display:flex;align-items:center;justify-content:space-between;gap:2vw}
+  .layout-lab .ink-banner-full .banner-title{font-size:min(3.5vw,6vh);line-height:1;font-weight:var(--weight-title);letter-spacing:-.03em}
+  .layout-lab .ink-banner-full .xreal-product-mark{width:min(23vw,320px);max-height:4.6vh}
+  .layout-lab .ink-banner-full .banner-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.4vw;min-width:42vw}
+  .layout-lab .ink-banner-full .banner-grid span{border-left:1px solid rgba(255,255,255,.3);padding-left:1vw;font-size:max(16px,.9vw);line-height:1.35;color:rgba(255,255,255,.72)}
+  .layout-lab .three-forces{flex:1;min-height:0;display:grid;grid-template-columns:5fr 11fr;gap:1.2vw;margin-top:3vh}
+  .layout-lab .hero-ink-col{background:var(--ink);color:var(--paper);border-radius:var(--radius-sm);padding:2.4vw;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden}
+  .layout-lab .hero-ink-col h3{font-size:min(4.5vw,7.8vh);line-height:.97;letter-spacing:-.045em;font-weight:var(--weight-display);max-width:8ch}
+  .layout-lab .force-stack{display:grid;grid-template-rows:repeat(3,1fr);gap:1.2vh;min-height:0}
+  .layout-lab .force-card{border-radius:var(--radius-sm);background:var(--grey-1);padding:1.8vh 1.6vw;display:grid;grid-template-columns:8vw 1fr;gap:1vw;align-items:center;min-height:0}
+  .layout-lab .force-card .force-num{font-size:min(5.8vw,9vh);line-height:.9;font-weight:var(--weight-emphasis);letter-spacing:-.05em}
+  .layout-lab .force-card h3{font-size:min(2.4vw,4.2vh);line-height:1.05;font-weight:var(--weight-title);margin-bottom:.7vh}
+  .layout-lab .force-card p{font-size:max(16px,.92vw);line-height:1.4;color:var(--text-secondary)}
+  .layout-lab .loop-diagram{flex:1;min-height:0;display:grid;grid-template-columns:5fr 7fr;gap:4vw;align-items:center;margin-top:3vh}
+  .layout-lab .loop-steps{display:grid;gap:0;border-top:1px solid var(--border-strong)}
+  .layout-lab .loop-step{display:grid;grid-template-columns:3.4vw 1fr;gap:1vw;align-items:start;padding:1.7vh 0;border-bottom:1px solid var(--border-subtle)}
+  .layout-lab .loop-step .step-num{font-family:var(--mono);font-size:max(14px,.84vw);color:var(--text-helper)}
+  .layout-lab .loop-step h3{font-size:min(2.5vw,4.3vh);line-height:1.05;font-weight:var(--weight-title);margin-bottom:.5vh}
+  .layout-lab .loop-step p{font-size:max(16px,.9vw);line-height:1.4;color:var(--text-secondary)}
+  .layout-lab .loop-visual{position:relative;min-height:36vh;display:grid;place-items:center}
+  .layout-lab .loop-visual svg{width:min(34vw,48vh);height:min(34vw,48vh);overflow:visible}
+  .layout-lab .loop-visual .loop-ring{fill:none;stroke:var(--ink);stroke-width:2;stroke-dasharray:9 7}
+  .layout-lab .loop-visual .loop-arrow{fill:none;stroke:var(--brand-red);stroke-width:2}
+  .layout-lab .loop-visual .loop-dot{fill:var(--paper);stroke:var(--ink);stroke-width:2}
+  .layout-lab .loop-label{position:absolute;font-size:max(16px,.95vw);font-weight:600;background:var(--paper);padding:.3vh .5vw}
+  .layout-lab .loop-label.a{left:10%;top:9%}.layout-lab .loop-label.b{right:8%;top:16%}.layout-lab .loop-label.c{right:10%;bottom:15%}.layout-lab .loop-label.d{left:9%;bottom:10%}
+  .layout-lab .matrix-fill{display:grid;grid-template-columns:repeat(4,1fr);gap:1vh 1vw;margin-top:2.2vh}
+  .layout-lab .matrix-cell{background:var(--grey-1);border-radius:var(--radius-sm);min-height:9vh;padding:1.4vh 1vw;display:flex;flex-direction:column;justify-content:space-between}
+  .layout-lab .matrix-cell .matrix-nb{font-family:var(--mono);font-size:max(14px,.76vw);color:var(--text-helper)}
+  .layout-lab .matrix-cell .matrix-name{font-size:max(17px,1.12vw);font-weight:600;line-height:1.1}
+  .layout-lab .hero-stat-bottom{display:flex;align-items:end;justify-content:space-between;gap:2vw;margin-top:2vh;padding-top:1.6vh;border-top:1px solid var(--ink)}
+  .layout-lab .hero-stat-bottom .stat{font-size:min(7.4vw,12.5vh);line-height:.85;letter-spacing:-.06em;font-weight:var(--weight-emphasis)}
+  .layout-lab .hero-stat-bottom .stat-label{font-size:max(16px,.98vw);line-height:1.4;color:var(--text-secondary);max-width:36ch}
+  .layout-lab .why-now-grid{flex:1;min-height:0;display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border-subtle);margin-top:3vh}
+  .layout-lab .why-col{background:var(--paper);padding:2.2vh 1.5vw;display:flex;flex-direction:column;justify-content:space-between}
+  .layout-lab .why-col .why-body{display:flex;flex-direction:column;gap:1.2vh}
+  .layout-lab .why-col h3{font-size:min(2.8vw,4.8vh);line-height:1.04;letter-spacing:-.03em;font-weight:var(--weight-title)}
+  .layout-lab .why-col p{font-size:max(16px,.92vw);line-height:1.45;color:var(--text-secondary);max-width:23ch}
+  .layout-lab .why-num-bottom{font-size:min(7vw,12vh);line-height:.8;letter-spacing:-.06em;font-weight:var(--weight-emphasis)}
+  .layout-lab .why-col:last-child .why-num-bottom{color:var(--brand-red)}
+  .layout-lab .stacked-ledger{flex:1;min-height:0;display:grid;grid-template-rows:repeat(4,1fr);margin-top:2.4vh;border-top:1px solid var(--border-strong)}
+  .layout-lab .ledger-row{display:grid;grid-template-columns:2.2fr 4fr 1fr;align-items:center;gap:2vw;border-bottom:1px solid var(--border-subtle)}
+  .layout-lab .ledger-num{font-size:min(6vw,9.2vh);line-height:.9;letter-spacing:-.055em;font-weight:var(--weight-emphasis);font-feature-settings:"tnum"}
+  .layout-lab .ledger-label{display:flex;flex-direction:column;gap:.4vh}.layout-lab .ledger-label strong{font-size:min(2vw,3.5vh);font-weight:600}.layout-lab .ledger-label span{font-size:max(16px,.9vw);color:var(--text-secondary)}
+  .layout-lab .ledger-icon{justify-self:end;font-size:2.4vw;color:var(--text-helper)}
+  .layout-lab .tech-spec{flex:1;min-height:0;display:grid;grid-template-columns:4fr 8fr;gap:3vw;margin-top:2.4vh}
+  .layout-lab .spec-title-col{display:flex;flex-direction:column;justify-content:space-between;padding-right:2vw;border-right:1px solid var(--border-subtle)}
+  .layout-lab .spec-title-col h3{font-size:min(4.5vw,7.8vh);line-height:.96;letter-spacing:-.05em;font-weight:var(--weight-display)}
+  .layout-lab .spec-title-col p{font-size:max(16px,.95vw);line-height:1.45;color:var(--text-secondary);max-width:24ch}
+  .layout-lab .spec-main{display:grid;grid-template-rows:auto 1fr auto;gap:2vh;min-width:0}
+  .layout-lab .spec-kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2vw}
+  .layout-lab .spec-kpi{border-top:1px solid var(--ink);padding-top:1vh}.layout-lab .spec-kpi .kpi-num{font-size:min(4.2vw,7.2vh);line-height:.9;letter-spacing:-.05em;font-weight:var(--weight-emphasis)}.layout-lab .spec-kpi .kpi-label{font-size:max(16px,.9vw);color:var(--text-secondary);margin-top:.8vh}
+  .layout-lab .spec-bars{display:flex;align-items:end;justify-content:space-between;gap:1vw;min-height:22vh;border-bottom:1px solid var(--ink);padding:0 .5vw}
+  .layout-lab .bar-vert{width:1.2vw;background:var(--ink);transform-origin:bottom;border-radius:var(--radius-sm) var(--radius-sm) 0 0}.layout-lab .bar-vert.critical{background:var(--brand-red)}
+  .layout-lab .spec-foot{display:flex;justify-content:space-between;gap:2vw;font-size:max(16px,.86vw);color:var(--text-secondary)}
+  .layout-lab .lab-synthetic{color:var(--brand-red)}
 
   /* 对仗对比双栏 (章节 P9) */
   .duo-compare{
@@ -1457,7 +1512,6 @@
   .xreal-logo{display:block;width:max(72px,7.2vw);height:auto;flex:0 0 auto}
   .xreal-product-mark{display:block;width:min(34vw,560px);max-height:9vh;height:auto;object-fit:contain;object-position:left center}
   .xreal-product-mark.mark-inverse{filter:invert(1)}
-  .slide[data-layout="S12"] .ink-banner-full .xreal-product-mark{width:min(23vw,320px);max-height:4.6vh}
   .chrome-min .brand{display:flex;align-items:center;gap:1.2vw;min-width:0;line-height:1}
   .chrome-min .brand .xreal-logo{width:var(--chrome-feature-logo-width)}
   .chrome-min .brand > span{
@@ -1485,7 +1539,7 @@
 </style>
 <!-- XREAL_ECHARTS_BUNDLE · 运行 scripts/inline-echarts.mjs 后替换为离线 ECharts 包 -->
 </head>
-<body class="canvas-mode">
+<body class="canvas-mode" data-product-line="one-pro">
 <script>
   // Windows 平台标记 — 保留平台类供其他兼容逻辑使用
   if(/Win/i.test(navigator.platform || navigator.userAgentData?.platform || '')){
@@ -1524,6 +1578,379 @@
      - data-animate="..." 必须命中下方 RECIPES 字典里的已有 recipe 名之一；正式 S23/S24 分别使用 chart-rise / line-draw
      - 主题色固定为本文件 :root 中的 XREAL 黑白灰体系 -->
 
+<section class="slide accent" data-layout="XREAL-COVER-BLACK" data-animate="hero" data-media-match="none">
+  <div class="canvas-card">
+    <div class="chrome-min">
+      <div class="l brand"><img class="xreal-logo" src="assets/brand/xreal-logo-black.svg" onerror="this.onerror=null;this.src='brand/xreal-logo-black.svg'" alt="XREAL"></div>
+      <div class="r">Wear Every World</div>
+    </div>
+    <div style="flex:1;padding:0;display:grid;grid-template-rows:auto 1fr auto;gap:2.6vh">
+      <div data-anim="kicker" class="t-meta" style="color:rgba(255,255,255,.78)">XREAL One Pro · Product brief</div>
+      <h1 data-anim="title" class="xreal-cover-title" style="align-self:center;color:#fff">Wear Every World<br><span>戴上，即是万界</span></h1>
+      <div data-anim="bottom" style="display:grid;grid-template-rows:auto auto;gap:1.6vh">
+        <div data-anim="lead" class="lead" style="max-width:52ch;color:rgba(255,255,255,.86)">突破现实与虚拟的边界，把巨幕、空间与声音，收进一副日常眼镜。</div>
+        <div class="t-meta" style="color:rgba(255,255,255,.6)">Spatial computing · AR eyewear · Stay X. Stay real.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide hero grey section-hero" data-layout="S01" data-variant="section-hero" data-animate="section-hero">
+  <div class="canvas-card">
+    <header class="chrome-min">
+      <div class="l brand"><img class="xreal-logo" src="assets/brand/xreal-logo-black.svg" alt="XREAL"><span>One Pro · Introduction</span></div>
+      <div class="r">A new spatial baseline</div>
+    </header>
+    <div class="section-hero-body">
+      <div class="section-hero-kicker">产品主张</div>
+      <h1 data-anim="section-title" class="xreal-section-title">现实与虚拟之间，只差一副眼镜</h1>
+      <p data-anim="section-summary" class="section-hero-summary">XREAL One Pro 用行业首创的 X Prism 光学方案与专属 X1 Chip，把视野、延迟和空间显示重新拉回硬件本身。</p>
+    </div>
+    <div data-anim="section-foot" class="section-hero-foot">
+      <span class="t-meta">From cinema to spatial work</span>
+      <span class="t-meta">Optics · Compute · Sound</span>
+    </div>
+  </div>
+</section>
+
+<section class="slide light" data-layout="S22" data-animate="image-hero">
+  <div class="canvas-card" style="padding:0;display:flex;flex-direction:column;overflow:hidden">
+    <div data-anim="img" style="position:relative;flex:0 0 58%;overflow:hidden;background:var(--ink)">
+      <img data-image-slot="s22-hero-21x9" src="images/03-xprism-hero.jpg" alt="XREAL One Pro 光机与镜片结构特写" loading="eager" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 35%">
+      <div class="chrome-min" style="position:absolute;top:0;left:0;right:0;color:rgba(255,255,255,.9);padding:5.6vh 5vw 0">
+        <div class="l brand"><img class="xreal-logo logo-inverse" src="assets/brand/xreal-logo-black.svg" alt="XREAL"><span>One Pro · X Prism</span></div>
+        <div class="r">Optical breakthrough</div>
+      </div>
+      <div data-anim="title-block" style="position:absolute;left:5vw;top:10.5vh;max-width:43vw;color:var(--paper)">
+        <div class="xreal-page-title">57° FoV，把巨幕拉近到 4 米</div>
+      </div>
+    </div>
+    <div data-anim="kpi" class="image-hero-body">
+      <div style="max-width:48ch;font-family:var(--sans),var(--sans-zh);font-size:max(18px,1.3vw);line-height:1.55;font-weight:400;color:var(--text-primary);letter-spacing:-.005em">X Prism 让视野更宽、画面更纯净：等效 171 英寸巨幕，搭配 Sony 0.55 英寸 <span aria-label="Micro-OLED">Micro 显示屏</span> 与 120Hz 刷新。</div>
+      <div class="image-hero-stats" style="gap:3vw">
+        <div style="display:flex;flex-direction:column;gap:.6vh"><div style="height:1px;background:var(--ink)"></div><div class="t-meta">Field of view</div><div class="kpi-hero" style="font-size:min(7.2vw,12.6vh);line-height:.88">57<sup class="unit-degree">°</sup></div><p class="body-sm">视场角，覆盖更大的空间画面</p></div>
+        <div style="display:flex;flex-direction:column;gap:.6vh"><div style="height:1px;background:var(--ink)"></div><div class="t-meta">Equivalent screen</div><div class="kpi-hero" style="font-size:min(7.2vw,12.6vh);line-height:.88">171<span class="unit">in</span></div><p class="body-sm">4 米处的无界巨幕</p></div>
+        <div style="display:flex;flex-direction:column;gap:.6vh"><div style="height:1px;background:var(--ink)"></div><div class="t-meta">Refresh rate</div><div class="kpi-hero" style="font-size:min(7.2vw,12.6vh);line-height:.88">120<span class="unit">Hz</span></div><p class="body-sm">高刷新、无频闪的显示体验</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide light" data-layout="S04" data-animate="grid-reveal">
+  <div class="canvas-card">
+    <header class="chrome-min">
+      <div class="l brand"><img class="xreal-logo" src="assets/brand/xreal-logo-black.svg" alt="XREAL"><span>One Pro · Optics</span></div>
+      <div class="r">X Prism</div>
+    </header>
+    <div data-anim="head" style="display:flex;flex-direction:column;gap:1.2vh">
+      <div class="t-cat">六个细节，共同定义纯净视觉</div>
+      <h2 class="xreal-page-title">不是更亮，而是更接近真实</h2>
+    </div>
+    <div data-anim="grid" class="sub-grid-3-2">
+      <article class="sub-card ink"><span class="material-symbols-outlined">visibility</span><span class="nb-corner">01</span><h4 class="ttl">57° FoV</h4><p class="desc">把边界向外推，视野更接近自然注视。</p></article>
+      <article class="sub-card"><span class="material-symbols-outlined">view_in_ar</span><span class="nb-corner">02</span><h4 class="ttl">171 英寸巨幕</h4><p class="desc">等效 4 米处的大屏体验。</p></article>
+      <article class="sub-card"><span class="material-symbols-outlined">flare</span><span class="nb-corner">03</span><h4 class="ttl">消除杂散光</h4><p class="desc">减少 Stray light，还原干净画面。</p></article>
+      <article class="sub-card"><span class="material-symbols-outlined">filter_center_focus</span><span class="nb-corner">04</span><h4 class="ttl">告别镜面反射</h4><p class="desc">控制 Reflections，让细节更稳定。</p></article>
+      <article class="sub-card has-media"><span class="material-symbols-outlined">hdr_on</span><span class="nb-corner">05</span><h4 class="ttl">0.55 英寸 Micro 显示屏</h4><img class="card-media-slot" data-image-slot="s04-card-media" data-media-role="technical-evidence" data-media-fit="inset-prominent" data-media-contrast="none" src="images/05-x1-optical-stack.png" alt="XREAL One Pro 光机与镜片结构爆炸图"><p class="desc">Sony 最新一代 <span aria-label="Micro-OLED">Micro display</span> 方案。</p></article>
+      <article class="sub-card"><span class="material-symbols-outlined">palette</span><span class="nb-corner">06</span><h4 class="ttl">ΔE &lt; 3 · 120Hz</h4><p class="desc">专业级精准色彩与高刷新。</p></article>
+    </div>
+  </div>
+</section>
+
+<section class="slide light" data-layout="S05" data-animate="stack-build">
+  <div class="canvas-card">
+    <header class="chrome-min">
+      <div class="l brand"><img class="xreal-logo" src="assets/brand/xreal-logo-black.svg" alt="XREAL"><span>One Pro · Compute</span></div>
+      <div class="r">X1 Chip</div>
+    </header>
+    <div data-anim="head" style="display:flex;flex-direction:column;gap:1.2vh">
+      <div class="t-cat">专属空间计算芯片</div>
+      <h2 class="xreal-page-title">把空间显示，变成硬件级能力</h2>
+    </div>
+    <div data-anim="stack" class="stack-row">
+      <article class="stack-block b-grey"><span class="layer-nb">01 · Data path</span><span class="material-symbols-outlined layer-icon" style="font-size:2.6vw">account_tree</span><h3 class="layer-ttl">精简数据通路</h3><p class="layer-desc">3 节点、2 传输链路，让画面更快抵达眼前。</p><span class="layer-tag">相比传统软件方案更低延迟</span></article>
+      <article class="stack-block b-accent has-media media-full-bleed"><span class="layer-nb">02 · Spatial compute</span><span class="material-symbols-outlined layer-icon" style="font-size:2.6vw">memory</span><img class="stack-card-media" data-image-slot="s05-layer-media" data-media-role="technical-evidence" data-media-fit="full-bleed" data-media-contrast="darken" src="images/05-x1-chip.png" alt="XREAL X1 空间计算芯片悬浮结构"><h3 class="layer-ttl">3ms 延迟</h3><p class="layer-desc">空间计算芯片把响应压到硬件级，减少晕动感。</p><span class="layer-tag">Hardware-level response</span></article>
+      <article class="stack-block b-ink"><span class="layer-nb">03 · Motion output</span><span class="material-symbols-outlined layer-icon" style="font-size:2.6vw">speed</span><h3 class="layer-ttl">最高 120 fps</h3><p class="layer-desc">动态插帧与平行图像校正，保持画面流畅。</p><span class="layer-tag">Fluid by design</span></article>
+    </div>
+  </div>
+</section>
+
+<section class="slide light" data-layout="S08" data-animate="duo-mirror">
+  <div class="canvas-card">
+    <header class="chrome-min">
+      <div class="l brand"><img class="xreal-logo" src="assets/brand/xreal-logo-black.svg" alt="XREAL"><span>One Pro · Spatial modes</span></div>
+      <div class="r">Native display</div>
+    </header>
+    <div data-anim="head" style="display:flex;flex-direction:column;gap:1.2vh">
+      <div class="t-cat">原生双模式</div>
+      <h2 class="xreal-page-title">一副眼镜，覆盖移动与锚定</h2>
+    </div>
+    <div data-anim="compare" class="duo-compare">
+      <div class="col">
+        <div class="col-tag"><span class="num">01</span> Follow mode</div>
+        <h3 class="col-ttl">0 DoF<br>跟随模式</h3>
+        <p class="col-desc">画面随视角柔和对齐，专为移动出行设计。</p>
+        <ul class="col-list"><li>减少晕动感</li><li>适合旅途中观影</li><li>视线移动时保持自然</li></ul>
+      </div>
+      <div class="vrule"></div>
+      <div class="col accent">
+        <div class="col-tag"><span class="num">02</span> Anchor mode</div>
+        <h3 class="col-ttl">3 DoF + 6 DoF<br>锚定模式</h3>
+        <p class="col-desc">把画面稳定固定在空间位置，像一台悬浮的大电视。</p>
+        <ul class="col-list"><li>适合工作与游戏</li><li>空间多屏更稳定</li><li>Native spatial anchor</li></ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide light" data-layout="S19" data-animate="four-cards">
+  <div class="canvas-card">
+    <header class="chrome-min">
+      <div class="l brand"><img class="xreal-logo" src="assets/brand/xreal-logo-black.svg" alt="XREAL"><span>One Pro · Human design</span></div>
+      <div class="r">Comfort, tuned</div>
+    </header>
+    <div data-anim="head" style="display:flex;flex-direction:column;gap:1.2vh">
+      <div class="t-cat">舒适与人性化设计</div>
+      <h2 class="xreal-page-title">科技感不该以牺牲日常为代价</h2>
+    </div>
+    <div data-anim="cards" class="xreal-bento" style="margin-top:3vh">
+      <article class="hero has-media"><img class="bento-hero-media" data-image-slot="s19-bento-hero-media" data-media-role="context-evidence" data-media-fit="full-bleed" data-media-contrast="darken" src="images/07-comfort-lifestyle.png" alt="女性在明亮客厅佩戴 XREAL One Pro 观看视频"><span class="eyebrow">瞳距覆盖</span><h3>从边缘清晰，到久戴无感</h3><p>双瞳距规格覆盖更广泛的人群，让画面不再轻易截断。</p></article>
+      <article class="metric"><span class="eyebrow">瞳距范围</span><div class="metric-value">57–75<span style="font-size:.34em;margin-left:.12em">mm</span></div><p>两段规格，覆盖 95% 以上用户</p></article>
+      <article class="signal"><span class="eyebrow">Tint control</span><div class="metric-value">3<span style="font-size:.34em;margin-left:.12em">档</span></div><p>Theater · Shade · Clear</p></article>
+      <article class="wide"><span class="eyebrow">Personal fit</span><h3 style="font-size:min(3vw,5.2vh)">定制近视镜片服务</h3><p>联合全球光学大厂提供专业配镜，保障长久佩戴的视觉健康。</p></article>
+    </div>
+  </div>
+</section>
+
+<section class="slide light" data-layout="S16" data-animate="field-notes">
+  <div class="canvas-card">
+    <header class="chrome-min">
+      <div class="l brand"><img class="xreal-logo" src="assets/brand/xreal-logo-black.svg" alt="XREAL"><span>One Pro · Compatibility</span></div>
+      <div class="r">Plug in. Go anywhere.</div>
+    </header>
+    <div data-anim="head" style="display:flex;flex-direction:column;gap:1.2vh">
+      <div class="t-cat">广泛兼容，即插即用</div>
+      <h2 class="xreal-page-title">USB-C 连接你的日常设备</h2>
+    </div>
+    <div data-anim="cards" class="brief-grid">
+      <article class="brief-card"><span class="t-h-prod">iPhone / iPad</span><span class="t-helper">移动端随身巨幕</span></article>
+      <article class="brief-card"><span class="t-h-prod">Android 手机</span><span class="t-helper">USB-C 即插即用</span></article>
+      <article class="brief-card"><span class="t-h-prod">Mac / Windows PC</span><span class="t-helper">工作空间多屏</span></article>
+      <article class="brief-card"><span class="t-h-prod">Steam Deck / 掌机 PC</span><span class="t-helper">掌机沉浸式游戏</span></article>
+      <article class="brief-card"><span class="t-h-prod">PS5 / Xbox</span><span class="t-helper">客厅里的个人影院</span></article>
+      <article class="brief-card"><span class="t-h-prod">无人机遥控器</span><span class="t-helper">基于 DP 输出的现场视野</span></article>
+    </div>
+    <div style="display:flex;justify-content:space-between;gap:2vw;margin-top:2vh;padding-top:1.2vh;border-top:1px solid var(--border-subtle)"><span class="t-helper">屏显菜单 · 画面大小 / 距离 / 亮度 / 显示模式</span><span class="t-helper">X1 Chip powered</span></div>
+  </div>
+</section>
+
+<section class="slide light" data-layout="S21" data-animate="tech-spec">
+  <div class="canvas-card">
+    <header class="chrome-min">
+      <div class="l brand"><img class="xreal-logo" src="assets/brand/xreal-logo-black.svg" alt="XREAL"><span>One Pro · Table test</span></div>
+      <div class="r">Style validation</div>
+    </header>
+    <div data-anim="head" style="display:flex;flex-direction:column;gap:1.2vh">
+      <div class="t-cat" style="color:var(--brand-red)">虚构测试数据 · 仅用于表格样式验证</div>
+      <h2 class="xreal-page-title">三档电致变色，如何进入日常场景</h2>
+    </div>
+    <div data-anim="table" style="display:flex;flex-direction:column;gap:1.8vh;margin-top:3.2vh;min-height:0">
+      <p class="t-body" style="max-width:68ch">以下数据为虚构示例，用于测试表格的表头、分隔线、数值对齐与重点标记，不代表 XREAL One Pro 的真实测量结果。</p>
+      <table aria-label="虚构电致变色模式测试数据" style="width:100%;border-collapse:collapse;table-layout:fixed;font-family:var(--deck-font);font-size:16px;font-feature-settings:'tnum';color:var(--text-primary)">
+        <thead><tr style="border-top:2px solid var(--ink);border-bottom:1px solid var(--border-strong)">
+          <th style="width:16%;padding:12px 10px;text-align:left;font-size:14px;font-weight:500;color:var(--text-helper)">模式</th>
+          <th style="width:24%;padding:12px 10px;text-align:left;font-size:14px;font-weight:500;color:var(--text-helper)">推荐场景</th>
+          <th style="width:20%;padding:12px 10px;text-align:left;font-size:14px;font-weight:500;color:var(--text-helper)">环境光平衡</th>
+          <th style="width:20%;padding:12px 10px;text-align:right;font-size:14px;font-weight:500;color:var(--text-helper)">虚构舒适指数</th>
+          <th style="width:20%;padding:12px 10px;text-align:right;font-size:14px;font-weight:500;color:var(--text-helper)">建议连续时长</th>
+        </tr></thead>
+        <tbody>
+          <tr style="border-bottom:1px solid var(--border-subtle)"><td style="padding:16px 10px;font-weight:600">Theater</td><td style="padding:16px 10px">长途观影</td><td style="padding:16px 10px">沉浸优先</td><td style="padding:16px 10px;text-align:right;font-weight:600;color:var(--brand-red)">4.8 · 5</td><td style="padding:16px 10px;text-align:right">2.5 h</td></tr>
+          <tr style="border-bottom:1px solid var(--border-subtle)"><td style="padding:16px 10px;font-weight:600">Shade</td><td style="padding:16px 10px">通勤与工作</td><td style="padding:16px 10px">平衡优先</td><td style="padding:16px 10px;text-align:right;font-weight:600">4.5 · 5</td><td style="padding:16px 10px;text-align:right">3.0 h</td></tr>
+          <tr style="border-bottom:1px solid var(--border-subtle)"><td style="padding:16px 10px;font-weight:600">Clear</td><td style="padding:16px 10px">沟通与移动</td><td style="padding:16px 10px">现实优先</td><td style="padding:16px 10px;text-align:right;font-weight:600">4.7 · 5</td><td style="padding:16px 10px;text-align:right">4.0 h</td></tr>
+        </tbody>
+      </table>
+      <div style="display:flex;justify-content:space-between;gap:2vw;border-top:1px solid var(--border-subtle);padding-top:1.2vh"><span class="t-helper">Test fixture · fictional values</span><span class="t-helper">Table style check · no product claim</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="slide light layout-lab" data-layout="S02" data-animate="progression">
+  <div class="canvas-card">
+    <header class="chrome-min"><div class="l brand"><img class="xreal-logo" src="assets/brand/xreal-logo-black.svg" alt="XREAL"><span>One Pro · Evolution test</span></div><div class="r">Vertical timeline</div></header>
+    <div data-anim="line" class="lab-head"><div class="t-cat lab-synthetic">虚构测试数据 · 纵向时间轴</div><h2 class="xreal-page-title">从延迟到沉浸，硬件能力逐步下沉</h2></div>
+    <div style="flex:1;display:flex;flex-direction:column;justify-content:space-between;min-height:0">
+      <div class="timeline-v" data-anim="timeline">
+        <div class="tl-head" aria-hidden="true"><span></span><span>时间</span><span>端到端延迟</span><span>阶段与体验影响</span></div>
+        <div class="tl-node"><div class="tl-axis"><span class="dot"></span></div><span class="yr">2022</span><span class="multi">20<span class="unit">ms</span></span><div class="tl-copy"><strong class="tl-stage">软件链路基线</strong><span class="tl-impact">响应主要受传统软件处理链路限制。</span></div></div>
+        <div class="tl-node"><div class="tl-axis"><span class="dot"></span></div><span class="yr">2024</span><span class="multi">8<span class="unit">ms</span></span><div class="tl-copy"><strong class="tl-stage">链路压缩阶段</strong><span class="tl-impact">减少中间传输与处理环节，延迟明显收敛。</span></div></div>
+        <div class="tl-node accent"><div class="tl-axis"><span class="dot"></span></div><span class="yr">2026</span><span class="multi">3<span class="unit">ms</span></span><div class="tl-copy"><strong class="tl-stage">硬件级空间计算</strong><span class="tl-impact">X1 Chip 直接处理空间响应，降低画面拖曳感。</span></div></div>
+      </div>
+      <div class="kpi-row-4" data-anim="kpis">
+        <div class="kpi-cell"><div class="lbl">测试视场</div><div class="nb">57<span class="unit">°</span></div><div class="note">虚构场景 A</div></div>
+        <div class="kpi-cell"><div class="lbl">测试刷新</div><div class="nb">120<span class="unit">Hz</span></div><div class="note">虚构场景 B</div></div>
+        <div class="kpi-cell"><div class="lbl">测试模式</div><div class="nb">3</div><div class="note">档位占位</div></div>
+        <div class="kpi-cell"><div class="lbl">测试覆盖</div><div class="nb">95<span class="unit">%</span></div><div class="note">样本占位</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="slide light layout-lab" data-layout="S06" data-animate="measure-up">
+  <div class="canvas-card">
+    <header class="chrome-min"><div class="l brand"><img class="xreal-logo" src="assets/brand/xreal-logo-black.svg" alt="XREAL"><span>One Pro · Capacity test</span></div><div class="r">KPI tower</div></header>
+    <div data-anim="line" class="lab-head"><div class="t-cat lab-synthetic">虚构测试数据 · 不等高 KPI</div><h2 class="xreal-page-title">四个数字，模拟空间体验的层级差异</h2></div>
+    <div class="bar-towers" data-anim="towers">
+      <div class="bar-tower"><div class="cap"><span class="material-symbols-outlined">visibility</span></div><div class="body-block h-1"><span class="lbl">清晰度</span><span class="nb">82</span><span class="sub">虚构指数</span></div></div>
+      <div class="bar-tower"><div class="cap"><span class="material-symbols-outlined">speed</span></div><div class="body-block h-2"><span class="lbl">响应</span><span class="nb">91</span><span class="sub">虚构指数</span></div></div>
+      <div class="bar-tower"><div class="cap"><span class="material-symbols-outlined">view_in_ar</span></div><div class="body-block h-3 b-accent"><span class="lbl">空间感</span><span class="nb">96</span><span class="sub">虚构指数</span></div></div>
+      <div class="bar-tower"><div class="cap"><span class="material-symbols-outlined">headphones</span></div><div class="body-block h-4"><span class="lbl">沉浸度</span><span class="nb">88</span><span class="sub">虚构指数</span></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="slide light layout-lab" data-layout="S07" data-animate="bar-grow">
+  <div class="canvas-card">
+    <header class="chrome-min"><div class="l brand"><img class="xreal-logo" src="assets/brand/xreal-logo-black.svg" alt="XREAL"><span>One Pro · Ranking test</span></div><div class="r">Horizontal bar</div></header>
+    <div data-anim="line" class="lab-head"><div class="t-cat lab-synthetic">虚构测试数据 · 横向排名</div><h2 class="xreal-page-title">用户感知最先被哪一项能力改变</h2></div>
+    <div data-anim="bars" class="h-bar-chart" style="margin-top:5vh">
+      <span class="row-lbl">视野宽度</span><span class="row-track"><span class="row-fill accent" style="width:92%"></span></span><span class="row-val">92<span class="unit">%</span></span>
+      <span class="row-lbl">空间稳定</span><span class="row-track"><span class="row-fill" style="width:86%"></span></span><span class="row-val">86<span class="unit">%</span></span>
+      <span class="row-lbl">画面纯净</span><span class="row-track"><span class="row-fill grey" style="width:78%"></span></span><span class="row-val">78<span class="unit">%</span></span>
+      <span class="row-lbl">佩戴舒适</span><span class="row-track"><span class="row-fill" style="width:74%"></span></span><span class="row-val">74<span class="unit">%</span></span>
+      <span class="row-lbl">声音细节</span><span class="row-track"><span class="row-fill grey" style="width:69%"></span></span><span class="row-val">69<span class="unit">%</span></span>
+      <span class="row-lbl">连接便利</span><span class="row-track"><span class="row-fill" style="width:64%"></span></span><span class="row-val">64<span class="unit">%</span></span>
+    </div>
+    <div class="lab-note" style="margin-top:auto;border-top:1px solid var(--border-subtle);padding-top:1.2vh">Fixture note · 以上分值为虚构用户调研示例，仅用于横向条形图样式。</div>
+  </div>
+</section>
+
+<section class="slide split layout-lab" data-layout="S10" data-animate="split-statement">
+  <div class="canvas-card"><div class="split-half">
+    <div class="half b-accent" data-anim="left" style="padding:5.6vh 3.6vw 4.4vh;position:relative;overflow:hidden">
+      <div class="chrome-min tight"><div class="l brand"><img class="xreal-logo" src="assets/brand/xreal-logo-black.svg" alt="XREAL"><span>One Pro · Closing test</span></div><div class="r">Split closing</div></div>
+      <div style="margin-top:auto"><div class="t-meta" style="color:rgba(255,255,255,.68)">虚构结论</div><div class="kpi-thin" style="color:#fff">1<span class="unit">screen</span></div><h2 style="font-size:min(3.4vw,6vh);line-height:1.04;font-weight:var(--weight-title);margin-top:2vh;color:#fff">把现实留在眼前，把空间放在眼前。</h2></div>
+    </div>
+    <div class="half r-border" data-anim="right" style="padding:5.6vh 3.6vw 4.4vh;background:var(--paper)">
+      <div class="chrome-min tight"><div class="l brand"><img class="xreal-logo" src="assets/brand/xreal-logo-black.svg" alt="XREAL"><span>Test takeaway</span></div></div>
+      <div style="margin-top:auto;margin-bottom:auto"><div class="t-cat">版式测试说明</div><h2 style="font-size:min(3.1vw,5.4vh);line-height:1.05;font-weight:var(--weight-title);margin:1.5vh 0 3vh">Split Closing</h2><ul class="takeaway-list" style="list-style:none;padding:0;margin:0;display:grid;gap:1.5vh"><li style="font-size:max(18px,1.1vw);line-height:1.4;padding-left:1.2em;position:relative"><span style="position:absolute;left:0;top:.62em;width:6px;height:6px;border-radius:50%;background:var(--ink)"></span>左侧承载一句结论与一个测试数字</li><li style="font-size:max(18px,1.1vw);line-height:1.4;padding-left:1.2em;position:relative"><span style="position:absolute;left:0;top:.62em;width:6px;height:6px;border-radius:50%;background:var(--ink)"></span>右侧补充三条收束信息</li><li style="font-size:max(18px,1.1vw);line-height:1.4;padding-left:1.2em;position:relative"><span style="position:absolute;left:0;top:.62em;width:6px;height:6px;border-radius:50%;background:var(--brand-red)"></span>红色只标记关键测试语义</li></ul></div>
+    </div>
+  </div></div>
+</section>
+
+<section class="slide light layout-lab" data-layout="S11" data-animate="timeline-walk">
+  <div class="canvas-card">
+    <header class="chrome-min"><div class="l brand"><img class="xreal-logo" src="assets/brand/xreal-logo-black.svg" alt="XREAL"><span>One Pro · Signal path</span></div><div class="r">Horizontal timeline</div></header>
+    <div data-anim="line" class="lab-head"><div class="t-cat">从连接到显示</div><h2 class="xreal-page-title">一条链路，如何变成空间画面</h2></div>
+    <div class="timeline-h" data-anim="timeline"><div class="tl-row">
+      <div class="th-node up"><span class="dot"></span><div class="label"><span class="yr">01</span><span class="name">输入</span><span class="desc">设备送入信号</span></div></div>
+      <div class="th-node down"><span class="dot"></span><div class="label"><span class="yr">02</span><span class="name">解码</span><span class="desc">识别画面节奏</span></div></div>
+      <div class="th-node up"><span class="dot"></span><div class="label"><span class="yr">03</span><span class="name">计算</span><span class="desc">空间芯片处理</span></div></div>
+      <div class="th-node down"><span class="dot"></span><div class="label"><span class="yr">04</span><span class="name">校正</span><span class="desc">同步左右画面</span></div></div>
+      <div class="th-node up accent"><span class="dot"></span><div class="label"><span class="yr">05</span><span class="name">输出</span><span class="desc">稳定显示到眼前</span></div></div>
+    </div></div>
+    <div class="lab-note" style="border-top:1px solid var(--border-subtle);padding-top:1.2vh">Flow fixture · 五步只用于测试横向时间线的节点密度与上下标签。</div>
+  </div>
+</section>
+
+<section class="slide accent layout-lab" data-layout="S12" data-animate="manifesto">
+  <div class="canvas-card">
+    <header class="chrome-min" data-anim="line"><div class="l brand"><img class="xreal-logo" src="assets/brand/xreal-logo-black.svg" alt="XREAL"></div><div class="r">Manifesto test</div></header>
+    <div class="manifesto-top" data-anim="line"><div></div><div><div class="t-cat" style="color:rgba(255,255,255,.62)">虚构测试宣言</div><div class="manifesto-title">Wear the world.<br>Keep the moment.</div><p class="manifesto-copy" style="margin-top:3vh">把巨幕、工作和游戏带入空间，但不把现实从视野里拿走。</p></div></div>
+    <div class="ink-banner-full" data-anim="up"><img class="xreal-product-mark mark-inverse" data-image-slot="product-mark" data-media-role="product-identity" src="images/15-one-pro-mark.svg" alt="XREAL One Pro"><div class="banner-grid"><span>57° 视野</span><span>3ms 响应</span><span>3 档透光</span></div></div>
+  </div>
+</section>
+
+<section class="slide light layout-lab" data-layout="S13" data-animate="three-forces">
+  <div class="canvas-card">
+    <header class="chrome-min"><div class="l brand"><img class="xreal-logo" src="assets/brand/xreal-logo-black.svg" alt="XREAL"><span>One Pro · Three forces</span></div><div class="r">Concept test</div></header>
+    <div data-anim="line" class="lab-head"><div class="t-cat">三个平行支点</div><h2 class="xreal-page-title">空间体验由三种力量共同托起</h2></div>
+    <div class="three-forces" data-anim="up"><div class="hero-ink-col"><span class="t-cat" style="color:rgba(255,255,255,.62)">虚构结构测试</span><h3>Small frame.<br>Big world.</h3><span class="lab-note" style="color:rgba(255,255,255,.62)">Three forces / one wearable</span></div><div class="force-stack"><article class="force-card card-fill"><div class="force-num">01</div><div><h3>看得更宽</h3><p>用 X Prism 把画面边界向外推。</p></div></article><article class="force-card card-fill"><div class="force-num">02</div><div><h3>跟得更稳</h3><p>让跟随和锚定适配不同移动场景。</p></div></article><article class="force-card card-fill"><div class="force-num">03</div><div><h3>听得更近</h3><p>用专业声学联合调校补齐空间感受。</p></div></article></div></div>
+  </div>
+</section>
+
+<section class="slide light layout-lab" data-layout="S14" data-animate="loop-form">
+  <div class="canvas-card">
+    <header class="chrome-min"><div class="l brand"><img class="xreal-logo" src="assets/brand/xreal-logo-black.svg" alt="XREAL"><span>One Pro · Spatial loop</span></div><div class="r">Loop form</div></header>
+    <div data-anim="line" class="lab-head"><div class="t-cat">闭环流程测试</div><h2 class="xreal-page-title">从现实输入，到空间反馈</h2></div>
+    <div class="loop-diagram" data-anim="up"><div class="loop-steps"><div class="loop-step"><span class="step-num">01</span><div><h3>感知</h3><p>接收环境与设备信号。</p></div></div><div class="loop-step"><span class="step-num">02</span><div><h3>计算</h3><p>判断画面应当跟随还是锚定。</p></div></div><div class="loop-step"><span class="step-num">03</span><div><h3>呈现</h3><p>输出稳定、低延迟的空间画面。</p></div></div><div class="loop-step"><span class="step-num">04</span><div><h3>反馈</h3><p>下一次注视继续修正体验。</p></div></div></div><div class="loop-visual"><svg class="loop-svg" data-svg-role="flow" viewBox="0 0 300 300" role="img" aria-label="空间体验闭环几何图"><defs><marker id="loop-arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 Z" fill="var(--brand-red)"></path></marker></defs><circle class="loop-ring" cx="150" cy="150" r="92"></circle><path class="loop-arrow" d="M150 58 A92 92 0 0 1 242 150" marker-end="url(#loop-arrow)"></path><path class="loop-arrow" d="M242 150 A92 92 0 0 1 150 242" marker-end="url(#loop-arrow)"></path><path class="loop-arrow" d="M150 242 A92 92 0 0 1 58 150" marker-end="url(#loop-arrow)"></path><path class="loop-arrow" d="M58 150 A92 92 0 0 1 150 58" marker-end="url(#loop-arrow)"></path><circle class="loop-dot" cx="150" cy="58" r="8"></circle><circle class="loop-dot" cx="242" cy="150" r="8"></circle><circle class="loop-dot" cx="150" cy="242" r="8"></circle><circle class="loop-dot" cx="58" cy="150" r="8"></circle></svg><span class="loop-label a">感知</span><span class="loop-label b">计算</span><span class="loop-label c">呈现</span><span class="loop-label d">反馈</span></div></div>
+  </div>
+</section>
+
+<section class="slide light layout-lab" data-layout="S15" data-animate="matrix-fill">
+  <div class="canvas-card">
+    <header class="chrome-min"><div class="l brand"><img class="xreal-logo" src="assets/brand/xreal-logo-black.svg" alt="XREAL"><span>One Pro · Feature matrix</span></div><div class="r">Matrix test</div></header>
+    <div data-anim="line" class="lab-head"><div class="t-cat lab-synthetic">虚构测试数据 · 矩阵版式</div><h2 class="xreal-page-title">一副眼镜，覆盖十二种测试场景</h2></div>
+    <div class="matrix-fill" data-anim="up"><div class="matrix-cell"><span class="matrix-nb">01</span><span class="matrix-name">通勤</span></div><div class="matrix-cell"><span class="matrix-nb">02</span><span class="matrix-name">候机</span></div><div class="matrix-cell"><span class="matrix-nb">03</span><span class="matrix-name">观影</span></div><div class="matrix-cell"><span class="matrix-nb">04</span><span class="matrix-name">游戏</span></div><div class="matrix-cell"><span class="matrix-nb">05</span><span class="matrix-name">多屏办公</span></div><div class="matrix-cell"><span class="matrix-nb">06</span><span class="matrix-name">远程会议</span></div><div class="matrix-cell"><span class="matrix-nb">07</span><span class="matrix-name">阅读</span></div><div class="matrix-cell"><span class="matrix-nb">08</span><span class="matrix-name">导航</span></div><div class="matrix-cell"><span class="matrix-nb">09</span><span class="matrix-name">无人机</span></div><div class="matrix-cell"><span class="matrix-nb">10</span><span class="matrix-name">掌机</span></div><div class="matrix-cell"><span class="matrix-nb">11</span><span class="matrix-name">客厅影院</span></div><div class="matrix-cell"><span class="matrix-nb">12</span><span class="matrix-name">移动展演</span></div></div>
+    <div class="hero-stat-bottom" data-anim="up"><div><div class="stat">12</div><div class="stat-label">虚构场景样本 · 仅用于矩阵密度与底部大数字测试</div></div><span class="t-meta">Fixture / matrix + hero stat</span></div>
+  </div>
+</section>
+
+<section class="slide grey layout-lab" data-layout="S17" data-animate="system-diagram">
+  <div class="canvas-card">
+    <header class="chrome-min"><div class="l brand"><img class="xreal-logo" src="assets/brand/xreal-logo-black.svg" alt="XREAL"><span>One Pro · System map</span></div><div class="r">Capability flow</div></header>
+    <div data-anim="line" class="lab-head"><div class="t-cat">系统关系测试</div><h2 class="xreal-page-title">X1 把计算一路交付到日常体验</h2></div>
+    <div class="system-diagram" data-anim="up"><div class="system-copy"><div class="system-kicker">Capability chain</div><h3 class="system-thesis">先处理，再同步，最后进入真实场景。</h3><p class="system-summary">空间信号从芯片出发，经由显示与声音完成编排，最终成为设备中的连续体验。</p></div><div class="system-flow" data-system-grammar="flow" role="img" aria-label="X1 Chip 经由显示与声音把空间能力交付到设备与使用场景"><article class="system-node is-core"><span class="system-level">01 · Process</span><div><strong class="system-title">X1 Chip</strong><p class="system-effect">低延迟计算空间信号。</p></div></article><div class="system-link"><span class="material-symbols-outlined">arrow_downward</span><span>输出稳定的空间信号</span></div><article class="system-node"><span class="system-level">02 · Orchestrate</span><div><strong class="system-title">显示与声音</strong><p class="system-effect">同步画面、声场与设备连接。</p></div></article><div class="system-link"><span class="material-symbols-outlined">arrow_downward</span><span>转化为可使用的体验能力</span></div><article class="system-node"><span class="system-level">03 · Deliver</span><div><strong class="system-title">设备与场景</strong><p class="system-effect">进入通勤、工作与娱乐。</p></div></article></div></div>
+  </div>
+</section>
+
+<section class="slide light layout-lab" data-layout="S18" data-animate="why-now">
+  <div class="canvas-card">
+    <header class="chrome-min"><div class="l brand"><img class="xreal-logo" src="assets/brand/xreal-logo-black.svg" alt="XREAL"><span>One Pro · Why now</span></div><div class="r">Progression test</div></header>
+    <div data-anim="line" class="lab-head"><div class="t-cat lab-synthetic">虚构测试数据 · 三列递进</div><h2 class="xreal-page-title">为什么是现在，三个条件刚好对齐</h2></div>
+    <div class="why-now-grid" data-anim="up"><article class="why-col"><div class="why-body"><div class="t-cat">Hardware</div><h3>硬件开始理解空间</h3><p>更宽视野、更低延迟，给出可以被感知的变化。</p></div><div class="why-num-bottom">01</div></article><article class="why-col"><div class="why-body"><div class="t-cat">Content</div><h3>内容开始适应移动</h3><p>巨幕、游戏和多屏工作共享同一套显示入口。</p></div><div class="why-num-bottom">02</div></article><article class="why-col"><div class="why-body"><div class="t-cat">Habit</div><h3>佩戴开始接近日常</h3><p>透光、瞳距和配镜服务降低长期使用门槛。</p></div><div class="why-num-bottom">03</div></article></div>
+  </div>
+</section>
+
+<section class="slide light layout-lab" data-layout="S20" data-animate="stacked-ledger">
+  <div class="canvas-card">
+    <header class="chrome-min"><div class="l brand"><img class="xreal-logo" src="assets/brand/xreal-logo-black.svg" alt="XREAL"><span>One Pro · Ledger test</span></div><div class="r">Stacked KPI ledger</div></header>
+    <div data-anim="line" class="lab-head"><div class="t-cat lab-synthetic">虚构测试数据 · 账单式 KPI</div><h2 class="xreal-page-title">把体验拆成四行可读的测试账单</h2></div>
+    <div class="stacked-ledger" data-anim="ledger"><div class="ledger-row"><div class="ledger-num">57<span class="unit unit-degree">°</span></div><div class="ledger-label"><strong>视场角</strong><span>虚构显示指标 · 更宽的空间入口</span></div><span class="material-symbols-outlined ledger-icon">visibility</span></div><div class="ledger-row"><div class="ledger-num">3<span class="unit">ms</span></div><div class="ledger-label"><strong>响应延迟</strong><span>虚构芯片指标 · 更快的画面反馈</span></div><span class="material-symbols-outlined ledger-icon">speed</span></div><div class="ledger-row"><div class="ledger-num">120<span class="unit">Hz</span></div><div class="ledger-label"><strong>刷新节奏</strong><span>虚构显示指标 · 更顺滑的运动画面</span></div><span class="material-symbols-outlined ledger-icon">autorenew</span></div><div class="ledger-row"><div class="ledger-num">95<span class="unit">%</span></div><div class="ledger-label"><strong>适配覆盖</strong><span>虚构用户样本 · 更少的边缘模糊</span></div><span class="material-symbols-outlined ledger-icon">accessibility_new</span></div></div>
+  </div>
+</section>
+
+<section class="slide light layout-lab" data-layout="S23" data-animate="chart-rise">
+  <div class="canvas-card">
+    <header class="chrome-min"><div class="l brand"><img class="xreal-logo" src="assets/brand/xreal-logo-black.svg" alt="XREAL"><span>One Pro · Data test</span></div><div class="r">Grouped comparison</div></header>
+    <div data-anim="line" class="lab-head"><div class="t-cat lab-synthetic">虚构测试数据 · 分组柱状图</div><h2 class="xreal-page-title">三种模式在不同场景下的虚构舒适指数</h2></div>
+    <div data-anim="chart" class="xreal-data-chart" data-chart-unit="score" aria-label="Theater、Shade、Clear 三种模式在三类场景中的虚构舒适指数比较"><div class="chart-meta-row"><span class="chart-unit">Unit · score / 5</span><div class="chart-legend" aria-label="数据系列"><span class="chart-legend-item"><i class="chart-swatch series-1"></i>Theater</span><span class="chart-legend-item"><i class="chart-swatch series-2"></i>Shade</span><span class="chart-legend-item"><i class="chart-swatch critical"></i>Clear</span></div></div><div class="chart-stage"><div class="chart-y-labels"><span>5.0</span><span>3.8</span><span>2.5</span><span>1.3</span><span>0</span></div><div class="chart-plot"><div class="chart-grid" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><div class="chart-groups" style="--groups:3;--series-count:3"><div class="chart-group"><div data-anim="chart-bar" class="chart-bar series-1" data-value="88" style="--value:88" aria-label="Cinema Theater 4.4"><span class="chart-value">4.4</span></div><div data-anim="chart-bar" class="chart-bar series-2" data-value="76" style="--value:76" aria-label="Cinema Shade 3.8"><span class="chart-value">3.8</span></div><div data-anim="chart-bar" class="chart-bar critical" data-value="62" style="--value:62" aria-label="Cinema Clear 3.1"><span class="chart-value">3.1</span></div></div><div class="chart-group"><div data-anim="chart-bar" class="chart-bar series-1" data-value="70" style="--value:70" aria-label="Commute Theater 3.5"><span class="chart-value">3.5</span></div><div data-anim="chart-bar" class="chart-bar series-2" data-value="90" style="--value:90" aria-label="Commute Shade 4.5"><span class="chart-value">4.5</span></div><div data-anim="chart-bar" class="chart-bar critical" data-value="80" style="--value:80" aria-label="Commute Clear 4.0"><span class="chart-value">4.0</span></div></div><div class="chart-group"><div data-anim="chart-bar" class="chart-bar series-1" data-value="55" style="--value:55" aria-label="Work Theater 2.8"><span class="chart-value">2.8</span></div><div data-anim="chart-bar" class="chart-bar series-2" data-value="84" style="--value:84" aria-label="Work Shade 4.2"><span class="chart-value">4.2</span></div><div data-anim="chart-bar" class="chart-bar critical" data-value="94" style="--value:94" aria-label="Work Clear 4.7"><span class="chart-value">4.7</span></div></div></div></div><div class="chart-x-labels" style="--groups:3"><span>观影</span><span>通勤</span><span>工作</span></div></div><div class="chart-foot"><span class="chart-source">Source · fictional fixture / style validation</span><span class="chart-note">红色系列仅为强调示例</span></div></div>
+  </div>
+</section>
+
+<section class="slide light layout-lab" data-layout="S24" data-animate="line-draw">
+  <div class="canvas-card">
+    <header class="chrome-min"><div class="l brand"><img class="xreal-logo" src="assets/brand/xreal-logo-black.svg" alt="XREAL"><span>One Pro · Trend test</span></div><div class="r">Continuous series</div></header>
+    <div data-anim="line" class="lab-head"><div class="t-cat lab-synthetic">虚构测试数据 · 趋势折线图</div><h2 class="xreal-page-title">低延迟体验在连续测试中逐步稳定</h2></div>
+    <div data-anim="chart" class="xreal-line-chart" data-chart-unit="index" aria-label="空间显示稳定性与传统方案基线的虚构趋势"><div class="chart-meta-row"><span class="chart-unit">Unit · index</span><div class="chart-legend" aria-label="数据系列"><span class="chart-legend-item"><i class="chart-swatch series-1"></i>One Pro fixture</span><span class="chart-legend-item"><i class="chart-swatch series-2"></i>Baseline fixture</span></div></div><div class="line-stage"><div class="chart-y-labels"><span>100</span><span>75</span><span>50</span><span>25</span><span>0</span></div><div class="line-plot"><div class="chart-grid" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><svg class="line-chart-svg" data-svg-role="chart" viewBox="0 0 1000 400" preserveAspectRatio="none" role="img" aria-label="两条虚构稳定性趋势线"><path data-anim="chart-line" class="chart-line series-1" d="M0 300 L250 248 L500 202 L750 122 L1000 60"></path><path data-anim="chart-line" class="chart-line series-2" d="M0 320 L250 296 L500 272 L750 236 L1000 208"></path><g class="chart-points series-1"><circle class="chart-point series-1" cx="0" cy="300" r="5"></circle><circle class="chart-point series-1" cx="250" cy="248" r="5"></circle><circle class="chart-point series-1" cx="500" cy="202" r="5"></circle><circle class="chart-point series-1" cx="750" cy="122" r="5"></circle><circle class="chart-point series-1" cx="1000" cy="60" r="5"></circle></g><g class="chart-points series-2"><circle class="chart-point series-2" cx="0" cy="320" r="5"></circle><circle class="chart-point series-2" cx="250" cy="296" r="5"></circle><circle class="chart-point series-2" cx="500" cy="272" r="5"></circle><circle class="chart-point series-2" cx="750" cy="236" r="5"></circle><circle class="chart-point series-2" cx="1000" cy="208" r="5"></circle></g></svg><span class="line-end-label series-1" style="--x:100;--y:14">86</span><span class="line-end-label series-2" style="--x:100;--y:52">48</span></div><div class="line-x-labels" style="--points:5"><span>第 1 轮</span><span>第 2 轮</span><span>第 3 轮</span><span>第 4 轮</span><span>第 5 轮</span></div></div><div class="chart-foot"><span class="chart-source">Source · fictional fixture / style validation</span><span class="chart-note">同一量纲下的连续采样示例</span></div></div>
+  </div>
+</section>
+
+<section class="slide light" data-layout="S03" data-animate="statement">
+  <div class="canvas-card">
+    <header class="chrome-min">
+      <div class="l brand"><img class="xreal-logo" src="assets/brand/xreal-logo-black.svg" alt="XREAL"><span>One Pro · Takeaway</span></div>
+      <div class="r">Stay X. Stay real.</div>
+    </header>
+    <div data-anim="statement" style="flex:1;display:grid;grid-template-columns:1fr 3fr 1fr;align-items:center;gap:3vw">
+      <div class="t-cat">核心主张</div>
+      <h1 class="h-statement" style="font-family:var(--deck-font);font-weight:var(--weight-display);font-size:min(7.8vw,14vh);line-height:.98;letter-spacing:-.045em">戴上 XREAL One Pro，<br>开启空间计算时代。</h1>
+      <div class="t-helper" style="align-self:end;padding-bottom:3vh">从巨幕影院到空间多屏，数字世界随身而行。</div>
+    </div>
+    <div style="border-top:1px solid var(--border-strong);padding-top:1.4vh;display:flex;justify-content:space-between"><span class="t-meta">Wear Every World</span><span class="t-meta">XREAL One Pro</span></div>
+  </div>
+</section>
+
+<section class="slide accent" data-layout="XREAL-CLOSING-BLACK" data-animate="closing-thanks" data-media-match="matched">
+  <img class="xreal-closing-media" data-image-slot="closing-background" data-media-role="closing-background" data-media-kind="conceptual" data-media-fit="full-bleed" data-media-contrast="darken" src="images/25-closing-concept.jpg" alt="XREAL One Pro 镜片结构的抽象光影概念图">
+  <div class="canvas-card">
+    <div class="xreal-closing-lockup">
+      <div data-anim="closing-thanks" class="xreal-closing-thanks">Thanks</div>
+      <div class="xreal-closing-mark"><img data-anim="closing-logo" class="xreal-closing-logo" src="assets/brand/xreal-logo-black.svg" onerror="this.onerror=null;this.src='brand/xreal-logo-black.svg'" alt="XREAL"></div>
+    </div>
+  </div>
+</section>
+
 <!-- ============ 示例:第 1 页 · Hero Cover · 纯黑色满屏(默认推荐) ============
      ⚠️ P0 对齐法则(每页都要过):
      1. .canvas-card 已自带 padding:5.6vh 5vw 4.4vh,所有页面内容直接放在 canvas-card 子元素里,
@@ -1537,9 +1964,9 @@
      - section 用 .slide.accent (满屏黑色,不是 light 白底)
      - 先完成媒体语义匹配；命中时使用 data-media-match="matched" + 对应背景图片类，未命中写 none 并保持纯黑
      - 背景媒体只能来自当前产品线或用户素材；不得用点阵、纹理、CSS 图形或动态装饰背景替代
-     - 中文主标题保持正体；纯英文标题如确有必要，可用同字重斜体做一次克制强调
+     - 中文主标题保持正体；纯英文标题如确有必要，可使用一次同字重斜体强调
      - Logo 默认独立;页面不显示页码 -->
-<section class="slide accent" data-layout="XREAL-COVER-BLACK" data-animate="hero" data-media-match="none">
+<section class="template-page accent" data-layout="XREAL-COVER-BLACK" data-animate="hero" data-media-match="none">
   <div class="canvas-card">
     <div class="chrome-min">
       <div class="l brand"><img class="xreal-logo" src="assets/brand/xreal-logo-black.svg" onerror="this.onerror=null;this.src='brand/xreal-logo-black.svg'" alt="XREAL"></div>
@@ -1563,11 +1990,8 @@
 </section>
 
 <!-- ============ 示例:最后一页 · Closing · Thanks 主视觉 + 底部中央 Logo ============
-     封底只承担品牌收束，不重复结论、takeaway、作者日期或页码.
-     如匹配到安静的 lifestyle / conceptual / brand KV，可将 data-media-match 改为 matched，并在 canvas-card 前插入:
-     <img class="xreal-closing-media" data-image-slot="closing-background" data-media-role="closing-background" data-media-kind="conceptual" src="images/..." alt="...">
-     封底禁止直接使用透明产品 cutout、白底产品图或 packshot。 -->
-<section class="slide accent" data-layout="XREAL-CLOSING-BLACK" data-animate="closing-thanks" data-media-match="none">
+     封底只承担品牌收束，不重复结论、takeaway、作者日期或页码. -->
+<section class="template-page accent" data-layout="XREAL-CLOSING-BLACK" data-animate="closing-thanks" data-media-match="none">
   <div class="canvas-card">
     <div class="xreal-closing-lockup">
       <div data-anim="closing-thanks" class="xreal-closing-thanks">Thanks</div>

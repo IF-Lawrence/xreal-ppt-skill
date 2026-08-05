@@ -6,7 +6,7 @@
 
 版式基准是仓库内的 `assets/template-xreal.html`(由作者原始参考 PPT 派生;原始文件不随仓库分发)。当前正式登记 23 个版式：`S01-S08`、`S10-S24`；原 `S09 Dot Matrix Statement` 已移除。
 
-XREAL Style 生成时,除用户明确要求实验版式外,只能从下面登记的 23 个版式中选择。新增首页/尾页可以使用 Skill 里的纯黑版本 `XREAL-COVER-BLACK` / `XREAL-CLOSING-BLACK`,但正文页必须来自这 23 个版式。
+XREAL Style 生成时,除用户明确要求实验版式外,只能从下面登记的 23 个版式中选择。新增首页/尾页可以使用 Skill 里的黑色基底版本 `XREAL-COVER-BLACK` / `XREAL-CLOSING-BLACK`，并按媒体匹配结果选择纯黑或官方媒体背景；正文页必须来自这 23 个版式。
 
 ## 生成前硬规则
 
@@ -15,45 +15,46 @@ XREAL Style 生成时,除用户明确要求实验版式外,只能从下面登记
 3. 顶部中文标题默认左对齐并贴近左上内容轴。除原始 `S03/S10` 这种 statement/split 版式以及只含 Logo + Thanks 的 `XREAL-CLOSING-BLACK` 封底外,不要把大标题放到页面水平中心。
 4. SVG 仅用于图表、地图、流程和数据几何，并在 `<svg>` 上标记 `data-svg-role="chart|map|flow|data-geometry"`；禁止把人物、设备、场景或抽象科技图形画成 SVG 插画配图。SVG 不写可见文字，所有文字标签用 HTML 放在网格、卡片或 caption 里。
 5. 图片槽位和媒体资产比例必须匹配。先确定版式和槽位,再从 `assets/media/` 或用户素材中选图。
-6. 首页/尾页的黑色区域必须为纯黑,不得加入 ASCII、点阵、纹理或动态背景。
+6. 首页/尾页必须以纯黑为基底并声明 `data-media-match="matched|none"`；匹配到合适官方媒体时可使用受控背景图，但不得加入 ASCII、点阵、纹理、CSS 图形或动态背景。
 7. Logo 默认独立;如确有导航文字与 Logo 相邻,文字使用标准字距且视觉字高与 Logo 一致。
 8. 无信息价值的眉题、角标和分割线应删除;列表使用实心圆点,时间线节点名称使用 600 字重。
 9. 可见文字默认使用自然大小写和标准字距;禁止普通英文词组全大写,禁止 `text-transform:uppercase`;仅 XREAL 字标、通用缩写和短型号代码例外。
 10. 保留方向键、`B` 静态模式和 `ESC` 索引功能,但页面不得显示右下角操作提示。
 11. 正文页 `chrome-min` 使用紧凑导航级品牌尺寸;封面/封底使用品牌级尺寸。两级都保持 Logo 与相邻文字视觉字高一致。
+11.1 `chrome-min` 到首个正文块固定使用 `--chrome-content-gap:24px`，紧凑变体使用 `16px`；不得恢复 48px 页眉下间距，也不得在首块叠加补偿性上边距把整页内容再次下推。
 12. 页面不显示页码;页眉、Logo 后和角标中均不得出现 `01 / NN` 一类计数。
 13. Logo 邻接文字必须按字体单独光学校准:IBM Plex Sans SC 使用 `.26 × Logo 宽度`,XREAL Diatype 使用 `.313 × Logo 宽度`。
 14. 底部导航为极低对比度弱提示:亮底普通/当前 `.08/.18`,暗底普通/当前 `.10/.22`;当前点禁止实色 accent。
-15. 页面画布、分割线和坐标轴保持直线；卡片型实体块统一使用 `--radius-sm:3px`。该规则明确覆盖 S04 Six Cells、S05 Three Layers、S06 KPI Tower、S07 Horizontal Bar、S13 Three Forces、S16 Multi-card Brief；不得使用不同圆角值、大圆角或胶囊形。接触共同基线的垂直柱体是语义例外：只保留 3px 顶部圆角，底角必须为直角并贴齐 x 轴。
+15. 页面画布、分割线和坐标轴保持直线；卡片型实体块统一使用 `--radius-sm:8px`。该规则明确覆盖 S04 Six Cells、S05 Three Layers、S06 KPI Tower、S07 Horizontal Bar、S13 Three Forces、S16 Multi-card Brief；不得使用不同圆角值、大圆角或胶囊形。接触共同基线的垂直柱体是语义例外：只保留 8px 顶部圆角，底角必须为直角并贴齐 x 轴。S19 Bento 只圆整体外框，内部区块保持直角。
 16. 禁止任何霓虹、发光边缘、`text-shadow`、`drop-shadow` 或非 `none` 的 `box-shadow`。
-17. `XREAL-CLOSING-BLACK` 必须是最后一个 section，使用全屏纯黑 `.slide.accent`；大号 `.xreal-closing-thanks` 居中，小号 `.xreal-closing-logo` 通过 `.xreal-closing-mark` 固定在底部中央。禁止 split、takeaway、作者日期、页码、CTA 或额外说明。
+17. `XREAL-CLOSING-BLACK` 必须是最后一个 section，使用黑色基底 `.slide.accent`；大号 `.xreal-closing-thanks` 居中，小号 `.xreal-closing-logo` 通过 `.xreal-closing-mark` 固定在底部中央。可使用低干扰 lifestyle、conceptual 或品牌 KV 背景，但禁止直接产品 cutout / packshot、split、takeaway、作者日期、页码、CTA 或额外说明。
 
 ## 登记版式
 
 | ID | 原始页 | 名称 | 必须保留的骨架 | 图片规则 |
 |---|---:|---|---|---|
 | S01 | 01 | Index Cover | 基础版保留三行 `cover-row`,左大编号,右大标题；章节标题页只使用下方登记的 `section-hero` 次级变体 | 无 |
-| S02 | 02 | Vertical Timeline + KPI | 顶部左对齐标题,中部 `.timeline-v`,底部 `.kpi-row-4` | 无 |
+| S02 | 02 | Vertical Timeline + KPI | 顶部左对齐标题；中部 `.timeline-v` 必须含统一 `.tl-head`、可见贯穿轴/节点，以及“年份 + 同口径指标 + 阶段名 + 体验影响”；底部 `.kpi-row-4` | 无 |
 | S03 | 03 | Split Statement | `.slide.split` 双半屏,左巨字,右灰底解释 | 无 |
-| S04 | 04 | Six Cells | 顶部左对齐标题,下方 `.sub-grid-3-2` 六张独立小圆角卡 | 可把卡片内部换成小图标,不放大图 |
-| S05 | 05 | Three Layers | 顶部左对齐标题,下方 `.stack-row` 三个小圆角色块 | 无 |
+| S04 | 04 | Six Cells | 顶部左对齐标题,下方 `.sub-grid-3-2` 六张独立小圆角卡 | 最多 1-2 张稀疏技术卡可配图；源画布留白大时用 `inset-prominent`，高度 28%-45%、宽度至少 80%，不加蒙版 |
+| S05 | 05 | Three Layers | 顶部左对齐标题,下方 `.stack-row` 三个小圆角色块 | 最多一个核心层可配图；横版低干扰媒体可全幅铺底并加深色渐变蒙版，否则 inset；图标默认保留 |
 | S06 | 06 | KPI Tower | 左标题+右说明,下方不等高 KPI 塔；cap 四角小圆角，body 仅顶部小圆角且底部直角贴共同基线 | 无 |
 | S07 | 07 | Horizontal Bar | 左对齐标题,横向条形图；track 与 fill 使用小圆角但不得做成胶囊 | 无 |
 | S08 | 08 | Duo Compare | `.duo-compare` 两列 + 中线 | 无;地点/路线内容可使用 `S08 + XREAL Map Component` 替换右侧插槽 |
 | S10 | 10 | Split Closing | `.slide.split` 左巨字右列表 | 无 |
 | S11 | 11 | Horizontal Timeline | 原始 `grid-template-columns:auto 1fr` 头部 + `.timeline-h` | 无 |
-| S12 | 12 | Manifesto + Ink Banner | 大字 statement + 底部通栏 ink 条 | 无 |
+| S12 | 12 | Manifesto + Ink Banner | 大字 statement + 底部通栏 ink 条；产品标志仅作身份落款，占横幅 18%-26% | 无 |
 | S13 | 13 | Three Forces | 左 ink hero 小圆角色块 + 右 3 张小圆角卡 | 无 |
 | S14 | 14 | Loop Form | 左 4 步列表 + 右几何 loop | SVG 禁止文字,标签改 HTML |
 | S15 | 15 | Matrix + Hero Stat | 顶部左对齐标题,中段 6×2 矩阵,底部巨数 | 多图可改造矩阵格,同组统一 `21:9` |
-| S16 | 16 | Multi-card Brief | 顶部左对齐标题,下方 3×2 小圆角微卡 | 多图可改造卡片内容,同组统一 `21:9` |
-| S17 | 17 | System Diagram | 顶部左小标题+右段落,中部几何系统图,底部三列解释 | SVG 禁止文字,标签改 HTML |
+| S16 | 16 | Multi-card Brief | 顶部左对齐标题,下方 3×2 小圆角微卡；默认六卡等权。仅有明确优先级语义时，允许一张高对比卡并声明 `data-emphasis` | 多图可改造卡片内容,同组统一 `21:9` |
+| S17 | 17 | System Diagram | 先声明 `flow|hierarchy|network|containment`；左侧只放结论与解释，右侧为唯一关系图且至少占画布 42%；两列顶部误差 ≤16px；flow 使用 3-6 节点和明确连接 | 禁止左侧复制阶段列表；同心圆仅限真实 containment；SVG 如使用则禁止文字，标签改 HTML |
 | S18 | 18 | Why Now | 三列递进 + 底部巨数 | 无 |
-| S19 | 19 | Four Cards | 顶部黑线 + 四列均分 | 无 |
+| S19 | 19 | Four Cards | 顶部黑线 + 四列均分 | Bento 扩展的稀疏 hero 主卡可使用全幅 contextual/lifestyle 媒体；宽高覆盖父卡至少 95%，文字压图时使用 `.28-.48` 深色蒙版；内部仍直角 |
 | S20 | 20 | Stacked KPI Ledger | 纵向账单式巨数 | 无 |
 | S21 | 21 | Tech Spec Sheet | 大标题 + 三 KPI + 右下竖线矩阵 | 无 |
-| S22 | 22 | Image Hero | 顶部全宽图 + 左上白块标题 + 下方三列 KPI | 主图按 `21:9` 生成,关键主体放中央安全区 |
-| S23 | 新增 | Data Chart | 顶部结论标题 + 单位/图例 + 主导分组柱图 + HTML 坐标标签 + 来源 | 无；只承载真实比较数据 |
+| S22 | 22 | Image Hero | 顶部全宽图 + 左上白块标题 + 下方三列 KPI；压图标题约从 `top:10.5vh` 开始，保持与绝对定位页眉约 24px 的导航间距 | 主图按 `21:9` 生成,关键主体放中央安全区 |
+| S23 | 新增 | Data Chart | 顶部结论标题 + 单位/图例 + 主导分组柱图 + HTML 坐标标签 + 来源；首末柱有安全边距，顶部为数值留 headroom，数值以整柱宽文本层居中 | 无；只承载真实比较数据 |
 | S24 | 新增 | Line Chart | 顶部结论标题 + 单位/图例 + 主导折线图 + HTML 坐标标签 + 来源 | 无；只承载时间或连续变量趋势 |
 
 ### XREAL-CLOSING-BLACK · Brand Back Cover
@@ -61,7 +62,7 @@ XREAL Style 生成时,除用户明确要求实验版式外,只能从下面登记
 - 使用场景:整套 deck 的唯一封底，必须是最后一页。
 - 必须结构:`.slide.accent` + `.xreal-closing-lockup` + `.xreal-closing-thanks` + `.xreal-closing-mark` + `.xreal-closing-logo`。
 - 内容边界:除 XREAL Logo 和 `Thanks` 外不显示其他内容，进入该页时底部分页导航隐藏；结论、行动建议、联系方式和署名必须在前一页完成。
-- 背景与 Logo:全屏 `#000000`，使用官方企业 Logo 并反白，不添加纹理、线条、页码或角标。
+- 背景与 Logo:以全屏 `#000000` 为基底；匹配到安静的 lifestyle、conceptual 或品牌 KV 时，可使用 `.xreal-closing-media` 作为背景并声明 `data-media-kind`。禁止直接产品 cutout / packshot。使用官方企业 Logo 并反白，不添加纹理、线条、页码或角标。
 - 动效:使用 `data-animate="closing-thanks"`，`Thanks` 先成为主视觉，底部 Logo 随后轻微落定。
 
 ### S23 · Data Chart
@@ -69,7 +70,7 @@ XREAL Style 生成时,除用户明确要求实验版式外,只能从下面登记
 - 使用场景:3-8 个类别、2-4 个系列的同尺度比较；例如区域 × 产品、季度 × 渠道或方案 × 指标。
 - 必须结构:`.xreal-data-chart` + `.chart-legend` + `.chart-stage` + `.chart-y-labels` + `.chart-plot` + `.chart-groups` + `.chart-x-labels` + `.chart-source`。
 - 数据约束:每个柱必须对应真实数值并带 `data-value` / 可见值；必须显示单位和来源。不同量纲禁止强行共用一个纵轴。
-- 视觉约束:图表占页面主导面积；使用共同零基线、1px 中性网格线和最多 4 个稳定系列。柱体只保留顶部 3px 小圆角，底角为直角并贴齐 x 轴；只允许一个关键系列使用 XREAL 红色。
+- 视觉约束:图表占页面主导面积；使用共同零基线、1px 中性网格线和最多 4 个稳定系列。柱体只保留顶部 8px 小圆角，底角为直角并贴齐 x 轴；只允许一个关键系列使用 XREAL 红色。首末柱与绘图区边界至少保留 20px，最高数值标签不得越过 plot 顶部；数值标签中心与柱体中心误差不超过 2px。
 - 动效:使用 `data-animate="chart-rise"`；柱从共同基线生长，图例与来源随后出现。
 
 ### S24 · Line Chart
@@ -124,7 +125,7 @@ XREAL Style 生成时,除用户明确要求实验版式外,只能从下面登记
 - 使用场景:将一个主叙事、两项指标和一条行动说明压缩成同页摘要。
 - 版式身份:仍是 `data-layout="S19"`，不是新正文页。
 - 使用 12 列非对称网格和 1px 间隙；主块 6 列 × 2 行，其余块保持 3/3/6 列关系。
-- 所有区块统一使用 `--radius-sm:3px`、无阴影，不做大圆角、胶囊按钮或软件 dashboard 质感。
+- 整体 `.xreal-bento` 外框使用 `--radius-sm:8px`；直接子区块全部为直角、无阴影，不做大圆角、胶囊按钮或软件 dashboard 质感。
 - 黑白灰承担结构，只允许一个红色关键数字或信号。
 
 ## 图片槽位规则

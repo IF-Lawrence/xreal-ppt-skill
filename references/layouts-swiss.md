@@ -85,7 +85,7 @@ XREAL Style 不是网页说明页,投屏时不能出现 10-12px 的注释字。�
 - spacing token:`--sp-3` 8 / `--sp-4` 12 / `--sp-5` 16 / `--sp-6` 24 / `--sp-7` 32 / `--sp-8` 40 / `--sp-9` 48 / `--sp-10` 64 / `--sp-11` 80 / `--sp-12` 96 / `--sp-13` 160
 
 **画布**
-- `.canvas-card`:`100vw × 100vh` 全屏铺满，不暴露画布圆角；内部结构容器统一使用 `--radius-sm:3px`，padding `5.6vh 5vw 4.4vh`
+- `.canvas-card`:`100vw × 100vh` 全屏铺满，不暴露画布圆角；内部结构容器统一使用 `--radius-sm:8px`，padding `5.6vh 5vw 4.4vh`
 - `body{background:var(--paper)}` — 不用 WebGL 背景
 - 必须保留 `B` 键静态模式功能,但不显示右下角操作提示。低功耗模式使用 `body.low-power`,停止 WebGL canvas RAF 与 Motion 入场动画,刷新后通过 `localStorage` 保持用户选择。
 
@@ -163,7 +163,7 @@ chrome-min(页眉)、主体内容、底部 footnote 都是 canvas-card 的子元
 | 中数字 / 编号 | `min(4.6vw, 8.5vh)` ~ `min(5.6vw, 10vh)` |
 
 **4. canvas-card 子元素之间用 grid `gap`,不要靠 margin/padding 堆**
-`.canvas-card` 默认 `display:flex;flex-direction:column`,chrome-min 自带 `margin-bottom:48px`(`--sp-9`)。
+`.canvas-card` 默认 `display:flex;flex-direction:column`，`chrome-min` 到首个正文块使用 `--chrome-content-gap:24px`；紧凑变体使用 `--chrome-content-gap-tight:16px`。
 主体区往下排几行(head / 内容 / footnote),**首选** `display:grid;grid-template-rows:...;gap:Nvh`,**次选** flex column + gap,**禁用** 在每个子块里加 `margin-top` / `padding-top` 调间距(会和 chrome-min 的 margin-bottom 重叠或撕裂)。
 
 **5. 底部分页安全区:主内容最低处不要触及 nav**
@@ -185,7 +185,7 @@ chrome-min(页眉)、主体内容、底部 footnote 都是 canvas-card 的子元
 | Outlined 描边 | `.card-outlined` | 锚点(非卡片) | hairline 分割框 |
 
 ❌ 禁止混用(黑色背景+黑色描边、灰底+描边等)
-所有卡片类型统一使用 `--radius-sm:3px`，不单独声明其他圆角值。
+所有卡片类型统一使用 `--radius-sm:8px`，不单独声明其他圆角值。
 
 **装饰极简原则**
 - 1px hairline 分隔(`hr-hairline` / `border-bottom`)
@@ -194,7 +194,7 @@ chrome-min(页眉)、主体内容、底部 footnote 都是 canvas-card 的子元
 
 **图片使用原则(XREAL Style + 媒体资产库)**
 - 图片是网格中的"证据块",不是装饰背景;必须有明确功能:案例、实拍证据、UI 截图、系统图、概念信息图
-- 所有图片容器统一使用 `--radius-sm:3px`、无阴影;默认**不加图片外框**,让 caption 或页面网格承担层级
+- 所有图片容器统一使用 `--radius-sm:8px`、无阴影;默认**不加图片外框**,让 caption 或页面网格承担层级
 - 白底信息图 / 流程图 / UI 图:容器背景必须是 `var(--paper)`,不要用灰底包白图,也不要加 `.swiss-keyline` 描边
 - 只有当图片本身边缘无法和页面区分时,才用 `.swiss-lined` 加一条顶部 accent 线;不要给每张图都套边框
 - 纪实照片用 `object-fit:cover` 只裁底部/边缘;原始截图或文字密集图用 `.fit-contain`,避免文字被裁
@@ -282,23 +282,25 @@ XREAL Style 有 23 个正式登记版式（`S01-S08`、`S10-S24`）,生成时要
 ### P1 · Cover · 封面页
 
 **用途**:整套 deck 起手 / 主题宣言。
-**适用内容类型**:整套封面 / deck 级主题宣言。**纯文字结构**(主标题 + 副标 + 元信息),不承载数据。内部章节标题页使用下方登记的 `section-hero` 次级变体。
+**适用内容类型**:整套封面 / deck 级主题宣言。主标题 + 副标 + 元信息为固定内容骨架；媒体审计命中时可增加一张全屏背景媒体，但不承载数据。内部章节标题页使用下方登记的 `section-hero` 次级变体。
 
-**默认推荐:纯黑色满屏** ⭐
-- `<section class="slide accent">` 满屏黑色,**不是** light 白底
-- 黑色区域保持纯黑,不插入 ASCII、点阵、纹理或动态背景
-- 主标题反白使用 `var(--weight-display)`,微强调字用同字重斜体,不额外使用红色
+**默认推荐:黑色基底 + 语义匹配媒体** ⭐
+- `<section class="slide accent">` 使用满屏黑色基底,**不是** light 白底
+- 必须声明 `data-media-match="matched|none"`。有匹配的横版 KV、lifestyle、conceptual 或 product beauty 时，使用 `.xreal-cover-media` 全屏铺底；没有合适素材才保持纯黑
+- 背景媒体必须直接支撑 deck 主张、保留约 30% quiet zone，并通过亮度控制保证文字对比；不得插入 ASCII、点阵、纹理、CSS 图形或动态背景
+- 主标题反白使用 `var(--weight-display)`；中文标题保持正体，纯英文标题如确有必要可用一次同字重斜体强调，不额外使用红色
 - 页面不显示页码，也不要再放编号大字"01"
-- Logo 默认独立,右侧不要附加 deck 名或风格说明;如确有导航文字相邻,文字标准字距且视觉字高与 Logo 一致
+- Logo 默认独立,右侧不要附加 deck 名或风格说明;如确有导航文字相邻,文字标准字距且视觉字高与 Logo 一致，并至少保留 `1.6vw` 的清晰间距
 - 删除无信息价值的右下角角标和底部分割线
-- 与 P9 Closing 的极简纯黑封底形成"主题开场 ↔ 品牌落款"结构闭环
+- 与 P9 Closing 的极简品牌封底形成“主题开场 ↔ 品牌落款”结构闭环
 
-**关键类**:`.slide.accent` + `.xreal-cover-title`
-**动效 recipe**:`hero` — 纯黑底保持静止,文字 fade-up 序列入场
+**关键类**:`.slide.accent` + `.xreal-cover-title`；媒体命中时增加 `.xreal-cover-media`
+**动效 recipe**:`hero` — 背景保持静止,文字 fade-up 序列入场
 
 **示例代码(XREAL 黑色默认变体)**:
 ```html
-<section class="slide accent" data-layout="XREAL-COVER-BLACK" data-animate="hero">
+<section class="slide accent" data-layout="XREAL-COVER-BLACK" data-animate="hero" data-media-match="matched">
+  <img class="xreal-cover-media" data-image-slot="cover-background" data-media-role="cover-background" src="images/01-cover.jpg" alt="[必填] 与主题匹配的封面媒体说明">
   <div class="canvas-card">
     <div class="chrome-min">
       <div class="l brand"><img class="xreal-logo" src="assets/brand/xreal-logo-black.svg" alt="XREAL"></div>
@@ -306,7 +308,7 @@ XREAL Style 有 23 个正式登记版式（`S01-S08`、`S10-S24`）,生成时要
     </div>
     <div style="flex:1;padding:0;display:grid;grid-template-rows:auto 1fr auto;gap:2.6vh">
       <div data-anim="kicker" class="t-meta" style="color:rgba(255,255,255,.78)">[必填] 章节英文 / Section title</div>
-      <h1 data-anim="title" class="xreal-cover-title" style="align-self:center;color:#fff">[必填] 中文主标题<br/>(可在某字加 <span style="font-style:italic;font-weight:inherit">italic</span> 微强调)</h1>
+      <h1 data-anim="title" class="xreal-cover-title" style="align-self:center;color:#fff">[必填] 中文主标题<br/>(中文标题保持正体)</h1>
       <div data-anim="bottom" style="display:grid;grid-template-rows:auto auto;gap:1.6vh">
         <div data-anim="lead" class="lead" style="max-width:52ch;color:rgba(255,255,255,.86);font-weight:400">[必填] 一段 1-2 行的副标 / 引子,定调全场.</div>
         <div style="display:flex;justify-content:space-between;align-items:end">
@@ -373,10 +375,10 @@ XREAL Style 有 23 个正式登记版式（`S01-S08`、`S10-S24`）,生成时要
 
 **用途**:演化对比、年代变迁、版本迭代(2-5 个时间节点)。
 **适用内容类型**:**带量化数据的时间演化**。每节点必须有「年份 + 量化数值(如 1× / 4× 倍数 / 单位数字)+ 描述」三件套。如果只有节点名没有数据,改用 P11 横向时间线。
-**骨架**:左侧 axis 列 12px 圆点 + 1px 虚线轴 / 右侧节点信息(年份 + 大字数据 + 小标 + 描述)。
-**关键类**:`.timeline-v` `.tl-node` `.tl-axis`(12px 固定列宽,绝对定位 dot 防错位) `.kpi-row-4`
+**骨架**:左侧 24px axis 列 + 10px 实心节点 + 1px 贯穿轴 / 右侧统一列头与节点信息(年份 + 同口径大字数据 + 阶段名 + 体验影响)。
+**关键类**:`.timeline-v` `.tl-head` `.tl-node` `.tl-axis` `.dot` `.yr` `.multi` `.tl-copy` `.tl-stage` `.tl-impact` `.kpi-row-4`
 **动效 recipe**:`timeline-vertical` — 节点按时间顺序由上到下点亮(dot 先 pop 再扩 → 文字横向滑入)
-**网格规则**:axis 列 = 12px 固定;dot 用 `position:absolute;left:50%;transform:translateX(-50%)` 与虚线对齐
+**清晰度规则**:必须给时间、指标和阶段解释加统一列头；每行的 `.tl-stage` 是主解释，`.tl-impact` 说明变化带来的体验结果。axis 列固定 24px，`.tl-axis` 使用 grid 居中 10px 实心 dot，使 dot 中心与贯穿轴误差不超过 2px。不要只放“年份 + 数字 + 一句混合描述”，否则会退化成含糊的三列表格。
 **示例代码**:
 ```html
 <section class="slide" data-animate="timeline-vertical">
@@ -386,13 +388,12 @@ XREAL Style 有 23 个正式登记版式（`S01-S08`、`S10-S24`）,生成时要
       <div class="r">02 / NN</div>
     </header>
     <div class="timeline-v">
+      <div class="tl-head" aria-hidden="true"><span></span><span>时间</span><span>端到端延迟</span><span>阶段与体验影响</span></div>
       <div class="tl-node">
         <div class="tl-axis"><span class="dot"></span></div>
-        <div class="tl-body">
-          <span class="yr">2023</span>
-          <span class="multi">1<small>×</small></span>
-          <p class="desc">Prompt Engineering Era</p>
-        </div>
+        <span class="yr">2023</span>
+        <span class="multi">8<span class="unit">ms</span></span>
+        <div class="tl-copy"><strong class="tl-stage">链路压缩阶段</strong><span class="tl-impact">减少中间处理环节，响应开始收敛。</span></div>
       </div>
       <!-- 重复 N 个 tl-node,axis 列贯穿 -->
     </div>
@@ -435,7 +436,8 @@ XREAL Style 有 23 个正式登记版式（`S01-S08`、`S10-S24`）,生成时要
 **骨架**:2×3 网格 / 6 张彼此留有 gap 的独立卡片 / 每格上方 Material Symbols Outlined 图标 + 编号 + 短标题 + 一行描述。
 **关键类**:`.sub-grid-3-2` `.sub-card` `.nb-corner`
 **动效 recipe**:`six-cells` — 6 格按 z 形顺序点亮(L→R, T→B,每格延迟 90ms)
-**圆角规则**:6 张 `.sub-card` 统一使用 `border-radius:var(--radius-sm)`（3px）；外层网格、分割轴和页面画布不加圆角。**不要自己画 SVG 图标**,用 Google Material Symbols Outlined，例如 `<span class="material-symbols-outlined">bookmark</span>`。
+**圆角与留白规则**:6 张 `.sub-card` 统一使用 `border-radius:var(--radius-sm)`（8px）和四边相等的 `padding:var(--sub-card-pad)`（标准 `2.2vh`）；`.nb-corner` 的 `top / right` 同样使用该 token。外层网格、分割轴和页面画布不加圆角。**不要自己画 SVG 图标**,用 Google Material Symbols Outlined，例如 `<span class="material-symbols-outlined">bookmark</span>`。
+**可选媒体规则**:当技术点有直接对应的结构图、器件图或功能视觉，且单卡只有短标题 + 一行说明时，可为最多 1-2 张卡添加 `.sub-card.has-media` 与 `.card-media-slot`。紧边透明 cutout 使用 `data-media-fit="inset"` + contain；主体在源画布内偏小或卡片留白明显时改用 `data-media-fit="inset-prominent"` + cover，高度占父卡约 28%-45%、宽度至少 80%。两者都使用 `data-media-contrast="none"`，与文字分区且不加蒙版；不取代标题与结论，也不为图片再加一层圆角容器。
 **示例代码**:
 ```html
 <div class="sub-grid-3-2">
@@ -444,6 +446,12 @@ XREAL Style 有 23 个正式登记版式（`S01-S08`、`S10-S24`）,生成时要
     <span class="nb-corner">01</span>
     <h4 class="ttl">Skill File</h4>
     <p class="desc">纯 markdown,可手写、可重写</p>
+  </article>
+  <article class="sub-card has-media">
+    <span class="material-symbols-outlined">memory</span><span class="nb-corner">02</span>
+    <h4 class="ttl">核心器件</h4>
+    <img class="card-media-slot" data-image-slot="s04-card-media" data-media-role="technical-evidence" data-media-fit="inset" data-media-contrast="none" src="images/04-component.png" alt="核心器件结构">
+    <p class="desc">一行解释媒体如何支撑该技术点。</p>
   </article>
   <!-- 5 more -->
 </div>
@@ -458,7 +466,8 @@ XREAL Style 有 23 个正式登记版式（`S01-S08`、`S10-S24`）,生成时要
 **骨架**:顶部左对齐标题 / 下方 `.stack-row` 三个等宽 `.stack-block` 色块。
 **关键类**:`.stack-row` `.stack-block` `.layer-nb` `.layer-ttl` `.layer-desc`
 **动效 recipe**:`stack-build` — 三层按 01→03 依次建立。
-**圆角规则**:3 个 `.stack-block` 统一使用 `border-radius:var(--radius-sm)`（3px）；层间保持明确 gap，不拼成大圆角容器。
+**圆角规则**:3 个 `.stack-block` 统一使用 `border-radius:var(--radius-sm)`（8px）；层间保持明确 gap，不拼成大圆角容器。
+**可选媒体规则**:当三层中的一个核心层具有直接对应的器件图、架构视觉或功能截图，且文本较少时，可为最多一个 `.stack-block.has-media` 添加 `.stack-card-media`。若横版媒体具备低干扰文字区，优先使用 `.media-full-bleed`、`data-media-fit="full-bleed" data-media-contrast="darken"` 全幅铺底，并用由浅到深的蒙版保护底部文字；否则使用 `data-media-fit="inset" data-media-contrast="none"` 居中 contain。两种模式都默认保留 `.layer-icon`，让图标承担快速语义识别；只有图标与媒体主体明显重叠时才调整其位置，不因配图自动隐藏。
 **示例代码**:
 ```html
 <div class="stack-row">
@@ -468,7 +477,11 @@ XREAL Style 有 23 个正式登记版式（`S01-S08`、`S10-S24`）,生成时要
     <p class="layer-desc">...</p>
   </article>
   <article class="stack-block b-ink">...</article>
-  <article class="stack-block b-accent">...</article>
+  <article class="stack-block b-accent has-media">
+    <span class="layer-nb">02</span>
+    <img class="stack-card-media" data-image-slot="s05-layer-media" data-media-role="technical-evidence" src="images/05-core.png" alt="核心计算器件">
+    <h4 class="layer-ttl">Core layer</h4><p class="layer-desc">...</p>
+  </article>
 </div>
 ```
 
@@ -481,7 +494,7 @@ XREAL Style 有 23 个正式登记版式（`S01-S08`、`S10-S24`）,生成时要
 **骨架**:4 列均分,每列底部一根不同高度的黑色矩形(数据决定高度)+ 顶部图标 + 中段巨数 + 底部标签。
 **关键类**:`.bar-towers` `.bar-tower` `.cap` `.body-block`
 **动效 recipe**:`tower-grow` — 标签先入 → 数字 scale 弹入 → tower scaleY 从 0 拉起(transform-origin:bottom)
-**圆角与基线规则**:每列 `.cap` 使用四角 `border-radius:var(--radius-sm)`（3px）；`.body-block` 只保留 3px 顶部圆角，底部两角为直角并与四列共同 x 轴齐平。四列高度可以不同，但不得出现四角圆角矩形贴在轴线上，也不得在柱体与轴之间留空。
+**圆角与基线规则**:每列 `.cap` 使用四角 `border-radius:var(--radius-sm)`（8px）；`.body-block` 只保留 8px 顶部圆角，底部两角为直角并与四列共同 x 轴齐平。四列高度可以不同，但不得出现四角圆角矩形贴在轴线上，也不得在柱体与轴之间留空。
 **示例代码**:
 ```html
 <div class="bar-towers">
@@ -502,7 +515,7 @@ XREAL Style 有 23 个正式登记版式（`S01-S08`、`S10-S24`）,生成时要
 **骨架**:顶部大标题 / 中段空 / 下半部条形列表(每行:文字标签 + 灰色 track + 数据 fill + 末端数字)。
 **关键类**:`.h-bar-chart` `.row-lbl` `.row-track` `.row-fill` `.row-val`
 **动效 recipe**:`hbar-grow` — 大标题先入 → 每行依序 width 0→target(transform-origin:left)+ 末端数字 count-up
-**圆角规则**:`.row-track` 与 `.row-fill` 统一使用 `border-radius:var(--radius-sm)`（3px）；圆角不得等于条高的一半，禁止胶囊化。
+**圆角规则**:`.row-track` 与 `.row-fill` 统一使用 `border-radius:var(--radius-sm)`（8px）；圆角不得等于条高的一半，禁止胶囊化。
 **示例代码**:
 ```html
 <div class="h-bar-chart">
@@ -545,18 +558,21 @@ XREAL Style 有 23 个正式登记版式（`S01-S08`、`S10-S24`）,生成时要
 **用途**:整套 deck 收尾页。
 **适用内容类型**:**deck 封底**(每个 deck 只有一页，且必须是最后一页)。所有结论、行动建议和联系方式应在前一页完成；封底只承担品牌落款。
 
-**固定结构:纯黑全屏 + 大号 Thanks + 底部小号 XREAL Logo** ⭐
+**固定结构:黑色基底 + 大号 Thanks + 底部小号 XREAL Logo** ⭐
 - 使用 `<section class="slide accent">` 与 `data-layout="XREAL-CLOSING-BLACK"`
-- 全屏背景固定 `#000000`，自然大小写 `Thanks` 以显示级字号居中，反白官方 XREAL Logo 缩小后固定在底部中央
+- 必须声明 `data-media-match="matched|none"`；有安静的 lifestyle、conceptual 或品牌 KV 时，使用 `.xreal-closing-media` 作为背景并声明 `data-media-kind`，没有合适素材时保持 `#000000`
+- 封底媒体承担氛围收束，不承担产品陈列；禁止直接放透明产品 cutout、白底产品图、标准产品角度或 packshot
+- 自然大小写 `Thanks` 以显示级字号居中，反白官方 XREAL Logo 缩小后固定在底部中央；媒体不得削弱这两个品牌锚点
 - 不放 takeaway、宣言、作者日期、页码、联系方式、CTA、眉题、角标或装饰线
 - `Thanks` 是唯一主视觉，Logo 只作为底部品牌落款；不得替换成产品字标或重绘 Logo
 
-**关键类**:`.slide.accent` `.xreal-closing-lockup` `.xreal-closing-thanks` `.xreal-closing-mark` `.xreal-closing-logo`
+**关键类**:`.slide.accent` `.xreal-closing-lockup` `.xreal-closing-thanks` `.xreal-closing-mark` `.xreal-closing-logo`；媒体命中时增加 `.xreal-closing-media`
 **动效 recipe**:`closing-thanks` — `Thanks` 先上浮落定 → 底部 Logo 轻微出现
 
 **示例代码**:
 ```html
-<section class="slide accent" data-layout="XREAL-CLOSING-BLACK" data-animate="closing-thanks">
+<section class="slide accent" data-layout="XREAL-CLOSING-BLACK" data-animate="closing-thanks" data-media-match="matched">
+  <img class="xreal-closing-media" data-image-slot="closing-background" data-media-role="closing-background" data-media-kind="conceptual" src="images/99-closing-atmosphere.jpg" alt="[必填] 封底氛围媒体说明">
   <div class="canvas-card">
     <div class="xreal-closing-lockup">
       <div data-anim="closing-thanks" class="xreal-closing-thanks">Thanks</div>
@@ -600,6 +616,7 @@ XREAL Style 有 23 个正式登记版式（`S01-S08`、`S10-S24`）,生成时要
 **适用内容类型**:**章节性收束 / 阶段性宣言**(用于 deck 中段而非结尾,P9 是 deck 终结)。承载「主张 + 简短说明 + ink 通栏宣言」三段结构,无数据。
 **骨架**:上半屏左侧 t-cat + 大字 4 行宣言 + 右侧短段说明 / 下半屏 ink 通栏(无左右下边距)+ 反白短句 + Material Symbols 图标矩阵。
 **关键类**:`.manifesto-top` `.ink-banner-full`(`margin:0 -5vw -4.4vh` 取消父级 padding)
+**产品身份规则**:当宣言明确属于单一产品且 `00-product-marks/` 有官方标志时，横幅识别位优先使用 `.xreal-product-mark[data-image-slot="product-mark"][data-media-role="product-identity"]`，不要用手打产品名替代。企业 XREAL Logo 仍保留在页眉。产品标志只作为身份落款，宽度为横幅的 18%-26%（标准 `min(23vw,320px)`），不得成为第二主标题。
 **动效 recipe**:`manifesto` — 大字三段错峰升起 → 底 ink 条横向 scaleX 0→1 铺开 → 反白文字 fade in
 **注意**:Skill File 那段小字 **顶对齐于右侧大字基线**(`align-items:flex-start;padding-top:1.2vw`)
 
@@ -612,7 +629,7 @@ XREAL Style 有 23 个正式登记版式（`S01-S08`、`S10-S24`）,生成时要
 **骨架**:左 5/16 ink hero 块(t-cat + 4 行标题,保持纯色)/ 右 11/16 三张水平卡堆叠。
 **关键类**:`.three-forces` `.hero-ink-col` `.force-card`(`.card-fill`)`.force-num`(9.2vw 黑色结构字)
 **动效 recipe**:`three-forces` — 左 hero 横移入 → 右 3 卡阶梯式从右滑入 → 巨大结构数字单独 pop
-**圆角规则**:左侧 `.hero-ink-col` 与右侧 3 张 `.force-card` 都使用 `border-radius:var(--radius-sm)`（3px）。**3 张卡片必须统一样式**(都用 `.card-fill` 灰底,不要混用描边/黑底);若需突出一张,改用 `.card-accent`,**禁止**黑底+描边。
+**圆角规则**:左侧 `.hero-ink-col` 与右侧 3 张 `.force-card` 都使用 `border-radius:var(--radius-sm)`（8px）。**3 张卡片必须统一样式**(都用 `.card-fill` 灰底,不要混用描边/黑底);若需突出一张,改用 `.card-accent`,**禁止**黑底+描边。
 
 ---
 
@@ -641,21 +658,22 @@ XREAL Style 有 23 个正式登记版式（`S01-S08`、`S10-S24`）,生成时要
 ### P16 · Multi-card Brief · 微卡小报
 
 **用途**:6 项小卡并列(快讯、tip 集合、特性概览)。
-**适用内容类型**:**6 项轻量短讯 / tip / 注脚**(数量 = 6,每项主文短 + 小字注脚)。比 P4 内容更碎,适合快讯类。**只允许一张黑色结构块突出**(单焦点法则)。
+**适用内容类型**:**6 项轻量短讯 / tip / 注脚**(数量 = 6,每项主文短 + 小字注脚)。比 P4 内容更碎,适合快讯类。默认六项等权；不要为了画面变化强行突出其中一项。
 **骨架**:顶部大标题(留 9vh)/ 下方 3×2 微卡(每卡:左上主文 + 右下小字 + 中间留空)。
-**关键类**:`.brief-grid` `.brief-card`(`.card-fill` 灰底)`.brief-card.is-accent`(单一黑底结构强调)
+**关键类**:`.brief-grid` `.brief-card`；仅当内容明确存在首选、推荐、关键或风险优先级时，才添加 `.brief-card.is-accent`，并同时声明 `data-emphasis="primary|recommended|critical|risk"`。
 **动效 recipe**:`field-notes` — 6 卡按 z 形顺序点亮(L→R, T→B,90ms 错开)
-**圆角规则**:6 张 `.brief-card` 统一使用 `border-radius:var(--radius-sm)`（3px）。卡内排版**左上主文 + 右下小字**,中间空出(避免内容散);**只允许一张黑色结构块**。
+**圆角、留白与对比规则**:6 张 `.brief-card` 统一使用 `border-radius:var(--radius-sm)`（8px）和四边相等的 `padding:var(--brief-card-pad)`（标准 `2.2vh`）。默认全部使用白底 + 1px 中灰边界；只有语义优先级成立时才允许最多一张黑色结构块，其标题为白色、辅助文字使用高对比反白。卡内排版**左上主文 + 右下小字**,中间空出(避免内容散)。
 
 ---
 
-### P17 · System Diagram · 同心圆系统图
+### P17 · System Diagram · 系统关系图
 
-**用途**:层级架构(core→middle→outer)、生态地图。
-**适用内容类型**:**严格三层嵌套关系**(core 内核 / middle 中间层 / outer 外圈)。典型如:技术栈层级、生态分层、影响力辐射。**非三层结构禁用**(扁平用 P4,层级不清用 P5)。
-**骨架**:左半屏标题 + 三段说明 / 右半屏 SVG 三层同心圆 + 标签外引线。
-**关键类**:`.system-diagram` `.sys-svg` `.sys-label`
-**动效 recipe**:`system-diagram` — 同心圆从外向内 scale 入 → 标签序列出现
+**用途**:表达组件之间的流向、层级、网络依赖或真实包含关系。
+**适用内容类型**:至少 3 个实体，且实体之间的关系本身是结论。先选择并声明 `data-system-grammar="flow|hierarchy|network|containment"`：能力/信息传递用 flow，组织或技术分层用 hierarchy，多对多依赖用 network，严格 core/middle/outer 包含才用 containment。同心圆不再是默认答案；如果三个圆只是在重复左侧三行文字，改用 P5 或删除图。
+**骨架**:左侧只保留一句结论与一段解释，使用 `.system-kicker + .system-thesis + .system-summary`；右侧占画布至少 42%，承载唯一关系图，两列顶部误差不超过 16px。flow 使用 3-6 个 `.system-node` 与 `nodeCount-1` 个 `.system-link`；每个节点包含 `.system-level + .system-title + .system-effect`。标签使用 HTML，连接语义必须可读。
+**关键类**:`.system-diagram` `.system-copy` `.system-kicker` `.system-thesis` `.system-summary` `.system-flow` `.system-node` `.system-link` `.system-level` `.system-title` `.system-effect`
+**禁止**:左侧再放 `.system-roles/.system-role` 或复制 Process / Orchestrate / Deliver 等阶段列表，形成与右图竞争的第二条信息路径；可见文案不得出现“这里表达的是”“不是套圈”“图的目的是”等制作说明。
+**动效 recipe**:`system-diagram` — 节点按关系方向进入，连接语义随后出现。
 
 ---
 
@@ -687,8 +705,10 @@ XREAL Style 有 23 个正式登记版式（`S01-S08`、`S10-S24`）,生成时要
 **登记扩展: XREAL Bento Component**
 - 需要“一个主叙事 + 两项指标 + 一条行动说明”的摘要时，可在 S19 中使用 `.xreal-bento`。
 - 使用 12 列非对称布局：主块 6 列 × 2 行，指标块 3 列，行动块 6 列。
-- 区块统一使用 `--radius-sm:3px`、1px 间隙、无阴影，不模拟大圆角软件卡片或胶囊按钮。
+- `.xreal-bento` 整体外框使用 `--radius-sm:8px`，内部区块保持直角，以 1px 间隙分隔；无阴影，不模拟大圆角软件卡片或胶囊按钮。
 - 黑白灰承担结构；全页只允许一个红色关键数字。
+- 当主卡存在大面积闲置区域、正文仅有短标题与一行说明，并且有能直接支撑语境的 lifestyle / contextual 媒体时，可使用 `.hero.has-media` 与 `.bento-hero-media[data-image-slot="s19-bento-hero-media"][data-media-role="context-evidence"][data-media-fit="full-bleed"][data-media-contrast="darken"]` 全幅铺底；媒体在宽高两个方向都应覆盖父卡至少 95%。
+- 文字直接叠图时使用统一深色蒙版 `--media-scrim-alpha:.38`，允许按素材在 `.28-.48` 内微调；保留图片细节，不通过极端 brightness 把媒体压成黑块。文字直接反白，不添加白底或半透明内容面板。媒体、hero article 和其余内部块都保持直角，只有 `.xreal-bento` 外框使用 8px 圆角。
 
 ---
 
@@ -718,13 +738,15 @@ XREAL Style 有 23 个正式登记版式（`S01-S08`、`S10-S24`）,生成时要
 
 **用途**:案例展示、产品图 + 数据落地、章节封面带图。
 **适用内容类型**:**案例展示 / 产品发布 / 章节带图封面**(必须有真实图片资源 + 3 个核心数据)。典型如:产品截图 + 关键指标、案例图 + ROI、用户反馈图 + 复购率。**没有真实图源时禁用**(占位灰图破坏视觉)。
-**骨架**:上半屏 60% 全幅图片 + 左上白底标题块叠加(top:11vh,留出充分缓冲)/ 下半屏 40% 长说明 + 三列 KPI($ / 127× / 100%)。
-**关键类**:`.image-hero` `.hero-img-wrap`(60vh)`.hero-overlay-block` `.hero-stats`
-**动效 recipe**:`image-hero` — 图缓慢 zoom-out(scale 1.05→1)→ 白块 scaleX 0→1 推开 → 三 KPI 顶线依序画出
+**骨架**:上半屏 60% 全幅图片 + 左上高对比标题文字直接叠加(top:12vh 左右,留出充分缓冲)/ 下半屏 40% 长说明 + 三列 KPI($ / 127× / 100%)。
+**关键类**:`.image-hero` `.hero-img-wrap`(60vh)`.hero-stats`
+**动效 recipe**:`image-hero` — 图缓慢 zoom-out(scale 1.05→1)→ 标题直接 fade-up → 三 KPI 顶线依序画出
 **注意**:
 - 图片优先从 `assets/media/` 选择并复制为 `images/{页号}-{语义}.{ext}` 本地文件,不要使用外链图库
+- 图片上的标题直接使用文本，不叠白底卡片、色块或半透明面板；根据标题所在区域选择黑字或白字，并确保持续有足够对比度。若整张图片无法提供稳定对比，应换图或调整裁切位置
 - 图片下方内容不要贴着图下沿,使用 `.image-hero-body` 统一给下半屏增加顶部缓冲
 - 三列 KPI 大字号要限高(`min(4.6vw, 7.6vh)`),小字用 `margin-top:auto` 锚定列底,防止溢到 nav 圆点
+- 三列 KPI 的 `°`、`in`、`Hz` 等单位统一使用 `.unit` / `.unit-degree` 右上肩位，不允许一项在上、一项贴底，也不得和数字拆行
 - 列高度统一(grid 不要 `align-items:start`,让列拉伸到同一高度)
 
 **示例代码**:
@@ -738,8 +760,8 @@ XREAL Style 有 23 个正式登记版式（`S01-S08`、`S10-S24`）,生成时要
         <div class="l brand"><img class="xreal-logo logo-inverse" src="assets/brand/xreal-logo-black.svg" alt="XREAL"><span>Section · Case / Visual Evidence</span></div>
         <div class="r">22 / NN</div>
       </div>
-      <div data-anim="title-block" style="position:absolute;left:5vw;top:11vh;background:var(--paper);padding:3.2vh 3.2vw;max-width:40vw">
-        <div style="font-family:var(--sans),var(--sans-zh);font-weight:var(--weight-title);font-size:min(5.2vw,9vh);line-height:1;letter-spacing:-.035em;color:var(--text-primary)">
+      <div data-anim="title-block" style="position:absolute;left:5vw;top:10.5vh;max-width:43vw;color:var(--paper)">
+        <div style="font-family:var(--sans),var(--sans-zh);font-weight:var(--weight-title);font-size:min(5.2vw,9vh);line-height:1;letter-spacing:-.035em;color:inherit">
           [必填] Image<br>Evidence
         </div>
       </div>
@@ -770,6 +792,8 @@ XREAL Style 有 23 个正式登记版式（`S01-S08`、`S10-S24`）,生成时要
 **注意**:
 - 柱高必须由 `data-value` 与 `--value` 对应真实数值；共同零基线不可截断。
 - 每个柱提供可见值或明确的 HTML 终值标签；纵轴单位与来源必填。
+- 使用 `--chart-safe-inline` 保护首末柱，使用 `--chart-value-headroom` 保护最高数值标签；不得让柱体或标签贴到绘图区边界。
+- `.chart-value` 使用整柱宽定位 `left:0;right:0;text-align:center`，不要用水平 transform 居中；否则 `chart-rise` 的纵向 transform 会覆盖它。`.chart-x-labels` 使用与柱组相同的左右安全 padding。
 - 最多 4 个系列，黑/深灰/浅灰承担常规系列，只允许一个关键系列使用 XREAL 红色。
 - 网格线保持 1px 中性 hairline；禁止渐变、3D、阴影、图标柱和装饰性多色。
 
@@ -1070,7 +1094,7 @@ XREAL Style 有 23 个正式登记版式（`S01-S08`、`S10-S24`）,生成时要
 
 ## 常犯错误(P0 检查项)
 
-1. ❌ 卡片各自使用不同圆角或保持生硬直角 → ✅ 卡片统一使用 `border-radius:var(--radius-sm)`（3px）；接触 x 轴的垂直柱体只圆顶部两角，底角保持直角
+1. ❌ 卡片各自使用不同圆角或保持生硬直角 → ✅ 卡片统一使用 `border-radius:var(--radius-sm)`（8px）；接触 x 轴的垂直柱体只圆顶部两角，底角保持直角；S19 Bento 只圆整体外框
 2. ❌ 在 `.card-accent` 上又加描边 → ✅ 卡片填充类型互斥
 3. ❌ 自己画 SVG 图标或 SVG 插画配图 → ✅ 图标用 Google Material Symbols Outlined；配图从 `assets/media/` 或用户素材中选择
 4. ❌ 时间线 dot 用 grid `justify-self` 对齐虚线 → ✅ axis 列固定 12px + dot 绝对定位

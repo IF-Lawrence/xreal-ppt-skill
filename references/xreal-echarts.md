@@ -83,7 +83,7 @@ window.XREAL_ECHARTS_OPTIONS = {
 - 透明背景；标题、图例、toolbox 由 HTML 版式控制，ECharts 内部默认关闭。
 - 黑、深灰、浅灰、银色为稳定系列色；仅一个系列或数据项可声明 `xrealCritical:true` 使用品牌红。
 - 坐标轴、网格和关系线使用 1px hairline；文字跟随整套 deck 字体。
-- 柱体从共同零基线长出；垂直柱仅顶部 3px 圆角，水平柱仅末端 3px 圆角。
+- 柱体从共同零基线长出；垂直柱仅顶部 8px 圆角，水平柱仅末端 8px 圆角。
 - 禁止 `shadowBlur`、`shadowColor`、`colorStops`、非空 `areaStyle`、`decal`、3D、发光和连续彩虹色带。
 - 热力图只使用 `visualMap.type="piecewise"` 的离散灰阶；关键区间可单独使用一个红色 piece。
 - ECharts 生成的运行时 SVG/Canvas 仅属于合法图表几何，不构成“代码绘制插画”的例外扩张。

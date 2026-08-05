@@ -7,11 +7,11 @@ description: 生成、改版和校验 XREAL 品牌风格的横向翻页网页演
 
 生成一份**单文件 HTML**的横向翻页 PPT，唯一视觉系统是 **XREAL Style**：
 
-- 封面与封底使用静态纯黑背景，正文使用纯白、浅灰或纯黑结构；
+- 封面与封底以静态纯黑为基底；语义匹配到合适的官方媒体时，优先使用受控全屏媒体背景，正文使用纯白、浅灰或纯黑结构；
 - 按整套 PPT 的语言语境选择品牌字体：纯英文使用 XREAL Diatype，中文或中英混排使用 IBM Plex Sans SC
-- 12/16 列网格、非对称留白、统一 3px 小圆角色块和 1px hairline
+- 12/16 列网格、非对称留白、统一 8px 小圆角色块和 1px hairline
 - 每份 deck 固定使用 XREAL 黑白灰品牌体系；红色只作为关键语义强调，不提供任意自定义颜色
-- 正文页使用 23 个锁定版式（`S01-S08`、`S10-S24`）；`S09` 已移除，首页/尾页使用明确登记的 XREAL 纯黑变体
+- 正文页使用 23 个锁定版式（`S01-S08`、`S10-S24`）；`S09` 已移除，首页/尾页使用明确登记的 XREAL 黑色基底变体
 - 支持键盘、滚轮、触屏、ESC 索引、Google Material Symbols Outlined 图标和 Motion One 入场动效
 - 复杂散点、热力、瀑布、箱线、桑基、关系和层级图可使用受控的 XREAL ECharts Component；它扩展现有版式，不增加正文版式编号
 
@@ -127,10 +127,11 @@ cp "<SKILL_ROOT>/assets/brand/xreal-logo-black.svg" "项目/XXX/ppt/assets/brand
 - 禁止按单个字符、文本框或页面的中英文内容拆分字体；一套 deck 只使用一套主字体
 - 纯英文 deck 将 `<html lang>` 设为 `en`；中文或中英混排 deck 设为 `zh-CN`
 - 每页 `chrome-min` 的品牌位置使用 `assets/brand/xreal-logo-black.svg`
-- 封面与封底的黑色区域使用 `#000000` 纯黑底，不添加 ASCII、点阵、纹理或动态装饰背景
-- 封底固定为全屏纯黑的品牌收束页：大号 `Thanks` 作为画面中心主视觉，小号反白 XREAL Logo 放在底部中央；不重复结论、takeaway、作者日期、页码或其他说明文字
-- Logo 默认独立出现，不在右侧附加说明文字；确需相邻文字时，文字视觉字高与 Logo 高度一致，并使用标准字距
+- 封面与封底使用 `#000000` 黑色基底；媒体审计命中时允许一张官方照片、KV、产品 beauty 或透明产品图作为全屏背景，不添加 ASCII、点阵、纹理、CSS 图形或动态装饰背景
+- 封底固定为品牌收束页：大号 `Thanks` 作为画面中心主视觉，小号反白 XREAL Logo 放在底部中央；匹配到安静的产品图时可作为低干扰背景，但不重复结论、takeaway、作者日期、页码或其他说明文字
+- Logo 默认独立出现，不在右侧附加说明文字；确需相邻文字时，文字视觉字高与 Logo 高度一致、使用标准字距，并与 Logo 保持至少 `1.6vw` 的明确间距
 - 正文页 `chrome-min` 使用紧凑导航级品牌尺寸；相邻文字字号由 Logo 宽度按字体度量分别计算，并与 Logo 垂直居中：IBM Plex Sans SC 使用 `.26`，XREAL Diatype 使用 `.313`。封面/封底才使用较大的品牌级尺寸
+- `chrome-min` 到首个正文块统一使用 `--chrome-content-gap:24px`，紧凑变体使用 `--chrome-content-gap-tight:16px`。不要在正文首块再叠加空白 margin 来补偿页眉；标题后的版式内部间距单独控制，避免整页内容被双重下推
 - 删除无信息价值的装饰角标、小标题和分割线；正文 bullet 使用实心圆点，不使用短横线
 - 所有可见文字默认使用自然大小写与标准字距；英文眉题、导航、标签、图注和页脚禁止整词组全大写，也不要依赖 CSS `text-transform: uppercase`
 - 全大写只保留给 XREAL 官方字标、行业通用缩写（如 AI、AR、KPI、PPT）和短型号代码；不得把普通英文单词全大写作为装饰
@@ -139,7 +140,11 @@ cp "<SKILL_ROOT>/assets/brand/xreal-logo-black.svg" "项目/XXX/ppt/assets/brand
 - 产品图标使用 Google Material Symbols Outlined，统一 `FILL 0`，不要使用 emoji、Lucide 或手绘 SVG 图标
 - 禁止 AI 或页面代码把人物、设备、场景、抽象科技图形绘制成 SVG、Canvas 或 CSS 插画配图；SVG 仅用于已有品牌资产和承担信息表达的图表、地图、流程、数据几何，并标记 `data-svg-role`
 - 黑、白、灰承担结构与信息层级；XREAL 红色仅用于关键数据/警示/关键操作语义，银色/金色仅作为极少量技术或价值标记
-- 卡片型实体块、图片框和控件统一使用 `--radius-sm:3px`；S04 Six Cells、S05 Three Layers、S06 KPI Tower、S07 Horizontal Bar、S13 Three Forces、S16 Multi-card Brief 必须应用该 token。S06/S23 等接触 x 轴的垂直柱体只保留顶部 3px 圆角，底角为直角并贴齐共同基线；独立 KPI cap 仍为四角小圆角。页面画布、分割线和坐标轴保持直线；禁止渐变、阴影、发光、大圆角、胶囊形、玻璃拟态或多色高亮
+- 卡片型实体块、图片框和控件统一使用 `--radius-sm:8px`；S04 Six Cells、S05 Three Layers、S06 KPI Tower、S07 Horizontal Bar、S13 Three Forces、S16 Multi-card Brief 必须应用该 token。S06/S23 等接触 x 轴的垂直柱体只保留顶部 8px 圆角，底角为直角并贴齐共同基线；独立 KPI cap 仍为四角小圆角。S19 Bento 只圆整体外框，内部区块保持直角。页面画布、分割线和坐标轴保持直线；禁止装饰性渐变、阴影、发光、大圆角、胶囊形、玻璃拟态或多色高亮。唯一例外是 full-bleed 照片/技术媒体为保护压图文字而使用的中性黑透明蒙版，可按文字位置由浅到深，但不得形成彩色或可感知的装饰渐变
+- S16 Multi-card Brief 默认六卡等权、全部使用中性白底卡；不得为了制造视觉焦点而强行强调。只有内容本身存在明确的首选、推荐、关键或风险优先级时，才允许最多一张 `.is-accent`，并必须添加 `data-emphasis="primary|recommended|critical|risk"` 说明语义
+- S04 `.sub-card` 与 S16 `.brief-card` 分别使用 `--sub-card-pad:2.2vh`、`--brief-card-pad:2.2vh`，四边内边距保持一致；禁止重新写成不同的 `vh / vw` 横纵 padding。S04 右上编号的 `top / right` 也必须使用同一个 `--sub-card-pad`
+- KPI / 图表展示级大数字的单位（如 `°`、`%`、`ms`、`Hz`、`in`）统一挂在数字右上肩位，使用 `vertical-align:text-top`、`--unit-mark-opacity:.62` 且不得与数字拆行；文字单位统一间距 `--unit-mark-gap:.18em`，角度使用更紧的 `--unit-degree-gap:.03em`。正文句子中的单位作为普通文本随正文基线。角度使用 Unicode `°` 或 `<sup class="unit-degree">°</sup>`，绝不使用下标；只有科学指数与数学/化学语义允许真正的上标或下标
+- 中文与中英混排标题保持正体，禁止在 `h1` / `h2` / `h3` 或标题类中使用斜体；纯英文标题如确有必要，只允许一次克制的斜体强调
 - 保留方向键翻页、`B` 静态模式和 `ESC` 索引功能，但不在页面右下角显示操作提示
 - 页面不显示 `01 / 09`、`06 / 07` 等页码；顺序通过底部导航和演讲结构表达
 - 底部导航只作为弱提示：亮底普通点透明度 `.08`、当前点 `.18`；暗底普通点 `.10`、当前点 `.22`。不要用不透明黑色、白色或 `var(--accent)` 显示当前点
@@ -161,9 +166,13 @@ cp "<SKILL_ROOT>/assets/brand/xreal-logo-black.svg" "项目/XXX/ppt/assets/brand
 - 网格：`grid-12`、`grid-2-9`、`grid-2-9-5`、`span-N`
 - 卡片：`card-ink`、`card-accent`、`card-fill`、`card-outlined`
 - 图表：`kpi-tower-row`、`bar-tower`、`h-bar-chart`、`timeline-v`、`timeline-h`、`xreal-pie-layout`、`xreal-pie-legend`；复杂图表扩展使用 `xreal-echart-stage`、`xreal-echart`
-- 信息组：`xreal-bento`；统一使用 `--radius-sm:3px`、无阴影，一个红色语义点
+- S02 纵向时间线必须显式标出列含义，并让每个节点形成“时间 + 同口径指标 + 阶段名称 + 体验影响”四层语义。使用 `.tl-head`、`.tl-axis > .dot`、`.yr`、`.multi`、`.tl-copy > .tl-stage + .tl-impact`；节点圆点必须真实可见并与贯穿轴居中，不能退化成没有方向关系的三列表格。
+- S17 系统关系图必须先声明 `data-system-grammar="flow|hierarchy|network|containment"`。默认优先使用可复用的 HTML 节点和连接语义；只有内容确实表达 core/middle/outer 的包含关系时才使用同心圆。因果传递使用 flow，组织分层使用 hierarchy，多对多依赖使用 network；不得为了“像系统图”而放三个没有信息增量的圆。
+- S17 左侧只保留 `.system-kicker + .system-thesis + .system-summary`，用于一句结论和一段解释；右侧 `[data-system-grammar]` 承载唯一关系结构，两列顶部误差不得超过 16px。flow 语法使用 `.system-flow`，禁止在左侧再复制 Process / Orchestrate / Deliver 等阶段列表，也禁止出现“这里表达的是”“不是套圈”“图的目的是”等制作说明式文案。
+- S23 分组柱图使用 `--chart-safe-inline` 为首末柱预留左右安全区，使用 `--chart-value-headroom` 为最高柱的数值标签预留顶部空间。`.chart-value` 必须以 `left:0;right:0;text-align:center` 覆盖整根柱宽，不使用 `translateX(-50%)` 居中，避免 `chart-rise` 的纵向 transform 覆盖后标签偏移；`.chart-x-labels` 使用相同左右 padding 保持类别中心对齐。
+- 信息组：`xreal-bento`；整体外框使用 `--radius-sm:8px`、内部区块直角、无阴影，一个红色语义点
 - 装饰：`hr-hairline`
-- 图片：`frame-img`、`fit-contain`、`r-21x9`、`r-16x9`、`r-16x10`、`h-22`、`h-26`、`swiss-lined`
+- 图片：`frame-img`、`fit-contain`、`r-21x9`、`r-16x9`、`r-16x10`、`h-22`、`h-26`、`swiss-lined`；卡片媒体使用 `card-media-slot`、`stack-card-media`、`bento-hero-media`
 
 #### 3.1 · 选择媒体资产
 
@@ -188,9 +197,27 @@ cp "<SKILL_ROOT>/assets/brand/xreal-logo-black.svg" "项目/XXX/ppt/assets/brand
 | `<product-line>/05-lifestyle/` | 佩戴场景、人物使用、工作与生活环境 |
 | `<product-line>/06-conceptual/` | 概念视觉、氛围图、未来感和叙事性视觉 |
 
-企业 XREAL Logo 继续使用 `assets/brand/xreal-logo-black.svg`；产品标志只能从当前产品线的 `00-product-marks/` 选择，用于封面、章节页或产品识别，不替代每页 `chrome-min` 中的企业 Logo。不得重绘、改字距、变形、拼接或自行改色；优先使用资产库中与背景匹配的官方黑版/白版。缺少产品标志时使用产品名称文字，不要仿制 Logo。
+企业 XREAL Logo 继续使用 `assets/brand/xreal-logo-black.svg`；产品标志只能从当前产品线的 `00-product-marks/` 选择，用于封面、章节页、S12 宣言横幅或其他明确产品识别位，不替代每页 `chrome-min` 中的企业 Logo。不得重绘、改字距、变形、拼接或自行改色；优先使用资产库中与背景匹配的官方黑版/白版。缺少产品标志时使用产品名称文字，不要仿制 Logo。
+
+S12 manifesto 中的产品标志只承担身份落款，不是第二主标题。放在 `.ink-banner-full` 时，其渲染宽度控制在横幅宽度的 18%-26%，标准值为 `min(23vw,320px)`，并保持官方比例；不得通过放大产品标志与 manifesto 主标题争抢层级。
+
+在图片媒体编排前先做一次产品身份审计：若整套内容明确围绕单一产品，给 `<body>` 添加 `data-product-line="<slug>"`，检查该产品线 `00-product-marks/`。存在官方标志时，至少在一个高价值产品识别位使用 `.xreal-product-mark[data-image-slot="product-mark"][data-media-role="product-identity"]`，并将选中的 SVG 复制到 `images/`；不得继续用手打产品名代替已有官方标志。不要每页重复产品标志，也不要把它塞进 `chrome-min`。
 
 同一产品 deck 默认只使用对应产品线资产；只有产品对比页才可跨产品线取图，并保持相同资产类型、比例与视觉尺度。先选版式和图片槽位，再按内容角色、画幅比例和主体安全区选择素材。只把选中的素材复制到项目 `images/`，不要修改资产库原文件。没有合适素材时，改用无图版式或向用户说明缺少哪类图片；不要生成图片、调用外部图库或临时绘制替代。
+
+先制作内部媒体编排表：`文件 → 内容语义 → 画幅/透明通道 → 主体安全区 → 候选页面 → 最终槽位`。不得只复制素材而不分配页面；最终 `images/` 中未被 HTML 引用的文件必须清理或明确保留原因。
+
+封面与封底必须分别声明 `data-media-match="matched|none"`：
+
+- 封面先评估 `03-hero-key-visuals`、`05-lifestyle`、`06-conceptual` 与横版 `02-product-beauty`。能直接支撑 deck 主张、具有约 30% quiet zone 且标题保持高对比时，使用 `.xreal-cover-media`、`data-image-slot="cover-background"` 和 `data-media-role="cover-background"`；否则写 `none` 并保持纯黑。
+- 封底先评估与封面不同的低干扰 lifestyle、conceptual 或品牌 KV，概念图有合适 quiet zone 时优先于标准产品图。能在不削弱 `Thanks` 与底部 Logo 的前提下形成氛围收束时，使用 `.xreal-closing-media`、`data-image-slot="closing-background"`、`data-media-role="closing-background"`、`data-media-kind="lifestyle|conceptual|brand-kv"`、`data-media-fit="full-bleed"` 和 `data-media-contrast="darken"`；只有所有候选都未通过语境、裁切和对比度检查时才写 `none`。封底禁止直接使用透明产品 cutout、白底产品图、标准产品角度或 packshot。
+- 封面与封底默认使用不同素材；仅当素材池只有一张合适图片且“首尾呼应”是明确叙事意图时才允许复用。媒体背景不计为新正文版式。
+- 不设机械的“每页一图”配额；优先覆盖封面、封底、章节 Hero 和需要视觉证据的正文页。素材数量多时提高有效覆盖率，仍以语义匹配和可读性优先。
+- 技术卡片可以配图，但先判断媒体是否能解释该技术点，而不是只填空白。S04 最多为 1-2 张 `.sub-card.has-media` 增加 `.card-media-slot[data-media-role="technical-evidence"]`；紧边透明 cutout 使用 `data-media-fit="inset"` + contain，主体在画布内偏小或卡片留白明显时使用 `data-media-fit="inset-prominent"` + cover，高度约占父卡 28%-45%、宽度至少占父卡 80%，与文字分区且不加蒙版。
+- S05 最多为一个核心 `.stack-block.has-media` 增加 `.stack-card-media[data-media-role="technical-evidence"]`。短文案与低干扰横版媒体可使用 `.media-full-bleed`、`data-media-fit="full-bleed" data-media-contrast="darken"` 全幅铺底；通过渐变深色蒙版保护底部文字，同时保留 `.layer-icon` 作为语义标记。只有媒体主体与图标明显冲突时才调整图标位置，不因配图自动删除图标。若素材不适合压字，回退到 inset/contain，高度约占父卡 18%-45%。
+- S19 Bento 的大面积 `.hero` 主卡在存在合适 lifestyle / contextual 媒体且文字较少时，可以使用 `.hero.has-media + .bento-hero-media[data-media-role="context-evidence"]` 全幅铺底，并声明 `data-media-fit="full-bleed" data-media-contrast="darken"`。媒体应在宽高两个方向覆盖父卡至少 95%；文字直接反白，不叠白色或半透明面板。统一通过 `--media-scrim-alpha:.38` 加深色蒙版，可在 `.28-.48` 内按素材亮度微调，同时保留图片细节；S19 仍只圆整体外框，媒体和内部 article 不增加独立圆角。
+- 只有文字直接叠在照片或场景媒体上时才使用深色蒙版；图片与文字互不重叠的 inset / contain 证据图不加蒙版。若 `.48` 仍无法保证可读性，应更换图片、调整 `object-position` 或改为无图版式，而不是继续压暗。
+- 不给信息已经密集、没有清晰媒体对应关系或需要保真阅读的卡片硬塞图片；此时保留留白是正确选择。
 
 媒体文件名使用 `场景-人物-行为-构图-比例.ext` 顺序；人物或行为不适用时可以省略，但必须保留可检索语义。构图统一使用 `横版`、`竖版`、`方图`，常用比例使用 `21x9`、`16x9`、`4x3`、`3x2`、`2x3`、`3x4` 或 `1x1`；不属于常用比例时按实际像素比写成简化值，例如 `2.47x1`，不要沿用原文件名中的误标比例。产品线和资产类型由父级目录表达，不在文件名中重复；同语义不同版本追加 `-v2`、`-detail` 等后缀。
 
@@ -208,7 +235,7 @@ cp "<SKILL_ROOT>/assets/brand/xreal-logo-black.svg" "项目/XXX/ppt/assets/brand
 
 正文页只能使用 23 个已登记版式（`S01-S08`、`S10-S24`）；`S09` 已移除。首页/尾页只能使用 `XREAL-COVER-BLACK` / `XREAL-CLOSING-BLACK`。每个 section 必须写 `data-layout="Sxx"`。
 
-封底 `XREAL-CLOSING-BLACK` 必须是整套 deck 的最后一个 section，并使用 `.slide.accent + .xreal-closing-lockup + .xreal-closing-thanks + .xreal-closing-mark + .xreal-closing-logo` 骨架与 `data-animate="closing-thanks"`。大号 `Thanks` 居中，小号企业 Logo 固定在底部中央；进入该页时隐藏底部分页导航。所有结论与行动建议应在封底前一页完成。
+封底 `XREAL-CLOSING-BLACK` 必须是整套 deck 的最后一个 section，并使用 `.slide.accent + .xreal-closing-lockup + .xreal-closing-thanks + .xreal-closing-mark + .xreal-closing-logo` 骨架与 `data-animate="closing-thanks"`。大号 `Thanks` 居中，小号企业 Logo 固定在底部中央；可按 `data-media-match` 使用安静的官方媒体背景。进入该页时隐藏底部分页导航。所有结论与行动建议应在封底前一页完成。
 
 | 版式 | 用途 |
 |---|---|
@@ -233,10 +260,11 @@ cp "<SKILL_ROOT>/assets/brand/xreal-logo-black.svg" "项目/XXX/ppt/assets/brand
 #### 3.4 · 图片与截图
 
 - S22 主图优先从当前产品线的 `03-hero-key-visuals/`、`02-product-beauty/` 或 `05-lifestyle/` 选择接近 `21:9` 且主体位于中央安全区的素材
+- S22 图片上的标题直接叠加为高对比文本，不套白底卡片、色块或半透明面板；如果无法找到稳定的高对比落点，调整裁切或更换图片
 - S15/S16 多图组统一比例、统一高度和统一 caption 密度
 - 证据截图、UI、代码和 dashboard 保真优先，默认使用 `fit-contain`，不要为统一比例重画内容
 - 资产比例匹配槽位时铺满目标 frame；比例不匹配时使用 `fit-contain` 或更换版式，不要强行裁掉产品主体
-- 图片容器统一使用 `--radius-sm:3px`、无阴影；默认不加外框，只在必要时使用 `.swiss-lined`
+- 图片容器统一使用 `--radius-sm:8px`、无阴影；默认不加外框，只在必要时使用 `.swiss-lined`
 - 配图只使用 `assets/media/` 或用户提供的 PNG/JPG/JPEG/WebP 文件；禁止用内联 SVG、Canvas 或 CSS 图形临时绘制插画配图
 - 如果素材自带与当前页面冲突的标题、页脚、页码、logo、角标或署名，换用其他资产或无图版式，不要重绘素材
 - 所有图片、caption、timeline label、footnote 都必须避开底部分页区，必要时使用 `.nav-safe-bottom`
@@ -273,7 +301,7 @@ node <SKILL_ROOT>/scripts/validate-swiss-deck.mjs path/to/index.html
 
 1. 标题是否左上对齐，并使用与语言语境一致的 500/600 稳定字重
 2. 图片、正文、caption 是否吸附到同一网格轴
-3. 是否出现渐变、阴影、发光、霓虹、大圆角、胶囊形、多个 accent、自绘 SVG 插画或不必要的装饰
+3. 是否出现装饰性渐变、阴影、发光、霓虹、大圆角、胶囊形、多个 accent、自绘 SVG 插画或不必要的装饰；full-bleed 媒体仅允许为文字可读性使用中性黑透明蒙版
 4. 最低内容是否进入分页安全区
 5. 动效稳定后再判断版式；需要时按 `B` 验证静态模式仍可读
 
@@ -297,14 +325,14 @@ node "<SKILL_ROOT>/scripts/validate-swiss-deck.mjs" "项目/XXX/ppt/index.html"
 
 1. **黑白灰结构 + 红色语义**：黑色承担结构，红色只在关键位置出现。
 2. **语境化无衬线排版**：纯英文 deck 使用 XREAL Diatype，中文或中英混排 deck 使用 IBM Plex Sans SC；任何衬线字体或按字符混用品牌字体都是错的。
-3. **卡片小圆角**：卡片型实体块统一使用 `--radius-sm:3px`，尤其是 S04/S05/S06/S07/S13/S16；S06/S23 等基线柱体只圆顶部两角，底角为 0 并贴齐 x 轴；页面画布、分割线和坐标轴保持直线；禁止渐变、阴影、发光、霓虹、大圆角和胶囊形。
+3. **卡片小圆角**：卡片型实体块统一使用 `--radius-sm:8px`，尤其是 S04/S05/S06/S07/S13/S16；S06/S23 等基线柱体只圆顶部两角，底角为 0 并贴齐 x 轴；S19 Bento 只圆整体外框、内部区块直角；页面画布、分割线和坐标轴保持直线；禁止装饰性渐变、阴影、发光、霓虹、大圆角和胶囊形。full-bleed 媒体为保护文字使用的中性黑透明蒙版不属于装饰性渐变。
 4. **网格至上**：元素吸附到 12/16 列 grid，左对齐，用留白制造非对称。
 5. **角色化字体层级**：主标题与正文保持明显层级；纯英文主标题默认 500，中文或中英混排主标题默认 600，正文 400，标签 500。
 6. **图片是证据**：先匹配槽位和比例，再生成或适配图片。
 7. **动效可降级**：每页使用语义化 recipe；`B` 键必须能切换到静态可读状态。
 8. **版式必须登记**：正文只从 `S01-S08`、`S10-S24` 选择；`S09` 已移除，实验结构必须显式标记。
 9. **复杂图表受控**：ECharts 只负责复杂数据几何、布局与交互，必须使用 XREAL 主题、类型白名单和离线单文件流程，不得带入默认 dashboard 视觉。
-10. **封面纯黑**：封面与封底黑色区域使用 `#000000`，不使用 ASCII、纹理或动态背景。
+10. **开场/收束媒体**：封面与封底使用 `#000000` 基底并声明 `data-media-match`；命中合适官方媒体时使用登记的背景类，不使用 ASCII、纹理、CSS 图形或动态背景。
 11. **减法优先**：移除无信息价值的角标、眉题和分割线；bullet 统一使用实心圆点。
 12. **自然大小写**：英文短语使用 sentence case / natural case 与标准字距；全大写仅用于品牌字标、通用缩写和短型号代码。
 

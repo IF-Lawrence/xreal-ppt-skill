@@ -136,20 +136,22 @@ node <SKILL_ROOT>/scripts/validate-swiss-deck.mjs path/to/index.html
 
 例外:head 一行同时承载"左:kicker+大标题(自己上下叠)"和"右:小注脚",外层可以用 `display:grid;grid-template-columns:1fr auto`,但**内层**仍要保持 flex column。
 
-### 0-B-2. XREAL Style 封面 / 封底默认:纯黑背景 + 极简品牌收束
+### 0-B-2. XREAL Style 封面 / 封底:黑色基底 + 语义匹配媒体 + 极简品牌收束
 
 **现象**:封面用 `slide light` 白底 + 黑字 + 一个大大的"01"，或页眉出现 `01 / 07` 等计数；数字与内容无关，形成多余角标。
 
 **根因**:封面和封底承担不同职责。封面需要建立主题，封底只需要品牌落款；把 takeaway、作者日期和宣言继续堆在封底会削弱结束感。
 
 **做法**(XREAL Style 必守):
-- **封面强制 `<section class="slide accent">`**(满屏黑色),不要 `slide.light`,也不要 `slide.dark`;黑色区域保持纯黑,禁止 ASCII、点阵、纹理、噪点和动态装饰背景
+- **封面强制 `<section class="slide accent">`**并以纯黑为基底,不要 `slide.light`,也不要 `slide.dark`;先审计当前产品线的 KV、lifestyle、conceptual 与横版 beauty。命中合适素材时使用 `.xreal-cover-media`,没有合适素材才保持纯黑；禁止 ASCII、点阵、纹理、噪点、CSS 图形和动态装饰背景
+- 封面与封底都必须声明 `data-media-match="matched|none"`。`matched` 时图片必须来自 `images/`、带 `data-image-slot` 与正确 `data-media-role`;`none` 表示已完成媒体审计但没有适配素材
 - **页面不显示页码**：删除页眉、Logo 后、角标和封面大字中的 `01 / N`、`NN / NN` 等计数
 - **强调字可用斜体**,但保持与主标题相同字重或升至强调字重,不要降成 Light；黑底页面默认不额外上色
-- **封底强制 `<section class="slide accent">`** 全屏纯黑，使用大号 `.xreal-closing-thanks` 作为居中主视觉，小号 `.xreal-closing-logo` 通过 `.xreal-closing-mark` 固定在底部中央
+- **封底强制 `<section class="slide accent">`** 使用黑色基底，大号 `.xreal-closing-thanks` 作为居中主视觉，小号 `.xreal-closing-logo` 通过 `.xreal-closing-mark` 固定在底部中央；存在匹配的低干扰 lifestyle、conceptual 或品牌 KV 时可使用 `.xreal-closing-media` 背景。禁止直接放透明产品 cutout、白底产品图或 packshot
 - 封底必须是最后一个 section，进入该页时隐藏底部分页导航；不放 takeaway、宣言、作者日期、页码、联系方式、CTA、眉题或装饰线，所有结论在前一页完成
 - Logo 默认独立,右侧不接 deck 名、章节名或风格说明;确有导航文字时,文字标准字距且视觉字高与 Logo 一致
 - 正文页 chrome 品牌区使用紧凑导航级尺寸；IBM Plex Sans SC 相邻文字按 Logo 宽度的 `.26` 计算，XREAL Diatype 按 `.313` 计算，并与 Logo 垂直居中；封面/封底才使用较大品牌级尺寸
+- 页眉到首个正文块使用 `--chrome-content-gap:24px`，紧凑变体使用 `16px`；不要使用 48px 全局下间距，也不要让首块额外 margin 与页眉间距叠加
 - 普通英文眉题、导航、标签、图注和页脚使用自然大小写;禁止整词组全大写,也禁止 CSS `text-transform:uppercase`
 - 全大写只允许 XREAL 字标、行业通用缩写和短型号代码;辅助文字 `letter-spacing` 默认 normal,最大不超过 `0.05em`
 - 删除无信息价值的角标、`MANIFESTO` 式重复小标题和封面底部分割线
@@ -159,6 +161,8 @@ node <SKILL_ROOT>/scripts/validate-swiss-deck.mjs path/to/index.html
 - `rg -n "ascii-bg" index.html`——应无结果
 - `grep -E '"slide accent"' index.html | head -1`——封面应是 `slide accent` 而非 `slide light`
 - `rg -n 'data-layout="XREAL-(COVER|CLOSING)-BLACK"' index.html`——封面和封底应各命中一次
+- `rg -n 'data-layout="XREAL-(COVER|CLOSING)-BLACK"[^>]*data-media-match="(matched|none)"' index.html`——封面和封底都应声明媒体匹配结果
+- `rg -n 'xreal-(cover|closing)-media[^>]*data-media-role="(cover|closing)-background"' index.html`——声明 `matched` 的页面应命中对应媒体角色
 - `rg -n 'data-layout="XREAL-CLOSING-BLACK"[^>]*data-animate="closing-thanks"' index.html`——封底应命中极简品牌封底 recipe
 - `rg -n 'xreal-closing-lockup|xreal-closing-thanks|xreal-closing-mark|xreal-closing-logo' index.html`——四个封底骨架类都应存在
 - `grep "color:var(--accent)" index.html`——若命中行同时含 `font-style:italic` 即危险信号,改为只 italic 不上色;关键数据或警示才使用 `var(--brand-red)`
@@ -244,6 +248,12 @@ node <SKILL_ROOT>/scripts/validate-swiss-deck.mjs path/to/index.html
 - 照片/产品图/人物图:必须写清 `object-position`,主体不能被裁切、标题块或 caption 压住。
 - 文字压图:必须先判断是否有足够 quiet zone;没有低细节留白就不要把标题压在图上。
 - 多图组:统一比例、高度、容器样式和 caption 密度;视觉角色不同的图不要硬放同一组。
+- 开场/收束媒体:封面优先叙事性 KV、lifestyle、conceptual 与横版 beauty；封底只选低干扰 lifestyle、conceptual 或品牌 KV，不直接使用产品 cutout / packshot。两者都必须先判断 quiet zone 和品牌文字对比。
+- 产品身份审计:单一产品 deck 在 `<body>` 声明 `data-product-line`，先检查对应 `00-product-marks/`。存在官方产品标志时至少使用一次 `.xreal-product-mark` 产品识别位；企业 XREAL Logo 仍独占 `chrome-min`。
+- 稀疏卡片媒体:S04 最多 1-2 张技术卡、S05 最多一个核心层、S19 仅 Bento hero 主卡可按语境配图。媒体必须解释内容并使用登记槽位；不能只因为有空白就填图。
+- S04 卡内证据图:紧边 cutout 使用 `inset` + contain；源画布留白大时使用 `inset-prominent` + cover，高度占父卡 28%-45%、宽度至少 80%。与文字不重叠，不加蒙版。
+- S05 大卡媒体:有低干扰文字区的横版技术图可使用 `.media-full-bleed` + `full-bleed/darken`，宽高覆盖父卡至少 95%，通过渐变蒙版保护文字；否则使用 inset/contain。默认保留 `.layer-icon`，不因配图自动删除。
+- 全幅背景媒体:S19 hero 使用 `data-media-fit="full-bleed" data-media-contrast="darken"` + `object-fit:cover`，宽高覆盖父卡至少 95%；反白文字直接压图时用 `.28-.48` 的统一深色蒙版（标准 `.38`），不叠白底/半透明文字面板。若仍不可读，换图或改裁切，不继续压暗。
 
 **做法**:
 - 先选版式:单张大图 + KPI 用 `S22`;多图用 `S15/S16` 的原始网格骨架改造
@@ -254,6 +264,7 @@ node <SKILL_ROOT>/scripts/validate-swiss-deck.mjs path/to/index.html
 - 多图同组必须统一槽位、比例、高度,不要混用
 - 用户原始截图优先保真并使用 `fit-contain`;不要为了比例统一就重画截图内容
 - 配图必须来自 `assets/media/` 或用户明确提供的素材;禁止调用外部图库、图片生成流程，或用内联 SVG、Canvas、CSS 图形绘制插画配图
+- 只将已分配槽位的素材复制到 `images/`;最终目录中的未引用媒体必须清理或记录保留原因。不要为了消耗素材机械地一页一图，但素材充足且匹配时，不应只在全 deck 使用一张
 
 - 文字压图 / 全屏主视觉必须先做 quiet-zone 判断:至少约 30% 低细节区域可承载标题;不通过就换图、换裁切或改成图文分栏,不要整页套黑色/白色遮罩
 
@@ -262,8 +273,9 @@ node <SKILL_ROOT>/scripts/validate-swiss-deck.mjs path/to/index.html
 - `rg -n "box-shadow" index.html | rg -v "box-shadow\s*:\s*none"`——命中非空阴影就删除
 - `rg -n "<svg\\b" index.html`——每个内联 SVG 都必须是图表、地图、流程或数据几何，并声明合法 `data-svg-role`
 - `grep -n "data-image-slot" index.html`——每张本地图片都应有槽位声明
+- `find images -maxdepth 1 -type f` 与 HTML 中 `src="images/` 的去重清单应核对；Validator 会提示已复制但未引用的媒体
 - 目视:图片内部如果自带冲突的大标题、页码、页脚或角标,换用其他资产或无图版式,不要在页面里裁切硬救
-- 目视:截图外侧背景应该安静托底,不能比截图本身更抢眼;XREAL Style 截图统一 3px 小圆角且不使用投影
+- 目视:截图外侧背景应该安静托底,不能比截图本身更抢眼;XREAL Style 截图统一 8px 小圆角且不使用投影
 
 ### 0-D-2. XREAL Style 底部分页安全区:最低处不要碰 nav
 
@@ -315,9 +327,9 @@ node <SKILL_ROOT>/scripts/validate-swiss-deck.mjs path/to/index.html
 **做法**:
 - 仓库内的 `assets/template-xreal.html` 是 XREAL Style 的 golden source 快照,但要以**实际页面用法**为准,不要只看未使用的 CSS helper
 - 标题字重按固定角色表执行：`.h-hero` / `.h-xl` / `.h-hero-zh` / `.h-xl-zh` 使用 `var(--weight-display)`；纯英文为 500，中文或中英混排为 600
-- 除品牌层、封面/封底纯黑机制、S22 图片槽位修复、横向时间线 label 居中修复、角色化字重层级和已登记组件规则外,不要改动原始基座 CSS/JS recipe
+- 除品牌层、封面/封底黑色基底与媒体匹配机制、S22 图片槽位修复、横向时间线 label 居中修复、角色化字重层级和已登记组件规则外,不要改动原始基座 CSS/JS recipe
 - 新增图片能力必须绑定到 S22/S15/S16 原始槽位,不要发明新正文结构
-- 如果要修改 `assets/template-xreal.html`,先做原始参考对比;可接受差异只应是品牌层、纯黑封面/封底、S22 图片定位类、角色化字重 token、标准字距、实心圆点和已知动效修复
+- 如果要修改 `assets/template-xreal.html`,先做原始参考对比;可接受差异只应是品牌层、封面/封底黑色基底与媒体匹配、S22 图片定位类、角色化字重 token、标准字距、实心圆点和已知动效修复
 
 **自检命令**:
 - 运行本次测试目录里的 `compare-swiss-base.mjs`,确认输出里 `missing in template: 0`
@@ -388,13 +400,13 @@ CSS 里 `.frame-img img` 已经预设 `object-position:top`，只裁底。
 
 ### 2b. XREAL Style 必须保持静态纯色背景
 
-**现象**:页面出现网格、点阵、噪点、shader 或动态背景，黑色封面不再纯净。
+**现象**:页面出现网格、点阵、噪点、shader 或动态背景，或封面媒体与主题无关、影响文字可读性。
 
 **根因**:移除了 `<body class="canvas-mode">`，或重新启用了模板中的遗留背景 canvas。
 
 **做法**:
 - 保留 `<body class="canvas-mode">`，不要启用或重建背景 canvas。
-- 封面/封底黑色区域固定 `#000000`；正文只用 `var(--paper)`、`var(--grey-1)` 或 `var(--ink)`。
+- 封面/封底固定使用 `#000000` 基底；只有通过语义匹配的官方媒体可作为背景。正文只用 `var(--paper)`、`var(--grey-1)` 或 `var(--ink)`。
 - slide 仍需明确带 `light` / `dark` / `accent` / `split` 类，以便导航与反色 Logo 正确工作。
 
 ### 2b-2. 整个 deck 全是 light,没有节奏
@@ -466,7 +478,7 @@ CSS 里 `.frame-img img` 已经预设 `object-position:top`，只裁底。
 
 **现象**：为了"高级感"加了强阴影或黑框，瞬间变成商务 PPT。
 
-**做法**：图片统一使用 `--radius-sm:3px`、静态纯色托底；不要加底噪、`box-shadow`、发光或装饰性边框。结构确有需要时只使用 1px hairline。
+**做法**：图片统一使用 `--radius-sm:8px`、静态纯色托底；不要加底噪、`box-shadow`、发光或装饰性边框。结构确有需要时只使用 1px hairline。
 
 ---
 
@@ -529,7 +541,7 @@ Hero Cover → Act Divider (hero) → 3-4 pages non-hero → Act Divider (hero)
 
 ### 10. 背景只使用静态纯色
 
-- 封面和封底黑色区域：`#000000`。
+- 封面和封底基底：`#000000`；可叠加通过语义匹配的官方媒体背景。
 - light 页面：`var(--paper)` 或 `var(--grey-1)`。
 - dark 页面：`var(--ink)`。
 - 不使用透明遮罩来透出 WebGL、图片纹理或动态装饰。
@@ -538,9 +550,9 @@ Hero Cover → Act Divider (hero) → 3-4 pages non-hero → Act Divider (hero)
 
 Spiral、FBM、Holographic Dispersion、ASCII、点阵、纹理和持续 RAF 动画都不属于 XREAL Style。视觉冲击由构图、字重、留白、产品图和单一红色信号建立。
 
-### 12. Dark hero 保持纯黑和克制
+### 12. Dark hero 保持克制
 
-Dark hero 不添加 shader 或装饰场；通过静态纯黑背景、明确主张和必要的产品证据形成开场冲击。
+Dark hero 不添加 shader 或装饰场；通过静态黑色基底、明确主张和必要的官方媒体证据形成开场冲击。
 
 ### 13. 左文右图的对齐
 
@@ -581,9 +593,19 @@ Dark hero 不添加 shader 或装饰场；通过静态纯黑背景、明确主�
 - 任一行 9-12 个中文字符时降到 `min(5.2vw,9.2vh)`
 - 3 行标题优先改写,不能为了标题大而挤掉下方图文内容
 
-### 14. 卡片型实体块与图片统一使用 3px 小圆角，基线柱体底角保持直角
+### 14. 卡片型实体块与图片统一使用 8px 小圆角，基线柱体底角保持直角
 
-XREAL Style 的 `.frame-img`、`.sub-card`、`.stack-block`、KPI Tower 的 `.cap`、Horizontal Bar 的 `.row-track/.row-fill`、Three Forces 的 `.hero-ink-col/.force-card`、Multi-card Brief 的 `.brief-card` 统一使用 `border-radius:var(--radius-sm)`（3px）。KPI Tower 的 `.body-block`、S23 `.chart-bar` 和同类垂直柱体只保留 2-4px 顶部圆角，底部两角必须为 `0` 并与共同 x 轴齐平。页面画布、分割线和坐标轴保持直线；不使用阴影、大圆角、胶囊形或消费 app 式卡片感。
+XREAL Style 的 `.frame-img`、`.sub-card`、`.stack-block`、KPI Tower 的 `.cap`、Horizontal Bar 的 `.row-track/.row-fill`、Three Forces 的 `.hero-ink-col/.force-card`、Multi-card Brief 的 `.brief-card` 统一使用 `border-radius:var(--radius-sm)`（8px）。KPI Tower 的 `.body-block`、S23 `.chart-bar` 和同类垂直柱体只保留 7-9px 顶部圆角，底部两角必须为 `0` 并与共同 x 轴齐平。S19 Bento 仅整体外框圆角，内部区块必须为直角。页面画布、分割线和坐标轴保持直线；不使用阴影、大圆角、胶囊形或消费 app 式卡片感。
+
+### 14a. Multi-card Brief 默认等权，强调必须有语义依据
+
+默认六张 `.brief-card` 都使用白底 + 1px 中灰边界，不为了制造焦点强行涂黑一张。只有内容明确存在首选、推荐、关键或风险优先级时，才允许最多一张 `.is-accent`，并添加 `data-emphasis="primary|recommended|critical|risk"`；强调卡使用黑底、白色标题和约 74% 白色辅助文字。
+微卡四边统一使用 `--brief-card-pad:2.2vh`；上下左右的计算后 padding 应一致，不混用不同的 `vh` 与 `vw`。
+S04 `.sub-card` 同样使用 `--sub-card-pad:2.2vh` 保持四边相等；右上 `.nb-corner` 的 `top / right` 也必须相等。
+
+### 14b. 单位和中文标题
+
+KPI / 图表中的展示级单位统一挂在数字右上肩位：`°`、`in`、`Hz`、`ms`、`%` 都使用 `vertical-align:text-top` 和 `.62` 中性透明度，并保持数字 + 单位不可拆行。文字单位与数字间距为 `.18em`；`°` 使用 `.03em` 的紧间距。正文句子中的单位作为普通文本随正文基线。角度写作 `57°` 或 `57<sup class="unit-degree">°</sup>`，禁止 `<sub>°</sub>`。中文或中英混排标题保持正体，不使用 `<i>`、`<em>` 或 `font-style:italic`。
 ---
 
 ## 🔵 P3 · 操作细节
@@ -624,18 +646,26 @@ JS 动态计算总页数并扩展底部翻页圆点；页面内容层不得再�
   □ XREAL:已按整套 PPT 语境选择主字体——纯英文为 XREAL Diatype,中文或中英混排为 IBM Plex Sans SC
   □ XREAL:未按字符、文本框或页面混用两套品牌字体
   □ XREAL:每页 chrome-min 的品牌位置使用 XREAL Logo,深色背景反白
+  □ XREAL:已建立媒体编排表；只复制已分配槽位的素材，`images/` 不存在无说明的孤儿媒体
   □ XREAL:产品图标使用 Google Material Symbols Outlined,统一 `FILL 0`
   □ XREAL:红色仅用于明确的关键数据/警示语义,不成为第二套页面 accent
-  □ XREAL Style:封面是 `slide accent` 满屏纯黑(不是 `slide light` 白底),data-layout 为 `XREAL-COVER-BLACK`
-  □ XREAL Style:封底是最后一页，使用 `slide accent` 全屏纯黑 + 居中大号 `Thanks` + 底部中央小号 XREAL Logo,data-layout 为 `XREAL-CLOSING-BLACK`
+  □ XREAL Style:封面是 `slide accent` 黑色基底(不是 `slide light` 白底),data-layout 为 `XREAL-COVER-BLACK`，并声明 `data-media-match`
+  □ XREAL Style:封底是最后一页，使用 `slide accent` 黑色基底 + 居中大号 `Thanks` + 底部中央小号 XREAL Logo,data-layout 为 `XREAL-CLOSING-BLACK`，并声明 `data-media-match`
+  □ XREAL Style:当封面/封底存在合适媒体时已使用对应 `.xreal-cover-media` / `.xreal-closing-media`；若为 `none`，确实没有通过语义、quiet zone 与对比度检查的素材
   □ XREAL Style:`rg -n "ascii-bg" index.html` 无结果
   □ XREAL Style:封面、页眉、Logo 后和角标均没有页码或"01"等无语义编号
-  □ XREAL Style:黑色背景上的强调字用 `font-style:italic`,禁止用额外颜色
-  □ XREAL Style:Logo 默认独立;相邻文字如存在,字高与 Logo 一致且使用标准字距
+  □ XREAL Style:中文标题保持正体；纯英文黑色背景标题如确有必要，才使用一次克制斜体强调
+  □ XREAL Style:Logo 默认独立;相邻文字如存在,字高与 Logo 一致、使用标准字距，并保留至少 `1.6vw` 间距
   □ XREAL Style:正文页页眉品牌区明显小于封面/封底,且不与页面标题争抢层级
+  □ XREAL Style:所有带 `chrome-min` 的版式，页眉到首个正文块为 24px（tight 为 16px），没有被额外首块 margin 双重下推
   □ XREAL Style:英文页眉使用 `.313` 光学比例,中文或中英混排使用 `.26`,视觉字高均与 Logo 一致
   □ XREAL Style:普通英文短语使用自然大小写;全大写只用于 XREAL 字标、通用缩写和短型号代码
   □ XREAL Style:没有无信息价值的角标、重复小标题和装饰性分割线
+  □ XREAL Style:S04/S05/S19 卡片媒体都有明确语义角色；没有给密集卡片强塞图片，S19 hero 文字直接反白且内部没有新增圆角
+  □ S02 纵向时间线有统一列头；每个节点都包含可见且对齐的 dot、年份、同口径指标、阶段名和体验影响，没有退化成普通三列表格
+  □ S17 已声明 flow / hierarchy / network / containment；左侧只有结论与解释，右侧为唯一关系结构，两列顶部误差 ≤16px；没有重复阶段列表或制作说明式文案，同心圆只用于真实包含关系
+  □ 单一产品 deck 已检查 `00-product-marks/`；有官方产品标志时没有继续用手打产品名替代，且产品标志未侵入页眉企业 Logo 位
+  □ S12 manifesto 中的产品标志只作身份落款，宽度为横幅的 18%-26%，没有成为第二主标题
 
 内容
   □ 每一幕的页数比例合理(不会头重脚轻)
@@ -643,6 +673,7 @@ JS 动态计算总页数并扩展底部翻页圆点；页面内容层不得再�
   □ Skills / Harness 等术语用法统一
   □ 每页的 kicker + 标题 + 正文 三级信息清晰
   □ S23/S24 的标题写成数据结论,单位、坐标标签、来源和系列含义齐全
+  □ S23 首末柱没有贴边或裁切，最高数值留在 plot 内；每个 `.chart-value` 与对应柱体水平中心对齐，且不依赖水平 transform
   □ S24 横轴确实是时间或连续变量,没有把无顺序类别强行连线
 
 排版
@@ -658,7 +689,10 @@ JS 动态计算总页数并扩展底部翻页圆点；页面内容层不得再�
 视觉
   □ hero 页和 non-hero 页交替
   □ hero 页使用静态纯色背景,没有 WebGL、ASCII、点阵、纹理或动态装饰
-  □ S04/S05/S06/S07/S13/S16 的卡片型实体块、图片和 Bento 区块统一使用 3px 小圆角；S06/S23 等基线柱体仅顶部圆角、底角为 0 且贴齐 x 轴
+  □ S04/S05/S06/S07/S13/S16 的卡片型实体块和图片统一使用 8px 小圆角；S06/S23 等基线柱体仅顶部圆角、底角为 0 且贴齐 x 轴；S19 Bento 只圆整体外框、内部直角
+  □ S04/S16 卡片四边 padding 相等，S04 编号的 top/right 相等；S16 默认六卡等权，若存在强调卡，其内容确有优先级依据、已声明 `data-emphasis`，且反白文字有足够反差
+  □ KPI / 图表大数字的单位统一位于右上肩位且不拆行；正文单位随正文基线；角度没有使用下标；中文标题没有斜体
+  □ S22 图片上的标题为直接叠加的高对比文本，没有白底卡片、色块或半透明面板
   □ S23/S24 图表占正文主导面积,使用 1px 中性网格线,最多一个红色关键系列/点
   □ S24 SVG 只包含线、点和数据几何,没有 `<text>`、面积渐变或无说明双轴
   □ ECharts 只用于登记的复杂图表类型,保留正式版式,使用离线 bundle 与 XREAL 受控主题
