@@ -1,19 +1,19 @@
 ---
-name: guizang-ppt-skill
-description: 生成横向翻页网页 PPT（单 HTML 文件），采用唯一的 XREAL Style 视觉系统：品牌无衬线排版、严格网格、黑白灰结构、克制的红色语义强调、静态纯色背景、直角、发丝线和锁定版式。适用于分享、演讲、产品发布、数据汇报、方法论和分析类网页 PPT；用户提到「XREAL Style」「瑞士风 PPT」「Swiss Style」「Helvetica」「网格」「信息图」或「horizontal swipe deck」时使用。
+name: xreal-ppt-skill
+description: 生成、改版和校验 XREAL 品牌风格的横向翻页网页演示文稿（离线单文件 HTML）。使用 23 个锁定版式、XREAL 黑白灰与克制红色语义、XREAL Diatype 或 IBM Plex Sans SC、官方产品媒体资产、Motion One 动效以及受控 ECharts 复杂图表。用户要求制作或审查 XREAL 发布会、产品介绍、数据汇报、方法论、路线或地图类网页 PPT，或提到「XREAL Style」「XREAL PPT」「XREAL deck」「横向翻页 HTML PPT」时使用。
 ---
-
 
 ## 这个 Skill 做什么
 
 生成一份**单文件 HTML**的横向翻页 PPT，唯一视觉系统是 **XREAL Style**：
 
-- 封面与封底使用静态纯黑背景，正文使用纯白、浅灰或纯黑结构；不显示 WebGL、ASCII、点阵、纹理或动态装饰背景
+- 封面与封底使用静态纯黑背景，正文使用纯白、浅灰或纯黑结构；
 - 按整套 PPT 的语言语境选择品牌字体：纯英文使用 XREAL Diatype，中文或中英混排使用 IBM Plex Sans SC
-- 12/16 列网格、非对称留白、直角纯色块和 1px hairline
+- 12/16 列网格、非对称留白、统一 3px 小圆角色块和 1px hairline
 - 每份 deck 固定使用 XREAL 黑白灰品牌体系；红色只作为关键语义强调，不提供任意自定义颜色
-- 正文页使用锁定的 `S01-S22` 版式；首页/尾页使用明确登记的 XREAL 纯黑变体
+- 正文页使用 23 个锁定版式（`S01-S08`、`S10-S24`）；`S09` 已移除，首页/尾页使用明确登记的 XREAL 纯黑变体
 - 支持键盘、滚轮、触屏、ESC 索引、Google Material Symbols Outlined 图标和 Motion One 入场动效
+- 复杂散点、热力、瀑布、箱线、桑基、关系和层级图可使用受控的 XREAL ECharts Component；它扩展现有版式，不增加正文版式编号
 
 ## 何时使用
 
@@ -26,14 +26,48 @@ description: 生成横向翻页网页 PPT（单 HTML 文件），采用唯一的
 
 不适合：
 
-- 大段表格数据或复杂图表叠加，优先使用常规 PPT
+- 大段表格数据、同页堆叠多个复杂图表或 dashboard 式筛选器，优先拆页或改用数据分析工具
 - 培训课件或多人在线协作编辑
 
 ## 工作流
 
-### Step 0 · 需求澄清
+### Step 0 · 检查 Skill 更新
 
-不再询问风格选择，直接使用 XREAL Style。需求不完整时，按顺序确认最关键的信息：
+每次在一个新任务中触发本 Skill，**第一项可执行动作**必须是检查当前 Skill 仓库是否有远端更新；同一任务内只检查一次，避免重复询问。
+
+按以下顺序执行：
+
+1. 确认 `<SKILL_ROOT>` 位于 Git 仓库中，并读取当前分支、upstream 和工作区状态：
+
+```bash
+git -C "<SKILL_ROOT>" branch --show-current
+git -C "<SKILL_ROOT>" rev-parse --abbrev-ref --symbolic-full-name '@{upstream}'
+git -C "<SKILL_ROOT>" status --short
+```
+
+2. 获取远端状态并比较当前 `HEAD` 与 upstream：
+
+```bash
+git -C "<SKILL_ROOT>" fetch --quiet
+git -C "<SKILL_ROOT>" rev-list --left-right --count 'HEAD...@{upstream}'
+git -C "<SKILL_ROOT>" log --oneline --no-decorate 'HEAD..@{upstream}'
+```
+
+3. 根据结果处理：
+   - **没有落后提交**：不打断用户，直接进入 Step 1。
+   - `rev-list` 输出依次为“本地领先数、远端领先数”；第二个数字大于 `0` 即表示检测到远端更新。先告诉用户更新数量和简短提交摘要，明确询问“是否先更新 Skill？”，并暂停 PPT 生成，等待用户选择。
+   - **用户选择暂不更新**：继续使用当前安装版本，并进入 Step 1。
+   - **无法联网、不是 Git 仓库、没有 remote/upstream**：简短说明无法检查更新，继续使用当前安装版本，不阻塞任务。
+
+4. 用户确认更新后：
+   - 工作区干净且本地没有分叉提交时运行 `git -C "<SKILL_ROOT>" pull --ff-only`。
+   - 本地与远端均有新增提交时属于分叉状态；不得自动 merge 或 rebase，应说明状态并等待用户决定。
+   - 工作区存在未提交修改时，**不得自动 stash、覆盖或 reset**；说明本地修改会阻止安全更新，并等待用户决定如何处理。
+   - 更新完成后重新读取最新 `SKILL.md`，从 Step 1 继续；同一任务不再对同一版本重复询问。
+
+### Step 1 · 需求澄清
+
+使用 XREAL Style。需求不完整时，按顺序确认最关键的信息：
 
 1. 受众、分享场景和时长
 2. 原始素材：文章、Markdown、数据、旧 PPT 或链接
@@ -53,25 +87,26 @@ description: 生成横向翻页网页 PPT（单 HTML 文件），采用唯一的
 
 图片统一放在 `项目/XXX/ppt/images/`，命名为 `{页号}-{语义}.{ext}`，例如 `03-dashboard.png`。单张图片建议宽度至少 1600px；JPG 用于照片/截图，PNG 用于透明 UI/图表。
 
-### Step 1 · 拷贝模板
+### Step 2 · 拷贝模板
 
 ```bash
 mkdir -p "项目/XXX/ppt/images"
 mkdir -p "项目/XXX/ppt/assets/fonts" "项目/XXX/ppt/assets/brand"
-cp "<SKILL_ROOT>/assets/template-swiss.html" "项目/XXX/ppt/index.html"
+cp "<SKILL_ROOT>/assets/template-xreal.html" "项目/XXX/ppt/index.html"
 cp "<SKILL_ROOT>/assets/fonts/"*.otf "项目/XXX/ppt/assets/fonts/"
 cp "<SKILL_ROOT>/assets/brand/xreal-logo-black.svg" "项目/XXX/ppt/assets/brand/"
 ```
 
-`template-swiss.html` 是完整可运行的单文件模板，包含 CSS、翻页 JS、XREAL 本地字体、Google Material Symbols 图标和 `<!-- SLIDES_HERE -->` 占位符。模板固定使用 `canvas-mode`，不得移除；该模式关闭遗留背景 canvas，确保所有页面使用静态纯色背景。
+`template-xreal.html` 是完整可运行的单文件模板，包含 CSS、翻页 JS、XREAL 本地字体、Google Material Symbols 图标和 `<!-- SLIDES_HERE -->` 占位符。模板固定使用 `canvas-mode`，不得移除；该模式关闭遗留背景 canvas，确保所有页面使用静态纯色背景。
 
 拷贝后立刻：
 
 - 修改 `<title>`，不得保留 `[必填]`
 - 只在 `:root{}` 中替换主题变量，不要散落修改 accent
 - 保留 `B` 键低功耗模式、翻页导航和 ESC 索引逻辑
+- 页面声明 `data-chart-engine="echarts"` 时，再复制 `assets/echarts.min.js` 到项目 `assets/`；最终交付前使用 `scripts/inline-echarts.mjs` 嵌入单文件
 
-### Step 1.1 · 固定品牌色彩
+### Step 2.1 · 固定品牌色彩
 
 当前只使用 **XREAL 黑白灰品牌体系**，不询问用户选择其他主题，也不接受任意自定义颜色：
 
@@ -82,9 +117,9 @@ cp "<SKILL_ROOT>/assets/brand/xreal-logo-black.svg" "项目/XXX/ppt/assets/brand
 | 技术质感 | `#A7ADB4` | 少量技术标记 |
 | 品牌价值 | `#B08D57` | 少量价值标记 |
 
-`assets/template-swiss.html` 已固定为 XREAL 黑白灰体系。读取 `references/themes-swiss.md` 确认完整变量组；不要替换为其他颜色，也不要混搭语义角色。
+`assets/template-xreal.html` 的 `:root{}` 是完整且唯一的主题变量源；结合 `references/brand-xreal.md` 使用其品牌语义，不要替换颜色或混搭语义角色。
 
-### Step 1.2 · 应用 XREAL 品牌层
+### Step 2.2 · 应用 XREAL 品牌层
 
 读取 `references/brand-xreal.md`，并遵守：
 
@@ -93,6 +128,7 @@ cp "<SKILL_ROOT>/assets/brand/xreal-logo-black.svg" "项目/XXX/ppt/assets/brand
 - 纯英文 deck 将 `<html lang>` 设为 `en`；中文或中英混排 deck 设为 `zh-CN`
 - 每页 `chrome-min` 的品牌位置使用 `assets/brand/xreal-logo-black.svg`
 - 封面与封底的黑色区域使用 `#000000` 纯黑底，不添加 ASCII、点阵、纹理或动态装饰背景
+- 封底固定为全屏纯黑的品牌收束页：大号 `Thanks` 作为画面中心主视觉，小号反白 XREAL Logo 放在底部中央；不重复结论、takeaway、作者日期、页码或其他说明文字
 - Logo 默认独立出现，不在右侧附加说明文字；确需相邻文字时，文字视觉字高与 Logo 高度一致，并使用标准字距
 - 正文页 `chrome-min` 使用紧凑导航级品牌尺寸；相邻文字字号由 Logo 宽度按字体度量分别计算，并与 Logo 垂直居中：IBM Plex Sans SC 使用 `.26`，XREAL Diatype 使用 `.313`。封面/封底才使用较大的品牌级尺寸
 - 删除无信息价值的装饰角标、小标题和分割线；正文 bullet 使用实心圆点，不使用短横线
@@ -101,90 +137,129 @@ cp "<SKILL_ROOT>/assets/brand/xreal-logo-black.svg" "项目/XXX/ppt/assets/brand
 - 描述性小标题使用标准字距，辅助文字 tracking 不超过 `0.05em`；时间线节点名称使用 600 字重
 - Logo 在 `dark` / `accent` 背景上使用 `filter:invert(1)`，保持原比例和网格对齐
 - 产品图标使用 Google Material Symbols Outlined，统一 `FILL 0`，不要使用 emoji、Lucide 或手绘 SVG 图标
+- 禁止 AI 或页面代码把人物、设备、场景、抽象科技图形绘制成 SVG、Canvas 或 CSS 插画配图；SVG 仅用于已有品牌资产和承担信息表达的图表、地图、流程、数据几何，并标记 `data-svg-role`
 - 黑、白、灰承担结构与信息层级；XREAL 红色仅用于关键数据/警示/关键操作语义，银色/金色仅作为极少量技术或价值标记
-- 不因品牌化引入渐变、阴影、圆角、玻璃拟态或多色高亮
+- 卡片型实体块、图片框和控件统一使用 `--radius-sm:3px`；S04 Six Cells、S05 Three Layers、S06 KPI Tower、S07 Horizontal Bar、S13 Three Forces、S16 Multi-card Brief 必须应用该 token。S06/S23 等接触 x 轴的垂直柱体只保留顶部 3px 圆角，底角为直角并贴齐共同基线；独立 KPI cap 仍为四角小圆角。页面画布、分割线和坐标轴保持直线；禁止渐变、阴影、发光、大圆角、胶囊形、玻璃拟态或多色高亮
 - 保留方向键翻页、`B` 静态模式和 `ESC` 索引功能，但不在页面右下角显示操作提示
 - 页面不显示 `01 / 09`、`06 / 07` 等页码；顺序通过底部导航和演讲结构表达
 - 底部导航只作为弱提示：亮底普通点透明度 `.08`、当前点 `.18`；暗底普通点 `.10`、当前点 `.22`。不要用不透明黑色、白色或 `var(--accent)` 显示当前点
 
-### Step 2 · 填充内容
+### Step 3 · 填充内容
 
-#### 2.0 · 类名预检
+#### 3.0 · 类名预检
 
-写任何 slide 之前，先读完整的 `assets/template-swiss.html` `<style>` 块，再读：
+写任何 slide 之前，先读完整的 `assets/template-xreal.html` `<style>` 块，再读：
 
 1. `references/swiss-layout-lock.md`
 2. `references/layouts-swiss.md`
 3. `references/brand-xreal.md`
-4. 需要截图时读 `references/screenshot-framing.md`
-5. 需要生成配图时读 `references/image-prompts.md`
+4. 使用复杂图表时再读 `references/xreal-echarts.md`
 
 模板是唯一的类名来源，不要凭空发明类名。常用 XREAL Style 类包括：
 
-- 排版：`xreal-cover-title`、`xreal-page-title`、`xreal-support-copy`、`h-statement`、`h-md`、`t-cat`、`t-meta`、`lead`、`num-mega`
+- 排版：`xreal-cover-title`、`xreal-section-title`、`xreal-page-title`、`xreal-support-copy`、`h-statement`、`h-md`、`t-cat`、`t-meta`、`lead`、`num-mega`
 - 网格：`grid-12`、`grid-2-9`、`grid-2-9-5`、`span-N`
 - 卡片：`card-ink`、`card-accent`、`card-fill`、`card-outlined`
-- 图表：`kpi-tower-row`、`bar-tower`、`h-bar-chart`、`timeline-v`、`timeline-h`、`xreal-pie-layout`、`xreal-pie-legend`
-- 信息组：`xreal-bento`；保持直角、无阴影、无圆角，一个红色语义点
-- 装饰：`dot-mat`、`ring-mat`、`cross-mat`、`hr-hairline`
+- 图表：`kpi-tower-row`、`bar-tower`、`h-bar-chart`、`timeline-v`、`timeline-h`、`xreal-pie-layout`、`xreal-pie-legend`；复杂图表扩展使用 `xreal-echart-stage`、`xreal-echart`
+- 信息组：`xreal-bento`；统一使用 `--radius-sm:3px`、无阴影，一个红色语义点
+- 装饰：`hr-hairline`
 - 图片：`frame-img`、`fit-contain`、`r-21x9`、`r-16x9`、`r-16x10`、`h-22`、`h-26`、`swiss-lined`
 
-#### 2.1 · 规划主题节奏
+#### 3.1 · 选择媒体资产
+
+生成前运行 `rg --files "<SKILL_ROOT>/assets/media"`，先锁定产品线，再从对应目录或用户明确提供的文件中选图。产品线目录使用稳定的 lowercase slug：
+
+| 产品线 | 目录 |
+|---|---|
+| AURA | `aura/` |
+| One Pro | `one-pro/` |
+| 1S | `1s/` |
+| XBX A01+ | `xbx-a01+/` |
+
+每个产品线目录使用相同的资产类型结构：
+
+| 目录 | 用途 |
+|---|---|
+| `<product-line>/00-product-marks/` | 官方产品字标、产品 Logo、横版/竖版及黑白反色版本 |
+| `<product-line>/01-white-background/` | 白底或透明底产品图、产品单体与标准角度 |
+| `<product-line>/02-product-beauty/` | 产品美图、材质特写、结构细节、不同角度和配件组合 |
+| `<product-line>/03-hero-key-visuals/` | Campaign Hero、发布会主视觉、品牌 KV 与章节 Hero |
+| `<product-line>/04-feature-visuals/` | 功能演示、交互效果和技术能力展示 |
+| `<product-line>/05-lifestyle/` | 佩戴场景、人物使用、工作与生活环境 |
+| `<product-line>/06-conceptual/` | 概念视觉、氛围图、未来感和叙事性视觉 |
+
+企业 XREAL Logo 继续使用 `assets/brand/xreal-logo-black.svg`；产品标志只能从当前产品线的 `00-product-marks/` 选择，用于封面、章节页或产品识别，不替代每页 `chrome-min` 中的企业 Logo。不得重绘、改字距、变形、拼接或自行改色；优先使用资产库中与背景匹配的官方黑版/白版。缺少产品标志时使用产品名称文字，不要仿制 Logo。
+
+同一产品 deck 默认只使用对应产品线资产；只有产品对比页才可跨产品线取图，并保持相同资产类型、比例与视觉尺度。先选版式和图片槽位，再按内容角色、画幅比例和主体安全区选择素材。只把选中的素材复制到项目 `images/`，不要修改资产库原文件。没有合适素材时，改用无图版式或向用户说明缺少哪类图片；不要生成图片、调用外部图库或临时绘制替代。
+
+媒体文件名使用 `场景-人物-行为-构图-比例.ext` 顺序；人物或行为不适用时可以省略，但必须保留可检索语义。构图统一使用 `横版`、`竖版`、`方图`，常用比例使用 `21x9`、`16x9`、`4x3`、`3x2`、`2x3`、`3x4` 或 `1x1`；不属于常用比例时按实际像素比写成简化值，例如 `2.47x1`，不要沿用原文件名中的误标比例。产品线和资产类型由父级目录表达，不在文件名中重复；同语义不同版本追加 `-v2`、`-detail` 等后缀。
+
+#### 3.2 · 规划主题节奏
 
 先列出 `内部页序（不渲染）→ class → data-layout → 选用理由 → 图片槽位`，再写 HTML。每个 section 必须明确写 `light`、`dark`、`hero light` 或 `hero dark`。
 
 - 连续 3 页以上同主题不允许
 - 8 页以上至少包含 1 个 `hero dark`、1 个 `hero light` 和 1 个 `dark` 正文页
 - 每 3-4 页插入一个 hero / statement / closing 页
+- 需要章节标题页时使用 `S01 + data-variant="section-hero"`;它是单标题 Hero 停顿页,视觉层级不得高于 Index Cover
 - 交付前运行 `grep 'class="slide' index.html` 检查节奏
 
-#### 2.2 · 选择锁定版式
+#### 3.3 · 选择锁定版式
 
-正文页只能使用 `S01-S22`；首页/尾页只能使用 `XREAL-COVER-BLACK` / `XREAL-CLOSING-BLACK`。每个 section 必须写 `data-layout="Sxx"`。
+正文页只能使用 23 个已登记版式（`S01-S08`、`S10-S24`）；`S09` 已移除。首页/尾页只能使用 `XREAL-COVER-BLACK` / `XREAL-CLOSING-BLACK`。每个 section 必须写 `data-layout="Sxx"`。
+
+封底 `XREAL-CLOSING-BLACK` 必须是整套 deck 的最后一个 section，并使用 `.slide.accent + .xreal-closing-lockup + .xreal-closing-thanks + .xreal-closing-mark + .xreal-closing-logo` 骨架与 `data-animate="closing-thanks"`。大号 `Thanks` 居中，小号企业 Logo 固定在底部中央；进入该页时隐藏底部分页导航。所有结论与行动建议应在封底前一页完成。
 
 | 版式 | 用途 |
 |---|---|
-| S01 / S10 | 封面 / 收束 |
+| S01 / S10 | Index Cover / 收束；章节标题 Hero 使用 `S01 + section-hero` 登记变体 |
 | S02 / S11 | 垂直 / 横向时间线 |
-| S03 / S09 | 核心论点 / statement |
+| S03 | 核心论点 / statement |
 | S04 / S05 / S13 / S17 | 定义、分层、三力、系统关系 |
 | S06 / S07 / S15 / S20 / S21 | KPI、排名、矩阵、账单、规格 |
 | S08 | Duo Compare；地点/路线页扩展为 XREAL Map Component |
 | S12 / S14 / S18 / S19 | Manifesto、闭环；S18 可挂载 XREAL Pie，S19 可挂载 XREAL Bento |
 | S16 / S22 | 多卡简报 / 21:9 Image Hero |
+| S23 / S24 | 分组数据比较图 / 时间或连续变量折线趋势图 |
 
-默认 XREAL Style locked mode：不要临时发明 P23/P24、Evidence Grid、自由 SVG 页面或未登记正文结构。只有用户明确要求实验版式时才可例外，并在验证时显式允许。
+默认 XREAL Style locked mode：不要临时启用历史实验 `P23/P24`、Evidence Grid、自由 SVG 页面或未登记正文结构；它们与正式 `S23/S24` 图表版式无关。只有用户明确要求实验版式时才可例外，并在验证时显式允许。
+
+章节标题 Hero 变体必须使用 `.xreal-section-title` 和正文级 `chrome-min`,只放小型章节标识、单一主标题和一句引导语。可使用 `hero light`、浅灰或 `hero dark`,但禁止 `.xreal-cover-title`、`slide accent` 满屏纯黑、巨大章节编号、目录列表或三行 `cover-row`,以确保层级低于 S01 Index Cover。
+
+图表选版先判断数据形状：3-8 个无连续顺序类别 × 2-4 个同量纲系列使用 `S23 Data Chart`;时间或连续变量上的 1-3 个系列、每系列 4-12 个点使用 `S24 Line Chart`。简单柱图/折线优先使用原生组件；复杂分布、矩阵、流向、网络或层级数据才添加 `data-chart-engine="echarts"`，并按 `references/xreal-echarts.md` 映射到 S23/S24/S17/S08。所有图表必须提供单位、HTML 图例、数据来源和结论标题；不同量纲默认拆图，禁止无说明双轴。手写 SVG 只用于 S24 的折线与点且不写 `<text>`；ECharts 运行时生成的 SVG/Canvas 仅限合法图表几何。
 
 硬规则：7-8 页至少使用 6 个不同 `S` 编号，10 页以上至少使用 8 个；数据专用版式必须有真实数据，结构专用版式必须有对应的闭环、矩阵或层级关系。
 
-#### 2.3 · 图片与截图
+#### 3.4 · 图片与截图
 
-- S22 主图优先 `21:9`，生成提示词包含 `subject centered in the safe middle area`
+- S22 主图优先从当前产品线的 `03-hero-key-visuals/`、`02-product-beauty/` 或 `05-lifestyle/` 选择接近 `21:9` 且主体位于中央安全区的素材
 - S15/S16 多图组统一比例、统一高度和统一 caption 密度
-- 证据截图、UI、代码和 dashboard 保真优先，先读 `screenshot-framing.md`，默认 `fit-contain`
-- 按槽位重生成的信息图/插图必须铺满目标 frame，不要缩成漂浮小贴片
-- 图片容器直角、无阴影、无圆角；默认不加外框，只在必要时使用 `.swiss-lined`
-- 图片内部不得生成标题、页脚、页码、logo、角标、署名或 PPT 外壳
+- 证据截图、UI、代码和 dashboard 保真优先，默认使用 `fit-contain`，不要为统一比例重画内容
+- 资产比例匹配槽位时铺满目标 frame；比例不匹配时使用 `fit-contain` 或更换版式，不要强行裁掉产品主体
+- 图片容器统一使用 `--radius-sm:3px`、无阴影；默认不加外框，只在必要时使用 `.swiss-lined`
+- 配图只使用 `assets/media/` 或用户提供的 PNG/JPG/JPEG/WebP 文件；禁止用内联 SVG、Canvas 或 CSS 图形临时绘制插画配图
+- 如果素材自带与当前页面冲突的标题、页脚、页码、logo、角标或署名，换用其他资产或无图版式，不要重绘素材
 - 所有图片、caption、timeline label、footnote 都必须避开底部分页区，必要时使用 `.nav-safe-bottom`
 
-#### 2.4 · 投屏字号与字重
+#### 3.5 · 投屏字号与字重
 
 最低字号：正文/主要说明 `18px`，卡片描述/列表/时间线/caption `16px`，meta/kicker/图表标签 `14px`。内容放不下时删减、拆页或换版式，不要压到 10-13px。
 
-字重按信息角色分配，不与字号做反比：
+字重由信息角色固定，同一角色在整套 PPT 中保持一致：
 
 | 信息角色 | 推荐字重 |
 |---|---|
 | Hero / 封面 / 章节主标题 | 纯英文 XREAL Diatype 500；中文或中英混排 IBM Plex Sans SC 600 |
-| 页面标题 / 模块标题 | 500-600 |
-| 关键 KPI / 数据 | 600-700；只允许一个最关键数字使用 700/800 |
-| 副标题 / lead | 400-500 |
-| 正文 / 描述 / caption | 400 |
-| meta / kicker / 图表标签 | 500 |
+| 页面标题 / 模块标题 | 纯英文 500；中文或中英混排 600 |
+| 关键 KPI / 数据 | 纯英文 500；中文或中英混排 600；每页最重要的单个数据可使用 700 |
+| 副标题 / lead | 400 |
+| 正文 / 描述 | 400 |
+| caption / 辅助元数据 | 纯英文 400；中文或中英混排 450 |
+| kicker / 导航标签 / 图表标签 | 500 |
 
 中文标题使用双约束 `font-size:min(Xvw,Yvh)`；2 行或更长时先改写标题，再降字号。内容文字禁止使用 100/200/300。
 
-### Step 3 · 校验与视觉检查
+### Step 4 · 校验与视觉检查
 
 生成后先运行：
 
@@ -198,11 +273,11 @@ node <SKILL_ROOT>/scripts/validate-swiss-deck.mjs path/to/index.html
 
 1. 标题是否左上对齐，并使用与语言语境一致的 500/600 稳定字重
 2. 图片、正文、caption 是否吸附到同一网格轴
-3. 是否出现渐变、阴影、圆角、多个 accent 或不必要的装饰
+3. 是否出现渐变、阴影、发光、霓虹、大圆角、胶囊形、多个 accent、自绘 SVG 插画或不必要的装饰
 4. 最低内容是否进入分页安全区
 5. 动效稳定后再判断版式；需要时按 `B` 验证静态模式仍可读
 
-### Step 4 · 本地预览与迭代
+### Step 5 · 本地预览与迭代
 
 ```bash
 open "项目/XXX/ppt/index.html"
@@ -210,52 +285,69 @@ open "项目/XXX/ppt/index.html"
 
 不需要本地服务器，图片使用相对路径 `images/xxx.png`。迭代时优先调整现有模板类和 inline 的字号/高度/间距，不要绕过 XREAL Style 版式锁重新发明页面。
 
+使用 ECharts 时，保留可编辑源文件并生成单独的最终文件：
+
+```bash
+node "<SKILL_ROOT>/scripts/prepare-echarts.mjs"
+node "<SKILL_ROOT>/scripts/inline-echarts.mjs" "项目/XXX/ppt/index.source.html" "项目/XXX/ppt/index.html"
+node "<SKILL_ROOT>/scripts/validate-swiss-deck.mjs" "项目/XXX/ppt/index.html"
+```
+
 ## XREAL Style 核心原则
 
 1. **黑白灰结构 + 红色语义**：黑色承担结构，红色只在关键位置出现。
 2. **语境化无衬线排版**：纯英文 deck 使用 XREAL Diatype，中文或中英混排 deck 使用 IBM Plex Sans SC；任何衬线字体或按字符混用品牌字体都是错的。
-3. **直角纯色**：禁止渐变、阴影和圆角，装饰使用 hairline、方块、点阵。
+3. **卡片小圆角**：卡片型实体块统一使用 `--radius-sm:3px`，尤其是 S04/S05/S06/S07/S13/S16；S06/S23 等基线柱体只圆顶部两角，底角为 0 并贴齐 x 轴；页面画布、分割线和坐标轴保持直线；禁止渐变、阴影、发光、霓虹、大圆角和胶囊形。
 4. **网格至上**：元素吸附到 12/16 列 grid，左对齐，用留白制造非对称。
 5. **角色化字体层级**：主标题与正文保持明显层级；纯英文主标题默认 500，中文或中英混排主标题默认 600，正文 400，标签 500。
 6. **图片是证据**：先匹配槽位和比例，再生成或适配图片。
 7. **动效可降级**：每页使用语义化 recipe；`B` 键必须能切换到静态可读状态。
-8. **版式必须登记**：正文只从 `S01-S22` 选择，实验结构必须显式标记。
-9. **封面纯黑**：封面与封底黑色区域使用 `#000000`，不使用 ASCII、纹理或动态背景。
-10. **减法优先**：移除无信息价值的角标、眉题和分割线；bullet 统一使用实心圆点。
-11. **自然大小写**：英文短语使用 sentence case / natural case 与标准字距；全大写仅用于品牌字标、通用缩写和短型号代码。
+8. **版式必须登记**：正文只从 `S01-S08`、`S10-S24` 选择；`S09` 已移除，实验结构必须显式标记。
+9. **复杂图表受控**：ECharts 只负责复杂数据几何、布局与交互，必须使用 XREAL 主题、类型白名单和离线单文件流程，不得带入默认 dashboard 视觉。
+10. **封面纯黑**：封面与封底黑色区域使用 `#000000`，不使用 ASCII、纹理或动态背景。
+11. **减法优先**：移除无信息价值的角标、眉题和分割线；bullet 统一使用实心圆点。
+12. **自然大小写**：英文短语使用 sentence case / natural case 与标准字距；全大写仅用于品牌字标、通用缩写和短型号代码。
 
 ## 资源文件导览
 
 ```
-guizang-ppt-skill/
+xreal-ppt-skill/
 ├── SKILL.md
 ├── assets/
-│   ├── template-swiss.html
+│   ├── template-xreal.html
 │   ├── brand/xreal-logo-black.svg
 │   ├── fonts/ (XREAL Diatype + IBM Plex Sans SC)
-│   ├── screenshot-backgrounds/xreal-style/ (monochrome)
-│   └── motion.min.js
+│   ├── media/
+│   │   ├── aura/
+│   │   ├── one-pro/
+│   │   ├── 1s/
+│   │   └── xbx-a01+/
+│   │       └── 每条产品线均包含 00-product-marks 至 06-conceptual 七类目录
+│   ├── motion.min.js
+│   └── echarts.min.js (仅复杂图表使用，Apache ECharts 6.1.0)
 ├── scripts/
+│   ├── prepare-echarts.mjs
+│   ├── inline-echarts.mjs
 │   └── validate-swiss-deck.mjs
 └── references/
     ├── swiss-layout-lock.md
     ├── layouts-swiss.md
+    ├── xreal-echarts.md
     ├── swiss-map-component.md
-    ├── themes-swiss.md
     ├── brand-xreal.md
-    ├── image-prompts.md
-    ├── screenshot-framing.md
     └── checklist.md
 ```
 
 ## 推荐加载顺序
 
 1. 读取本文件
-2. 读取 `assets/template-swiss.html` 的 `<style>` 块
-3. 读取 `swiss-layout-lock.md` 和 `layouts-swiss.md`
-4. 读取 `themes-swiss.md` 和 `brand-xreal.md`
-5. 按需读取 `swiss-map-component.md`、`image-prompts.md` 或 `screenshot-framing.md`
-6. 生成后运行 validator，再读取 `checklist.md` 做最终自检
+2. 执行 Step 0 更新检查；有更新时先询问用户
+3. 读取 `assets/template-xreal.html` 的 `<style>` 块
+4. 读取 `swiss-layout-lock.md` 和 `layouts-swiss.md`
+5. 读取 `brand-xreal.md`
+6. 需要地图时读取 `swiss-map-component.md`
+7. 需要复杂图表时读取 `xreal-echarts.md`
+8. 生成后运行 validator，再读取 `checklist.md` 做最终自检
 
 ## 视觉锚点
 

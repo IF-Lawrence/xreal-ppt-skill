@@ -49,6 +49,7 @@
     --brand-red:#D71920;      /* XREAL 关键数据/警示语义，默认不启用 */
     --brand-silver:#A7ADB4;   /* XREAL 技术质感语义，默认不启用 */
     --brand-gold:#B08D57;     /* XREAL 品牌价值语义，默认不启用 */
+    --radius-sm:3px;
 
     /* ============ Carbon 文本角色 token (role-based,代替 opacity) ============
        亮底:  primary 主文 / secondary 次文 / helper 辅助 / placeholder 占位
@@ -78,6 +79,9 @@
     --chrome-body-label-size:calc(var(--chrome-body-logo-width) * var(--chrome-label-optical-ratio));
     --chrome-feature-logo-width:max(72px,6.8vw);
     --chrome-feature-label-size:calc(var(--chrome-feature-logo-width) * var(--chrome-label-optical-ratio));
+    --cover-title-size:min(7.2vw,12.6vh);
+    --section-hero-title-size:min(5.6vw,9.8vh);
+    --page-title-size:min(4.5vw,7.8vh);
     /* 兼容既有组件接口：全部指向同一 deck 主字体，禁止据此拆分中英文 */
     --sans:var(--deck-font);
     --sans-zh:var(--deck-font);
@@ -126,6 +130,9 @@
     --chrome-label-optical-ratio:.313;
     --weight-display:500;
     --weight-title:500;
+    --cover-title-size:min(5.6vw,9.8vh);
+    --section-hero-title-size:min(4.6vw,8vh);
+    --page-title-size:min(3.8vw,6.6vh);
   }
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{
@@ -158,6 +165,10 @@
   .slide[data-layout="XREAL-COVER-BLACK"],
   .slide[data-layout="XREAL-COVER-BLACK"] .canvas-card,
   .slide[data-layout="XREAL-CLOSING-BLACK"] .half.b-accent{background:var(--pure-black)}
+  .xreal-closing-lockup{flex:1;position:relative;display:flex;align-items:center;justify-content:center;text-align:center}
+  .xreal-closing-mark{position:absolute;left:50%;bottom:0;transform:translateX(-50%)}
+  .xreal-closing-logo{display:block;width:max(96px,7.2vw);height:auto;filter:invert(1)}
+  .xreal-closing-thanks{font-family:var(--deck-font);font-size:min(10vw,17vh);line-height:.9;font-weight:var(--weight-display);letter-spacing:-.035em;color:var(--paper)}
   .slide.accent .accent-block{background:var(--accent-on);color:var(--accent)}
 
   /* Hero 页透出网格背景多一点 */
@@ -649,7 +660,7 @@
 
   /* ============================================================
      ↓↓↓ V2 EXTENSIONS · Canvas Mode + 参考图新类
-     验证效果后沉淀回 template-swiss.html
+     验证效果后沉淀回 template-xreal.html
      ============================================================ */
 
   /* 全屏铺满模式 · 关闭 WebGL · 卡片即页面 */
@@ -1229,7 +1240,7 @@
 <!-- ============================================================
      SLIDES 插入区 · 在此处填充所有 <section class="slide ..."> 页面
      页面骨架参考 references/layouts-swiss.md
-     主题色配置参考 references/themes-swiss.md
+     唯一主题变量定义在本文件 :root，品牌语义参考 references/brand-xreal.md
      ============================================================ -->
 <!-- 01 · Cover -->
 <section class="slide accent" data-layout="XREAL-COVER-BLACK" data-animate="hero">
@@ -1337,26 +1348,12 @@
 </section>
 
 <!-- 06 · Closing -->
-<section class="slide split" data-layout="XREAL-CLOSING-BLACK" data-animate="split-statement">
+<section class="slide accent" data-layout="XREAL-CLOSING-BLACK" data-animate="closing-thanks">
   <div class="canvas-card">
-    <div class="split-half">
-      <div class="half b-accent" style="padding:5.6vh 3.6vw 4.4vh;justify-content:space-between;position:relative;overflow:hidden">
-        <div class="chrome-min" style="margin-bottom:0;position:relative;z-index:1">
-          <div class="l brand"><img class="xreal-logo" src="assets/brand/xreal-logo-black.svg" alt="XREAL"></div>
-        </div>
-        <div data-anim="manifesto" style="display:flex;flex-direction:column;gap:2vh;position:relative;z-index:1;margin:auto 0">
-          <h2 style="font-family:var(--deck-font);font-size:min(6.2vw,10.8vh);line-height:.98;letter-spacing:-.025em;font-weight:var(--weight-display);color:#fff">清晰，<br>才是先锋。</h2>
-          <p style="font-family:var(--deck-font);font-size:max(16px,1.05vw);line-height:1.6;color:rgba(255,255,255,.82);font-weight:400;max-width:28ch">当形式退后一步，产品价值才能向前一步。</p>
-        </div>
-      </div>
-      <div class="half" style="padding:5.6vh 3.6vw 4.4vh;justify-content:space-between">
-        <div class="chrome-min"><div class="l brand"><img class="xreal-logo" src="assets/brand/xreal-logo-black.svg" alt="XREAL"><span>Takeaways</span></div><div class="r">3 rules</div></div>
-        <div data-anim="rules" style="display:flex;flex-direction:column;gap:0">
-          <div style="display:grid;grid-template-columns:auto 1fr;gap:2vw;align-items:start;padding:2.6vh 0;border-top:1px solid var(--border-subtle)"><div style="font-weight:var(--weight-emphasis);font-size:min(4vw,7vh);line-height:.9">01</div><div><h3 style="font-weight:var(--weight-title);font-size:max(20px,1.65vw);line-height:1.2;margin-bottom:.8vh">语境决定字体</h3><p class="body-sm">一套 PPT 只使用一套主字体。</p></div></div>
-          <div style="display:grid;grid-template-columns:auto 1fr;gap:2vw;align-items:start;padding:2.6vh 0;border-top:1px solid var(--border-subtle)"><div style="font-weight:var(--weight-emphasis);font-size:min(4vw,7vh);line-height:.9">02</div><div><h3 style="font-weight:var(--weight-title);font-size:max(20px,1.65vw);line-height:1.2;margin-bottom:.8vh">角色决定字重</h3><p class="body-sm">主标题稳定明确，正文保持中性。</p></div></div>
-          <div style="display:grid;grid-template-columns:auto 1fr;gap:2vw;align-items:start;padding:2.6vh 0;border-top:1px solid var(--border-subtle);border-bottom:2px solid var(--brand-red)"><div class="xreal-critical" style="font-weight:700;font-size:min(4vw,7vh);line-height:.9">03</div><div><h3 class="xreal-critical" style="font-weight:var(--weight-title);font-size:max(20px,1.65vw);line-height:1.2;margin-bottom:.8vh">红色只标记关键</h3><p class="body-sm">强调必须有明确的信息语义。</p></div></div>
-        </div>
-        <div class="t-meta" style="color:var(--text-helper);text-align:right">End · XREAL Style</div>
+    <div class="xreal-closing-lockup">
+      <div data-anim="closing-thanks" class="xreal-closing-thanks">Thanks</div>
+      <div class="xreal-closing-mark">
+        <img data-anim="closing-logo" class="xreal-closing-logo" src="assets/brand/xreal-logo-black.svg" alt="XREAL">
       </div>
     </div>
   </div>

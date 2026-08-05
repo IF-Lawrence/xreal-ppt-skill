@@ -1,0 +1,2805 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>[必填] 替换为 PPT 标题 · Deck Title</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet">
+<style>
+  /* ============ XREAL 品牌字体 · 本地优先 ============ */
+  @font-face{font-family:"XREAL Diatype";src:url("assets/fonts/XREALDiatype-Thin.otf") format("opentype");font-weight:100;font-style:normal;font-display:swap}
+  @font-face{font-family:"XREAL Diatype";src:url("assets/fonts/XREALDiatype-Light.otf") format("opentype");font-weight:300;font-style:normal;font-display:swap}
+  @font-face{font-family:"XREAL Diatype";src:url("assets/fonts/XREALDiatype-Regular.otf") format("opentype");font-weight:400;font-style:normal;font-display:swap}
+  @font-face{font-family:"XREAL Diatype";src:url("assets/fonts/XREALDiatype-Medium.otf") format("opentype");font-weight:500;font-style:normal;font-display:swap}
+  @font-face{font-family:"XREAL Diatype";src:url("assets/fonts/XREALDiatype-Bold.otf") format("opentype");font-weight:700;font-style:normal;font-display:swap}
+  @font-face{font-family:"XREAL Diatype";src:url("assets/fonts/XREALDiatype-Heavy.otf") format("opentype");font-weight:800;font-style:normal;font-display:swap}
+  @font-face{font-family:"XREAL Diatype";src:url("assets/fonts/XREALDiatype-Ultra.otf") format("opentype");font-weight:900;font-style:normal;font-display:swap}
+  @font-face{font-family:"XREAL Diatype";src:url("assets/fonts/XREALDiatype-ThinItalic.otf") format("opentype");font-weight:100;font-style:italic;font-display:swap}
+  @font-face{font-family:"XREAL Diatype";src:url("assets/fonts/XREALDiatype-LightItalic.otf") format("opentype");font-weight:300;font-style:italic;font-display:swap}
+  @font-face{font-family:"XREAL Diatype";src:url("assets/fonts/XREALDiatype-RegularItalic.otf") format("opentype");font-weight:400;font-style:italic;font-display:swap}
+  @font-face{font-family:"XREAL Diatype";src:url("assets/fonts/XREALDiatype-MediumItalic.otf") format("opentype");font-weight:500;font-style:italic;font-display:swap}
+  @font-face{font-family:"XREAL Diatype";src:url("assets/fonts/XREALDiatype-BoldItalic.otf") format("opentype");font-weight:700;font-style:italic;font-display:swap}
+  @font-face{font-family:"XREAL Diatype";src:url("assets/fonts/XREALDiatype-HeavyItalic.otf") format("opentype");font-weight:800;font-style:italic;font-display:swap}
+  @font-face{font-family:"XREAL Diatype";src:url("assets/fonts/XREALDiatype-UltraItalic.otf") format("opentype");font-weight:900;font-style:italic;font-display:swap}
+  @font-face{font-family:"IBM Plex Sans SC";src:url("assets/fonts/IBMPlexSansSC-Thin.otf") format("opentype");font-weight:100;font-style:normal;font-display:swap}
+  @font-face{font-family:"IBM Plex Sans SC";src:url("assets/fonts/IBMPlexSansSC-ExtraLight.otf") format("opentype");font-weight:200;font-style:normal;font-display:swap}
+  @font-face{font-family:"IBM Plex Sans SC";src:url("assets/fonts/IBMPlexSansSC-Light.otf") format("opentype");font-weight:300;font-style:normal;font-display:swap}
+  @font-face{font-family:"IBM Plex Sans SC";src:url("assets/fonts/IBMPlexSansSC-Regular.otf") format("opentype");font-weight:400;font-style:normal;font-display:swap}
+  @font-face{font-family:"IBM Plex Sans SC";src:url("assets/fonts/IBMPlexSansSC-Text.otf") format("opentype");font-weight:450;font-style:normal;font-display:swap}
+  @font-face{font-family:"IBM Plex Sans SC";src:url("assets/fonts/IBMPlexSansSC-Medium.otf") format("opentype");font-weight:500;font-style:normal;font-display:swap}
+  @font-face{font-family:"IBM Plex Sans SC";src:url("assets/fonts/IBMPlexSansSC-SemiBold.otf") format("opentype");font-weight:600;font-style:normal;font-display:swap}
+  @font-face{font-family:"IBM Plex Sans SC";src:url("assets/fonts/IBMPlexSansSC-Bold.otf") format("opentype");font-weight:700;font-style:normal;font-display:swap}
+
+  :root{
+    /* ============ 固定主题色: XREAL 黑白灰体系 ============
+       主题变量只在此处定义,其他散落的 var() 引用无需逐处改 */
+    --paper:#ffffff;          /* 主底色: XREAL 纯白 */
+    --paper-rgb:255,255,255;
+    --ink:#0a0a0a;            /* 文字主色: 近黑 */
+    --ink-rgb:10,10,10;
+    --pure-black:#000000;      /* 封面 / 封底黑色区域 */
+    --grey-1:#f2f3f4;         /* 浅灰底 */
+    --grey-2:#d6dade;         /* 中灰(分割线) */
+    --grey-3:#667085;         /* 暗灰(辅助文字) */
+    --accent:#0a0a0a;         /* 结构锚点: XREAL 黑色 */
+    --accent-rgb:10,10,10;
+    --accent-on:#ffffff;      /* accent 上的反色文字 */
+    --accent-bright:#303030;  /* 黑色结构锚点的次级层 */
+    --brand-red:#D71920;      /* XREAL 关键数据/警示语义，默认不启用 */
+    --brand-silver:#A7ADB4;   /* XREAL 技术质感语义，默认不启用 */
+    --brand-gold:#B08D57;     /* XREAL 品牌价值语义，默认不启用 */
+    --radius-sm:3px;          /* 内容容器 / 色块 / 图片 / 控件统一小圆角 */
+
+    /* ============ Carbon 文本角色 token (role-based,代替 opacity) ============
+       亮底:  primary 主文 / secondary 次文 / helper 辅助 / placeholder 占位
+       暗底:  inverse 自动反向 */
+    --text-primary:#0a0a0a;        /* = ink, 100% */
+    --text-secondary:#525252;      /* gray 70 */
+    --text-helper:#737373;         /* gray 60 */
+    --text-placeholder:#a3a3a3;    /* gray 40 */
+    --text-on-color:#ffffff;       /* accent/dark 反色 */
+    --border-subtle:#e0e0e0;       /* gray 20, 极细分隔 */
+    --border-strong:#a3a3a3;       /* gray 40, 强分隔 */
+
+    /* ============ 字体：按整套 deck 的语言语境选择 ============
+       默认 zh-CN：中文或中英混排统一使用 IBM Plex Sans SC。
+       纯英文 deck 将 <html lang="en">，下方规则会统一切换到 XREAL Diatype。 */
+    --font-xreal:"XREAL Diatype","Arial","Segoe UI Variable","Segoe UI",system-ui,-apple-system,sans-serif;
+    --font-ibm-plex:"IBM Plex Sans SC","Microsoft YaHei UI","Microsoft YaHei","微软雅黑",sans-serif;
+    --deck-font:var(--font-ibm-plex);
+    /* 固定角色字重：标题 600，正文 400，辅助文字 450，标签 500，关键数据 600 */
+    --weight-display:600;
+    --weight-title:600;
+    --weight-body:400;
+    --weight-support:450;
+    --weight-label:500;
+    --weight-emphasis:600;
+    --chrome-body-logo-width:max(60px,5.2vw);
+    --chrome-label-optical-ratio:.26;
+    --chrome-body-label-size:calc(var(--chrome-body-logo-width) * var(--chrome-label-optical-ratio));
+    --chrome-feature-logo-width:max(72px,6.8vw);
+    --chrome-feature-label-size:calc(var(--chrome-feature-logo-width) * var(--chrome-label-optical-ratio));
+    --cover-title-size:min(7.2vw,12.6vh);
+    --section-hero-title-size:min(5.6vw,9.8vh);
+    --page-title-size:min(4.5vw,7.8vh);
+    --body-copy-leading:1.48;
+    /* 兼容既有组件接口：全部指向同一 deck 主字体，禁止据此拆分中英文 */
+    --sans:var(--deck-font);
+    --sans-zh:var(--deck-font);
+    --mono:var(--deck-font);
+
+    /* ============ Carbon 2x Grid 间距模数 (基础 8px) ============
+       参考: https://carbondesignsystem.com/elements/2x-grid/overview/
+       任何 padding/gap/margin 优先用这套 token,确保 8px 基线对齐 */
+    --sp-3:8px;     /* 02 token */
+    --sp-4:12px;    /* 03 */
+    --sp-5:16px;    /* 04 */
+    --sp-6:24px;    /* 05 */
+    --sp-7:32px;    /* 06 */
+    --sp-8:40px;    /* 07 */
+    --sp-9:48px;    /* 08 */
+    --sp-10:64px;   /* 09 */
+    --sp-11:80px;   /* 10 */
+    --sp-12:96px;   /* 11 */
+    --sp-13:160px;  /* 12 */
+
+    /* ============ Carbon Motion tokens ============
+       https://carbondesignsystem.com/guidelines/motion/overview/
+       两套体系:productive (功能) 短 + 锐 / expressive (叙事) 长 + 软 */
+    --ease-prod:cubic-bezier(.2,0,.38,.9);          /* productive standard */
+    --ease-exp:cubic-bezier(.4,.14,.3,1);            /* expressive standard */
+    --ease-entry-prod:cubic-bezier(0,0,.38,.9);     /* productive entrance */
+    --ease-entry-exp:cubic-bezier(0,0,.3,1);         /* expressive entrance */
+    --dur-fast-1:.07s;   /* 70ms */
+    --dur-fast-2:.11s;   /* 110ms */
+    --dur-mod-1:.15s;    /* 150ms */
+    --dur-mod-2:.24s;    /* 240ms */
+    --dur-slow-1:.4s;    /* 400ms */
+    --dur-slow-2:.7s;    /* 700ms */
+
+    /* 底部分页组件安全区: 主内容最低处不要进入这条区域 */
+    --nav-safe-bottom:8vh;
+    --nav-dot-alpha:.08;
+    --nav-dot-hover-alpha:.14;
+    --nav-dot-active-alpha:.18;
+    --nav-dot-dark-alpha:.10;
+    --nav-dot-dark-active-alpha:.22;
+  }
+  html[lang^="en"]{
+    --deck-font:var(--font-xreal);
+    /* XREAL Diatype cap-height 约 0.70em，需比 IBM Plex Sans SC 放大以匹配 Logo 视觉字高 */
+    --chrome-label-optical-ratio:.313;
+    --weight-display:500;
+    --weight-title:500;
+    --weight-support:400;
+    --weight-emphasis:500;
+    --cover-title-size:min(5.6vw,9.8vh);
+    --section-hero-title-size:min(4.6vw,8vh);
+    --page-title-size:min(3.8vw,6.6vh);
+    --body-copy-leading:1.4;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{
+    width:100%;height:100%;overflow:hidden;
+    background:var(--paper);color:var(--ink);
+    font-family:var(--deck-font);
+    font-feature-settings:"ss01","cv11";
+    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility
+  }
+
+  /* ============ 遗留背景 canvas（XREAL canvas-mode 永久禁用） ============ */
+  canvas.bg{position:fixed;inset:0;width:100vw;height:100vh;z-index:0;display:block;opacity:.55;mix-blend-mode:multiply;pointer-events:none}
+  body.dark-bg canvas.bg{mix-blend-mode:screen;opacity:.42}
+  body.low-power canvas.bg{display:none!important}
+
+  /* ============ Deck 容器 + 翻页 ============ */
+  #deck{position:fixed;inset:0;width:10000vw;height:100vh;display:flex;flex-wrap:nowrap;transition:transform .9s cubic-bezier(.77,0,.175,1);z-index:10;will-change:transform}
+  .slide{
+    width:100vw;height:100vh;flex:0 0 100vw;
+    position:relative;
+    padding:5.5vh 5vw 7vh 5vw;
+    display:flex;flex-direction:column;
+    overflow:hidden;
+    background:var(--paper);color:var(--ink);
+  }
+  .slide.grey{background:var(--grey-1)}
+  .slide.dark{background:var(--ink);color:var(--paper)}
+  .slide.dark .grey-only{display:none}
+  .slide.accent{background:var(--accent);color:var(--accent-on)}
+  .slide[data-layout="XREAL-COVER-BLACK"],
+  .slide[data-layout="XREAL-CLOSING-BLACK"],
+  .slide[data-layout="XREAL-COVER-BLACK"] .canvas-card,
+  .slide[data-layout="XREAL-CLOSING-BLACK"] .canvas-card{background:var(--pure-black)}
+  .slide.accent .accent-block{background:var(--accent-on);color:var(--accent)}
+
+  /* Hero 页透出网格背景多一点 */
+  .slide.hero{background:transparent}
+  .slide.hero.grey{background:rgba(var(--paper-rgb),.86);backdrop-filter:blur(1px)}
+  .slide.hero.dark{background:rgba(var(--ink-rgb),.92);color:var(--paper)}
+
+  /* ============ 装饰: 极细分隔线 ============ */
+  .rule{width:100%;height:1px;background:currentColor;opacity:.18;margin:0}
+  .rule.thick{height:2px;opacity:.85}
+  .rule.accent{background:var(--accent);opacity:1;height:2px}
+  .rule.v{width:1px;height:100%;margin:0}
+
+  /* ============ Chrome (顶部 meta) + Foot (底部) ============ */
+  .chrome{
+    display:flex;justify-content:space-between;align-items:flex-start;
+    font-family:var(--mono);
+    font-size:14px;letter-spacing:normal;text-transform:none;
+    opacity:.7;margin-bottom:auto
+  }
+  .chrome .l,.chrome .r{display:flex;gap:1.6em;align-items:center}
+  .chrome .sep{width:24px;height:1px;background:currentColor;opacity:.5}
+
+  .foot{
+    margin-top:auto;
+    display:flex;justify-content:space-between;align-items:flex-end;
+    font-family:var(--mono);
+    font-size:14px;letter-spacing:normal;text-transform:none;
+    opacity:.55;
+    padding-top:2vh;
+    border-top:1px solid currentColor;
+    border-color:rgba(127,127,127,.25)
+  }
+  .foot .nb{font-family:var(--sans);font-weight:600;letter-spacing:.04em}
+
+  /* ============ Tag / Kicker / Meta 标签 ============ */
+  .kicker{
+    font-family:var(--mono);
+    font-size:14px;letter-spacing:normal;text-transform:none;
+    opacity:.65;margin-bottom:2.4vh;
+    display:inline-flex;align-items:center;gap:.8em
+  }
+  .kicker::before{
+    content:"";width:24px;height:1px;background:currentColor;opacity:.6
+  }
+  .kicker.no-line::before{display:none}
+  .kicker.accent{color:var(--accent);opacity:1;font-weight:600}
+
+  .tag{
+    display:inline-block;
+    font-family:var(--mono);
+    font-size:14px;letter-spacing:normal;text-transform:none;
+    padding:5px 10px;border:1px solid currentColor;border-radius:var(--radius-sm);opacity:.85
+  }
+  .tag.solid{background:currentColor;color:var(--paper);border-color:transparent}
+  .tag.accent{background:var(--accent);color:var(--accent-on);border-color:transparent;opacity:1}
+
+  /* ============ 标题层级（无衬线 · 固定角色字重 · 明确层级） ============ */
+  .h-hero{
+    font-family:var(--sans),var(--sans-zh);
+    font-weight:var(--weight-display);
+    font-size:11vw;
+    line-height:.92;
+    letter-spacing:-.04em;
+  }
+  .h-hero-zh{
+    font-family:var(--sans),var(--sans-zh);
+    font-weight:var(--weight-display);
+    font-size:8.4vw;
+    line-height:.96;
+    letter-spacing:-.025em;
+  }
+  .h-xl{
+    font-family:var(--sans),var(--sans-zh);
+    font-weight:var(--weight-display);
+    font-size:6vw;
+    line-height:1;
+    letter-spacing:-.03em;
+  }
+  .h-xl-zh{
+    font-family:var(--sans),var(--sans-zh);
+    font-weight:var(--weight-display);
+    font-size:5vw;
+    line-height:1.05;
+    letter-spacing:-.025em;
+  }
+  .h-md{
+    font-family:var(--sans),var(--sans-zh);
+    font-weight:var(--weight-title);
+    font-size:2.6vw;
+    line-height:1.18;
+    letter-spacing:-.015em;
+  }
+  .h-sub{
+    font-family:var(--sans),var(--sans-zh);
+    font-weight:400;
+    font-size:2.2vw;
+    line-height:1.3;
+    letter-spacing:-.01em;
+    opacity:.7;
+  }
+
+  /* ============ 正文 / 引语 / 元数据 ============ */
+  .lead{
+    font-family:var(--sans),var(--sans-zh);
+    font-weight:400;
+    font-size:1.55vw;
+    line-height:1.4;
+    letter-spacing:-.005em;
+    opacity:.86;
+  }
+  .body{
+    font-family:var(--sans),var(--sans-zh);
+    font-weight:400;
+    font-size:max(18px,1.08vw);
+    line-height:1.6;
+    letter-spacing:0;
+    opacity:.78;
+  }
+  .body-sm{
+    font-family:var(--sans),var(--sans-zh);
+    font-weight:var(--weight-support);
+    font-size:max(16px,.92vw);
+    line-height:1.55;
+    opacity:.7;
+  }
+  .xreal-cover-title{
+    font-family:var(--deck-font);font-weight:var(--weight-display);
+    font-size:var(--cover-title-size);line-height:.98;letter-spacing:-.03em
+  }
+  .xreal-section-title{
+    font-family:var(--deck-font);font-weight:var(--weight-title);
+    font-size:var(--section-hero-title-size);line-height:1;letter-spacing:-.03em
+  }
+  .xreal-page-title{
+    font-family:var(--deck-font);font-weight:var(--weight-title);
+    font-size:var(--page-title-size);line-height:1.02;letter-spacing:-.03em
+  }
+  .section-hero-body{
+    flex:1;display:flex;flex-direction:column;justify-content:center;
+    align-items:flex-start;max-width:78vw;padding:4vh 0 7vh
+  }
+  .section-hero-kicker{
+    display:flex;align-items:center;gap:.8vw;margin-bottom:2.4vh;
+    font-family:var(--deck-font);font-size:max(14px,.9vw);
+    font-weight:var(--weight-label);color:var(--text-helper)
+  }
+  .section-hero-kicker::before{
+    content:"";width:8px;height:8px;background:currentColor;flex:0 0 auto
+  }
+  .section-hero-summary{
+    max-width:52ch;font-family:var(--deck-font);font-size:max(18px,1.28vw);
+    font-weight:var(--weight-body);line-height:1.5;color:var(--text-secondary);
+    margin-top:max(32px,3.6vh)
+  }
+  .section-hero-foot{
+    display:flex;justify-content:space-between;align-items:end;
+    border-top:1px solid var(--border-subtle);padding-top:1.4vh;
+    color:var(--text-helper)
+  }
+  .slide.dark .section-hero-kicker,.slide.dark .section-hero-summary,.slide.dark .section-hero-foot{color:rgba(255,255,255,.68)}
+  .slide.dark .section-hero-foot{border-top-color:rgba(255,255,255,.18)}
+  .xreal-support-copy{line-height:var(--body-copy-leading)}
+  .meta{
+    font-family:var(--mono);
+    font-weight:var(--weight-support);
+    font-size:max(14px,.82vw);
+    letter-spacing:normal;text-transform:none;
+    opacity:.6;
+  }
+  .meta-row{
+    display:flex;gap:1.4em;align-items:baseline;flex-wrap:wrap;
+    font-family:var(--mono);
+    font-size:max(14px,.88vw);letter-spacing:normal;text-transform:none;
+    opacity:.65;
+  }
+  .meta-row span:not(.dot){display:inline-block}
+  .meta-row .dot{
+    display:inline-block;width:4px;height:4px;border-radius:50%;
+    background:currentColor;opacity:.5;vertical-align:middle
+  }
+
+  /* ============ KPI Hero (视觉英雄数据) ============ */
+  .kpi-hero{
+    font-family:var(--sans);
+    font-weight:700;
+    font-size:22vw;
+    line-height:.82;
+    letter-spacing:-.05em;
+    font-feature-settings:"tnum","ss01";
+  }
+  .kpi-hero .unit{
+    font-family:var(--sans),var(--sans-zh);
+    font-weight:500;
+    font-size:.18em;
+    letter-spacing:0;
+    opacity:.5;
+    margin-left:.12em;
+    vertical-align:.5em;
+  }
+  .kpi-hero.accent{color:var(--accent)}
+  .kpi-big{
+    font-family:var(--sans);
+    font-weight:700;
+    font-size:11vw;
+    line-height:.85;
+    letter-spacing:-.04em;
+    font-feature-settings:"tnum"
+  }
+  .kpi-mid{
+    font-family:var(--sans);
+    font-weight:var(--weight-emphasis);
+    font-size:6vw;
+    line-height:.88;
+    letter-spacing:-.03em;
+    font-feature-settings:"tnum"
+  }
+
+  /* ============ Stat Card (数据卡片 · 极简) ============ */
+  .stat-card{
+    display:flex;flex-direction:column;
+    gap:.6vh;align-items:flex-start;
+    padding-top:1.6vh;
+    border-top:2px solid currentColor;
+  }
+  .stat-card.thin{border-top-width:1px;border-color:rgba(127,127,127,.4)}
+  .stat-card.accent-top{border-top-color:var(--accent);border-top-width:3px}
+  .stat-card .stat-label{
+    font-family:var(--mono);
+    font-size:max(14px,.82vw);
+    letter-spacing:normal;text-transform:none;
+    opacity:.6;
+  }
+  .stat-card .stat-nb{
+    font-family:var(--sans);
+    font-weight:var(--weight-emphasis);
+    font-size:5.6vw;
+    line-height:.88;
+    letter-spacing:-.035em;
+    font-feature-settings:"tnum";
+    margin-top:.4vh;
+  }
+  .stat-card .stat-nb .stat-unit{
+    font-family:var(--sans),var(--sans-zh);
+    font-weight:500;
+    font-size:.32em;
+    letter-spacing:0;
+    opacity:.6;
+    margin-left:.14em;
+    vertical-align:.4em;
+  }
+  .stat-card .stat-note{
+    font-family:var(--sans),var(--sans-zh);
+    font-weight:400;
+    font-size:max(16px,.98vw);
+    line-height:1.5;
+    opacity:.7;
+    margin-top:.6vh;
+  }
+  .grid-4 .stat-card .stat-nb{font-size:4.6vw}
+  .grid-3 .stat-card .stat-nb{font-size:6.4vw}
+  .grid-6 .stat-card .stat-nb{font-size:4vw}
+
+  /* ============ Accent Block (高亮色块包裹内容) ============ */
+  .accent-block{
+    background:var(--accent);color:var(--accent-on);
+    padding:2.4vh 2vw;
+  }
+  .accent-block.tight{padding:1.4vh 1.4vw}
+  .accent-block .h-md,.accent-block .h-xl,.accent-block .kpi-mid{color:var(--accent-on)}
+
+  .ink-block{
+    background:var(--ink);color:var(--paper);
+    padding:2.4vh 2vw
+  }
+  .grey-block{
+    background:var(--grey-1);
+    padding:2.4vh 2vw
+  }
+
+  /* 高亮文字 (mark 风格) */
+  .mark{
+    background:var(--accent);color:var(--accent-on);
+    padding:0 .2em;
+    box-decoration-break:clone;
+    -webkit-box-decoration-break:clone;
+  }
+  .mark.ink{background:var(--ink);color:var(--paper)}
+  .underline-accent{
+    background-image:linear-gradient(to bottom, transparent 70%, var(--accent) 70%, var(--accent) 96%, transparent 96%);
+    padding:0 .05em
+  }
+
+  /* ============ 网格系统 (模块化网格) ============ */
+  .frame{flex:1;display:flex;flex-direction:column;min-height:0;overflow:hidden}
+  .frame.grid-2-7-5,
+  .frame.grid-2-6-6,
+  .frame.grid-2-8-4,
+  .frame.grid-2-4-8,
+  .frame.grid-3-3,
+  .frame.grid-12,
+  .frame.grid-6,
+  .frame.grid-4,
+  .frame.grid-3{display:grid}
+
+  /* 12 列模块化网格 (XREAL Style 核心) */
+  .grid-12{
+    display:grid;
+    grid-template-columns:repeat(12,1fr);
+    gap:2vh 1.2vw;
+    align-items:start;
+  }
+  .span-2{grid-column:span 2}
+  .span-3{grid-column:span 3}
+  .span-4{grid-column:span 4}
+  .span-5{grid-column:span 5}
+  .span-6{grid-column:span 6}
+  .span-7{grid-column:span 7}
+  .span-8{grid-column:span 8}
+  .span-9{grid-column:span 9}
+  .span-12{grid-column:span 12}
+
+  /* 经典分栏 */
+  .grid-2-7-5{display:grid;grid-template-columns:7fr 5fr;gap:3vw 4vh;align-items:start}
+  .grid-2-6-6{display:grid;grid-template-columns:1fr 1fr;gap:3vw 4vh;align-items:start}
+  .grid-2-8-4{display:grid;grid-template-columns:8fr 4fr;gap:3vw 4vh;align-items:start}
+  .grid-2-4-8{display:grid;grid-template-columns:4fr 8fr;gap:3vw 4vh;align-items:start}
+  .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:3vw 4vh;align-items:start}
+  .grid-3-3{display:grid;grid-template-columns:repeat(3,1fr);grid-auto-rows:minmax(0,1fr);gap:2.4vh 2vw}
+  .grid-4{display:grid;grid-template-columns:repeat(2,1fr);grid-template-rows:repeat(2,1fr);gap:3vh 3vw;flex:1;align-content:center}
+  .grid-6{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(2,1fr);gap:3vh 2.4vw;flex:1;align-content:center}
+
+  /* 工具类 */
+  .col{display:flex;flex-direction:column;gap:2vh}
+  .row{display:flex;align-items:center;gap:2vw}
+  .fill{flex:1}
+  .center{align-items:center;justify-content:center;text-align:center}
+  .right{text-align:right;justify-self:end}
+  .top{align-self:start}
+  .bottom{align-self:end}
+  .va-center{align-self:center}
+  .nowrap{white-space:nowrap}
+  /* XREAL 语义色：默认不参与基础配色，只用于明确的品牌语义 */
+  .xreal-critical{color:var(--brand-red)!important}
+  .xreal-critical-fill{background:var(--brand-red)!important;color:#fff!important}
+  .xreal-silver{color:var(--brand-silver)!important}
+  .xreal-gold{color:var(--brand-gold)!important}
+
+  /* 非对称定位 */
+  .pos-absolute{position:absolute}
+  .bottom-left{position:absolute;left:5vw;bottom:8vh;max-width:50vw}
+  .bottom-right{position:absolute;right:5vw;bottom:8vh;max-width:50vw;text-align:right}
+  .top-right{position:absolute;right:5vw;top:5.5vh;text-align:right}
+  .top-left{position:absolute;left:5vw;top:5.5vh}
+
+  /* ============ Callout (引用框 · 极简) ============ */
+  .callout{
+    padding:2vh 2vw;
+    border-left:3px solid var(--accent);
+    font-family:var(--sans),var(--sans-zh);
+    font-size:max(14px,1vw);
+    line-height:1.55;
+    opacity:.9;
+  }
+  .callout.ink{border-left-color:currentColor}
+  .callout .cite,.callout .callout-src{
+    display:block;margin-top:1.2vh;
+    font-family:var(--mono);
+    font-size:14px;letter-spacing:normal;text-transform:none;
+    opacity:.6;
+  }
+
+  /* ============ Icons (Google Material Symbols Outlined) ============ */
+  .material-symbols-outlined{
+    font-family:'Material Symbols Outlined';
+    font-weight:400;font-style:normal;font-size:1em;line-height:1;
+    letter-spacing:normal;text-transform:none;display:inline-block;
+    white-space:nowrap;word-wrap:normal;direction:ltr;
+    -webkit-font-feature-settings:'liga';-webkit-font-smoothing:antialiased;
+    font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24;
+    vertical-align:-.14em;flex-shrink:0
+  }
+  .material-symbols-outlined.fill{font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24}
+  .ico{width:1em;height:1em;display:inline-block;vertical-align:-.12em;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+  .ico-lg,.ico-md,.ico-sm{fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round}
+  .ico-lg{width:2.4vw;height:2.4vw;stroke-width:1.4;display:inline-block}
+  .ico-md{width:1.6vw;height:1.6vw;stroke-width:1.6;display:inline-block;vertical-align:-.4em}
+  .ico-sm{width:1vw;height:1vw;stroke-width:1.8;display:inline-block;vertical-align:-.15em;opacity:.7}
+
+  /* ============ 几何小图标 (装饰) ============ */
+  .geo-dot{width:.7vw;height:.7vw;border-radius:50%;background:var(--accent);display:inline-block;vertical-align:middle}
+  .geo-square{width:.7vw;height:.7vw;background:var(--accent);display:inline-block;vertical-align:middle}
+  .geo-line{width:2vw;height:2px;background:var(--accent);display:inline-block;vertical-align:middle}
+  .geo-circle-o{width:.9vw;height:.9vw;border:2px solid currentColor;border-radius:50%;display:inline-block;vertical-align:middle}
+
+  /* ============ 图片 frame-img ============ */
+  .frame-img{overflow:hidden;position:relative;background:var(--paper);box-sizing:border-box;width:100%;border-radius:var(--radius-sm)}
+  .slide.dark .frame-img{background:rgba(255,255,255,.06)}
+  .frame-img > img{width:100%;height:100%;object-fit:cover;object-position:center center;display:block}
+  .frame-img.fit-contain > img{object-fit:contain;object-position:center center}
+  .frame-img.pos-top > img{object-position:top center}
+  .frame-img.pos-face > img{object-position:center 35%}
+  .frame-img.r-16x9{aspect-ratio:16/9;max-height:64vh}
+  .frame-img.r-21x9{aspect-ratio:21/9;max-height:54vh}
+  .frame-img.r-16x10{aspect-ratio:16/10;max-height:56vh}
+  .frame-img.r-4x3{aspect-ratio:4/3;max-height:56vh}
+  .frame-img.r-3x2{aspect-ratio:3/2;max-height:46vh}
+  .frame-img.r-3x4{aspect-ratio:3/4;max-height:60vh}
+  .frame-img.r-1x1{aspect-ratio:1/1;max-height:50vh}
+  .frame-img.h-16{height:16vh}
+  .frame-img.h-18{height:18vh}
+  .frame-img.h-22{height:22vh}
+  .frame-img.h-26{height:26vh}
+  .frame-img.h-28{height:28vh}
+  .frame-img.h-32{height:32vh}
+  .frame-img.swiss-lined{border-top:2px solid var(--accent)}
+  .frame-img.swiss-keyline{border:0}
+
+  /* P22 Image Hero: 下半屏内容区必须和图片拉开距离,不要贴在图下沿 */
+  .image-hero-body{
+    display:grid;grid-template-columns:6fr 6fr;gap:3vw;
+    padding:6.6vh 5vw 4.4vh;flex:1;align-content:start
+  }
+  .image-hero-stats{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:2vw;align-items:start
+  }
+  .img-cap{
+    display:block;margin-top:.8vh;
+    font-family:var(--mono);
+    font-weight:var(--weight-support);
+    font-size:max(14px,.82vw);
+    letter-spacing:normal;text-transform:none;
+    opacity:.6;
+  }
+  figure.frame-img,figure.tile{margin:0;display:flex;flex-direction:column;min-width:0}
+  figure.tile > .frame-img{flex:0 0 auto}
+
+  /* XREAL Style 图文混排：统一 3px 小圆角、发丝线、黑白灰结构和克制语义色；图像容器不加阴影 */
+  .swiss-img-split{display:grid;grid-template-columns:5fr 7fr;gap:3vw;align-items:start;flex:1;min-height:0}
+  .swiss-img-split.reverse{grid-template-columns:7fr 5fr}
+  .swiss-img-split.align-bottom{align-items:end}
+  .swiss-img-split.align-bottom .swiss-img-copy{align-self:end}
+  .swiss-img-split.align-image-bottom{align-items:end;padding-bottom:var(--nav-safe-bottom)}
+  .swiss-img-split.align-image-bottom .swiss-img-copy{align-self:end}
+  .swiss-img-split.align-image-bottom figure.tile{align-self:end;position:relative}
+  .swiss-img-split.align-image-bottom figure.tile > .swiss-img-caption{
+    position:absolute;left:0;right:0;top:calc(100% + var(--sp-4));margin-top:0
+  }
+  .nav-safe-bottom{padding-bottom:var(--nav-safe-bottom)}
+  .nav-safe-bottom-tight{padding-bottom:calc(var(--nav-safe-bottom) * .65)}
+  .swiss-img-copy{display:flex;flex-direction:column;gap:var(--sp-6);min-width:0}
+  .swiss-img-copy .rule{margin:0}
+  .swiss-img-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--sp-5);align-items:start;margin-top:var(--sp-7)}
+  .swiss-img-grid.two{grid-template-columns:repeat(2,1fr)}
+  .swiss-img-grid.tight{margin-top:0}
+  .swiss-img-caption{
+    display:flex;justify-content:space-between;gap:var(--sp-5);
+    margin-top:var(--sp-4);
+    font-family:var(--mono);font-size:max(14px,.74vw);
+    letter-spacing:normal;text-transform:none;color:var(--text-helper);
+    border-top:1px solid var(--border-subtle);padding-top:var(--sp-4)
+  }
+  .swiss-img-caption strong{
+    font-family:var(--sans),var(--sans-zh);font-size:max(16px,.9vw);
+    font-weight:600;letter-spacing:0;text-transform:none;color:var(--text-primary)
+  }
+
+  /* ============ Bar Chart (扁平几何图表) ============ */
+  .bar-chart{display:flex;flex-direction:column;gap:1.4vh}
+  .bar-row{display:grid;grid-template-columns:8em 1fr 4em;gap:1.4vw;align-items:center}
+  .bar-row .bar-label{font-family:var(--mono);font-size:max(14px,.84vw);letter-spacing:normal;text-transform:none;opacity:.7}
+  .bar-row .bar-track{height:14px;background:rgba(127,127,127,.18);position:relative;overflow:hidden;border-radius:var(--radius-sm)}
+  .bar-row .bar-fill{height:100%;background:var(--accent);position:absolute;left:0;top:0;border-radius:var(--radius-sm)}
+  .bar-row .bar-fill.ink{background:currentColor}
+  .bar-row .bar-value{font-family:var(--sans);font-weight:700;font-size:max(16px,1.05vw);text-align:right;font-feature-settings:"tnum"}
+
+  /* ============ 导航 ============ */
+  /* 底部分页导航: 仅保留方块本身,无背景无描边 */
+  #nav{position:fixed;left:50%;bottom:2vh;transform:translateX(-50%);z-index:30;display:flex;gap:10px;padding:0;background:transparent;border:0;transition:opacity .2s ease}
+  #nav.is-hidden{opacity:0;pointer-events:none}
+  #nav .dot{width:6px;height:6px;background:rgba(0,0,0,var(--nav-dot-alpha));cursor:pointer;transition:all .25s ease;border:0;padding:0;border-radius:0}
+  #nav .dot:hover{background:rgba(0,0,0,var(--nav-dot-hover-alpha))}
+  #nav .dot.active{background:rgba(0,0,0,var(--nav-dot-active-alpha));width:18px}
+  body.dark-bg #nav .dot{background:rgba(255,255,255,var(--nav-dot-dark-alpha))}
+  body.dark-bg #nav .dot.active{background:rgba(255,255,255,var(--nav-dot-dark-active-alpha))}
+
+
+  /* ESC 索引页: 动画元素强制可见 (覆盖 motion-ready 的 opacity:0) */
+  #overview [data-anim]{opacity:1!important;transform:none!important}
+  #overview .slide *{animation:none!important;transition:none!important}
+
+  /* 统一卡片样式 token: card-fill (默认灰底 · 中性) + card-ink (反转高对比) + card-accent (单一焦点) */
+  .card-fill{background:#f5f5f4;border:0;border-radius:var(--radius-sm);color:var(--text-primary)}
+  .card-ink{background:var(--ink);border:0;border-radius:var(--radius-sm);color:var(--paper)}
+  .card-ink .t-meta,.card-ink .t-cat{color:rgba(255,255,255,.6)}
+  .card-accent{background:var(--accent);border:0;border-radius:var(--radius-sm);color:var(--accent-on)}
+  .card-accent .t-meta,.card-accent .t-cat{color:var(--accent-on)}
+  .hero-ink-col,.force-card{border-radius:var(--radius-sm);overflow:hidden}
+
+  /* S16 Multi-card Brief: 3×2 微卡，统一小圆角；仅一张可作为黑色结构焦点 */
+  .brief-grid{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(2,1fr);gap:1.4vh 1.4vw;flex:1;align-content:stretch;margin-top:3vh}
+  .brief-card{background:var(--grey-1);padding:2.2vh 1.5vw;display:flex;flex-direction:column;justify-content:space-between;min-height:0;border-radius:var(--radius-sm);overflow:hidden}
+  .brief-card.is-accent{background:var(--ink);color:var(--paper)}
+
+  /* ============ 动效 (与原模板一致) ============ */
+  [data-anim]{opacity:1}
+  body.motion-ready [data-anim]{opacity:0}
+  body.motion-ready [data-anim="left"]{transform:translateX(-24px)}
+  body.motion-ready [data-anim="right"]{transform:translateX(24px)}
+  body.motion-ready [data-anim="line"]{opacity:0;transform:translateY(10px)}
+  body.low-power #deck{transition:none!important}
+  body.low-power *,
+  body.low-power *::before,
+  body.low-power *::after{animation:none!important;transition:none!important}
+  body.low-power.motion-ready [data-anim],
+  body.low-power [data-anim]{opacity:1!important;transform:none!important}
+
+  /* ============================================================
+     ↓↓↓ V2 EXTENSIONS · Canvas Mode + 参考图新类
+     验证效果后沉淀回 template-xreal.html
+     ============================================================ */
+
+  /* 全屏铺满模式 · 关闭 WebGL · 卡片即页面 */
+  body.canvas-mode{background:var(--paper)}
+  body.canvas-mode canvas.bg{display:none !important}
+  body.canvas-mode .slide{background:var(--paper);padding:0;align-items:stretch;justify-content:stretch}
+  body.canvas-mode .slide.hero{background:var(--paper)}
+
+  .canvas-card{
+    width:100vw;
+    height:100vh;
+    background:var(--paper);color:var(--ink);
+    padding:5.6vh 5vw 4.4vh;
+    display:flex;flex-direction:column;
+    position:relative;overflow:hidden;
+    box-shadow:none;
+    border-radius:0;
+  }
+  .slide.dark .canvas-card{background:var(--ink);color:var(--paper)}
+  .slide.accent .canvas-card{background:var(--accent);color:var(--accent-on)}
+  .slide.grey .canvas-card{background:var(--grey-1);color:var(--ink)}
+  .slide.split .canvas-card{padding:0;flex-direction:row}
+
+  .slide.accent .canvas-card .chrome-min{color:rgba(255,255,255,.62)}
+  .slide.accent .canvas-card .t-meta{color:rgba(255,255,255,.7)}
+  .split-half > .half.b-accent .chrome-min{color:rgba(255,255,255,.62)}
+
+  /* 编号目录页 · 超大数字 + 国家名风格 — 使用稳定 display 字重 */
+  .num-mega{
+    font-family:var(--sans);font-weight:var(--weight-display);
+    font-size:9vw;line-height:1;letter-spacing:-.04em;
+    font-feature-settings:"tnum"
+  }
+  .num-mega.thin{font-weight:var(--weight-title)}
+  .name-mega{
+    font-family:var(--sans);font-weight:var(--weight-display);
+    font-size:9vw;line-height:1;letter-spacing:-.035em;
+  }
+  .name-mega.muted{color:var(--grey-3)}
+
+  /* 超大 KPI — 数据使用明确字重,不因字号变大而变细 */
+  .kpi-thin{
+    font-family:var(--sans);font-weight:var(--weight-emphasis);
+    font-size:14vw;line-height:.92;letter-spacing:-.045em;
+    font-feature-settings:"tnum"
+  }
+  .kpi-thin .unit{display:inline-block;font-size:.3em;font-weight:var(--weight-label);line-height:1;opacity:.55;margin-left:.15em;vertical-align:baseline}
+  .kpi-thin.accent{color:var(--accent)}
+  .kpi-thin-sm{
+    font-family:var(--sans);font-weight:var(--weight-title);
+    font-size:5.6vw;line-height:1.04;letter-spacing:-.03em;
+    font-feature-settings:"tnum"
+  }
+  .kpi-thin-sm .unit{display:inline-block;font-size:.3em;font-weight:var(--weight-label);line-height:1;opacity:.55;margin-left:.12em;vertical-align:baseline}
+
+  /* 4 列细线 KPI 行 — 顶部一根 hairline,内部不再加竖线 */
+  /* 4 列 KPI: 用纵向分割线建立网格感 (Carbon 2x grid 模数) */
+  .kpi-row-4{
+    display:grid;grid-template-columns:repeat(4,1fr);
+    gap:0;padding-top:2.4vh;
+    border-top:1px solid var(--grey-2)
+  }
+  .kpi-row-4 > .kpi-cell{
+    padding:1.6vh 1.6vw 0;
+    border-left:1px solid var(--grey-2)
+  }
+  .kpi-row-4 > .kpi-cell:first-child{padding-left:0;border-left:none}
+  .kpi-cell .lbl{font-family:var(--mono);font-size:max(14px,.78vw);letter-spacing:normal;text-transform:none;opacity:.55;margin-bottom:1.2vh}
+  .kpi-cell .nb{font-family:var(--sans);font-weight:var(--weight-emphasis);font-size:3.2vw;line-height:1;letter-spacing:-.025em;font-feature-settings:"tnum"}
+  .kpi-cell .nb .unit{display:inline-block;font-size:.32em;font-weight:var(--weight-label);line-height:1;opacity:.6;margin-left:.1em;vertical-align:baseline}
+  .kpi-cell .note{font-family:var(--sans),var(--sans-zh);font-size:max(16px,.92vw);line-height:1.5;opacity:.7;margin-top:1.2vh}
+
+  /* 时间线轴 — 通用 axis token, 横纵共享
+     axis 列 = 24px 固定宽,dot 直径 8px,绝对居中在 axis 列中线 (12px)
+     虚线绝对定位 left:12px,与 dot 中心严格对齐 */
+  .timeline-v{
+    --tl-axis-w:24px;        /* axis 列固定宽度 */
+    --tl-dot:8px;            /* 圆点直径 */
+    position:relative;margin-top:var(--sp-7)
+  }
+  .timeline-v::before{
+    content:"";position:absolute;
+    left:calc(var(--tl-axis-w) / 2);
+    transform:translateX(-50%);
+    top:var(--sp-5);bottom:var(--sp-5);
+    width:1px;
+    background:repeating-linear-gradient(to bottom,currentColor 0 4px,transparent 4px 8px);
+    opacity:.35;pointer-events:none;z-index:0
+  }
+  .tl-node{
+    position:relative;
+    display:grid;
+    grid-template-columns:var(--tl-axis-w) minmax(0,7em) minmax(0,7.6em) 1fr;
+    gap:0 var(--sp-5);
+    align-items:center;
+    padding:var(--sp-7) 0
+  }
+  /* 进度点: 纯色实心圆,无背景无描边,精确居中在 axis 列中线 */
+  .tl-node .dot{
+    width:var(--tl-dot);height:var(--tl-dot);
+    border-radius:50%;
+    background:currentColor;
+    justify-self:center;
+    z-index:1
+  }
+  .tl-node.accent .dot{background:var(--accent)}
+  .tl-node .yr{
+    font-family:var(--mono);font-weight:500;
+    font-size:max(14px,1vw);letter-spacing:.04em
+  }
+  .tl-node .multi{
+    font-family:var(--sans);font-weight:var(--weight-emphasis);
+    font-size:clamp(28px,2.8vw,56px);
+    line-height:.95;letter-spacing:-.025em;
+    white-space:nowrap;
+    overflow:hidden;
+    min-width:0
+  }
+  .tl-node .multi .unit{
+    font-size:.36em;font-weight:var(--weight-label);opacity:.6;
+    margin-left:.2em;
+    vertical-align:.42em;
+    letter-spacing:0
+  }
+  .tl-node.accent .multi{color:var(--accent)}
+  .tl-node .desc{
+    font-family:var(--sans),var(--sans-zh);
+    font-size:max(16px,.94vw);line-height:1.55;opacity:.78;
+    min-width:0
+  }
+
+  /* 横向时间线 (.timeline-h) — 与 .timeline-v 共享 axis token, 视觉语言一致 */
+  .timeline-h{
+    --tl-axis-w:8px;
+    --tl-dot:8px;
+    position:relative;
+    flex:1;
+    display:flex;align-items:center
+  }
+  .timeline-h::before{
+    content:"";position:absolute;
+    top:50%;left:5%;right:5%;height:1px;
+    transform:translateY(-50%);
+    background:repeating-linear-gradient(to right,currentColor 0 4px,transparent 4px 8px);
+    opacity:.35;pointer-events:none;z-index:0
+  }
+  .timeline-h .tl-row{
+    position:relative;width:100%;
+    display:grid;grid-template-columns:repeat(5,1fr);
+    align-items:center
+  }
+  .timeline-h .th-node{
+    position:relative;display:flex;justify-content:center
+  }
+  /* 横向 dot: 8px 纯色实心,无描边无阴影 (与 P2 保持一致) */
+  .timeline-h .th-node .dot{
+    width:var(--tl-dot);height:var(--tl-dot);
+    border-radius:50%;
+    background:var(--ink);
+    z-index:1;position:relative
+  }
+  .timeline-h .th-node.accent .dot{background:var(--accent)}
+  .timeline-h .th-node .label{
+    position:absolute;left:50%;transform:translateX(-50%);
+    width:13vw;text-align:center;
+    display:flex;flex-direction:column;gap:.4vh
+  }
+  .timeline-h .th-node.up .label{bottom:calc(50% + 22px)}
+  .timeline-h .th-node.down .label{top:calc(50% + 22px)}
+  .timeline-h .th-node .yr{
+    font-family:var(--mono);font-size:max(14px,.78vw);letter-spacing:.05em;
+    color:var(--text-helper);font-weight:500
+  }
+  .timeline-h .th-node.accent .yr{color:var(--accent)}
+  .timeline-h .th-node .name{
+    font-family:var(--deck-font);font-size:max(16px,1.05vw);font-weight:600;
+    color:var(--text-primary);line-height:1.2;letter-spacing:-.005em
+  }
+  .timeline-h .th-node.accent .name{color:var(--accent)}
+  .timeline-h .th-node .desc{
+    font-family:var(--sans),var(--sans-zh);font-size:max(14px,.84vw);
+    color:var(--text-secondary);font-weight:400;line-height:1.4
+  }
+
+  /* 几何图示 (参考图 5) — SVG-friendly 容器 */
+  .geo-icon{width:5vw;height:5vw;display:block;margin-bottom:2.2vh;color:var(--ink);flex-shrink:0}
+  .slide.dark .geo-icon{color:var(--paper)}
+  .geo-icon svg{width:100%;height:100%;overflow:visible}
+  .geo-icon .stroke{fill:none;stroke:currentColor;stroke-width:1.4}
+  .geo-icon .stroke-accent{fill:none;stroke:var(--accent);stroke-width:1.4}
+  .geo-icon .fill-accent{fill:var(--accent)}
+
+  /* 卡片网格 (参考图 1 卡片漂浮) — 在 canvas-card 内部再分卡 */
+  .sub-grid-3-2{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(2,1fr);gap:1.4vh 1.4vw;flex:1;align-content:stretch;margin-top:3vh}
+  .sub-card{
+    background:var(--grey-1);
+    padding:2.4vh 1.6vw 2vh;
+    display:flex;flex-direction:column;
+    position:relative;border-radius:var(--radius-sm);
+    min-height:0
+  }
+  .slide.dark .sub-card{background:rgba(255,255,255,.06)}
+  .sub-card.accent{background:var(--accent);color:var(--accent-on)}
+  .sub-card.ink{background:var(--ink);color:var(--paper)}
+  .sub-card .nb-corner{
+    position:absolute;top:1.6vh;right:1.4vw;
+    font-family:var(--mono);font-size:max(14px,.8vw);
+    letter-spacing:.04em;opacity:.55
+  }
+  .sub-card .ttl{font-family:var(--sans),var(--sans-zh);font-weight:500;font-size:max(17px,1.5vw);line-height:1.2;letter-spacing:-.015em;margin-bottom:1vh}
+  .sub-card .desc{font-family:var(--sans),var(--sans-zh);font-size:max(16px,.94vw);line-height:1.55;opacity:.78;margin-top:auto}
+  .sub-card .material-symbols-outlined{font-size:2.4vw;color:currentColor;margin-bottom:1.6vh}
+  .sub-card.accent .material-symbols-outlined{color:var(--accent-on)}
+
+  /* 三层架构纯色块拼图 (参考图 4 + 6) — 横排等高色块 */
+  .stack-row{display:grid;grid-template-columns:repeat(3,1fr);gap:1.6vw;flex:1;margin-top:6vh;align-items:stretch}
+  .stack-block{
+    display:flex;flex-direction:column;
+    padding:3.2vh 1.8vw 2.4vh;
+    position:relative;border-radius:var(--radius-sm);
+    min-height:0
+  }
+  .stack-block.b-accent{background:var(--accent);color:var(--accent-on)}
+  .stack-block.b-grey{background:var(--grey-1);color:var(--ink)}
+  .stack-block.b-ink{background:var(--ink);color:var(--paper)}
+  .stack-block .layer-nb{font-family:var(--mono);font-size:max(14px,.84vw);letter-spacing:.04em;opacity:.65;margin-bottom:auto}
+  .stack-block .layer-icon{margin-bottom:1.6vh}
+  .stack-block .layer-icon svg{width:3vw;height:3vw}
+  .stack-block .layer-icon .stroke{fill:none;stroke:currentColor;stroke-width:1.6}
+  .stack-block .layer-ttl{font-family:var(--sans),var(--sans-zh);font-weight:400;font-size:max(17px,2vw);line-height:1.1;margin-top:1vh;letter-spacing:-.02em}
+  .stack-block .layer-desc{font-family:var(--sans),var(--sans-zh);font-weight:400;font-size:max(16px,.94vw);line-height:1.55;opacity:.88;margin-top:1.4vh}
+  .stack-block .material-symbols-outlined{font-size:2.6vw;margin-bottom:1.6vh}
+  .stack-block .layer-tag{font-family:var(--mono);font-size:max(14px,.74vw);letter-spacing:normal;text-transform:none;opacity:.7;margin-top:1.6vh;border-top:1px solid currentColor;padding-top:1vh}
+
+  /* 不等高柱状 KPI 塔 (参考图 6) */
+  .bar-towers{
+    display:grid;grid-template-columns:repeat(4,1fr);
+    gap:1.2vw;flex:1;align-items:end;margin-top:auto;
+    border-bottom:1px solid var(--border-strong)
+  }
+  .bar-tower{
+    display:flex;flex-direction:column;justify-content:flex-end;
+    min-height:0;height:100%
+  }
+  .bar-tower .cap{
+    background:var(--grey-1);
+    height:5.6vh;
+    display:flex;align-items:center;justify-content:center;
+    margin-bottom:.4vh;border-radius:var(--radius-sm)
+  }
+  .bar-tower .cap svg{width:1.6vw;height:1.6vw;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+  .bar-tower .body-block{
+    flex:0 1 auto;
+    padding:2vh 1.2vw 2vh;
+    display:flex;flex-direction:column;justify-content:flex-end;
+    min-height:18vh;border-radius:var(--radius-sm) var(--radius-sm) 0 0
+  }
+  .bar-tower .body-block.h-1{min-height:22vh}
+  .bar-tower .body-block.h-2{min-height:30vh}
+  .bar-tower .body-block.h-3{min-height:38vh}
+  .bar-tower .body-block.h-4{min-height:46vh}
+  /* 默认所有 KPI 塔统一为浅描边卡 — 不抢戏;只有 .b-accent 突出为黑色结构块 */
+  .bar-tower .body-block{background:var(--paper);color:var(--ink);border:1px solid var(--grey-2)}
+  .bar-tower .body-block.b-accent{background:var(--accent);color:var(--accent-on);border-color:var(--accent)}
+  .bar-tower .lbl{font-family:var(--mono);font-size:max(14px,.82vw);letter-spacing:normal;text-transform:none;opacity:.65;margin-bottom:1vh}
+  .bar-tower .nb{font-family:var(--sans);font-weight:var(--weight-emphasis);font-size:max(20px,2.8vw);line-height:1;letter-spacing:-.03em;font-feature-settings:"tnum"}
+  .bar-tower .body-block.b-accent .nb{font-weight:700}
+  .bar-tower .nb .unit{display:inline-block;font-size:.36em;font-weight:var(--weight-label);line-height:1;opacity:.7;margin-left:.08em;vertical-align:baseline}
+  .bar-tower .sub{font-family:var(--sans),var(--sans-zh);font-size:max(16px,.92vw);opacity:.75;margin-top:1.2vh;line-height:1.5}
+  .bar-tower .cap{background:var(--grey-1);color:var(--ink)}
+  .bar-tower .material-symbols-outlined{font-size:1.6vw}
+
+  /* ============ Carbon Productive Type Tokens ============
+     用于 PPT 中的"productive 时刻": 列表、表格行、说明文、章节标签
+     固定 px 字号,密集紧凑;与 vw-based 的 Expressive 巨字形成双极对比 */
+
+  /* category label / eyebrow / section tag — small, bold, uppercase */
+  .t-cat{
+    font-family:var(--mono);
+    font-size:14px;font-weight:600;
+    letter-spacing:normal;text-transform:none;
+    color:var(--text-helper);line-height:1.3
+  }
+  .t-cat.accent{color:var(--accent)}
+  .t-cat.on-dark{color:rgba(255,255,255,.78)}
+
+  /* page chrome / breadcrumb / running header — extra-small mono */
+  .t-meta{
+    font-family:var(--mono);
+    font-size:14px;font-weight:500;
+    letter-spacing:normal;text-transform:none;
+    color:var(--text-helper);line-height:1.45
+  }
+
+  /* helper / caption — secondary text */
+  .t-helper{
+    font-family:var(--sans),var(--sans-zh);
+    font-size:14px;font-weight:400;
+    color:var(--text-helper);line-height:1.5;
+    letter-spacing:.005em
+  }
+
+  /* body small — list items, table rows, captions */
+  .t-body-sm{
+    font-family:var(--sans),var(--sans-zh);
+    font-size:16px;font-weight:400;
+    color:var(--text-secondary);line-height:1.55;
+    letter-spacing:0
+  }
+
+  /* body — paragraphs, descriptions */
+  .t-body{
+    font-family:var(--sans),var(--sans-zh);
+    font-size:18px;font-weight:400;
+    color:var(--text-primary);line-height:1.5;
+    letter-spacing:-.005em
+  }
+
+  /* body emphasis — 强调正文 */
+  .t-body-emp{
+    font-family:var(--sans),var(--sans-zh);
+    font-size:18px;font-weight:600;       /* SemiBold per Carbon */
+    color:var(--text-primary);line-height:1.5;
+    letter-spacing:-.005em
+  }
+
+  /* productive heading — section title within slide */
+  .t-h-prod{
+    font-family:var(--sans),var(--sans-zh);
+    font-size:22px;font-weight:600;
+    color:var(--text-primary);line-height:1.4;
+    letter-spacing:-.01em
+  }
+
+  /* dark background variants */
+  .slide.dark .t-cat,.slide.dark .t-meta,.slide.dark .t-helper{color:rgba(255,255,255,.62)}
+  .slide.dark .t-body-sm{color:rgba(255,255,255,.78)}
+  .slide.dark .t-body,.slide.dark .t-body-emp,.slide.dark .t-h-prod{color:var(--paper)}
+  .split-half .half.b-ink .t-cat,.split-half .half.b-ink .t-meta,.split-half .half.b-ink .t-helper{color:rgba(255,255,255,.62)}
+  .split-half .half.b-ink .t-body-sm{color:rgba(255,255,255,.78)}
+  .split-half .half.b-ink .t-body,.split-half .half.b-ink .t-body-emp,.split-half .half.b-ink .t-h-prod{color:var(--paper)}
+
+  /* ========== V3: 几何水平柱状图 ========== */
+  /* 横向柱图: 标签列 + 柱体列 + 数值列 — 严格 XREAL Style 网格 */
+  .h-bar-chart{
+    display:grid;
+    grid-template-columns:11em minmax(0,1fr) 8em;
+    gap:1.6vh 1.6vw;
+    align-items:center;
+    margin-top:2.4vh;
+    font-feature-settings:"tnum"
+  }
+  .h-bar-chart .row-lbl{
+    font-family:var(--sans),var(--sans-zh);
+    font-weight:500;
+    font-size:max(14px,1vw);
+    letter-spacing:-.005em;
+    text-align:left
+  }
+  .h-bar-chart .row-track{
+    height:3.2vh;
+    background:var(--grey-1);
+    position:relative;
+    overflow:hidden;
+    border-radius:var(--radius-sm)
+  }
+  .h-bar-chart .row-fill{
+    height:100%;
+    background:var(--ink);
+    transition:width 1s cubic-bezier(.5,0,.2,1);
+    border-radius:var(--radius-sm)
+  }
+  .h-bar-chart .row-fill.accent{background:var(--accent)}
+  .h-bar-chart .row-fill.grey{background:var(--grey-3)}
+  .h-bar-chart .row-val{
+    font-family:var(--sans);font-weight:var(--weight-emphasis);
+    font-size:max(16px,1.5vw);
+    letter-spacing:-.02em;
+    line-height:1
+  }
+  .h-bar-chart .row-val .unit{
+    font-size:.5em;opacity:.55;font-weight:var(--weight-label);
+    margin-left:.15em;letter-spacing:.04em
+  }
+
+  /* 垂直柱图: 用于 KPI 对比页(章节 P8) */
+  .v-bar-chart{
+    display:grid;
+    grid-template-columns:repeat(var(--cols,4),1fr);
+    align-items:end;
+    gap:1.4vw;
+    height:50vh;
+    margin-top:3vh
+  }
+  .v-bar-chart .col{display:flex;flex-direction:column;gap:1.4vh;align-items:stretch;height:100%}
+  .v-bar-chart .col-bar{
+    flex:1 1 auto;
+    background:var(--grey-1);
+    border-top:2px solid var(--ink);
+    position:relative;
+    display:flex;align-items:flex-start;justify-content:center;
+    padding-top:1vh;
+    border-radius:var(--radius-sm) var(--radius-sm) 0 0
+  }
+  .v-bar-chart .col-bar.accent{background:var(--accent);border-top-color:var(--accent);color:var(--accent-on)}
+  .v-bar-chart .col-bar.ink{background:var(--ink);color:var(--paper);border-top-color:var(--ink)}
+  .v-bar-chart .col-bar .v{
+    font-family:var(--sans);font-weight:var(--weight-emphasis);
+    font-size:max(18px,1.6vw);letter-spacing:-.02em
+  }
+  .v-bar-chart .col-lbl{
+    font-family:var(--mono);font-size:max(14px,.78vw);
+    letter-spacing:normal;text-transform:none;opacity:.6;
+    text-align:center;flex:0 0 auto
+  }
+
+  /* XREAL Pie: SVG 只承载扇形几何，标签与数值全部使用 HTML */
+  .xreal-pie-layout{
+    display:grid;grid-template-columns:minmax(280px,5fr) minmax(320px,7fr);
+    gap:5vw;align-items:center;flex:1;min-height:0
+  }
+  .xreal-pie{display:block;width:min(31vw,48vh);height:auto;justify-self:center}
+  .xreal-pie .segment{stroke:var(--paper);stroke-width:2}
+  .xreal-pie .segment.critical{fill:var(--brand-red)}
+  .xreal-pie .segment.ink{fill:var(--ink)}
+  .xreal-pie .segment.grey{fill:var(--grey-3)}
+  .xreal-pie .segment.silver{fill:var(--brand-silver)}
+  .xreal-pie-legend{display:flex;flex-direction:column;border-top:1px solid var(--border-strong)}
+  .xreal-pie-item{
+    display:grid;grid-template-columns:12px minmax(0,1fr) auto;
+    gap:1vw;align-items:baseline;padding:1.6vh 0;border-bottom:1px solid var(--border-subtle)
+  }
+  .xreal-pie-item .swatch{width:10px;height:10px;background:var(--ink)}
+  .xreal-pie-item.critical .swatch{background:var(--brand-red)}
+  .xreal-pie-item.grey .swatch{background:var(--grey-3)}
+  .xreal-pie-item.silver .swatch{background:var(--brand-silver)}
+  .xreal-pie-item .label{font-size:max(16px,1vw);font-weight:500}
+  .xreal-pie-item .value{font-size:max(18px,1.55vw);font-weight:var(--weight-emphasis);font-feature-settings:"tnum"}
+
+  /* S23 Data Chart + S24 Line Chart: 图表占主导面积，标签全部使用 HTML */
+  .xreal-data-chart,.xreal-line-chart{
+    display:grid;grid-template-rows:auto minmax(0,1fr) auto;gap:1.5vh;
+    flex:1;min-height:0;margin-top:max(48px,5.4vh);
+    padding-bottom:calc(var(--nav-safe-bottom) * .4);font-feature-settings:"tnum"
+  }
+  .chart-meta-row,.chart-foot{
+    display:flex;justify-content:space-between;align-items:center;gap:2vw;
+    font-family:var(--deck-font);font-size:max(14px,.82vw);color:var(--text-helper)
+  }
+  .chart-legend{display:flex;align-items:center;justify-content:flex-end;gap:1.4vw;flex-wrap:wrap}
+  .chart-legend-item{display:inline-flex;align-items:center;gap:.5vw;white-space:nowrap}
+  .chart-swatch{display:inline-block;width:10px;height:10px;background:var(--ink);flex:0 0 auto}
+  .chart-swatch.series-2{background:var(--grey-3)}
+  .chart-swatch.series-3{background:var(--grey-2)}
+  .chart-swatch.series-4{background:var(--brand-silver)}
+  .chart-swatch.critical{background:var(--brand-red)}
+  .chart-stage,.line-stage{
+    display:grid;grid-template-columns:minmax(44px,4.2vw) minmax(0,1fr);
+    grid-template-rows:minmax(0,1fr) auto;column-gap:1vw;row-gap:1vh;min-height:42vh
+  }
+  .chart-y-labels{
+    grid-column:1;grid-row:1;display:grid;grid-template-rows:repeat(5,1fr);
+    align-items:start;text-align:right;padding-right:.2vw;
+    font-family:var(--deck-font);font-size:max(14px,.72vw);color:var(--text-helper)
+  }
+  .chart-y-labels span:last-child{align-self:end}
+  .chart-plot,.line-plot{
+    grid-column:2;grid-row:1;position:relative;min-height:0;
+    border-left:1px solid var(--border-strong);border-bottom:1px solid var(--border-strong)
+  }
+  .chart-grid{
+    position:absolute;inset:0;display:grid;grid-template-rows:repeat(4,1fr) auto;
+    pointer-events:none
+  }
+  .chart-grid i{display:block;border-top:1px solid var(--border-subtle)}
+  .chart-grid i:first-child{border-top-color:var(--border-strong)}
+  .chart-groups{
+    position:absolute;inset:0;display:grid;grid-template-columns:repeat(var(--groups),minmax(0,1fr));
+    gap:1.2vw;align-items:stretch;padding:0 1vw
+  }
+  .chart-group{
+    display:grid;grid-template-columns:repeat(var(--series-count),minmax(0,1fr));
+    gap:.35vw;align-items:end;min-width:0
+  }
+  .chart-bar{
+    position:relative;height:calc(var(--value) * 1%);min-height:2px;background:var(--ink);
+    transform-origin:bottom center;border-radius:var(--radius-sm) var(--radius-sm) 0 0
+  }
+  .chart-bar.series-2{background:var(--grey-3)}
+  .chart-bar.series-3{background:var(--grey-2)}
+  .chart-bar.series-4{background:var(--brand-silver)}
+  .chart-bar.critical{background:var(--brand-red)}
+  .chart-value{
+    position:absolute;left:50%;bottom:calc(100% + .5vh);transform:translateX(-50%);
+    font-family:var(--deck-font);font-size:max(14px,.76vw);font-weight:var(--weight-label);
+    color:var(--text-primary);white-space:nowrap
+  }
+  .chart-x-labels,.line-x-labels{
+    grid-column:2;grid-row:2;text-align:center;
+    font-family:var(--deck-font);font-size:max(14px,.76vw);color:var(--text-helper)
+  }
+  .chart-x-labels{display:grid;grid-template-columns:repeat(var(--groups),minmax(0,1fr))}
+  .line-x-labels{display:flex;justify-content:space-between}
+  .chart-foot{border-top:1px solid var(--border-subtle);padding-top:1.2vh;align-items:flex-start}
+  .chart-source{max-width:58%}
+  .chart-note{max-width:38%;text-align:right;color:var(--text-secondary)}
+  .line-chart-svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+  .chart-line{
+    fill:none;stroke:var(--ink);stroke-width:3;vector-effect:non-scaling-stroke;
+    stroke-linejoin:round;stroke-linecap:square
+  }
+  .chart-line.series-2{stroke:var(--grey-3);stroke-dasharray:10 7}
+  .chart-line.series-3{stroke:var(--brand-silver);stroke-dasharray:3 6}
+  .chart-line.critical{stroke:var(--brand-red)}
+  .chart-point{fill:var(--paper);stroke:var(--ink);stroke-width:2;vector-effect:non-scaling-stroke}
+  .chart-point.series-2{stroke:var(--grey-3)}
+  .chart-point.series-3{stroke:var(--brand-silver)}
+  .chart-point.critical{fill:var(--brand-red);stroke:var(--brand-red)}
+  .line-end-label{
+    position:absolute;left:clamp(0%,calc(var(--x) * 1%),100%);top:clamp(0%,calc(var(--y) * 1%),100%);
+    transform:translate(-100%,-50%);padding-left:.5vw;
+    font-family:var(--deck-font);font-size:max(14px,.84vw);font-weight:var(--weight-label);
+    color:var(--text-primary);background:var(--paper)
+  }
+  .line-end-label.series-2{color:var(--text-secondary)}
+  .line-end-label.critical{color:var(--brand-red)}
+  .slide.dark .chart-swatch.series-1,.slide.dark .chart-bar.series-1{background:var(--paper)}
+  .slide.dark .chart-line.series-1{stroke:var(--paper)}
+  .slide.dark .chart-point.series-1{fill:var(--ink);stroke:var(--paper)}
+  .slide.dark .line-end-label{background:var(--ink);color:var(--paper)}
+  .slide.dark .chart-meta-row,.slide.dark .chart-foot,.slide.dark .chart-y-labels,
+  .slide.dark .chart-x-labels,.slide.dark .line-x-labels{color:rgba(255,255,255,.68)}
+  .slide.dark .chart-value,.slide.dark .chart-note{color:var(--paper)}
+  .slide.dark .chart-plot,.slide.dark .line-plot{border-color:rgba(255,255,255,.5)}
+  .slide.dark .chart-grid i{border-top-color:rgba(255,255,255,.18)}
+
+  /* XREAL ECharts 扩展：复杂图表使用现有版式骨架，不生成 dashboard 容器 */
+  .xreal-echart-stage{
+    position:relative;flex:1;min-height:0;margin-top:2.4vh;
+    border-top:1px solid var(--border-strong)
+  }
+  .xreal-echart{
+    position:absolute;inset:1.8vh 0 0;min-width:0;min-height:0;
+    background:transparent
+  }
+  .xreal-echart[data-echarts-state="loading"]::before,
+  .xreal-echart[data-echarts-state="error"]::before{
+    content:attr(data-echarts-message);position:absolute;inset:0;display:grid;place-items:center;
+    font-family:var(--deck-font);font-size:max(14px,.78vw);color:var(--text-helper);
+    border:1px solid var(--border-subtle)
+  }
+  .slide.dark .xreal-echart-stage{border-top-color:rgba(255,255,255,.5)}
+  .slide.dark .xreal-echart[data-echarts-state="loading"]::before,
+  .slide.dark .xreal-echart[data-echarts-state="error"]::before{border-color:rgba(255,255,255,.18);color:rgba(255,255,255,.55)}
+
+  /* XREAL Bento：非对称信息网格，统一 3px 小圆角，不模拟大圆角 UI 面板 */
+  .xreal-bento{
+    display:grid;grid-template-columns:repeat(12,minmax(0,1fr));
+    grid-template-rows:repeat(2,minmax(0,1fr));gap:1px;
+    flex:1;min-height:0;background:var(--grey-2);border:1px solid var(--grey-2);border-radius:var(--radius-sm);overflow:hidden
+  }
+  .xreal-bento > article{background:var(--paper);padding:2.4vw;display:flex;flex-direction:column;min-width:0;border-radius:var(--radius-sm)}
+  .xreal-bento .hero{grid-column:span 6;grid-row:span 2;background:var(--ink);color:var(--paper)}
+  .xreal-bento .metric{grid-column:span 3}
+  .xreal-bento .signal{grid-column:span 3}
+  .xreal-bento .wide{grid-column:span 6}
+  .xreal-bento .eyebrow{font-size:max(14px,.78vw);font-weight:500;color:var(--text-helper)}
+  .xreal-bento .hero .eyebrow{color:rgba(255,255,255,.62)}
+  .xreal-bento h3{font-size:min(3.2vw,5.6vh);line-height:1.04;font-weight:var(--weight-title);letter-spacing:-.025em;margin-top:auto}
+  .xreal-bento .metric-value{font-size:min(4.8vw,8.4vh);line-height:.95;font-weight:var(--weight-emphasis);letter-spacing:-.035em;margin-top:auto}
+  .xreal-bento p{font-size:max(16px,.94vw);line-height:1.42;color:var(--text-secondary);margin-top:1.2vh}
+  .xreal-bento .hero p{color:rgba(255,255,255,.72)}
+
+  /* 对仗对比双栏 (章节 P9) */
+  .duo-compare{
+    display:grid;grid-template-columns:1fr 1px 1fr;
+    gap:0 3.4vw;
+    flex:1;align-items:stretch;margin-top:8vh
+  }
+  .duo-compare .vrule{background:var(--grey-2);width:1px;align-self:stretch}
+  .duo-compare .col{display:flex;flex-direction:column;gap:1.6vh;padding:0 .4vw}
+  .duo-compare .col-tag{
+    font-family:var(--deck-font);font-size:max(14px,.78vw);font-weight:500;
+    letter-spacing:normal;text-transform:none;
+    color:var(--grey-3);
+    display:flex;align-items:center;gap:.6vw
+  }
+  .duo-compare .col-tag .num{
+    font-weight:600;color:var(--ink);
+    border:1px solid var(--ink);
+    padding:.2em .6em;font-size:.92em
+  }
+  .duo-compare .col.accent .col-tag .num{color:var(--accent);border-color:var(--accent)}
+  .duo-compare .col-ttl{
+    font-family:var(--sans),var(--sans-zh);font-weight:var(--weight-title);
+    font-size:3.6vw;line-height:1;letter-spacing:-.03em
+  }
+  .duo-compare .col.accent .col-ttl{color:var(--accent)}
+  .duo-compare .col-desc{
+    font-family:var(--sans),var(--sans-zh);
+    font-size:max(16px,1.04vw);line-height:1.55;opacity:.78;
+    max-width:30vw
+  }
+  .duo-compare .col-list{
+    list-style:none;display:flex;flex-direction:column;gap:1vh;
+    margin-top:auto;padding-top:2vh;border-top:1px solid var(--grey-2)
+  }
+  .duo-compare .col-list li{
+    font-family:var(--sans),var(--sans-zh);
+    font-size:max(16px,.94vw);line-height:1.5;
+    padding-left:1.4em;position:relative
+  }
+  .duo-compare .col-list li::before{
+    content:"";position:absolute;left:0;top:.62em;
+    width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.7
+  }
+  .duo-compare .col.accent .col-list li::before{background:var(--accent);opacity:1}
+
+  /* 半屏 statement (参考图 7) */
+  .split-half{display:grid;grid-template-columns:1fr 1fr;gap:0;flex:1;align-items:stretch}
+  .split-half > .half{padding:5vh 3.4vw;display:flex;flex-direction:column;min-width:0}
+  .split-half > .half.r-border{border-left:1px solid rgba(127,127,127,.22)}
+  .split-half > .half.b-grey{background:var(--grey-1)}
+  .split-half > .half.b-accent{background:var(--accent);color:var(--accent-on)}
+  .split-half > .half.b-ink{background:var(--ink);color:var(--paper)}
+
+  /* 极简封底 · Thanks 主视觉 + 底部中央品牌 Logo */
+  .xreal-closing-lockup{
+    flex:1;position:relative;display:flex;align-items:center;justify-content:center;text-align:center
+  }
+  .xreal-closing-mark{position:absolute;left:50%;bottom:0;transform:translateX(-50%)}
+  .xreal-closing-logo{display:block;width:max(96px,7.2vw);height:auto;filter:invert(1)}
+  .xreal-closing-thanks{
+    font-family:var(--deck-font);font-size:min(10vw,17vh);line-height:.9;
+    font-weight:var(--weight-display);letter-spacing:-.035em;color:var(--paper)
+  }
+
+  /* 极简页眉 — t-meta 风格 (Carbon productive label-01) */
+  .canvas-card .chrome-min{
+    display:flex;justify-content:space-between;align-items:center;
+    font-family:var(--mono);font-size:14px;font-weight:500;
+    letter-spacing:normal;text-transform:none;
+    color:var(--text-helper);
+    flex:0 0 auto;
+    margin-bottom:var(--sp-9);   /* 48px */
+  }
+  .canvas-card .chrome-min.tight{margin-bottom:var(--sp-7)}   /* 32px */
+  .canvas-card .chrome-min .l, .canvas-card .chrome-min .r{
+    max-width:48vw;line-height:1.5
+  }
+  .xreal-logo{display:block;width:max(72px,7.2vw);height:auto;flex:0 0 auto}
+  .chrome-min .brand{display:flex;align-items:center;gap:1.2vw;min-width:0;line-height:1}
+  .chrome-min .brand .xreal-logo{width:var(--chrome-feature-logo-width)}
+  .chrome-min .brand > span{
+    display:block;font-family:var(--deck-font);font-size:var(--chrome-feature-label-size);line-height:1;
+    font-weight:500;letter-spacing:normal;text-transform:none
+  }
+  .slide:not([data-layout="XREAL-COVER-BLACK"]):not([data-layout="XREAL-CLOSING-BLACK"]) .chrome-min .brand{gap:.9vw}
+  .slide:not([data-layout="XREAL-COVER-BLACK"]):not([data-layout="XREAL-CLOSING-BLACK"]) .chrome-min .brand .xreal-logo{width:var(--chrome-body-logo-width)}
+  .slide:not([data-layout="XREAL-COVER-BLACK"]):not([data-layout="XREAL-CLOSING-BLACK"]) .chrome-min .brand > span{font-size:var(--chrome-body-label-size)}
+  .xreal-logo.logo-inverse{filter:invert(1)}
+  .slide.dark .xreal-logo,.slide.accent .xreal-logo,.split-half .half.b-ink .xreal-logo,.split-half .half.b-accent .xreal-logo{filter:invert(1)}
+  .slide.dark .canvas-card .chrome-min,.split-half .half.b-ink .canvas-card .chrome-min{color:rgba(255,255,255,.62)}
+
+  /* 响应式降级 */
+  @media (max-width:900px){
+    .h-hero{font-size:16vw}
+    .h-hero-zh{font-size:13vw}
+    .h-xl{font-size:9vw}
+    .h-xl-zh{font-size:8vw}
+    .kpi-hero{font-size:32vw}
+    .kpi-big{font-size:16vw}
+    .grid-2-7-5,.grid-2-6-6,.grid-2-8-4,.grid-2-4-8{grid-template-columns:1fr}
+    .grid-12{grid-template-columns:repeat(6,1fr)}
+  }
+</style>
+<!-- XREAL_ECHARTS_BUNDLE · 运行 scripts/inline-echarts.mjs 后替换为离线 ECharts 包 -->
+</head>
+<body class="canvas-mode">
+<script>
+  // Windows 平台标记 — 保留平台类供其他兼容逻辑使用
+  if(/Win/i.test(navigator.platform || navigator.userAgentData?.platform || '')){
+    document.body.classList.add('is-win');
+  }
+  (function(){
+    const KEY = 'guizang-ppt-low-power';
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const stored = localStorage.getItem(KEY);
+    window.__lowPowerMode = stored === '1' || (stored === null && reduced);
+    window.__setLowPowerMode = function(on, opts={}){
+      window.__lowPowerMode = !!on;
+      document.body.classList.toggle('low-power', window.__lowPowerMode);
+      if(opts.persist !== false) localStorage.setItem(KEY, window.__lowPowerMode ? '1' : '0');
+      if(window.__lowPowerMode && document.getAnimations){
+        document.getAnimations().forEach(a=>a.cancel());
+      }
+      dispatchEvent(new CustomEvent('swiss-low-power-change', {detail:{on:window.__lowPowerMode}}));
+      if(window.__playSlide) window.__playSlide(window.__currentSlideIndex || 0);
+    };
+    document.body.classList.toggle('low-power', window.__lowPowerMode);
+  })();
+</script>
+
+<canvas id="bg-grid" class="bg"></canvas>
+
+<div id="deck">
+
+<!-- ============================================================
+     SLIDES 插入区 · 在此处填充所有 <section class="slide ..."> 页面
+     页面骨架参考 references/layouts-swiss.md
+     唯一主题变量定义在本文件 :root，品牌语义参考 references/brand-xreal.md
+     ============================================================ -->
+<!-- SLIDES_HERE · 在此处粘贴 <section class="slide ..."> 页面块
+     - 页面骨架直接从 references/layouts-swiss.md 拷贝
+     - data-animate="..." 必须命中下方 RECIPES 字典里的已有 recipe 名之一；正式 S23/S24 分别使用 chart-rise / line-draw
+     - 主题色固定为本文件 :root 中的 XREAL 黑白灰体系 -->
+
+<!-- ============ 示例:第 1 页 · Hero Cover · 纯黑色满屏(默认推荐) ============
+     ⚠️ P0 对齐法则(每页都要过):
+     1. .canvas-card 已自带 padding:5.6vh 5vw 4.4vh,所有页面内容直接放在 canvas-card 子元素里,
+        子元素**不要再加水平 padding**,否则会比 chrome-min 内缩一圈、左右不对齐.
+     2. .slide.split .canvas-card{padding:0} 已被 CSS 覆盖,
+        split 模式下两个 .half 自己控制 padding(常用 5.6vh 3.6vw 4.4vh),与本规则不冲突.
+     3. 大字号一律用双约束 font-size:min(Xvw, Yvh),Y ≥ X * 1.6 才不会在 16:9 屏被高度截断.
+     4. kicker 必须在大标题"上方",不是左侧——禁止 grid-template-columns:auto 1fr 把它们压成左右.
+
+     封面/封底设计语言(默认纯黑色):
+     - section 用 .slide.accent (满屏黑色,不是 light 白底)
+     - 黑色区域保持纯黑,不加入点阵、纹理或动态装饰背景
+     - 主标题反白使用 var(--weight-display),强调字可用同字重斜体而非 var(--accent)(底已是黑色,保持克制)
+     - Logo 默认独立;页面不显示页码 -->
+<section class="slide accent" data-layout="XREAL-COVER-BLACK" data-animate="hero">
+  <div class="canvas-card">
+    <div class="chrome-min">
+      <div class="l brand"><img class="xreal-logo" src="assets/brand/xreal-logo-black.svg" onerror="this.onerror=null;this.src='brand/xreal-logo-black.svg'" alt="XREAL"></div>
+      <div class="r">SS · 25.05.10</div>
+    </div>
+
+    <!-- 主体:padding 必须为 0,不要再叠 5vw,否则左右对不齐 chrome-min -->
+    <div style="flex:1;padding:0;display:grid;grid-template-rows:auto 1fr auto;gap:2.6vh">
+      <div data-anim="kicker" class="t-meta" style="color:rgba(255,255,255,.78)">[必填] 章节英文 / Section title</div>
+
+      <h1 data-anim="title" class="xreal-cover-title" style="align-self:center;color:#fff">[必填] 中文主标题<br/>(≤ 12 字,可在某字加 <span style="font-style:italic;font-weight:inherit">italic</span> 微强调)</h1>
+
+      <div data-anim="bottom" style="display:grid;grid-template-rows:auto auto;gap:1.6vh">
+        <div data-anim="lead" class="lead" style="max-width:52ch;color:rgba(255,255,255,.86)">[必填] 一段 1-2 行的副标 / 引子,定调全场.</div>
+        <div style="display:flex;justify-content:space-between;align-items:end">
+          <div class="t-meta" style="color:rgba(255,255,255,.6)">[选填] 作者 · 日期 · 出处</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 示例:最后一页 · Closing · Thanks 主视觉 + 底部中央 Logo ============
+     封底只承担品牌收束，不重复结论、takeaway、作者日期或页码. -->
+<section class="slide accent" data-layout="XREAL-CLOSING-BLACK" data-animate="closing-thanks">
+  <div class="canvas-card">
+    <div class="xreal-closing-lockup">
+      <div data-anim="closing-thanks" class="xreal-closing-thanks">Thanks</div>
+      <div class="xreal-closing-mark">
+        <img data-anim="closing-logo" class="xreal-closing-logo" src="assets/brand/xreal-logo-black.svg" onerror="this.onerror=null;this.src='brand/xreal-logo-black.svg'" alt="XREAL">
+      </div>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<div id="nav"></div>
+
+<script>
+/* =============== XREAL ECharts · 复杂图表受控运行时 =============== */
+(function(){
+  const LOCAL_SRC = './assets/echarts.min.js';
+  const ALLOWED_TYPES = new Set(['bar','line','scatter','boxplot','heatmap','candlestick','sankey','graph','tree','treemap']);
+  const instances = new Map();
+  let libraryPromise = null;
+  let themesRegistered = false;
+
+  window.XREAL_ECHARTS_OPTIONS = window.XREAL_ECHARTS_OPTIONS || {};
+
+  const readCss = (name, fallback) => {
+    const value = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+    return value || fallback;
+  };
+  const fontFamily = () => getComputedStyle(document.documentElement).getPropertyValue('--deck-font').trim()
+    || (document.documentElement.lang.startsWith('zh') ? 'IBM Plex Sans SC, sans-serif' : 'XREAL Diatype, Arial, sans-serif');
+  const isDarkSlide = slide => slide.classList.contains('dark') || slide.classList.contains('accent');
+  const palette = dark => ({
+    paper: dark ? readCss('--ink','#0a0a0a') : readCss('--paper','#ffffff'),
+    text: dark ? readCss('--paper','#ffffff') : readCss('--ink','#0a0a0a'),
+    secondary: dark ? '#c6c6c6' : readCss('--grey-3','#6f6f6f'),
+    helper: dark ? '#8d8d8d' : readCss('--grey-2','#c6c6c6'),
+    faint: dark ? '#525252' : readCss('--grey-1','#f4f4f4'),
+    silver: readCss('--brand-silver','#a7adb4'),
+    red: readCss('--brand-red','#d71920'),
+  });
+
+  function loadLibrary(){
+    if(window.echarts) return Promise.resolve(window.echarts);
+    if(libraryPromise) return libraryPromise;
+    libraryPromise = new Promise((resolve, reject)=>{
+      const script = document.createElement('script');
+      script.src = LOCAL_SRC;
+      script.dataset.xrealEchartsLoader = 'local';
+      script.onload = ()=>window.echarts ? resolve(window.echarts) : reject(new Error('ECharts loaded without a global API.'));
+      script.onerror = ()=>reject(new Error('Missing assets/echarts.min.js. Run scripts/prepare-echarts.mjs or inline-echarts.mjs.'));
+      document.head.appendChild(script);
+    });
+    return libraryPromise;
+  }
+
+  function registerThemes(echarts){
+    if(themesRegistered) return;
+    const makeTheme = dark => {
+      const p = palette(dark);
+      const axis = {
+        axisLine:{lineStyle:{color:p.secondary,width:1}},
+        axisTick:{show:false},
+        axisLabel:{color:p.secondary,fontFamily:fontFamily(),fontSize:13,margin:12},
+        splitLine:{show:true,lineStyle:{color:p.helper,width:1,opacity:dark?.28:.42}},
+        nameTextStyle:{color:p.secondary,fontFamily:fontFamily(),fontSize:13},
+      };
+      return {
+        backgroundColor:'transparent',
+        color:[p.text,p.secondary,p.helper,p.silver],
+        textStyle:{color:p.text,fontFamily:fontFamily(),fontSize:14,fontWeight:400},
+        categoryAxis:axis,valueAxis:axis,timeAxis:axis,logAxis:axis,
+      };
+    };
+    echarts.registerTheme('xreal-light',makeTheme(false));
+    echarts.registerTheme('xreal-dark',makeTheme(true));
+    themesRegistered = true;
+  }
+
+  function assertSafeOption(option){
+    const forbiddenKeys = new Set(['shadowBlur','shadowColor','shadowOffsetX','shadowOffsetY','decal']);
+    let criticalMarks = 0;
+    const walk = (value, path='option') => {
+      if(!value || typeof value !== 'object') return;
+      if(Array.isArray(value)){ value.forEach((item,index)=>walk(item,`${path}[${index}]`)); return; }
+      for(const [key,child] of Object.entries(value)){
+        if(forbiddenKeys.has(key) && child) throw new Error(`${path}.${key} is forbidden by XREAL Style.`);
+        if(key === 'colorStops') throw new Error(`${path}.colorStops is forbidden; use solid colors or a piecewise visualMap.`);
+        if(key === 'areaStyle' && child && Object.keys(child).length) throw new Error(`${path}.areaStyle is forbidden; XREAL line charts do not use filled areas.`);
+        walk(child,`${path}.${key}`);
+      }
+    };
+    walk(option);
+    const series = Array.isArray(option.series) ? option.series : option.series ? [option.series] : [];
+    series.forEach((item,index)=>{
+      if(!ALLOWED_TYPES.has(item.type)) throw new Error(`series[${index}].type=${item.type || '(missing)'} is not registered for XREAL ECharts.`);
+      if(item.xrealCritical) criticalMarks += 1;
+      const data = Array.isArray(item.data) ? item.data : [];
+      data.forEach(datum=>{if(datum && typeof datum === 'object' && !Array.isArray(datum) && datum.xrealCritical) criticalMarks += 1;});
+    });
+    if(criticalMarks > 1) throw new Error('Only one ECharts series or data item may use xrealCritical:true.');
+    const maps = Array.isArray(option.visualMap) ? option.visualMap : option.visualMap ? [option.visualMap] : [];
+    maps.forEach((map,index)=>{
+      if((map.type || 'continuous') !== 'piecewise') throw new Error(`visualMap[${index}] must use type:'piecewise'; continuous rainbow ramps are forbidden.`);
+    });
+  }
+
+  function normalizeAxis(axis, p, isCategory, axisRole){
+    if(axis === undefined) return axis;
+    const list = Array.isArray(axis) ? axis : [axis];
+    const normalized = list.map(item=>({
+      ...item,
+      axisLine:{show:true,...item.axisLine,lineStyle:{color:p.secondary,width:1,...item.axisLine?.lineStyle}},
+      axisTick:{show:false,...item.axisTick},
+      axisLabel:{color:p.secondary,fontFamily:fontFamily(),fontSize:13,margin:12,...item.axisLabel},
+      splitLine:{show:!isCategory,...item.splitLine,lineStyle:{color:p.helper,width:1,opacity:.42,...item.splitLine?.lineStyle}},
+      nameTextStyle:{color:p.secondary,fontFamily:fontFamily(),fontSize:13,...item.nameTextStyle},
+      nameLocation:item.name ? 'middle' : item.nameLocation,
+      nameGap:item.name ? (axisRole === 'y' ? 48 : 34) : item.nameGap,
+    }));
+    return Array.isArray(axis) ? normalized : normalized[0];
+  }
+
+  function normalizeSeries(series, p, node, interactive){
+    const list = Array.isArray(series) ? series : series ? [series] : [];
+    return list.map((source,index)=>{
+      const critical = source.xrealCritical === true;
+      const baseColor = critical ? p.red : [p.text,p.secondary,p.helper,p.silver][index % 4];
+      const item = {
+        ...source,
+        silent:source.silent ?? !interactive,
+        emphasis:{disabled:!interactive,focus:interactive?'series':'none',...source.emphasis},
+        label:{color:p.text,fontFamily:fontFamily(),fontSize:13,...source.label},
+      };
+      delete item.xrealCritical;
+      if(Array.isArray(source.data)){
+        item.data = source.data.map(datum=>{
+          if(!datum || typeof datum !== 'object' || Array.isArray(datum) || !datum.xrealCritical) return datum;
+          const normalized = {...datum,itemStyle:{...datum.itemStyle,color:p.red}};
+          delete normalized.xrealCritical;
+          return normalized;
+        });
+      }
+      if(source.type === 'bar'){
+        const horizontal = node.dataset.barOrientation === 'horizontal';
+        item.itemStyle={color:baseColor,borderRadius:horizontal?[0,3,3,0]:[3,3,0,0],...source.itemStyle};
+      }else if(source.type === 'line'){
+        item.lineStyle={color:baseColor,width:critical?3:2,type:'solid',...source.lineStyle};
+        item.itemStyle={color:p.paper,borderColor:baseColor,borderWidth:2,...source.itemStyle};
+        item.symbol=source.symbol || 'circle';item.symbolSize=source.symbolSize || 7;item.showSymbol=source.showSymbol ?? true;
+      }else if(source.type === 'scatter'){
+        item.itemStyle={color:baseColor,opacity:.88,...source.itemStyle};
+      }else if(source.type === 'boxplot'){
+        item.itemStyle={color:p.paper,borderColor:baseColor,borderWidth:1.5,...source.itemStyle};
+      }else if(source.type === 'heatmap'){
+        item.itemStyle={borderColor:p.paper,borderWidth:2,...source.itemStyle};
+      }else if(source.type === 'candlestick'){
+        item.itemStyle={color:p.text,color0:p.silver,borderColor:p.text,borderColor0:p.secondary,...source.itemStyle};
+      }else if(source.type === 'sankey'){
+        item.lineStyle={color:'source',opacity:.2,curveness:.45,...source.lineStyle};
+        item.itemStyle={borderWidth:0,borderRadius:3,...source.itemStyle};
+      }else if(source.type === 'graph'){
+        item.lineStyle={color:p.helper,width:1,opacity:.75,...source.lineStyle};
+        item.itemStyle={color:baseColor,borderWidth:0,...source.itemStyle};
+      }else if(source.type === 'tree'){
+        item.lineStyle={color:p.helper,width:1,...source.lineStyle};
+        item.itemStyle={color:p.paper,borderColor:baseColor,borderWidth:2,...source.itemStyle};
+      }else if(source.type === 'treemap'){
+        item.itemStyle={borderColor:p.paper,borderWidth:2,gapWidth:2,...source.itemStyle};
+      }
+      return item;
+    });
+  }
+
+  function buildOption(raw, slide, node, staticMode){
+    assertSafeOption(raw);
+    const dark = isDarkSlide(slide);
+    const p = palette(dark);
+    const interactive = node.dataset.interactive === 'true';
+    const option = {
+      ...raw,
+      backgroundColor:'transparent',
+      color:[p.text,p.secondary,p.helper,p.silver],
+      title:{show:false},
+      legend:{show:false},
+      toolbox:{show:false},
+      textStyle:{color:p.text,fontFamily:fontFamily(),fontSize:14,fontWeight:400,...raw.textStyle},
+      grid:{left:18,right:18,top:24,bottom:10,containLabel:true,...raw.grid},
+      xAxis:normalizeAxis(raw.xAxis,p,raw.xAxis?.type === 'category','x'),
+      yAxis:normalizeAxis(raw.yAxis,p,raw.yAxis?.type === 'category','y'),
+      tooltip:interactive?{
+        show:true,trigger:'item',backgroundColor:dark?'#0a0a0a':'#ffffff',borderColor:p.helper,borderWidth:1,
+        textStyle:{color:p.text,fontFamily:fontFamily(),fontSize:13},extraCssText:'box-shadow:none;border-radius:3px',
+        ...raw.tooltip,
+      }:{show:false,triggerOn:'none'},
+      aria:{enabled:true,...raw.aria},
+      animation:!staticMode,
+      animationDuration:650,
+      animationDurationUpdate:320,
+      animationEasing:'cubicOut',
+      animationEasingUpdate:'cubicOut',
+      series:normalizeSeries(raw.series,p,node,interactive),
+    };
+    if(raw.visualMap){
+      const maps = Array.isArray(raw.visualMap) ? raw.visualMap : [raw.visualMap];
+      option.visualMap = maps.map(map=>({
+        type:'piecewise',orient:'horizontal',left:'center',bottom:0,
+        textStyle:{color:p.secondary,fontFamily:fontFamily(),fontSize:12},
+        inRange:{color:[p.faint,p.helper,p.secondary,p.text]},
+        ...map,
+      }));
+    }
+    return option;
+  }
+
+  async function renderNode(node, staticMode=false, force=false){
+    const slide = node.closest('.slide');
+    const key = node.dataset.echartsKey;
+    const raw = window.XREAL_ECHARTS_OPTIONS[key];
+    node.dataset.echartsState = 'loading';
+    node.dataset.echartsMessage = 'Loading chart';
+    if(!key || !raw){
+      node.dataset.echartsState = 'error';
+      node.dataset.echartsMessage = `Missing XREAL_ECHARTS_OPTIONS.${key || '(key)'}`;
+      return;
+    }
+    try{
+      const echarts = await loadLibrary();
+      registerThemes(echarts);
+      let chart = instances.get(node);
+      const renderer = node.dataset.renderer || 'svg';
+      const theme = isDarkSlide(slide) ? 'xreal-dark' : 'xreal-light';
+      if(!chart){
+        chart = echarts.init(node,theme,{renderer,useDirtyRect:renderer === 'canvas'});
+        instances.set(node,chart);
+      }
+      node.dataset.echartsState = 'ready';
+      node.dataset.echartsMessage = '';
+      chart.resize();
+      if(force) chart.clear();
+      chart.setOption(buildOption(raw,slide,node,staticMode),{notMerge:true,lazyUpdate:false});
+    }catch(error){
+      node.dataset.echartsState = 'error';
+      node.dataset.echartsMessage = error.message;
+      console.error('[XREAL ECharts]',error);
+    }
+  }
+
+  async function renderSlide(slide,{staticMode=false,force=true}={}){
+    const nodes = [...slide.querySelectorAll('.xreal-echart[data-echarts-key]')];
+    await Promise.all(nodes.map(node=>renderNode(node,staticMode,force)));
+  }
+  async function prepareAll(){
+    const activeSlide = document.querySelectorAll('.slide')[window.__currentSlideIndex || 0];
+    const nodes = [...document.querySelectorAll('.xreal-echart[data-echarts-key]')].filter(node=>node.closest('.slide') !== activeSlide);
+    if(!nodes.length) return;
+    await Promise.all(nodes.map(node=>renderNode(node,true,false)));
+  }
+
+  window.__renderXrealEChartsSlide = renderSlide;
+  window.__prepareXrealECharts = prepareAll;
+  window.__xrealEChartsInstances = instances;
+  addEventListener('resize',()=>instances.forEach(chart=>chart.resize()));
+  addEventListener('swiss-low-power-change',()=>{
+    const slide = document.querySelectorAll('.slide')[window.__currentSlideIndex || 0];
+    if(slide) renderSlide(slide,{staticMode:window.__lowPowerMode,force:true});
+  });
+  setTimeout(prepareAll,120);
+})();
+</script>
+
+<script>
+/* =============== 遗留 WebGL 网格背景（仅兼容旧模板） ===============
+   XREAL Style 固定使用 <body class="canvas-mode">，不得启用此背景。
+   极简移动网格 + 微弱点阵叠加,营造"工业感、精准感"
+   - 主网格: 缓慢漂移的细线网格
+   - 次级: 鼠标附近的极细点阵微扰
+   - 颜色: 跟随主题(浅底深线 / 深底亮线),配合 mix-blend-mode
+*/
+const VS = `attribute vec2 position;void main(){gl_Position=vec4(position,0.0,1.0);}`;
+
+const FS = `precision highp float;
+uniform vec2 u_resolution;
+uniform float u_time;
+uniform vec2 u_mouse;
+uniform float u_dark; // 0 = light, 1 = dark
+uniform vec3 u_accent;
+
+float gridLine(vec2 uv, float spacing, float thickness){
+  vec2 g = abs(fract(uv / spacing) - 0.5);
+  float d = min(g.x, g.y);
+  return 1.0 - smoothstep(thickness - 0.005, thickness + 0.005, d);
+}
+
+float dot2(vec2 p){ return dot(p,p); }
+
+void main(){
+  vec2 uv = gl_FragCoord.xy / u_resolution.xy;
+  float aspect = u_resolution.x / u_resolution.y;
+  vec2 p = uv;
+  p.x *= aspect;
+
+  // 缓慢平移
+  vec2 drift = vec2(u_time * 0.008, u_time * 0.005);
+  vec2 gp = p + drift;
+
+  // 主细网格 (大间距)
+  float mainGrid = gridLine(gp, 0.12, 0.012);
+  // 次级网格 (更细更密)
+  float subGrid = gridLine(gp, 0.024, 0.04) * 0.4;
+
+  // 鼠标附近的强化
+  vec2 m = u_mouse;
+  m.x *= aspect;
+  float md = length(p - m);
+  float mInfluence = exp(-md * 4.0) * 0.5;
+
+  float gridStrength = (mainGrid + subGrid * 0.5) * (0.45 + mInfluence);
+
+  // 点阵 (作为基底)
+  vec2 dotGrid = fract(gp * 50.0) - 0.5;
+  float dotMask = 1.0 - smoothstep(0.05, 0.14, length(dotGrid));
+  // 用低频噪声调制点阵密度
+  float wave = sin(gp.x * 1.4 + u_time * 0.15) * cos(gp.y * 1.6 - u_time * 0.12);
+  dotMask *= smoothstep(-0.3, 0.6, wave) * 0.6;
+
+  // 颜色: 浅底用深线条,深底用浅线条;高亮处带 accent 痕迹
+  vec3 lineColor = mix(vec3(0.08), vec3(0.92), u_dark);
+  vec3 bgColor = mix(vec3(0.97, 0.97, 0.96), vec3(0.06, 0.06, 0.07), u_dark);
+
+  // accent 暗示 (鼠标附近偷渡一点 accent 色)
+  vec3 col = bgColor;
+  col = mix(col, lineColor, gridStrength * 0.55);
+  col = mix(col, lineColor, dotMask * 0.35);
+  col = mix(col, u_accent, mInfluence * 0.18);
+
+  gl_FragColor = vec4(col, 1.0);
+}`;
+
+const mouse={x:0.5,y:0.5};
+addEventListener('mousemove',e=>{mouse.x=e.clientX/innerWidth;mouse.y=1-e.clientY/innerHeight});
+
+function bootGL(canvasId, fsSrc){
+  const canvas=document.getElementById(canvasId);
+  const gl=canvas.getContext('webgl',{alpha:true,antialias:true,premultipliedAlpha:false});
+  if(!gl) return ()=>false;
+  const mk=(t,s)=>{const sh=gl.createShader(t);gl.shaderSource(sh,s);gl.compileShader(sh);return sh};
+  const prog=gl.createProgram();
+  gl.attachShader(prog,mk(gl.VERTEX_SHADER,VS));
+  gl.attachShader(prog,mk(gl.FRAGMENT_SHADER,fsSrc));
+  gl.linkProgram(prog);gl.useProgram(prog);
+  const buf=gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER,buf);
+  gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,1,-1,-1,1,-1,1,1,-1,1,1]),gl.STATIC_DRAW);
+  const pos=gl.getAttribLocation(prog,'position');
+  gl.enableVertexAttribArray(pos);gl.vertexAttribPointer(pos,2,gl.FLOAT,false,0,0);
+  const lRes=gl.getUniformLocation(prog,'u_resolution');
+  const lT=gl.getUniformLocation(prog,'u_time');
+  const lM=gl.getUniformLocation(prog,'u_mouse');
+  const lD=gl.getUniformLocation(prog,'u_dark');
+  const lA=gl.getUniformLocation(prog,'u_accent');
+  const resize=()=>{
+    const d=Math.min(window.devicePixelRatio||1,2);
+    canvas.width=innerWidth*d;canvas.height=innerHeight*d;
+    gl.viewport(0,0,canvas.width,canvas.height);
+  };
+  addEventListener('resize',resize);resize();
+
+  // 读取 CSS 变量,把 accent 颜色塞进 shader
+  function readAccent(){
+    const cs = getComputedStyle(document.documentElement);
+    const hex = cs.getPropertyValue('--accent').trim() || '#0a0a0a';
+    const m = hex.match(/^#([0-9a-f]{6})$/i);
+    if(!m) return [0, 0.18, 0.65];
+    const n = parseInt(m[1], 16);
+    return [((n>>16)&255)/255, ((n>>8)&255)/255, (n&255)/255];
+  }
+  let accent = readAccent();
+  let dark = 0;
+
+  return (tSec, isDark)=>{
+    if(isDark !== undefined) dark = isDark ? 1 : 0;
+    accent = readAccent();
+    gl.uniform2f(lRes,canvas.width,canvas.height);
+    gl.uniform1f(lT,tSec);
+    gl.uniform2f(lM,mouse.x,mouse.y);
+    gl.uniform1f(lD,dark);
+    gl.uniform3f(lA,accent[0],accent[1],accent[2]);
+    gl.drawArrays(gl.TRIANGLES,0,6);
+    return true;
+  };
+}
+// canvas-mode / low-power: skip WebGL draw loop (no active RAF loop)
+let darkMode=false;
+let gridCtrl=null, gridRAF=0, gridT0=Date.now();
+function startGrid(){
+  if(document.body.classList.contains('canvas-mode') || window.__lowPowerMode || gridRAF) return;
+  if(!gridCtrl) gridCtrl = bootGL('bg-grid',FS);
+  if(!gridCtrl) return;
+  gridT0=Date.now();
+  function loop(){
+    if(window.__lowPowerMode){gridRAF=0;return;}
+    const t=(Date.now()-gridT0)/1000;
+    gridCtrl(t, darkMode);
+    gridRAF=requestAnimationFrame(loop);
+  }
+  gridRAF=requestAnimationFrame(loop);
+}
+function stopGrid(){
+  if(gridRAF) cancelAnimationFrame(gridRAF);
+  gridRAF=0;
+}
+if(document.body.classList.contains('canvas-mode')){
+  const c=document.getElementById('bg-grid');
+  if(c) c.remove();
+}else{
+  startGrid();
+}
+addEventListener('swiss-low-power-change', e=>{e.detail.on ? stopGrid() : startGrid();});
+
+// =============== 导航 ===============
+const deck=document.getElementById('deck');
+const slides=deck.querySelectorAll('.slide');
+const nav=document.getElementById('nav');
+let idx=0,total=slides.length,lock=false;
+
+deck.style.width=(total*100)+'vw';
+
+slides.forEach((s,i)=>{
+  const b=document.createElement('button');
+  b.className='dot';b.dataset.i=i;b.setAttribute('aria-label','Page '+(i+1));
+  b.onclick=()=>go(i);
+  nav.appendChild(b);
+});
+
+function go(n){
+  if(lock)return;
+  idx=Math.max(0,Math.min(total-1,n));
+  window.__currentSlideIndex = idx;
+  deck.style.transform=`translateX(${-idx*100}vw)`;
+  nav.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('active',i===idx));
+  const el=slides[idx];
+  const isDark = el.classList.contains('dark') || el.classList.contains('accent');
+  nav.classList.toggle('is-hidden', el.dataset.layout === 'XREAL-CLOSING-BLACK');
+  document.body.classList.toggle('dark-bg', isDark);
+  darkMode = isDark;
+  if(window.__renderXrealEChartsSlide){
+    setTimeout(()=>window.__renderXrealEChartsSlide(el,{staticMode:window.__lowPowerMode,force:true}),80);
+  }
+  if(window.__playSlide) setTimeout(()=>window.__playSlide(idx), 450);
+  lock=true;setTimeout(()=>lock=false,700);
+}
+
+/* =============== ESC 索引视图 =============== */
+let overviewOn=false;
+const ov=document.createElement('div');
+ov.id='overview';
+ov.style.cssText='position:fixed;inset:0;z-index:100;background:rgba(250,250,248,.96);backdrop-filter:blur(12px);display:none;overflow-y:auto;padding:4vh 4vw';
+document.body.appendChild(ov);
+
+function buildOverview(){
+  ov.innerHTML='';
+  const grid=document.createElement('div');
+  grid.style.cssText='display:grid;grid-template-columns:repeat(4,1fr);gap:2vh 1.6vw;max-width:90vw;margin:0 auto';
+  slides.forEach((s,i)=>{
+    const card=document.createElement('div');
+    card.style.cssText='cursor:pointer;overflow:hidden;border:2px solid '+(i===idx?'var(--accent)':'rgba(0,0,0,.12)')+';transition:border-color .2s';
+    card.onmouseenter=()=>card.style.borderColor='rgba(0,0,0,.4)';
+    card.onmouseleave=()=>card.style.borderColor=i===idx?'var(--accent)':'rgba(0,0,0,.12)';
+    const wrap=document.createElement('div');
+    const isDark = s.classList.contains('dark') || s.classList.contains('accent');
+    wrap.style.cssText='width:100%;aspect-ratio:16/9;overflow:hidden;position:relative;pointer-events:none;background:'+(isDark?'var(--ink)':'var(--paper)');
+    const clone=s.cloneNode(true);
+    clone.style.cssText='width:100vw;height:100vh;transform:scale('+(1/4.5)+');transform-origin:top left;position:absolute;top:0;left:0;pointer-events:none';
+    wrap.appendChild(clone);
+    const label=document.createElement('div');
+    /* ESC 索引卡 label */
+  label.style.cssText='padding:6px 10px;font-family:var(--mono);font-size:14px;letter-spacing:normal;text-transform:none;color:var(--ink);opacity:.7';
+    label.textContent=(i+1)+' / '+total;
+    card.appendChild(wrap);
+    card.appendChild(label);
+    card.onclick=()=>{toggleOverview();go(i)};
+    grid.appendChild(card);
+  });
+  ov.appendChild(grid);
+}
+
+function toggleOverview(){
+  overviewOn=!overviewOn;
+  if(overviewOn){buildOverview();ov.style.display='block';}
+  else{ov.style.display='none';}
+}
+
+addEventListener('keydown',e=>{
+  if(e.key==='Escape'){e.preventDefault();toggleOverview();return;}
+  if(e.key && e.key.toLowerCase()==='b' && !e.metaKey && !e.ctrlKey && !e.altKey){
+    e.preventDefault();
+    window.__setLowPowerMode(!window.__lowPowerMode);
+    return;
+  }
+  if(overviewOn)return;
+  if(e.key==='ArrowRight'||e.key==='PageDown'||e.key===' '||e.key==='ArrowDown'){
+    go(idx+1);
+    return;
+  }
+  if(e.key==='ArrowLeft'||e.key==='PageUp'||e.key==='ArrowUp')go(idx-1);
+  if(e.key==='Home')go(0);
+  if(e.key==='End')go(total-1);
+});
+
+let wheelTO=null,wheelAcc=0;
+addEventListener('wheel',e=>{
+  wheelAcc+=e.deltaY+e.deltaX;
+  if(Math.abs(wheelAcc)>50){
+    go(idx+(wheelAcc>0?1:-1));wheelAcc=0;
+  }
+  clearTimeout(wheelTO);wheelTO=setTimeout(()=>wheelAcc=0,150);
+},{passive:true});
+
+let tx=0,ty=0;
+addEventListener('touchstart',e=>{tx=e.touches[0].clientX;ty=e.touches[0].clientY},{passive:true});
+addEventListener('touchend',e=>{
+  const dx=(e.changedTouches[0].clientX-tx);
+  const dy=(e.changedTouches[0].clientY-ty);
+  if(Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy)){
+    go(idx+(dx<0?1:-1));
+  }
+},{passive:true});
+
+const initialSlideParam = new URLSearchParams(location.search).get('slide');
+const initialSlide = initialSlideParam ? Number(initialSlideParam) - 1 : 0;
+go(Number.isFinite(initialSlide) ? initialSlide : 0);
+</script>
+<!-- Motion One 动效引擎 (与原模板一致) -->
+<script type="module">
+let motion;
+try {
+  motion = await import('./assets/motion.min.js');
+} catch(e1) {
+  try {
+    motion = await import('https://cdn.jsdelivr.net/npm/motion@11.11.17/+esm');
+  } catch(e2) {
+    console.warn('[motion] local + CDN both failed, disabling animations', e1, e2);
+    document.querySelectorAll('[data-anim]').forEach(el=>{el.style.opacity='1';el.style.transform='none'});
+  }
+}
+
+if(motion){
+  const { animate } = motion;
+  document.body.classList.add('motion-ready');
+
+  /* ============================================================
+     IBM Carbon Motion · 每个 recipe 服务一种表达
+     不是一刀切的 stagger,而是把动效绑在内容语义上
+     ============================================================ */
+  /* 缓动从 :root 的 Carbon motion token 读取,CSS 是唯一事实源(硬编码仅作解析失败兜底) */
+  const cssEase = (name, fallback) => {
+    const v = getComputedStyle(document.documentElement).getPropertyValue(name);
+    const m = v && v.match(/cubic-bezier\(([^)]+)\)/);
+    const nums = m ? m[1].split(',').map(Number) : [];
+    return (nums.length === 4 && nums.every(Number.isFinite)) ? nums : fallback;
+  };
+  const EASE_PROD       = cssEase('--ease-prod',      [.2, 0, .38, .9]);
+  const EASE_ENTRY_EXP  = cssEase('--ease-entry-exp', [0, 0, .3, 1]);
+  const EASE_ENTRY_EXP_CSS = getComputedStyle(document.documentElement).getPropertyValue('--ease-entry-exp').trim() || 'cubic-bezier(0,0,.3,1)';
+
+  const slides = [...document.querySelectorAll('.slide')];
+  let lastIdx = -1;
+
+  function resetAnims(slide){
+    slide.querySelectorAll('[data-anim]').forEach(el=>{
+      el.style.opacity='';
+      el.style.transform='';
+    });
+    /* 同时复位需要被 recipe 接管的元素 */
+    slide.querySelectorAll('.row-fill,.tl-node,.stack-block,.bar-tower,.sub-card,.col,.vrule,.kpi-cell')
+      .forEach(el=>{el.style.cssText = el.dataset._origCss || el.style.cssText;});
+    slide.querySelectorAll('.chart-bar').forEach(el=>{el.style.height='';el.style.opacity='';el.style.transform='';});
+    slide.querySelectorAll('.chart-value,.chart-point,.line-end-label').forEach(el=>{el.style.opacity='';el.style.transform='';});
+    slide.querySelectorAll('.chart-line').forEach(el=>{
+      el.style.strokeDasharray='';el.style.strokeDashoffset='';el.style.opacity='';el.style.transform='';
+    });
+  }
+
+  /* ---------- 通用工具 ---------- */
+  const fade = (el, opts={})=>animate(el,
+    {opacity:[0,1], y:[opts.y ?? 12, 0]},
+    {duration:opts.duration ?? .6, delay:opts.delay ?? 0,
+     easing:opts.easing ?? EASE_ENTRY_EXP});
+
+  /* ---------- recipe: hero · 封面索引 ----------
+     大编号一个个亮起 → 索引行最后落定 */
+  function rHero(slide, all){
+    const numRows = [...slide.querySelectorAll('.cover-row')];
+    const rest = all.filter(el=>!numRows.length || el !== numRows[0]);
+    /* 先入: chrome 240ms */
+    const chrome = slide.querySelector('.chrome-min');
+    if(chrome) animate(chrome, {opacity:[0,1]}, {duration:.24, easing:EASE_PROD});
+    /* 大编号 01/02/03 像点名一样依次亮 */
+    numRows.forEach((row, i)=>{
+      animate(row, {opacity:[0,1], x:[-12,0]},
+        {duration:.5, delay:.15 + i*.18, easing:EASE_ENTRY_EXP});
+    });
+    /* 索引底栏最后慢慢落定 */
+    const idx = slide.querySelector('[data-anim="line"]');
+    if(idx) fade(idx, {delay:.15 + numRows.length*.18 + .1, duration:.5, y:6});
+  }
+
+  /* ---------- recipe: section-hero · S01 章节标题 Hero 变体 ----------
+     层级低于 Index Cover：chrome → 小型章节标识 → 单一标题 → 引导语与底线 */
+  function rSectionHero(slide){
+    const chrome = slide.querySelector('.chrome-min');
+    const kicker = slide.querySelector('[data-anim="section-kicker"]');
+    const title = slide.querySelector('[data-anim="section-title"]');
+    const summary = slide.querySelector('[data-anim="section-summary"]');
+    const foot = slide.querySelector('[data-anim="section-foot"]');
+    if(chrome) animate(chrome, {opacity:[0,1]}, {duration:.24, easing:EASE_PROD});
+    if(kicker) animate(kicker, {opacity:[0,1], x:[-12,0]}, {duration:.4, delay:.1, easing:EASE_ENTRY_EXP});
+    if(title) animate(title, {opacity:[0,1], y:[18,0]}, {duration:.55, delay:.2, easing:EASE_ENTRY_EXP});
+    if(summary) animate(summary, {opacity:[0,1], y:[10,0]}, {duration:.4, delay:.34, easing:EASE_ENTRY_EXP});
+    if(foot) animate(foot, {opacity:[0,1]}, {duration:.3, delay:.48, easing:EASE_PROD});
+  }
+
+  /* ---------- recipe: progression · 1× → 10× → 1000× ----------
+     节点依次入场,每个节点的数字单独"递进生长"营造跃迁 */
+  function rProgression(slide, all){
+    const head = slide.querySelector('[data-anim="line"]');
+    if(head) fade(head, {duration:.6, y:10});
+
+    const nodes = [...slide.querySelectorAll('.tl-node')];
+    nodes.forEach((node, i)=>{
+      const base = .35 + i*.32;          /* 节点之间间隔大,营造时间感 */
+      /* 整个节点先轻微浮入 */
+      animate(node, {opacity:[0,1], y:[14, 0]},
+        {duration:.55, delay:base, easing:EASE_ENTRY_EXP});
+      /* 再让 multi(数字)从 .85 scale 弹到 1,延迟 100ms */
+      const multi = node.querySelector('.multi');
+      if(multi) animate(multi, {scale:[.92, 1], opacity:[0,1]},
+        {duration:.5, delay:base + .12, easing:EASE_ENTRY_EXP});
+    });
+
+    /* 底部 KPI 4 列最后落定,内部 60ms stagger */
+    const kpis = [...slide.querySelectorAll('.kpi-cell')];
+    kpis.forEach((cell, i)=>{
+      animate(cell, {opacity:[0,1], y:[8, 0]},
+        {duration:.4, delay:1.4 + i*.07, easing:EASE_PROD});
+    });
+  }
+
+  /* ---------- recipe: statement · 大宣言 ----------
+     左半屏标题逐行落下,右半屏 leaked 信息晚 600ms 进 */
+  function rStatement(slide, all){
+    const halves = [...slide.querySelectorAll('.half')];
+    if(halves.length === 2){
+      animate(halves[0], {opacity:[0,1], y:[18,0]},
+        {duration:.7, delay:0, easing:EASE_ENTRY_EXP});
+      animate(halves[1], {opacity:[0,1], y:[18,0]},
+        {duration:.7, delay:.6, easing:EASE_ENTRY_EXP});
+    } else {
+      /* P9 Index Card — 三行像盖章一样依次落 */
+      const head = slide.querySelector('[data-anim="line"]');
+      if(head) fade(head, {duration:.5, y:6});
+      const blocks = all.filter(el=>el !== head);
+      blocks.forEach((el, i)=>{
+        animate(el, {opacity:[0,1], y:[20,0]},
+          {duration:.55, delay:.25 + i*.18, easing:EASE_ENTRY_EXP});
+      });
+    }
+  }
+
+  /* ---------- recipe: grid-reveal · 五个定义 ----------
+     卡片按 nb-corner 序号 01→02→03→04→05→Σ 依次揭示 */
+  function rGridReveal(slide, all){
+    const head = slide.querySelector('[data-anim="line"]');
+    if(head) fade(head, {duration:.6, y:10});
+    const cards = [...slide.querySelectorAll('.sub-card')];
+    cards.forEach((card, i)=>{
+      animate(card, {opacity:[0,1], y:[20,0], scale:[.96, 1]},
+        {duration:.5, delay:.3 + i*.09, easing:EASE_ENTRY_EXP});
+    });
+  }
+
+  /* ---------- recipe: stack-build · 三层架构 ----------
+     中间 thin 先入 → 上层 fat skills 从顶推下 → 下层 application 从底推上 */
+  function rStackBuild(slide, all){
+    const head = slide.querySelector('[data-anim="line"]');
+    if(head) fade(head, {duration:.6, y:10});
+
+    const blocks = [...slide.querySelectorAll('.stack-block')];
+    /* 先入: 中间薄层(LAYER 02) */
+    if(blocks[1]) animate(blocks[1], {opacity:[0,1], scaleY:[.85, 1]},
+      {duration:.55, delay:.3, easing:EASE_ENTRY_EXP});
+    /* 上推下: LAYER 01 fat skills 从顶部 push down */
+    if(blocks[0]) animate(blocks[0], {opacity:[0,1], y:[-22, 0]},
+      {duration:.6, delay:.6, easing:EASE_ENTRY_EXP});
+    /* 下推上: LAYER 03 application 从底部 push up */
+    if(blocks[2]) animate(blocks[2], {opacity:[0,1], y:[22, 0]},
+      {duration:.6, delay:.6, easing:EASE_ENTRY_EXP});
+
+    const foot = slide.querySelector('.t-meta');
+    if(foot) animate(foot, {opacity:[0,1]}, {duration:.3, delay:1.3, easing:EASE_PROD});
+  }
+
+  /* ---------- recipe: measure-up · YC KPI 塔 ----------
+     塔从底部 scaleY 0→1 生长 + 数字最后弹入 */
+  function rMeasureUp(slide, all){
+    const head = slide.querySelector('[data-anim="line"]');
+    if(head) fade(head, {duration:.6, y:10});
+
+    const towers = [...slide.querySelectorAll('.bar-tower')];
+    towers.forEach((tower, i)=>{
+      const block = tower.querySelector('.body-block');
+      if(block){
+        block.style.transformOrigin = 'bottom center';
+        animate(block, {opacity:[0,1], scaleY:[.05, 1]},
+          {duration:.7, delay:.35 + i*.12, easing:EASE_ENTRY_EXP});
+      }
+      /* cap (顶部图标) 等柱体长好后弹入 */
+      const cap = tower.querySelector('.cap');
+      if(cap) animate(cap, {opacity:[0,1], y:[-8, 0]},
+        {duration:.4, delay:.85 + i*.12, easing:EASE_PROD});
+    });
+  }
+
+  /* ---------- recipe: bar-grow · 90% 价值分布 ----------
+     标题先入 → hairline 从中点向两侧 stroke draw → bar 依次 width 0→target → 数值 fade in */
+  function rBarGrow(slide, all){
+    const head = slide.querySelector('[data-anim="line"]');
+    if(head) fade(head, {duration:.6, y:10});
+
+    /* 中部 hairline:从 100% width 0 拉到 100% (transformOrigin: center) */
+    const midRow = slide.querySelector('[data-anim="up"]');
+    if(midRow){
+      const midLabel = midRow.querySelector('.t-cat');
+      const midLine = midRow.querySelector('div[style*="height:1px"]');
+      if(midLabel) animate(midLabel, {opacity:[0,1], x:[-8,0]},
+        {duration:.4, delay:.4, easing:EASE_PROD});
+      if(midLine){
+        midLine.style.transformOrigin = 'center';
+        animate(midLine, {opacity:[0,1], scaleX:[0, 1]},
+          {duration:.55, delay:.5, easing:EASE_ENTRY_EXP});
+      }
+    }
+
+    /* bar 行依次 width 增长 */
+    const fills = [...slide.querySelectorAll('.row-fill')];
+    const labels = [...slide.querySelectorAll('.row-lbl')];
+    const values = [...slide.querySelectorAll('.row-val')];
+    fills.forEach((fill, i)=>{
+      const target = fill.style.width;
+      fill.style.width = '0%';
+      if(labels[i]) animate(labels[i], {opacity:[0,1], x:[-12,0]},
+        {duration:.4, delay:.85 + i*.14, easing:EASE_PROD});
+      animate(fill, {width:['0%', target]},
+        {duration:.65, delay:.95 + i*.14, easing:EASE_ENTRY_EXP});
+      if(values[i]) animate(values[i], {opacity:[0,1]},
+        {duration:.3, delay:1.5 + i*.14, easing:EASE_PROD});
+    });
+  }
+
+  /* ---------- recipe: chart-rise · S23 分组数据图表 ----------
+     坐标结构先入 → 每组柱从共同零基线生长 → 数值与来源落定 */
+  function rChartRise(slide){
+    const head = slide.querySelector('[data-anim="line"]');
+    if(head) fade(head, {duration:.5, y:8});
+    const meta = slide.querySelector('.chart-meta-row');
+    const stage = slide.querySelector('.chart-stage,.xreal-echart-stage');
+    const foot = slide.querySelector('.chart-foot');
+    if(meta) animate(meta, {opacity:[0,1]}, {duration:.35, delay:.18, easing:EASE_PROD});
+    if(stage) animate(stage, {opacity:[0,1]}, {duration:.35, delay:.24, easing:EASE_PROD});
+
+    const bars = [...slide.querySelectorAll('.chart-bar')];
+    bars.forEach((bar, i)=>{
+      const value = Number(bar.dataset.value);
+      const target = Number.isFinite(value) ? Math.max(0, Math.min(100, value)) : 0;
+      bar.style.height = '0%';
+      const label = bar.querySelector('.chart-value');
+      if(label) label.style.opacity = '0';
+      animate(bar, {height:['0%', `${target}%`]},
+        {duration:.62, delay:.34 + i*.055, easing:EASE_ENTRY_EXP});
+      if(label) animate(label, {opacity:[0,1], y:[6,0]},
+        {duration:.28, delay:.78 + i*.055, easing:EASE_PROD});
+    });
+    if(foot) animate(foot, {opacity:[0,1]},
+      {duration:.35, delay:.9 + bars.length*.035, easing:EASE_PROD});
+  }
+
+  /* ---------- recipe: line-draw · S24 趋势折线图 ----------
+     坐标结构先入 → 折线依次绘制 → 点、终值与来源落定 */
+  function rLineDraw(slide){
+    const head = slide.querySelector('[data-anim="line"]');
+    if(head) fade(head, {duration:.5, y:8});
+    const meta = slide.querySelector('.chart-meta-row');
+    const stage = slide.querySelector('.line-stage,.xreal-echart-stage');
+    const foot = slide.querySelector('.chart-foot');
+    if(meta) animate(meta, {opacity:[0,1]}, {duration:.35, delay:.18, easing:EASE_PROD});
+    if(stage) animate(stage, {opacity:[0,1]}, {duration:.35, delay:.24, easing:EASE_PROD});
+
+    const lines = [...slide.querySelectorAll('.chart-line')];
+    lines.forEach((line, i)=>{
+      const length = typeof line.getTotalLength === 'function' ? line.getTotalLength() : 1000;
+      line.style.strokeDasharray = `${length}`;
+      line.style.strokeDashoffset = `${length}`;
+      const drawing = line.animate(
+        [{strokeDashoffset:`${length}`},{strokeDashoffset:'0'}],
+        {duration:780, delay:340 + i*180, easing:EASE_ENTRY_EXP_CSS, fill:'forwards'}
+      );
+      drawing.finished.then(()=>{
+        line.style.strokeDasharray = '';
+        line.style.strokeDashoffset = '';
+      }).catch(()=>{});
+    });
+
+    const points = [...slide.querySelectorAll('.chart-point')];
+    points.forEach((point, i)=>animate(point, {opacity:[0,1], scale:[.4,1]},
+      {duration:.25, delay:.82 + i*.035, easing:EASE_PROD}));
+    const ends = [...slide.querySelectorAll('.line-end-label')];
+    ends.forEach((label, i)=>animate(label, {opacity:[0,1], x:[-8,0]},
+      {duration:.3, delay:1 + i*.12, easing:EASE_PROD}));
+    if(foot) animate(foot, {opacity:[0,1]}, {duration:.35, delay:1.18, easing:EASE_PROD});
+  }
+
+  /* ---------- recipe: duo-mirror · Latent vs Deterministic ----------
+     左 80ms 入,vrule 从中心 scaleY 0→1,右 240ms 入 */
+  function rDuoMirror(slide, all){
+    const head = slide.querySelector('[data-anim="line"]');
+    if(head) fade(head, {duration:.6, y:10});
+
+    const cols = [...slide.querySelectorAll('.duo-compare .col')];
+    const vrule = slide.querySelector('.duo-compare .vrule');
+    if(cols[0]) animate(cols[0], {opacity:[0,1], x:[-24, 0]},
+      {duration:.65, delay:.4, easing:EASE_ENTRY_EXP});
+    if(vrule){
+      vrule.style.transformOrigin = 'center';
+      animate(vrule, {opacity:[0,1], scaleY:[0, 1]},
+        {duration:.55, delay:.55, easing:EASE_ENTRY_EXP});
+    }
+    if(cols[1]) animate(cols[1], {opacity:[0,1], x:[24, 0]},
+      {duration:.65, delay:.7, easing:EASE_ENTRY_EXP});
+
+    const foot = slide.querySelector('.t-meta');
+    if(foot) animate(foot, {opacity:[0,1]}, {duration:.3, delay:1.3, easing:EASE_PROD});
+  }
+
+  /* ---------- recipe: split-statement · 双半屏陈述 ----------
+     左右半屏按序入场;保留给 S03/S10 等 split statement 页面 */
+  function rSplitStatement(slide, all){
+    const halves = [...slide.querySelectorAll('.half')];
+    /* 左黑半屏 — once 先入,forever 间隔 600ms */
+    if(halves[0]){
+      animate(halves[0], {opacity:[0,1]}, {duration:.4, easing:EASE_PROD});
+      const kpis = halves[0].querySelectorAll('.kpi-thin');
+      kpis.forEach((k, i)=>{
+        animate(k, {opacity:[0,1], y:[24,0]},
+          {duration:.7, delay:.25 + i*.55, easing:EASE_ENTRY_EXP});
+      });
+    }
+    /* 右白半屏 — list 三条依次入,在左侧 once 出现后开始 */
+    if(halves[1]){
+      animate(halves[1], {opacity:[0,1]}, {duration:.4, delay:.3, easing:EASE_PROD});
+      const items = halves[1].querySelectorAll('.takeaway-list li');
+      items.forEach((li, i)=>{
+        animate(li, {opacity:[0,1], x:[20, 0]},
+          {duration:.45, delay:1.0 + i*.12, easing:EASE_ENTRY_EXP});
+      });
+    }
+  }
+
+  /* ---------- recipe: closing-thanks · 极简品牌封底 ----------
+     Thanks 先成为主视觉 → 底部 Logo 轻微落定 */
+  function rClosingThanks(slide){
+    const mark = slide.querySelector('[data-anim="closing-logo"]');
+    const thanks = slide.querySelector('[data-anim="closing-thanks"]');
+    if(thanks) animate(thanks, {opacity:[0,1], y:[18,0], scale:[.985,1]},
+      {duration:.7, easing:EASE_ENTRY_EXP});
+    if(mark) animate(mark, {opacity:[0,1], scale:[.96,1]},
+      {duration:.45, delay:.42, easing:EASE_PROD});
+  }
+
+  /* ---------- recipe: timeline-walk · P11 横向 evolution ----------
+     标题先入 → 横轴虚线 scaleX 拉开(伪) → 5 个 dot 按年代依次 scale 入 → label 跟随 */
+  function rTimelineWalk(slide, all){
+    const head = slide.querySelector('[data-anim="line"]');
+    if(head) fade(head, {duration:.55, y:10});
+
+    const tl = slide.querySelector('.timeline-h');
+    if(tl) animate(tl, {opacity:[0,1]}, {duration:.4, delay:.35, easing:EASE_PROD});
+
+    const nodes = [...slide.querySelectorAll('.timeline-h .th-node')];
+    nodes.forEach((node, i)=>{
+      const base = .55 + i*.18;
+      const dot = node.querySelector('.dot');
+      const label = node.querySelector('.label');
+      if(dot){
+        dot.style.transformOrigin='center';
+        animate(dot, {opacity:[0,1], scale:[.2, 1]},
+          {duration:.45, delay:base, easing:EASE_ENTRY_EXP});
+      }
+      if(label){
+        const fromY = node.classList.contains('up') ? 8 : -8;
+        /* 保留 CSS 的水平居中 translateX(-50%),避免动效覆盖后 label 与 dot 错位 */
+        animate(label, {opacity:[0,1], transform:[`translate(-50%, ${fromY}px)`, 'translate(-50%, 0px)']},
+          {duration:.5, delay:base + .12, easing:EASE_ENTRY_EXP});
+      }
+    });
+
+    const foot = slide.querySelector('.t-meta');
+    if(foot) animate(foot, {opacity:[0,1]}, {duration:.3, delay:1.7, easing:EASE_PROD});
+  }
+
+  /* ---------- recipe: manifesto · P12 Form & Found ----------
+     副标先入 → 大字两段错峰落 → 底部 ink 通栏条从下推上 */
+  function rManifesto(slide, all){
+    const head = slide.querySelector('[data-anim="line"]');
+    if(head){
+      const cat = head.querySelector('.t-cat');
+      const title = head.querySelector('div:nth-child(2)');
+      if(cat) animate(cat, {opacity:[0,1], x:[-10,0]},
+        {duration:.4, delay:.1, easing:EASE_PROD});
+      if(title) animate(title, {opacity:[0,1], y:[26, 0]},
+        {duration:.85, delay:.3, easing:EASE_ENTRY_EXP});
+    }
+    /* 底部 ink 条从下推入 */
+    const foot = [...slide.querySelectorAll('[data-anim="up"]')];
+    foot.forEach((el, i)=>{
+      animate(el, {opacity:[0,1], y:[40, 0]},
+        {duration:.75, delay:.85 + i*.12, easing:EASE_ENTRY_EXP});
+    });
+  }
+
+  /* ---------- recipe: three-forces · P13 ----------
+     左 ink hero 先入 → 右 3 张卡按 1/2/3 依次从右滑入 + 每张大数字单独弹入 */
+  function rThreeForces(slide, all){
+    const head = slide.querySelector('[data-anim="line"]');
+    if(head) fade(head, {duration:.5, y:8});
+
+    const grid = slide.querySelector('[data-anim="up"]');
+    if(grid) animate(grid, {opacity:[0,1]}, {duration:.3, delay:.3, easing:EASE_PROD});
+
+    const heroBlock = grid?.querySelector(':scope > div:first-child');
+    if(heroBlock) animate(heroBlock, {opacity:[0,1], x:[-26, 0]},
+      {duration:.6, delay:.4, easing:EASE_ENTRY_EXP});
+
+    const cards = grid ? [...grid.querySelectorAll(':scope > div:nth-child(2) > .card-fill')] : [];
+    cards.forEach((card, i)=>{
+      const base = .6 + i*.18;
+      animate(card, {opacity:[0,1], x:[28, 0]},
+        {duration:.6, delay:base, easing:EASE_ENTRY_EXP});
+      const num = card.querySelector(':scope > div:first-child');
+      if(num) animate(num, {opacity:[0,1], scale:[.7, 1]},
+        {duration:.5, delay:base + .15, easing:EASE_ENTRY_EXP});
+    });
+  }
+
+  /* ---------- recipe: loop-form · P14 自学闭环 ----------
+     左 4 步像台阶依次入 → 右环图节点按时钟顺序入 → 中心 improves scale 入 */
+  function rLoopForm(slide, all){
+    const head = slide.querySelector('[data-anim="line"]');
+    if(head) fade(head, {duration:.55, y:10});
+
+    const grid = slide.querySelector('[data-anim="up"]');
+    if(grid) animate(grid, {opacity:[0,1]}, {duration:.3, delay:.35, easing:EASE_PROD});
+
+    /* 左侧 4 步台阶,每步从左滑入 */
+    const steps = grid ? [...grid.querySelectorAll(':scope > div:first-child > div')] : [];
+    steps.forEach((step, i)=>{
+      animate(step, {opacity:[0,1], x:[-18, 0]},
+        {duration:.5, delay:.5 + i*.14, easing:EASE_ENTRY_EXP});
+    });
+
+    /* 右侧 SVG 节点 (4 个 circle + label) 按 01→04 顺序入 */
+    const svg = grid?.querySelector('svg');
+    if(svg){
+      const ring = svg.querySelector('circle:first-of-type');
+      if(ring) animate(ring, {opacity:[0,.25]}, {duration:.5, delay:.6, easing:EASE_PROD});
+
+      const nodeCircles = [...svg.querySelectorAll('circle')].slice(1);
+      nodeCircles.forEach((c, i)=>{
+        c.style.transformOrigin = `${c.getAttribute('cx')}px ${c.getAttribute('cy')}px`;
+        animate(c, {opacity:[0,1], scale:[.4, 1]},
+          {duration:.45, delay:.7 + i*.16, easing:EASE_ENTRY_EXP});
+      });
+
+      const arrows = [...svg.querySelectorAll('path[marker-end]')];
+      arrows.forEach((p, i)=>{
+        animate(p, {opacity:[0,1]},
+          {duration:.4, delay:.85 + i*.16, easing:EASE_PROD});
+      });
+
+      const center = [...svg.querySelectorAll('text')].slice(-2);
+      center.forEach((t, i)=>{
+        animate(t, {opacity:[0,1], scale:[.7, 1]},
+          {duration:.5, delay:1.55 + i*.1, easing:EASE_ENTRY_EXP});
+      });
+    }
+  }
+
+  /* ---------- recipe: matrix-fill · P15 skill 矩阵 ----------
+     标题入 → 12 张卡按对角线波 (i+j) 扫入 → 底部 20,000 大数字最后 fade 入 */
+  function rMatrixFill(slide, all){
+    const head = slide.querySelector('[data-anim="line"]');
+    if(head) fade(head, {duration:.55, y:10});
+
+    const matrix = slide.querySelector('[data-anim="up"]');
+    if(!matrix) return;
+    animate(matrix, {opacity:[0,1]}, {duration:.3, delay:.35, easing:EASE_PROD});
+
+    const cards = [...matrix.children];
+    const cols = 6;
+    cards.forEach((card, i)=>{
+      const row = Math.floor(i/cols), col = i%cols;
+      const wave = (row + col) * .055;
+      animate(card, {opacity:[0,1], y:[14, 0], scale:[.92, 1]},
+        {duration:.42, delay:.5 + wave, easing:EASE_ENTRY_EXP});
+    });
+
+    /* 底部 20,000 区块 */
+    const foot = [...slide.querySelectorAll('[data-anim="up"]')][1];
+    if(foot){
+      animate(foot, {opacity:[0,1], y:[18, 0]},
+        {duration:.7, delay:1.4, easing:EASE_ENTRY_EXP});
+      const bigNum = foot.querySelector('div:nth-child(1) > div:nth-child(2)');
+      if(bigNum) animate(bigNum, {opacity:[0,1], scale:[.94, 1]},
+        {duration:.7, delay:1.55, easing:EASE_ENTRY_EXP});
+    }
+  }
+
+  /* ---------- recipe: field-notes · P16 散点观察 ----------
+     标题入 → 6 张卡按"散点"乱序延迟入,微小旋转复位 */
+  function rFieldNotes(slide, all){
+    const head = slide.querySelector('[data-anim="line"]');
+    if(head) fade(head, {duration:.55, y:10});
+
+    const grid = slide.querySelector('[data-anim="up"]');
+    if(!grid) return;
+    animate(grid, {opacity:[0,1]}, {duration:.3, delay:.35, easing:EASE_PROD});
+
+    /* 散点顺序: 用一个稍微打乱的索引数组,营造"乱中有序"感 */
+    const order = [0, 3, 1, 4, 2, 5];
+    const cards = [...grid.children];
+    order.forEach((idx, i)=>{
+      const card = cards[idx];
+      if(!card) return;
+      animate(card, {opacity:[0,1], y:[18, 0], rotate:[(idx%2?-.6:.6), 0]},
+        {duration:.55, delay:.5 + i*.11, easing:EASE_ENTRY_EXP});
+    });
+  }
+
+  /* ---------- recipe: system-diagram · P17 三圆系统图 ----------
+     标题入 → SVG 三组图依次入 + 中间同心圆从外向内 scale 入 → 下方注释列依次入 */
+  function rSystemDiagram(slide, all){
+    const head = slide.querySelector('[data-anim="line"]');
+    if(head) fade(head, {duration:.55, y:10});
+
+    const stage = slide.querySelector('[data-anim="up"]');
+    if(!stage) return;
+    animate(stage, {opacity:[0,1]}, {duration:.3, delay:.35, easing:EASE_PROD});
+
+    const svgs = [...stage.querySelectorAll('svg')];
+    svgs.forEach((svg, i)=>{
+      const base = .55 + i*.22;
+      const circles = [...svg.querySelectorAll('circle')];
+      /* 中间是同心圆: 从外圈到内圈依次 scale 入 */
+      if(circles.length > 1){
+        circles.forEach((c, j)=>{
+          c.style.transformOrigin = `${c.getAttribute('cx')}px ${c.getAttribute('cy')}px`;
+          animate(c, {opacity:[0,1], scale:[.4, 1]},
+            {duration:.5, delay:base + j*.13, easing:EASE_ENTRY_EXP});
+        });
+      } else if(circles[0]){
+        circles[0].style.transformOrigin = `${circles[0].getAttribute('cx')}px ${circles[0].getAttribute('cy')}px`;
+        animate(circles[0], {opacity:[0,1], scale:[.4, 1]},
+          {duration:.5, delay:base, easing:EASE_ENTRY_EXP});
+      }
+      const labels = [...svg.querySelectorAll('text')];
+      labels.forEach((t, j)=>{
+        animate(t, {opacity:[0,1]},
+          {duration:.4, delay:base + .25 + j*.06, easing:EASE_PROD});
+      });
+    });
+
+    /* 下方注释列 */
+    const cols = [...stage.querySelectorAll(':scope > div:last-child > div')];
+    cols.forEach((col, i)=>{
+      animate(col, {opacity:[0,1], y:[12, 0]},
+        {duration:.45, delay:1.3 + i*.1, easing:EASE_ENTRY_EXP});
+    });
+  }
+
+  /* ---------- recipe: why-now · P18 三列 + 巨大底数 ----------
+     标题入 → 三列文本入 → 三个底部巨数 01/02/03 错峰 scale 落定 */
+  function rWhyNow(slide, all){
+    const head = slide.querySelector('[data-anim="line"]');
+    if(head) fade(head, {duration:.55, y:10});
+
+    const grid = slide.querySelector('[data-anim="up"]');
+    if(!grid) return;
+    animate(grid, {opacity:[0,1]}, {duration:.3, delay:.35, easing:EASE_PROD});
+
+    const cols = [...grid.children];
+    cols.forEach((col, i)=>{
+      const base = .5 + i*.16;
+      const body = col.querySelector(':scope > div:not(:last-child)');
+      const big = col.querySelector(':scope > div:last-child');
+      if(body) animate(body, {opacity:[0,1], y:[14, 0]},
+        {duration:.55, delay:base, easing:EASE_ENTRY_EXP});
+      if(big) animate(big, {opacity:[0,1], scale:[.7, 1]},
+        {duration:.7, delay:base + .35, easing:EASE_ENTRY_EXP});
+    });
+  }
+
+  /* ---------- recipe: four-cards · P19 4 列卡片 ----------
+     顶部红线 scaleX 0→1 → 标题入 → 4 卡按 01-04 依次入 */
+  function rFourCards(slide, all){
+    /* 顶部红线 */
+    const topRule = slide.querySelector('[data-anim="line"] > div:first-child');
+    if(topRule){
+      topRule.style.transformOrigin = 'left center';
+      animate(topRule, {opacity:[0,1], scaleX:[0, 1]},
+        {duration:.5, delay:.1, easing:EASE_ENTRY_EXP});
+    }
+
+    const head = slide.querySelector('[data-anim="line"]');
+    if(head){
+      const title = head.querySelector(':scope > div:nth-child(2)');
+      if(title) animate(title, {opacity:[0,1], y:[14, 0]},
+        {duration:.55, delay:.4, easing:EASE_ENTRY_EXP});
+    }
+
+    const grid = slide.querySelector('[data-anim="up"]');
+    if(!grid) return;
+    animate(grid, {opacity:[0,1]}, {duration:.3, delay:.55, easing:EASE_PROD});
+
+    const cards = [...grid.children];
+    cards.forEach((card, i)=>{
+      animate(card, {opacity:[0,1], y:[18, 0]},
+        {duration:.55, delay:.7 + i*.13, easing:EASE_ENTRY_EXP});
+    });
+  }
+
+  /* ============ P20 · Stacked KPI Ledger · 4 行账单逐行点亮 + 行间发丝从左画 ============ */
+  function rStackedLedger(slide, all){
+    const ledger = slide.querySelector('[data-anim="ledger"]');
+    if(!ledger) return;
+    animate(ledger, {opacity:[0,1]}, {duration:.3, delay:.1, easing:EASE_PROD});
+
+    const rows = [...ledger.querySelectorAll('.ledger-row')];
+    rows.forEach((row, i)=>{
+      const base = .25 + i*.18;
+      const num   = row.querySelector('.ledger-num');
+      const label = row.querySelector('.ledger-label');
+      const icon  = row.querySelector('.ledger-icon');
+      if(num)   animate(num,   {opacity:[0,1], y:[20, 0]},   {duration:.7,  delay:base,        easing:EASE_ENTRY_EXP});
+      if(label) animate(label, {opacity:[0,1], x:[-12, 0]},  {duration:.55, delay:base + .12, easing:EASE_ENTRY_EXP});
+      if(icon)  animate(icon,  {opacity:[0,1], scale:[.6,1]},{duration:.55, delay:base + .22, easing:EASE_ENTRY_EXP});
+    });
+  }
+
+  /* ============ P21 · Tech Spec Sheet · 标题分行 / KPI 顶线画出 + count 风感 / 竖线弹起 / 底巨数 ============ */
+  function rTechSpec(slide, all){
+    const head = slide.querySelector('[data-anim="line"]');
+    if(head) fade(head, {duration:.5, y:8});
+
+    const main = slide.querySelector('[data-anim="up"]');
+    if(main){
+      animate(main, {opacity:[0,1]}, {duration:.3, delay:.25, easing:EASE_PROD});
+
+      /* 左大标题分行 */
+      const titleLines = main.querySelector(':scope > div:first-child > div:first-child');
+      if(titleLines){
+        animate(titleLines, {opacity:[0,1], y:[18, 0]}, {duration:.7, delay:.35, easing:EASE_ENTRY_EXP});
+      }
+      const titleNote = main.querySelector(':scope > div:first-child > div:nth-child(2)');
+      if(titleNote){
+        animate(titleNote, {opacity:[0,1], y:[10, 0]}, {duration:.5, delay:.95, easing:EASE_ENTRY_EXP});
+      }
+
+      /* 三 KPI · 顶线 scaleX + 数字 fade-up + 副文字 */
+      const kpis = [...main.querySelectorAll(':scope > div:not([data-anim]):not(:first-child)')];
+      kpis.forEach((kpi, i)=>{
+        const base = .55 + i*.18;
+        const topRule = kpi.querySelector(':scope > div:first-child');
+        if(topRule){
+          topRule.style.transformOrigin = 'left center';
+          animate(topRule, {scaleX:[0,1], opacity:[0,1]}, {duration:.5, delay:base, easing:EASE_ENTRY_EXP});
+        }
+        const num = kpi.querySelector('.kpi-num');
+        if(num) animate(num, {opacity:[0,1], y:[14, 0]}, {duration:.6, delay:base + .15, easing:EASE_ENTRY_EXP});
+        const otherKids = [...kpi.children].filter(el=>el !== topRule && el !== num);
+        otherKids.forEach((el, j)=>{
+          animate(el, {opacity:[0,1]}, {duration:.4, delay:base + .25 + j*.05, easing:EASE_PROD});
+        });
+      });
+
+    }
+
+    /* 底部 hero 区: 巨数 + goal + tags + 右下竖线 */
+    const hero = slide.querySelector('[data-anim="hero"]');
+    if(hero){
+      animate(hero, {opacity:[0,1]}, {duration:.3, delay:1.3, easing:EASE_PROD});
+      const bottomHero = hero.querySelector('.bottom-hero');
+      if(bottomHero) animate(bottomHero, {opacity:[0,1], y:[24, 0], scale:[.92, 1]}, {duration:.7, delay:1.4, easing:EASE_ENTRY_EXP});
+      const middle = hero.querySelector(':scope > div:nth-child(2)');
+      if(middle){
+        const kids = [...middle.children];
+        kids.forEach((el, i)=>{
+          if(el.style && el.style.background === 'var(--ink)'){
+            el.style.transformOrigin = 'left center';
+            animate(el, {scaleX:[0,1], opacity:[0,1]}, {duration:.5, delay:1.6 + i*.1, easing:EASE_ENTRY_EXP});
+          } else {
+            animate(el, {opacity:[0,1], y:[10, 0]}, {duration:.5, delay:1.55 + i*.1, easing:EASE_ENTRY_EXP});
+          }
+        });
+      }
+      /* 右下: 文字先入, 9 根竖线再从底部 scaleY 弹起 */
+      const right = hero.querySelector(':scope > div:nth-child(3)');
+      if(right){
+        const rightText = right.querySelector(':scope > div:last-child');
+        if(rightText) animate(rightText, {opacity:[0,1], y:[10, 0]}, {duration:.5, delay:1.85, easing:EASE_ENTRY_EXP});
+      }
+      const bars = slide.querySelectorAll('[data-anim="bars"] .vbar');
+      bars.forEach((bar, i)=>{
+        bar.style.transformOrigin = 'bottom';
+        animate(bar, {scaleY:[0,1], opacity:[0,1]}, {duration:.5, delay:2.0 + i*.04, easing:EASE_ENTRY_EXP});
+      });
+    }
+  }
+
+  /* ============ P22 · Image Hero · 图缓推 + 标题白块从左滑入 + 三 KPI 顶线画出 ============ */
+  function rImageHero(slide, all){
+    const img = slide.querySelector('[data-anim="img"] img');
+    if(img){
+      animate(img, {opacity:[0,1], scale:[1.06, 1]}, {duration:1.1, delay:.05, easing:EASE_ENTRY_EXP});
+    }
+
+    const titleBlock = slide.querySelector('[data-anim="title-block"]');
+    if(titleBlock){
+      titleBlock.style.transformOrigin = 'left center';
+      animate(titleBlock, {opacity:[0,1], scaleX:[0, 1]}, {duration:.7, delay:.45, easing:EASE_ENTRY_EXP});
+      const titleText = titleBlock.querySelector('div');
+      if(titleText) animate(titleText, {opacity:[0,1]}, {duration:.4, delay:.85, easing:EASE_PROD});
+    }
+
+    const kpiWrap = slide.querySelector('[data-anim="kpi"]');
+    if(kpiWrap){
+      animate(kpiWrap, {opacity:[0,1]}, {duration:.3, delay:.7, easing:EASE_PROD});
+
+      /* 段落 */
+      const para = kpiWrap.querySelector(':scope > div:first-child');
+      if(para) animate(para, {opacity:[0,1], y:[14, 0]}, {duration:.6, delay:.85, easing:EASE_ENTRY_EXP});
+
+      /* 三列 KPI · 顶线 scaleX + 数字升起 */
+      const cols = [...kpiWrap.querySelectorAll(':scope > div:nth-child(2) > div')];
+      cols.forEach((col, i)=>{
+        const base = 1.1 + i*.18;
+        const topRule = col.querySelector(':scope > div:first-child');
+        if(topRule){
+          topRule.style.transformOrigin = 'left center';
+          animate(topRule, {scaleX:[0,1], opacity:[0,1]}, {duration:.5, delay:base, easing:EASE_ENTRY_EXP});
+        }
+        const cat = col.querySelector('.t-meta');
+        if(cat) animate(cat, {opacity:[0,1]}, {duration:.4, delay:base + .15, easing:EASE_PROD});
+        const hero = col.querySelector('.kpi-hero');
+        if(hero) animate(hero, {opacity:[0,1], y:[18, 0]}, {duration:.7, delay:base + .25, easing:EASE_ENTRY_EXP});
+        const handled = new Set([topRule, cat, hero]);
+        [...col.children]
+          .filter(el => !handled.has(el))
+          .forEach((el, j)=>{
+            animate(el, {opacity:[0,1]}, {duration:.4, delay:base + .45 + j*.05, easing:EASE_PROD});
+          });
+      });
+    }
+  }
+
+  const RECIPES = {
+    'hero': rHero,
+    'section-hero': rSectionHero,
+    'progression': rProgression,
+    'statement': rStatement,
+    'grid-reveal': rGridReveal,
+    'stack-build': rStackBuild,
+    'measure-up': rMeasureUp,
+    'bar-grow': rBarGrow,
+    'duo-mirror': rDuoMirror,
+    'split-statement': rSplitStatement,
+    'closing-thanks': rClosingThanks,
+    'timeline-walk': rTimelineWalk,
+    'manifesto': rManifesto,
+    'three-forces': rThreeForces,
+    'loop-form': rLoopForm,
+    'matrix-fill': rMatrixFill,
+    'field-notes': rFieldNotes,
+    'system-diagram': rSystemDiagram,
+    'why-now': rWhyNow,
+    'four-cards': rFourCards,
+    'stacked-ledger': rStackedLedger,
+    'tech-spec': rTechSpec,
+    'image-hero': rImageHero,
+    'chart-rise': rChartRise,
+    'line-draw': rLineDraw,
+  };
+
+  function revealStatic(slide){
+    resetAnims(slide);
+    document.getAnimations?.().forEach(a=>a.cancel());
+    slide.querySelectorAll('[data-anim],.row-fill,.tl-node,.stack-block,.bar-tower,.sub-card,.col,.vrule,.kpi-cell,.card-fill,.card-accent,.card-ink,.chart-bar,.chart-value,.chart-line,.chart-point,.line-end-label')
+      .forEach(el=>{
+        el.style.opacity='1';
+        el.style.transform='none';
+        if(el.classList.contains('chart-bar')) el.style.height='';
+        if(el.classList.contains('chart-line')){
+          el.style.strokeDasharray='';
+          el.style.strokeDashoffset='';
+        }
+      });
+  }
+
+  function playSlide(i){
+    const slide = slides[i];
+    if(!slide) return;
+    lastIdx = i;
+
+    if(window.__lowPowerMode){
+      revealStatic(slide);
+      return;
+    }
+
+    resetAnims(slide);
+
+    /* 关键:[data-anim] 容器很多时候只是占位标记,真正的几何动画在子元素上.
+       默认强制 reveal 所有 [data-anim] 容器, recipe 想做块入场时用 motion 的 {opacity:[0,1]} 会自动覆盖 */
+    slide.querySelectorAll('[data-anim]').forEach(el=>{
+      el.style.opacity = '1';
+      el.style.transform = 'none';
+    });
+
+    const all = [...slide.querySelectorAll('[data-anim]')];
+    const recipe = slide.dataset.animate;
+    const fn = RECIPES[recipe];
+    if(fn){ fn(slide, all); return; }
+
+    /* fallback: 平凡 fade */
+    if(all.length) animate(all, {opacity:[0,1], y:[12,0]},
+      {duration:.6, delay:i=>i*.08, easing:EASE_ENTRY_EXP});
+  }
+
+  window.__playSlide = playSlide;
+
+  playSlide(window.__currentSlideIndex || 0);
+}
+</script>
+
+</body>
+</html>

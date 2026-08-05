@@ -49,6 +49,7 @@
     --brand-red:#D71920;      /* XREAL 关键数据/警示语义，默认不启用 */
     --brand-silver:#A7ADB4;   /* XREAL 技术质感语义，默认不启用 */
     --brand-gold:#B08D57;     /* XREAL 品牌价值语义，默认不启用 */
+    --radius-sm:3px;
 
     /* ============ Carbon 文本角色 token (role-based,代替 opacity) ============
        亮底:  primary 主文 / secondary 次文 / helper 辅助 / placeholder 占位
@@ -79,6 +80,7 @@
     --chrome-feature-logo-width:max(72px,6.8vw);
     --chrome-feature-label-size:calc(var(--chrome-feature-logo-width) * var(--chrome-label-optical-ratio));
     --cover-title-size:min(7.2vw,12.6vh);
+    --section-hero-title-size:min(5.6vw,9.8vh);
     --page-title-size:min(4.5vw,7.8vh);
     --body-copy-leading:1.48;
     /* 兼容既有组件接口：全部指向同一 deck 主字体，禁止据此拆分中英文 */
@@ -130,6 +132,7 @@
     --weight-display:500;
     --weight-title:500;
     --cover-title-size:min(5.6vw,9.8vh);
+    --section-hero-title-size:min(4.6vw,8vh);
     --page-title-size:min(3.8vw,6.6vh);
     --body-copy-leading:1.4;
   }
@@ -164,6 +167,10 @@
   .slide[data-layout="XREAL-COVER-BLACK"],
   .slide[data-layout="XREAL-COVER-BLACK"] .canvas-card,
   .slide[data-layout="XREAL-CLOSING-BLACK"] .half.b-accent{background:var(--pure-black)}
+  .xreal-closing-lockup{flex:1;position:relative;display:flex;align-items:center;justify-content:center;text-align:center}
+  .xreal-closing-mark{position:absolute;left:50%;bottom:0;transform:translateX(-50%)}
+  .xreal-closing-logo{display:block;width:max(96px,7.2vw);height:auto;filter:invert(1)}
+  .xreal-closing-thanks{font-family:var(--deck-font);font-size:min(10vw,17vh);line-height:.9;font-weight:var(--weight-display);letter-spacing:-.035em;color:var(--paper)}
   .slide.accent .accent-block{background:var(--accent-on);color:var(--accent)}
 
   /* Hero 页透出网格背景多一点 */
@@ -664,7 +671,7 @@
 
   /* ============================================================
      ↓↓↓ V2 EXTENSIONS · Canvas Mode + 参考图新类
-     验证效果后沉淀回 template-swiss.html
+     验证效果后沉淀回 template-xreal.html
      ============================================================ */
 
   /* 全屏铺满模式 · 关闭 WebGL · 卡片即页面 */
@@ -1346,7 +1353,7 @@
 <!-- ============================================================
      SLIDES 插入区 · 在此处填充所有 <section class="slide ..."> 页面
      页面骨架参考 references/layouts-swiss.md
-     主题色配置参考 references/themes-swiss.md
+     唯一主题变量定义在本文件 :root，品牌语义参考 references/brand-xreal.md
      ============================================================ -->
 <section class="slide accent" data-layout="XREAL-COVER-BLACK" data-animate="hero">
   <div class="canvas-card">
@@ -1388,7 +1395,7 @@
   </div>
 </section>
 
-<section class="slide dark" data-layout="S09" data-animate="statement">
+<section class="slide dark" data-layout="S03" data-animate="statement">
   <div class="canvas-card">
   <div class="chrome-min" data-anim="line">
     <div class="l brand"><img class="xreal-logo" src="../../assets/brand/xreal-logo-black.svg" alt="XREAL"><span>Act one · The turn</span></div>
@@ -1614,21 +1621,15 @@
   </div>
 </section>
 
-<section class="slide split" data-layout="XREAL-CLOSING-BLACK" data-animate="split-statement">
-  <div class="canvas-card"><div class="split-half">
-    <div class="half b-accent" style="padding:5.6vh 3.6vw 4.4vh;justify-content:space-between">
-  <div class="chrome-min" data-anim="line">
-    <div class="l brand"><img class="xreal-logo" src="../../assets/brand/xreal-logo-black.svg" alt="XREAL"></div>
-  </div><div data-anim="manifesto" style="margin:auto 0"><h2 style="font-size:min(5.1vw,8.9vh);line-height:1;font-weight:var(--weight-display);color:#fff">The future is<br>not coming.<br>It's here.</h2><p class="aura-copy" style="margin-top:2.6vh;max-width:27ch">Now let's go try it together.</p></div></div>
-    <div class="half" style="padding:5.6vh 3.6vw 4.4vh;justify-content:space-between">
-  <div class="chrome-min" data-anim="line">
-    <div class="l brand"><img class="xreal-logo" src="../../assets/brand/xreal-logo-black.svg" alt="XREAL"><span>Takeaways</span></div>
-  </div><div data-anim="rules">
-      <div style="display:grid;grid-template-columns:auto 1fr;gap:2vw;padding:2.5vh 0;border-top:1px solid var(--border-subtle)"><div class="aura-kpi" style="font-size:min(3.8vw,6.6vh)">01</div><div><h3 class="t-h-prod">Lightweight</h3><p class="body-sm">Built to stay with you, not on a shelf.</p></div></div>
-      <div style="display:grid;grid-template-columns:auto 1fr;gap:2vw;padding:2.5vh 0;border-top:1px solid var(--border-subtle)"><div class="aura-kpi" style="font-size:min(3.8vw,6.6vh)">02</div><div><h3 class="t-h-prod">Intelligent</h3><p class="body-sm">Gemini understands the context you choose to share.</p></div></div>
-      <div style="display:grid;grid-template-columns:auto 1fr;gap:2vw;padding:2.5vh 0;border-top:1px solid var(--border-subtle);border-bottom:2px solid var(--brand-red)"><div class="aura-kpi xreal-critical" style="font-size:min(3.8vw,6.6vh)">03</div><div><h3 class="t-h-prod xreal-critical">Present</h3><p class="body-sm">Spatial computing that keeps the real world in view.</p></div></div>
-    </div><div class="t-meta" style="text-align:right">xreal.com · Reserve Aura today</div></div>
-  </div></div>
+<section class="slide accent" data-layout="XREAL-CLOSING-BLACK" data-animate="closing-thanks">
+  <div class="canvas-card">
+    <div class="xreal-closing-lockup">
+      <div data-anim="closing-thanks" class="xreal-closing-thanks">Thanks</div>
+      <div class="xreal-closing-mark">
+        <img data-anim="closing-logo" class="xreal-closing-logo" src="../../assets/brand/xreal-logo-black.svg" alt="XREAL">
+      </div>
+    </div>
+  </div>
 </section>
 </div>
 

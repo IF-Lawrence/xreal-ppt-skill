@@ -13,7 +13,9 @@ if (!file) {
 }
 
 const html = readFileSync(file, 'utf8');
-const htmlForSlides = html.replace(/<!--[\s\S]*?-->/g, '');
+const htmlWithoutEChartsBundle = html.replace(/<script\b[^>]*\bdata-xreal-echarts-bundle\b[^>]*>[\s\S]*?<\/script>/gi, '');
+const htmlForSlides = htmlWithoutEChartsBundle.replace(/<!--[\s\S]*?-->/g, '');
+const htmlForStatic = htmlForSlides.replace(/<script\b[\s\S]*?<\/script>/gi, '');
 const errors = [];
 const warnings = [];
 const approvedUppercaseTokens = new Set([
@@ -52,7 +54,15 @@ async function loadPlaywright() {
 const allowedLayouts = new Set([
   'XREAL-COVER-BLACK',
   'XREAL-CLOSING-BLACK',
-  ...Array.from({ length: 22 }, (_, i) => `S${String(i + 1).padStart(2, '0')}`),
+  'S01', 'S02', 'S03', 'S04', 'S05', 'S06', 'S07', 'S08',
+  'S10', 'S11', 'S12', 'S13', 'S14', 'S15', 'S16', 'S17',
+  'S18', 'S19', 'S20', 'S21', 'S22', 'S23', 'S24',
+]);
+const echartsKindsByLayout = new Map([
+  ['S23', new Set(['bar', 'mixed', 'scatter', 'bubble', 'heatmap', 'waterfall', 'boxplot', 'candlestick'])],
+  ['S24', new Set(['line', 'mixed'])],
+  ['S17', new Set(['sankey', 'graph', 'tree', 'treemap'])],
+  ['S08', new Set(['geo'])],
 ]);
 
 const slideRe = /<section\b[^>]*class="[^"]*\bslide\b[^"]*"[^>]*>[\s\S]*?<\/section>/g;
@@ -60,6 +70,13 @@ const slides = [...htmlForSlides.matchAll(slideRe)].map((m, idx) => ({ idx: idx 
 
 if (!slides.length) {
   errors.push('No <section class="slide"> pages found.');
+}
+
+const closingSlides = slides.filter((slide) => /\bdata-layout="XREAL-CLOSING-BLACK"/.test(slide.tag));
+if (closingSlides.length !== 1) {
+  errors.push(`Back cover mismatch: expected exactly one XREAL-CLOSING-BLACK slide; found ${closingSlides.length}.`);
+} else if (closingSlides[0].idx !== slides.length) {
+  errors.push(`Back cover mismatch: XREAL-CLOSING-BLACK must be the final slide; found it at slide ${closingSlides[0].idx} of ${slides.length}.`);
 }
 
 const documentLang = htmlForSlides.match(/<html\b[^>]*\blang="([^"]+)"/i)?.[1]?.toLowerCase() ?? '';
@@ -75,49 +92,97 @@ if (!hasCjkContent && !documentLang.startsWith('en')) {
   errors.push('Font context mismatch: all-English deck must use <html lang="en"> so the whole deck uses XREAL Diatype.');
 }
 
-const englishTypographyBlock = htmlForSlides.match(/html\[lang\^?=["']en["']\]\s*\{([^}]*)\}/i)?.[1] ?? '';
+const englishTypographyBlock = htmlForStatic.match(/html\[lang\^?=["']en["']\]\s*\{([^}]*)\}/i)?.[1] ?? '';
 const englishChromeRatio = Number(englishTypographyBlock.match(/--chrome-label-optical-ratio\s*:\s*([0-9.]+)/i)?.[1]);
 if (documentLang.startsWith('en') && (!Number.isFinite(englishChromeRatio) || englishChromeRatio < 0.305 || englishChromeRatio > 0.32)) {
   errors.push('English chrome mismatch: XREAL Diatype needs --chrome-label-optical-ratio around .313 so adjacent labels match the XREAL Logo visual height.');
 }
+if (documentLang.startsWith('en')) {
+  const enCoverTitleVw = Number(englishTypographyBlock.match(/--cover-title-size\s*:\s*min\(\s*([0-9.]+)vw/i)?.[1]);
+  const enSectionTitleVw = Number(englishTypographyBlock.match(/--section-hero-title-size\s*:\s*min\(\s*([0-9.]+)vw/i)?.[1]);
+  const enPageTitleVw = Number(englishTypographyBlock.match(/--page-title-size\s*:\s*min\(\s*([0-9.]+)vw/i)?.[1]);
+  if (![enCoverTitleVw, enSectionTitleVw, enPageTitleVw].every(Number.isFinite) || !(enPageTitleVw < enSectionTitleVw && enSectionTitleVw < enCoverTitleVw)) {
+    errors.push('English title hierarchy mismatch: keep page title < section Hero < Index Cover in the html[lang^="en"] token overrides.');
+  }
+}
 
-const cssNumber = (name) => Number(htmlForSlides.match(new RegExp(`${name}\\s*:\\s*([0-9.]+)`, 'i'))?.[1]);
+const cssNumber = (name) => Number(htmlForStatic.match(new RegExp(`${name}\\s*:\\s*([0-9.]+)`, 'i'))?.[1]);
+const cssMinVw = (source, name) => Number(source.match(new RegExp(`${name}\\s*:\\s*min\\(\\s*([0-9.]+)vw`, 'i'))?.[1]);
 const navDotAlpha = cssNumber('--nav-dot-alpha');
 const navDotActiveAlpha = cssNumber('--nav-dot-active-alpha');
 const navDotDarkAlpha = cssNumber('--nav-dot-dark-alpha');
 const navDotDarkActiveAlpha = cssNumber('--nav-dot-dark-active-alpha');
+const radiusSm = cssNumber('--radius-sm');
+const baseCoverTitleVw = cssMinVw(htmlForStatic, '--cover-title-size');
+const baseSectionTitleVw = cssMinVw(htmlForStatic, '--section-hero-title-size');
+const basePageTitleVw = cssMinVw(htmlForStatic, '--page-title-size');
+if (!Number.isFinite(radiusSm) || radiusSm < 2 || radiusSm > 4) {
+  errors.push('Corner token mismatch: define --radius-sm between 2px and 4px; the XREAL template standard is 3px.');
+}
+if (![baseCoverTitleVw, baseSectionTitleVw, basePageTitleVw].every(Number.isFinite) || !(basePageTitleVw < baseSectionTitleVw && baseSectionTitleVw < baseCoverTitleVw)) {
+  errors.push('Title hierarchy mismatch: define --page-title-size < --section-hero-title-size < --cover-title-size so chapter Heroes remain below Index Cover.');
+}
 if (!Number.isFinite(navDotAlpha) || navDotAlpha > 0.10 || !Number.isFinite(navDotActiveAlpha) || navDotActiveAlpha > 0.20) {
   errors.push('Navigation contrast mismatch: light-background nav dots must remain low contrast (normal <= .10, active <= .20).');
 }
 if (!Number.isFinite(navDotDarkAlpha) || navDotDarkAlpha > 0.12 || !Number.isFinite(navDotDarkActiveAlpha) || navDotDarkActiveAlpha > 0.24) {
   errors.push('Navigation contrast mismatch: dark-background nav dots must remain low contrast (normal <= .12, active <= .24).');
 }
-if (/#nav\s+\.dot\.active\s*\{[^}]*background\s*:\s*var\(--accent\)/i.test(htmlForSlides)) {
+if (/#nav\s+\.dot\.active\s*\{[^}]*background\s*:\s*var\(--accent\)/i.test(htmlForStatic)) {
   errors.push('Navigation contrast mismatch: the active dot must use low-opacity black/white, not solid var(--accent).');
 }
 
-const contentWeightSource = htmlForSlides.replace(/@font-face\s*\{[^}]*\}/gi, '');
-if (/font-weight\s*:\s*(?:100|200|300)\b/i.test(contentWeightSource)) {
-  errors.push('Typography hierarchy mismatch: content uses Thin/ExtraLight/Light (100/200/300). Use role-based weights: display/title 500-600, body 400, labels 500, key data 600-700.');
+const contentWeightSource = htmlForStatic.replace(/@font-face\s*\{[^}]*\}/gi, '');
+if (/font-weight\s*:\s*(?:100|200|300|800|900)\b/i.test(contentWeightSource)) {
+  errors.push('Typography hierarchy mismatch: use the fixed role weights only—English display/title/key data 500; Chinese or mixed display/title/key data 600; body 400; support text 400/450; labels 500; one core datum may use 700.');
 }
 
-if (/text-transform\s*:\s*uppercase\b/i.test(htmlForSlides)) {
+const nonNoneBoxShadows = [...htmlForStatic.matchAll(/box-shadow\s*:\s*(?!none\b)[^;}]+/gi)];
+if (nonNoneBoxShadows.length || /text-shadow\s*:\s*(?!none\b)/i.test(htmlForStatic) || /drop-shadow\s*\(/i.test(htmlForStatic)) {
+  errors.push('Visual effect mismatch: shadows, glow edges, and neon effects are forbidden. Remove box-shadow, text-shadow, and drop-shadow.');
+}
+
+if (/text-transform\s*:\s*uppercase\b/i.test(htmlForStatic)) {
   errors.push('Typography casing mismatch: text-transform:uppercase is forbidden. Write visible copy in natural case; reserve all caps for XREAL, standard acronyms, and short model codes.');
 }
 
-const wideTracking = [...htmlForSlides.matchAll(/letter-spacing\s*:\s*([+-]?(?:\d*\.)?\d+)em/gi)]
+const wideTracking = [...htmlForStatic.matchAll(/letter-spacing\s*:\s*([+-]?(?:\d*\.)?\d+)em/gi)]
   .map((match) => Number(match[1]))
   .filter((value) => Number.isFinite(value) && value > 0.05);
 if (wideTracking.length) {
   errors.push(`Typography tracking mismatch: positive letter-spacing exceeds 0.05em (${[...new Set(wideTracking)].join(', ')}em). Use normal tracking for labels and metadata.`);
 }
 
-if (/\bid=["']hint["']/i.test(htmlForSlides)) {
+if (/\bid=["']hint["']/i.test(htmlForStatic)) {
   errors.push('Interaction chrome mismatch: visible keyboard/navigation hint is forbidden. Keep keyboard controls functional without rendering an on-canvas instruction label.');
+}
+
+const usesECharts = /\bdata-chart-engine=["']echarts["']/i.test(htmlForSlides);
+const hasEChartsBundle = /<script\b[^>]*\bdata-xreal-echarts-bundle\b[^>]*>/i.test(html);
+const echartsOptionBlocks = [...htmlWithoutEChartsBundle.matchAll(/<script\b[^>]*\bdata-xreal-echarts-options\b[^>]*>([\s\S]*?)<\/script>/gi)].map((match) => match[1]);
+if (usesECharts && !hasEChartsBundle) {
+  errors.push('ECharts delivery mismatch: final HTML uses data-chart-engine="echarts" but has no inline data-xreal-echarts-bundle. Run scripts/inline-echarts.mjs.');
+}
+if (usesECharts && !echartsOptionBlocks.length) {
+  errors.push('ECharts option registry missing: add <script data-xreal-echarts-options> with window.XREAL_ECHARTS_OPTIONS.');
+}
+if (usesECharts && /<script\b[^>]*\bsrc=["']https?:\/\/[^"']*echarts[^"']*["']/i.test(htmlWithoutEChartsBundle)) {
+  errors.push('ECharts delivery mismatch: CDN scripts are forbidden in the final deck; use the pinned offline bundle.');
+}
+const echartsOptionsSource = echartsOptionBlocks.join('\n');
+if (/\b(?:shadowBlur|shadowColor|shadowOffsetX|shadowOffsetY|colorStops|decal|bar3D|line3D|scatter3D|pictorialBar|effectScatter|liquidFill)\b/.test(echartsOptionsSource)) {
+  errors.push('ECharts visual mismatch: options contain a forbidden shadow, gradient, 3D, effect, pictorial, or liquid-fill setting.');
+}
+if (/\bareaStyle\s*:\s*\{\s*[^}]/.test(echartsOptionsSource)) {
+  errors.push('ECharts visual mismatch: non-empty areaStyle is forbidden; use unfilled lines.');
 }
 
 slides.forEach((slide) => {
   const layout = slide.tag.match(/\bdata-layout="([^"]+)"/)?.[1];
+  const variant = slide.tag.match(/\bdata-variant="([^"]+)"/)?.[1] ?? '';
+  const chartEngine = slide.tag.match(/\bdata-chart-engine="([^"]+)"/)?.[1] ?? '';
+  const chartKind = slide.tag.match(/\bdata-chart-kind="([^"]+)"/)?.[1] ?? '';
+  const isECharts = chartEngine === 'echarts';
   const visibleText = slide.html
     .replace(/<script\b[\s\S]*?<\/script>/gi, ' ')
     .replace(/<style\b[\s\S]*?<\/style>/gi, ' ')
@@ -134,16 +199,110 @@ slides.forEach((slide) => {
   }
 
   if (!layout) {
-    errors.push(`Slide ${slide.idx}: missing data-layout. XREAL Style locked mode requires S01-S22 or XREAL-COVER-BLACK/XREAL-CLOSING-BLACK.`);
+    errors.push(`Slide ${slide.idx}: missing data-layout. XREAL Style locked mode requires a registered layout (S01-S08 or S10-S24) or XREAL-COVER-BLACK/XREAL-CLOSING-BLACK.`);
   } else if (!allowedLayouts.has(layout)) {
     errors.push(`Slide ${slide.idx}: data-layout="${layout}" is not registered in swiss-layout-lock.md.`);
+  }
+
+  if (chartEngine && chartEngine !== 'echarts') {
+    errors.push(`Slide ${slide.idx}: data-chart-engine="${chartEngine}" is not registered; use "echarts" or remove the attribute.`);
+  }
+  if (isECharts) {
+    const allowedKinds = echartsKindsByLayout.get(layout);
+    if (!allowedKinds) {
+      errors.push(`Slide ${slide.idx}: XREAL ECharts is not registered for data-layout="${layout}"; use S23, S24, S17, or S08.`);
+    } else if (!chartKind || !allowedKinds.has(chartKind)) {
+      errors.push(`Slide ${slide.idx}: data-chart-kind="${chartKind || '(missing)'}" is not registered for ${layout}; allowed: ${[...allowedKinds].join(', ')}.`);
+    }
+    const requiredClasses = ['xreal-echart-stage', 'xreal-echart', 'chart-unit', 'chart-legend', 'chart-source'];
+    const missing = requiredClasses.filter((name) => !new RegExp(`\\b${name}\\b`).test(slide.html));
+    if (missing.length) {
+      errors.push(`Slide ${slide.idx}: XREAL ECharts is missing required structure (${missing.map((name) => `.${name}`).join(', ')}).`);
+    }
+    const chartTags = [...slide.html.matchAll(/<div\b[^>]*\bclass="([^"]+)"[^>]*>/g)]
+      .filter((match) => match[1].split(/\s+/).includes('xreal-echart'))
+      .map((match) => match[0]);
+    if (chartTags.length !== 1) {
+      errors.push(`Slide ${slide.idx}: XREAL ECharts requires exactly one primary .xreal-echart; found ${chartTags.length}.`);
+    }
+    chartTags.forEach((tag) => {
+      if (!/\bdata-echarts-key="[^"]+"/.test(tag)) {
+        errors.push(`Slide ${slide.idx}: .xreal-echart must declare data-echarts-key.`);
+      }
+      const renderer = tag.match(/\bdata-renderer="([^"]+)"/)?.[1] ?? '';
+      if (!/^(?:svg|canvas)$/.test(renderer)) {
+        errors.push(`Slide ${slide.idx}: .xreal-echart must declare data-renderer="svg" or "canvas"; SVG is the default for presentations.`);
+      }
+      if (renderer === 'canvas' && !/\bdata-large-data="true"/.test(tag)) {
+        errors.push(`Slide ${slide.idx}: Canvas rendering requires data-large-data="true"; otherwise use SVG.`);
+      }
+      if (!/\bdata-interactive="(?:true|false)"/.test(tag)) {
+        errors.push(`Slide ${slide.idx}: .xreal-echart must explicitly declare data-interactive="false" or "true".`);
+      }
+      if (!/\brole="img"/.test(tag) || !/\baria-label="[^"]+"/.test(tag)) {
+        errors.push(`Slide ${slide.idx}: .xreal-echart requires role="img" and a meaningful aria-label.`);
+      }
+    });
+  }
+
+  if (variant && variant !== 'section-hero') {
+    errors.push(`Slide ${slide.idx}: data-variant="${variant}" is not registered.`);
+  }
+  const hasSectionHeroIdentity = /\bsection-hero\b/.test(slide.tag) || /\bdata-animate="section-hero"/.test(slide.tag);
+  if (hasSectionHeroIdentity && variant !== 'section-hero') {
+    errors.push(`Slide ${slide.idx}: the section Hero class/animation requires data-variant="section-hero".`);
+  }
+  if (variant === 'section-hero') {
+    if (layout !== 'S01') {
+      errors.push(`Slide ${slide.idx}: section-hero must keep data-layout="S01".`);
+    }
+    if (!/\bsection-hero\b/.test(slide.tag) || !/\bsection-hero-kicker\b/.test(slide.html) || !/\bxreal-section-title\b/.test(slide.html) || !/\bsection-hero-summary\b/.test(slide.html)) {
+      errors.push(`Slide ${slide.idx}: section-hero requires the section-hero class, .section-hero-kicker, .xreal-section-title, and .section-hero-summary skeleton.`);
+    }
+    if (/\bxreal-cover-title\b|\bcover-row\b|\b(?:section-opener-index|section-index|chapter-index|chapter-number|chapter-num|cover-number|cover-num)\b/i.test(slide.html)) {
+      errors.push(`Slide ${slide.idx}: section-hero must be a single-title Hero, not an index. Remove cover rows, giant/index-style chapter numbers, and cover-title hierarchy.`);
+    }
+    if (/\bclass="[^"]*\baccent\b/.test(slide.tag)) {
+      errors.push(`Slide ${slide.idx}: section-hero cannot use full-screen slide accent. Use hero light, shallow grey, or hero dark so it stays below Index Cover.`);
+    }
+    if (!/\bdata-animate="section-hero"/.test(slide.tag)) {
+      errors.push(`Slide ${slide.idx}: section-hero must use data-animate="section-hero".`);
+    }
+  }
+
+  if (layout === 'XREAL-CLOSING-BLACK') {
+    const normalizedClosingText = visibleText.replace(/\s+/g, ' ').trim();
+    const requiredClasses = ['xreal-closing-lockup', 'xreal-closing-thanks', 'xreal-closing-mark', 'xreal-closing-logo'];
+    const missing = requiredClasses.filter((name) => !new RegExp(`\\b${name}\\b`).test(slide.html));
+    if (!/\bclass="[^"]*\baccent\b/.test(slide.tag)) {
+      errors.push(`Slide ${slide.idx}: XREAL closing must use class="slide accent" for a full pure-black back cover.`);
+    }
+    if (!/\bdata-animate="closing-thanks"/.test(slide.tag)) {
+      errors.push(`Slide ${slide.idx}: XREAL closing must use data-animate="closing-thanks".`);
+    }
+    if (missing.length) {
+      errors.push(`Slide ${slide.idx}: XREAL closing is missing required structure (${missing.map((name) => `.${name}`).join(', ')}).`);
+    }
+    if (normalizedClosingText !== 'Thanks') {
+      errors.push(`Slide ${slide.idx}: XREAL closing may display only centered "Thanks" plus the small bottom Logo; found visible text "${normalizedClosingText || '(empty)'}".`);
+    }
+    if (/\bsplit-half\b|\btakeaway-list\b|\bclass="[^"]*\bhalf\b|\b(?:Closing|Takeaways|3 rules|End of field note)\b/.test(slide.html)) {
+      errors.push(`Slide ${slide.idx}: legacy split/takeaway closing content found. Use only the centered Thanks + small bottom XREAL Logo structure.`);
+    }
+    if (!/<img\b(?=[^>]*\bclass="[^"]*\bxreal-closing-logo\b)(?=[^>]*\bsrc="[^"]*assets\/brand\/xreal-logo-black\.svg")[^>]*>/i.test(slide.html)) {
+      errors.push(`Slide ${slide.idx}: XREAL closing must use the official assets/brand/xreal-logo-black.svg in .xreal-closing-logo.`);
+    }
   }
 
   if (!allowExperimental && /\bdata-layout="P2[34]\b|XREAL Image Split|XREAL Evidence Grid|swiss-img-split|swiss-img-grid/.test(slide.html)) {
     errors.push(`Slide ${slide.idx}: uses experimental P23/P24 image structure. Use S22 or S15/S16 image-grid adaptations instead.`);
   }
 
-  const isStatement = layout === 'S03' || layout === 'S09' || layout === 'S10' || layout === 'XREAL-COVER-BLACK' || layout === 'XREAL-CLOSING-BLACK';
+  if (/\bclass="[^"]*\b(?:dots|dots-fine|dots-bold|hatch|dot-mat|ring-mat|cross-mat)\b/i.test(slide.html)) {
+    errors.push(`Slide ${slide.idx}: decorative dot/pattern class found. Dot Matrix Statement was removed; use typography, grid, and semantic structure instead.`);
+  }
+
+  const isStatement = layout === 'S03' || layout === 'S10' || layout === 'XREAL-COVER-BLACK' || layout === 'XREAL-CLOSING-BLACK';
   const topChunk = slide.html.slice(0, 1800);
 
   if (!isStatement && /text-align\s*:\s*center/i.test(topChunk)) {
@@ -160,6 +319,22 @@ slides.forEach((slide) => {
 
   if (/<svg\b[\s\S]*?<text\b/i.test(slide.html)) {
     errors.push(`Slide ${slide.idx}: SVG contains visible <text>. Put labels in HTML grid/captions, keep SVG for geometry only.`);
+  }
+
+  const svgTags = [...slide.html.matchAll(/<svg\b[^>]*>/gi)];
+  svgTags.forEach((match, svgIndex) => {
+    const tag = match[0];
+    const role = tag.match(/\bdata-svg-role="([^"]+)"/i)?.[1] ?? '';
+    const className = tag.match(/\bclass="([^"]+)"/i)?.[1] ?? '';
+    const approvedRole = /^(?:chart|map|flow|data-geometry)$/i.test(role);
+    const approvedLegacyClass = /(?:chart|map|flow|data|geometry|pie|loop|system|timeline|relations)/i.test(className);
+    if (!approvedRole && !approvedLegacyClass) {
+      errors.push(`Slide ${slide.idx}: inline SVG ${svgIndex + 1} has no approved information role. SVG illustrations are forbidden; use a raster image, or mark legitimate chart/map/flow/data geometry with data-svg-role.`);
+    }
+  });
+
+  if (/<canvas\b/i.test(slide.html) || /class="[^"]*(?:illustration|artwork|scene-art|hero-svg)[^"]*"/i.test(slide.html)) {
+    errors.push(`Slide ${slide.idx}: code-drawn illustration detected. Do not use SVG, Canvas, or CSS artwork as page imagery; use supplied assets, screenshots, photos, or raster-generated images.`);
   }
 
   if (/\bxreal-pie(?:-layout)?\b/.test(slide.html) && layout !== 'S18') {
@@ -208,6 +383,67 @@ slides.forEach((slide) => {
       errors.push(`Slide ${slide.idx}: S22 photo uses object-position:top center, which commonly crops faces. Use center 35% or center center.`);
     }
   }
+
+  if (layout === 'S23' && !isECharts) {
+    const requiredClasses = ['xreal-data-chart', 'chart-unit', 'chart-legend', 'chart-stage', 'chart-y-labels', 'chart-plot', 'chart-groups', 'chart-x-labels', 'chart-source'];
+    const missing = requiredClasses.filter((name) => !new RegExp(`\\b${name}\\b`).test(slide.html));
+    if (missing.length) {
+      errors.push(`Slide ${slide.idx}: S23 Data Chart is missing required structure (${missing.map((name) => `.${name}`).join(', ')}).`);
+    }
+    if (!/\bdata-animate="chart-rise"/.test(slide.tag)) {
+      errors.push(`Slide ${slide.idx}: S23 Data Chart must use data-animate="chart-rise".`);
+    }
+    if (!/\bdata-chart-unit="[^"]+"/.test(slide.html)) {
+      errors.push(`Slide ${slide.idx}: S23 Data Chart must declare data-chart-unit and show the unit in .chart-unit.`);
+    }
+    const groupCount = [...slide.html.matchAll(/<[^>]+\bclass="[^"]*\bchart-group\b[^"]*"[^>]*>/g)].length;
+    const barTags = [...slide.html.matchAll(/<div\b(?=[^>]*\bclass="[^"]*\bchart-bar\b[^"]*")[^>]*>/g)].map((match) => match[0]);
+    const valueCount = [...slide.html.matchAll(/\bclass="[^"]*\bchart-value\b[^"]*"/g)].length;
+    if (groupCount < 3 || groupCount > 8) {
+      errors.push(`Slide ${slide.idx}: S23 Data Chart requires 3-8 .chart-group categories; found ${groupCount}.`);
+    }
+    if (groupCount && (barTags.length < groupCount * 2 || barTags.length > groupCount * 4)) {
+      errors.push(`Slide ${slide.idx}: S23 Data Chart requires 2-4 bars per category; found ${barTags.length} bars across ${groupCount} groups.`);
+    }
+    if (valueCount !== barTags.length) {
+      errors.push(`Slide ${slide.idx}: S23 Data Chart requires one visible .chart-value for every bar; found ${valueCount} values for ${barTags.length} bars.`);
+    }
+    barTags.forEach((tag, barIndex) => {
+      const value = Number(tag.match(/\bdata-value="([+-]?[0-9.]+)"/)?.[1]);
+      const normalized = Number(tag.match(/--value\s*:\s*([0-9.]+)/)?.[1]);
+      if (!Number.isFinite(value) || !Number.isFinite(normalized) || normalized < 0 || normalized > 100) {
+        errors.push(`Slide ${slide.idx}: S23 chart bar ${barIndex + 1} must provide numeric data-value and normalized --value from 0-100.`);
+      }
+    });
+  }
+
+  if (layout === 'S24' && !isECharts) {
+    const requiredClasses = ['xreal-line-chart', 'chart-unit', 'chart-legend', 'line-stage', 'chart-y-labels', 'line-plot', 'line-chart-svg', 'chart-line', 'line-x-labels', 'line-end-label', 'chart-source'];
+    const missing = requiredClasses.filter((name) => !new RegExp(`\\b${name}\\b`).test(slide.html));
+    if (missing.length) {
+      errors.push(`Slide ${slide.idx}: S24 Line Chart is missing required structure (${missing.map((name) => `.${name}`).join(', ')}).`);
+    }
+    if (!/\bdata-animate="line-draw"/.test(slide.tag)) {
+      errors.push(`Slide ${slide.idx}: S24 Line Chart must use data-animate="line-draw".`);
+    }
+    if (!/\bdata-chart-unit="[^"]+"/.test(slide.html)) {
+      errors.push(`Slide ${slide.idx}: S24 Line Chart must declare data-chart-unit and show the unit in .chart-unit.`);
+    }
+    if (!/<svg\b(?=[^>]*\bdata-svg-role="chart")(?=[^>]*\bclass="[^"]*\bline-chart-svg\b)[^>]*>/i.test(slide.html)) {
+      errors.push(`Slide ${slide.idx}: S24 Line Chart requires svg.line-chart-svg with data-svg-role="chart"; SVG may contain geometry but no visible text.`);
+    }
+    const lineCount = [...slide.html.matchAll(/<(?:path|polyline)\b(?=[^>]*\bclass="[^"]*\bchart-line\b)[^>]*>/g)].length;
+    const pointCount = [...slide.html.matchAll(/<circle\b(?=[^>]*\bclass="[^"]*\bchart-point\b)[^>]*>/g)].length;
+    if (lineCount < 1 || lineCount > 3) {
+      errors.push(`Slide ${slide.idx}: S24 Line Chart requires 1-3 .chart-line series; found ${lineCount}.`);
+    }
+    if (lineCount && (pointCount < lineCount * 4 || pointCount > lineCount * 12)) {
+      errors.push(`Slide ${slide.idx}: S24 Line Chart requires 4-12 .chart-point samples per series; found ${pointCount} points across ${lineCount} lines.`);
+    }
+    if (/\b(?:dual-axis|secondary-axis|axis-right)\b/i.test(slide.html)) {
+      errors.push(`Slide ${slide.idx}: S24 Line Chart uses a secondary/dual axis. Split unlike units into separate charts in the registered layout.`);
+    }
+  }
 });
 
 async function runRenderedMeasurements() {
@@ -232,6 +468,12 @@ async function runRenderedMeasurements() {
       page.waitForTimeout(1800),
     ]);
     await page.waitForTimeout(800);
+    if (usesECharts) {
+      await page.waitForFunction(() => {
+        const nodes = [...document.querySelectorAll('.xreal-echart')];
+        return nodes.length > 0 && nodes.every((node) => ['ready', 'error'].includes(node.dataset.echartsState));
+      }, null, { timeout: 6000 }).catch(() => {});
+    }
 
     const measures = await page.$$eval('section.slide', (els) => {
       const TRANSPARENT = /rgba?\(\s*0\s*,\s*0\s*,\s*0\s*,\s*0?\s*\)|transparent/;
@@ -262,7 +504,7 @@ async function runRenderedMeasurements() {
         if (n === el || n.classList.contains('canvas-card')) return false;
         if (cs.position === 'fixed') return false;
         if (cs.position === 'absolute' && r.width * r.height >= posterArea * 0.82) return false;
-        if (n.matches('canvas.mag-bg, .grain, .dot-mat, .ring-mat, .cross-mat')) return false;
+        if (n.matches('canvas.mag-bg, .grain')) return false;
 
         const isText = hasDirectText(n);
         const isMedia = tag === 'IMG' || tag === 'CANVAS' || tag === 'SVG';
@@ -304,6 +546,52 @@ async function runRenderedMeasurements() {
         }
         return out;
       };
+
+      const radiusChecks = (el) => Array.from(el.querySelectorAll([
+          '.frame-img', '.card-fill', '.card-ink', '.card-accent', '.sub-card',
+          '.stack-block', '.bar-tower .cap',
+          '.h-bar-chart .row-track', '.h-bar-chart .row-fill',
+          '.bar-row .bar-track', '.bar-row .bar-fill',
+          '.hero-ink-col', '.force-card', '.brief-card',
+          '.xreal-bento > article',
+        ].join(','))).filter((node) => {
+          const r = node.getBoundingClientRect();
+          if (r.width < 20 || r.height < 20) return false;
+          const radius = parseFloat(getComputedStyle(node).borderTopLeftRadius);
+          return !Number.isFinite(radius) || radius < 2 || radius > 4;
+        }).map((node) => ({
+          node: labelFor(node),
+          radius: getComputedStyle(node).borderTopLeftRadius,
+        }));
+
+      const baselineBarChecks = (el) => Array.from(el.querySelectorAll([
+          '.bar-tower .body-block',
+          '.v-bar-chart .col-bar',
+          '.chart-bar',
+        ].join(','))).filter((node) => {
+          const r = node.getBoundingClientRect();
+          if (r.width < 2 || r.height < 2) return false;
+          const style = getComputedStyle(node);
+          const topLeft = parseFloat(style.borderTopLeftRadius);
+          const topRight = parseFloat(style.borderTopRightRadius);
+          const bottomLeft = parseFloat(style.borderBottomLeftRadius);
+          const bottomRight = parseFloat(style.borderBottomRightRadius);
+          return !Number.isFinite(topLeft) || topLeft < 2 || topLeft > 4
+            || !Number.isFinite(topRight) || topRight < 2 || topRight > 4
+            || !Number.isFinite(bottomLeft) || Math.abs(bottomLeft) > .1
+            || !Number.isFinite(bottomRight) || Math.abs(bottomRight) > .1;
+        }).map((node) => {
+          const style = getComputedStyle(node);
+          return {
+            node: labelFor(node),
+            radii: [
+              style.borderTopLeftRadius,
+              style.borderTopRightRadius,
+              style.borderBottomRightRadius,
+              style.borderBottomLeftRadius,
+            ].join(' '),
+          };
+        });
 
       return els.map((el, index) => {
         const er = el.getBoundingClientRect();
@@ -351,6 +639,12 @@ async function runRenderedMeasurements() {
             safeBottom,
           },
           titleGaps: titleGapChecks(el, nodes),
+          radiusIssues: radiusChecks(el),
+          baselineBarIssues: baselineBarChecks(el),
+          echartsIssues: Array.from(el.querySelectorAll('.xreal-echart')).filter((node) => node.dataset.echartsState !== 'ready').map((node) => ({
+            state: node.dataset.echartsState || 'uninitialized',
+            message: node.dataset.echartsMessage || 'Chart did not reach ready state.',
+          })),
         };
       });
     });
@@ -374,6 +668,15 @@ async function runRenderedMeasurements() {
       }
       for (const gap of m.titleGaps) {
         warnings.push(`${prefix}: M2 ${gap.title} has ${gap.gap}px gap before ${gap.next} (min ${gap.minGap}px).`);
+      }
+      for (const issue of m.radiusIssues) {
+        errors.push(`${prefix}: ${issue.node} uses ${issue.radius} corner radius. Card-like elements must use the shared 2-4px token (standard: --radius-sm:3px); page axes and dividers stay straight.`);
+      }
+      for (const issue of m.baselineBarIssues) {
+        errors.push(`${prefix}: ${issue.node} uses corner radii ${issue.radii}. Baseline bars may round only the top corners (2-4px); bottom corners must be square and flush to the x-axis.`);
+      }
+      for (const issue of m.echartsIssues) {
+        errors.push(`${prefix}: ECharts runtime is ${issue.state}: ${issue.message}`);
       }
     }
   } finally {

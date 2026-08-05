@@ -8,15 +8,15 @@
 
 ## 🔴 P0 · 一定不能犯的错
 
-### 0-S. XREAL Style locked mode:正文页必须来自原始 22P
+### 0-S. XREAL Style locked mode:正文页必须来自 23 个正式登记版式
 
-**现象**:颜色、字体看起来像 XREAL Style,但标题跑到中间、图片不在网格上、页面结构和原始 22P 完全不是一套东西。
+**现象**:颜色、字体看起来像 XREAL Style,但标题跑到中间、图片不在网格上、页面结构和正式登记版式完全不是一套东西。
 
-**根因**:生成时把 XREAL Style 当成风格包,自由组合了新的 P23/P24/自绘 SVG 页面,没有从原始参考 PPT 的 22 个登记版式里选。
+**根因**:生成时把 XREAL Style 当成风格包,自由组合了未登记结构或 SVG 插画页面,没有从 23 个正式登记版式里选。历史实验 `P23/P24` 与正式 `S23/S24` 不是同一组 ID。
 
 **做法**:
 - 先读 `references/swiss-layout-lock.md`
-- 正文页只能使用 `S01-S22`;新增首页/尾页只能使用 `XREAL-COVER-BLACK` / `XREAL-CLOSING-BLACK`
+- 正文页只能使用 `S01-S08`、`S10-S24`;`S09` 已移除;新增首页/尾页只能使用 `XREAL-COVER-BLACK` / `XREAL-CLOSING-BLACK`
 - 每个 `<section class="slide">` 必须写 `data-layout="Sxx"`
 - 生成后必须运行:
 
@@ -28,16 +28,19 @@ node <SKILL_ROOT>/scripts/validate-swiss-deck.mjs path/to/index.html
 - 未登记版式 / 缺少 `data-layout`
 - P23/P24 实验结构
 - SVG 里写可见文字
+- 未声明信息角色的内联 SVG 插画
 - 页面出现页码
 - S22 图片未绑定 `s22-hero-21x9`
 - S22 照片使用 `object-position:top center`
+- S23 缺少单位、图例、3-8 个类别、2-4 个系列、可见值或来源
+- S24 缺少连续横轴、1-3 条折线、每系列至少 4 个点、HTML 坐标标签、单位或来源
 
 ### 0-S-2. XREAL Style 顶部标题默认左上,不是居中
 
 **现象**:最顶上的中文标题在页面中间,像一页自制海报,不再像原始 PPT。
 
 **做法**:
-- 除 `S03/S09/S10` 这类 statement/split 版式外,顶部标题必须贴原始模板的左上内容轴。
+- 除 `S03/S10` 这类 statement/split 版式外,顶部标题必须贴原始模板的左上内容轴。
 - 不要把小标题放左列、大标题放右侧大列,这会导致标题视觉居中。
 - 如果需要标题 + 说明两列,必须复制原始 `S11` 或 `S17` 的骨架,不要自写 `4fr 8fr`。
 
@@ -57,7 +60,7 @@ node <SKILL_ROOT>/scripts/validate-swiss-deck.mjs path/to/index.html
 - `grep -n "maplibregl.Map" index.html`
 - 浏览器实测 `+` 可放大,`Drag` 可切换为 `Drag on`
 
-### 0-S-4. XREAL Style 演示字号下限 + Apple 式角色字重层级
+### 0-S-4. XREAL Style 演示字号下限 + 固定角色字重层级
 
 **现象**:页面整体结构没问题,但主标题为了追求“高级感”被设成 200/300,投屏后轮廓发虚;或者标题、正文和标签只按字号机械调整字重,缺少稳定的信息层级。
 
@@ -67,17 +70,18 @@ node <SKILL_ROOT>/scripts/validate-swiss-deck.mjs path/to/index.html
 - meta / kicker / mono label / 图表标签 ≥ `14px`
 - 内容超出时,先删减文案、拆页或换 Sxx 版式,不要用 10/11/12/13px 小字硬塞。
 
-**做法(角色字重层级 ⭐)**:
-参考 Apple 官网产品页的层级逻辑:大标题通常使用明确的 Semibold,正文保持 Regular,小标签使用 Regular / Medium。字重由信息角色和强调程度决定,不与字号做反比。
+**做法（角色字重层级 ⭐）**:
+字重由内容角色固定，同一角色在整套 PPT 中保持一致：
 
 - Hero / 封面 / 章节主标题 → `var(--weight-display)`：XREAL Diatype **500**，IBM Plex Sans SC **600**
 - 页面标题 / 模块标题 → `var(--weight-title)`：XREAL Diatype **500**，IBM Plex Sans SC **600**
-- 关键 KPI / 数据 → **600-700**；只允许一个最关键数字使用 700/800
-- 副标题 / lead → **400-500**
-- 正文 / 描述 / caption → **400**
-- meta / kicker / 图表标签 → **500**
-- 强调字通过同字重斜体、600/700 或品牌红色语义建立层级,不得把强调字降成更细字重。
-- 内容文字禁止使用 100/200/300；Light / ExtraLight 不作为默认标题样式。
+- 关键 KPI / 数据 → 纯英文 **500**，中文或中英混排 **600**；每页最重要的单个数据可使用 **700**
+- 副标题 / lead → **400**
+- 正文 / 描述 → **400**
+- caption / 辅助元数据 → 纯英文 **400**，中文或中英混排 **450**
+- kicker / 导航标签 / 图表标签 → **500**
+- 强调字使用同字重斜体、600/700 或品牌红色语义建立层级。
+- 默认内容样式使用 Regular / Text、Medium / SemiBold 和 Bold 三个层级。
 
 **检查**:
 - `rg -n "font-size:(10px|11px|12px|13px)|max\\((9|10|11|12|13)px" index.html`
@@ -132,17 +136,18 @@ node <SKILL_ROOT>/scripts/validate-swiss-deck.mjs path/to/index.html
 
 例外:head 一行同时承载"左:kicker+大标题(自己上下叠)"和"右:小注脚",外层可以用 `display:grid;grid-template-columns:1fr auto`,但**内层**仍要保持 flex column。
 
-### 0-B-2. XREAL Style 封面 / 封底默认:纯黑背景 + 稳定主标题字重
+### 0-B-2. XREAL Style 封面 / 封底默认:纯黑背景 + 极简品牌收束
 
 **现象**:封面用 `slide light` 白底 + 黑字 + 一个大大的"01"，或页眉出现 `01 / 07` 等计数；数字与内容无关，形成多余角标。
 
-**根因**:layouts-swiss.md 旧版默认推荐左 ink + 右 paper 对开,实操中容易写成"白底 + 黑大字 + 编号大字",失去黑色结构块的开场冲击。
+**根因**:封面和封底承担不同职责。封面需要建立主题，封底只需要品牌落款；把 takeaway、作者日期和宣言继续堆在封底会削弱结束感。
 
 **做法**(XREAL Style 必守):
 - **封面强制 `<section class="slide accent">`**(满屏黑色),不要 `slide.light`,也不要 `slide.dark`;黑色区域保持纯黑,禁止 ASCII、点阵、纹理、噪点和动态装饰背景
 - **页面不显示页码**：删除页眉、Logo 后、角标和封面大字中的 `01 / N`、`NN / NN` 等计数
 - **强调字可用斜体**,但保持与主标题相同字重或升至强调字重,不要降成 Light；黑底页面默认不额外上色
-- **封底强制 `slide.split`** 双半屏,左半 `.half.b-accent` 保持纯黑(与封面结构闭环),右半 paper 白底放 3 条 takeaway;**第 03 条**仅在关键语义时用 `var(--brand-red)` 上色
+- **封底强制 `<section class="slide accent">`** 全屏纯黑，使用大号 `.xreal-closing-thanks` 作为居中主视觉，小号 `.xreal-closing-logo` 通过 `.xreal-closing-mark` 固定在底部中央
+- 封底必须是最后一个 section，进入该页时隐藏底部分页导航；不放 takeaway、宣言、作者日期、页码、联系方式、CTA、眉题或装饰线，所有结论在前一页完成
 - Logo 默认独立,右侧不接 deck 名、章节名或风格说明;确有导航文字时,文字标准字距且视觉字高与 Logo 一致
 - 正文页 chrome 品牌区使用紧凑导航级尺寸；IBM Plex Sans SC 相邻文字按 Logo 宽度的 `.26` 计算，XREAL Diatype 按 `.313` 计算，并与 Logo 垂直居中；封面/封底才使用较大品牌级尺寸
 - 普通英文眉题、导航、标签、图注和页脚使用自然大小写;禁止整词组全大写,也禁止 CSS `text-transform:uppercase`
@@ -154,9 +159,61 @@ node <SKILL_ROOT>/scripts/validate-swiss-deck.mjs path/to/index.html
 - `rg -n "ascii-bg" index.html`——应无结果
 - `grep -E '"slide accent"' index.html | head -1`——封面应是 `slide accent` 而非 `slide light`
 - `rg -n 'data-layout="XREAL-(COVER|CLOSING)-BLACK"' index.html`——封面和封底应各命中一次
+- `rg -n 'data-layout="XREAL-CLOSING-BLACK"[^>]*data-animate="closing-thanks"' index.html`——封底应命中极简品牌封底 recipe
+- `rg -n 'xreal-closing-lockup|xreal-closing-thanks|xreal-closing-mark|xreal-closing-logo' index.html`——四个封底骨架类都应存在
 - `grep "color:var(--accent)" index.html`——若命中行同时含 `font-style:italic` 即危险信号,改为只 italic 不上色;关键数据或警示才使用 `var(--brand-red)`
 - `rg -n '>\s*[0-9]{1,2}\s*/\s*(?:[0-9]{1,2}|NN)\s*<' index.html`——应无结果
 - 目视:打开页面看封面和页眉有没有页码——有就删
+
+### 0-B-3. 单标题章节 Hero 必须低于 S01 Index Cover
+
+**现象**:章节页被做成目录，或使用满屏纯黑、巨大章节编号、封面级巨字和品牌级 Logo,导致章节 Hero 与整套封面争夺最高层级。
+
+**做法**:
+- 使用 `data-layout="S01" data-variant="section-hero" data-animate="section-hero"`，并在 section 上添加 `.section-hero`。
+- 使用 `.xreal-section-title`,禁止 `.xreal-cover-title`。
+- 可使用 `hero light`、浅灰纯色或 `hero dark`,禁止 `slide accent` 满屏纯黑。
+- 使用正文级 `chrome-min`;结构只保留 `.section-hero-kicker`、一个主标题、`.section-hero-summary` 和可选范围提示。
+- 不复制三行 `.cover-row`,不做目录/列表，不放巨大章节编号、deck 级作者/日期、KPI、图表或大图。
+- 小型章节标识可写 `Part 02 · Architecture`；不得把 `02` 单独放大成主视觉，也不得写成页码 `02 / 12`。
+
+**自检命令**:
+- `rg -n 'data-variant="section-hero"[^>]*data-animate="section-hero"' index.html`——每个章节 Hero 都应命中。
+- `rg -n 'section-hero[^>]*(xreal-cover-title|cover-row|chapter-(index|number|num))|data-variant="section-hero"[^>]*slide accent' index.html`——应无结果。
+
+### 0-B-4. S23/S24 图表必须先证明数据形状匹配
+
+**现象**:为了“看起来像数据页”把无顺序类别连成折线、把不同量纲放进同一纵轴，或只画图形却不写单位和来源。
+
+**做法**:
+- `S23 Data Chart` 只用于 3-8 个类别 × 2-4 个同量纲系列；必须使用共同零基线、`.chart-unit`、`.chart-legend`、HTML 横纵轴标签、可见值和 `.chart-source`。
+- `S24 Line Chart` 只用于时间或连续变量；限制 1-3 个系列、每系列 4-12 个采样点。SVG 只画 `.chart-line` / `.chart-point`,禁止 `<text>`。
+- 不同单位默认拆图或拆页；不使用无说明双轴。类别无连续顺序时使用 S23/P7,不要连线。
+- 红色只能标记一个关键系列或关键拐点；其余系列使用黑、灰、银，并通过图例、线型或终值标签辅助识别。
+- 标题必须写成数据结论；图表占主导面积，不在上方再堆 KPI 卡片或 dashboard 控件。
+
+**自检命令**:
+- `rg -n 'data-layout="S23"[^>]*data-animate="chart-rise"|data-layout="S24"[^>]*data-animate="line-draw"' index.html`——每张新增图表页都应命中正确 recipe。
+- `rg -n 'data-layout="S2[34]"' index.html` 后逐页确认 `.chart-unit`、`.chart-source` 和 HTML 坐标标签齐全。
+- `rg -n '<svg[^>]*class="[^"]*line-chart-svg[\s\S]*?<text' index.html`——应无结果。
+
+### 0-B-5. XREAL ECharts 只处理复杂数据形状
+
+**现象**:为了“更专业”把所有柱图和折线都换成 ECharts，或直接复制官网示例，带入默认彩色主题、tooltip、toolbox、渐变、阴影和 dashboard 质感。
+
+**做法**:
+- 简单柱图和折线仍用 S23/S24 原生组件；scatter/bubble、heatmap、waterfall、boxplot、candlestick、sankey、graph、tree、treemap 才评估 ECharts。
+- 保留正式 `data-layout`，并声明 `data-chart-engine="echarts"`、登记的 `data-chart-kind` 和 `.xreal-echart[data-echarts-key]`。
+- 单位、HTML 图例、来源和结论标题必须位于 ECharts 容器外；不使用 ECharts 内部 title/legend/toolbox 代替版式层。
+- 默认 `data-renderer="svg" data-interactive="false"`。只有图形元素超过约 1,000 或交互密集时才使用 `canvas`，并写 `data-large-data="true"`。
+- 最多一个 series 或 data item 使用 `xrealCritical:true`；禁止 `shadowBlur`、`colorStops`、非空 `areaStyle`、3D、发光和连续彩虹 visualMap。
+- 最终运行 `inline-echarts.mjs`，交付单文件，不依赖 CDN。
+
+**自检命令**:
+- `rg -n 'data-chart-engine="echarts"' index.html`——逐页确认只落在 S23/S24/S17/S08。
+- `rg -n 'shadowBlur|shadowColor|colorStops|areaStyle|bar3D|line3D|pictorialBar|effectScatter|liquidFill' index.html`——ECharts options 中应无结果。
+- `rg -n 'data-xreal-echarts-bundle' index.html`——使用 ECharts 的最终文件必须命中一次。
+- `rg -n "https?://[^\" ]*echarts" index.html`——最终文件应无 ECharts CDN。
 
 ### 0-C. XREAL Style 大字号双约束:`min(Xvw, Yvh)` 中 Y ≥ X × 1.6
 
@@ -175,37 +232,38 @@ node <SKILL_ROOT>/scripts/validate-swiss-deck.mjs path/to/index.html
 
 **自检命令**:`grep -E "font-size:min\([0-9.]+vw,\s*[0-9.]+vh\)" index.html`,把所有命中的 X/Y 看一眼,任何 Y/X < 1.6 都改大。
 
-### 0-D. XREAL Style 图片混排:直角、同高、只做证据
+### 0-D. XREAL Style 图片混排：统一小圆角、同高、只做证据
 
-**现象**:图片像普通 PPT 插图,圆角、阴影、比例混乱;多张截图高度不一,或 GPT-M 2.0 生成图自带标题/页脚,和页面 chrome 重复。
+**现象**:图片像普通 PPT 插图,圆角大小混乱、阴影、比例混乱;多张图片高度不一,或素材自带标题/页脚,和页面 chrome 重复。
 
 **根因**:XREAL Style 的图片不是装饰,而是 grid 里的证据块。没有先选原始版式和图片槽位,就会把任意图片硬塞进页面。
 
 **先判断图像角色**:
 - 证据截图、UI、代码、dashboard:保真优先,关键文字和数据不能裁;需要统一比例时先做截图背景画布和 `.fit-contain`。
-- 已按槽位生成的信息图/插图:按 S22/S15/S16 的目标比例铺满,不要再缩成短小图片。
+- 与槽位比例匹配的媒体资产:按 S22/S15/S16 的目标比例铺满,不要再缩成短小图片。
 - 照片/产品图/人物图:必须写清 `object-position`,主体不能被裁切、标题块或 caption 压住。
 - 文字压图:必须先判断是否有足够 quiet zone;没有低细节留白就不要把标题压在图上。
 - 多图组:统一比例、高度、容器样式和 caption 密度;视觉角色不同的图不要硬放同一组。
 
 **做法**:
 - 先选版式:单张大图 + KPI 用 `S22`;多图用 `S15/S16` 的原始网格骨架改造
-- S22 生成图比例固定 `21:9`,并在 `<img>` 上写 `data-image-slot="s22-hero-21x9"`
+- S22 资产优先选择接近 `21:9` 的 KV、产品图或场景图,并在 `<img>` 上写 `data-image-slot="s22-hero-21x9"`
 - 照片默认 `object-position:center 35%` 或 `center center`,不要用 `top center` 截人脸
-- 图片容器只用 `.frame-img`;**不要** `border-radius` / `box-shadow`
-- UI / 信息图 / 流程图若是用户原始截图或文字密集图,使用 `.fit-contain`;若已按槽位重生成,必须用对应比例类铺满容器,例如 `.frame-img.r-21x9`,不能再用固定短高度把图片缩小
+- 图片容器只用 `.frame-img`，由模板统一应用 `border-radius:var(--radius-sm)`；不要内联覆盖圆角，也不要使用 `box-shadow`
+- UI / 信息图 / 流程图若是用户原始截图或文字密集图,使用 `.fit-contain`;现有资产与槽位比例匹配时使用对应比例类铺满容器,例如 `.frame-img.r-21x9`
 - 多图同组必须统一槽位、比例、高度,不要混用
-- 用户原始截图要先读 `references/screenshot-framing.md`:优先用 `assets/screenshot-backgrounds/` 内置主题背景 + 程序化缩放/留边/对齐,不要为了比例统一就重画截图内容
-- 截图背景必须跟随当前主题色,且可裁成 `21:9` / `16:10` / `4:3` / `1:1`;背景里不能有标题、页脚、边框、logo、人物或明显主体
-- GPT-M 2.0 提示词必须写明:XREAL Style、黑白灰结构、克制红色语义、直角、无渐变/阴影/圆角、无页眉页脚标题角标
+- 用户原始截图优先保真并使用 `fit-contain`;不要为了比例统一就重画截图内容
+- 配图必须来自 `assets/media/` 或用户明确提供的素材;禁止调用外部图库、图片生成流程，或用内联 SVG、Canvas、CSS 图形绘制插画配图
 
 - 文字压图 / 全屏主视觉必须先做 quiet-zone 判断:至少约 30% 低细节区域可承载标题;不通过就换图、换裁切或改成图文分栏,不要整页套黑色/白色遮罩
 
 **自检命令**:
-- `grep -E "frame-img.*border-radius|box-shadow" index.html`——命中就删
+- `rg -n "frame-img[^>]*style=.[^>]*border-radius" index.html`——命中图片容器的内联圆角就改回全局 `--radius-sm`
+- `rg -n "box-shadow" index.html | rg -v "box-shadow\s*:\s*none"`——命中非空阴影就删除
+- `rg -n "<svg\\b" index.html`——每个内联 SVG 都必须是图表、地图、流程或数据几何，并声明合法 `data-svg-role`
 - `grep -n "data-image-slot" index.html`——每张本地图片都应有槽位声明
-- 目视:图片内部如果自带大标题、页码、页脚、角标,优先重生成,不要在页面里再裁切硬救
-- 目视:截图外侧背景应该是安静托底,不能比截图本身更抢眼;XREAL Style 截图不得出现圆角和投影
+- 目视:图片内部如果自带冲突的大标题、页码、页脚或角标,换用其他资产或无图版式,不要在页面里裁切硬救
+- 目视:截图外侧背景应该安静托底,不能比截图本身更抢眼;XREAL Style 截图统一 3px 小圆角且不使用投影
 
 ### 0-D-2. XREAL Style 底部分页安全区:最低处不要碰 nav
 
@@ -255,11 +313,11 @@ node <SKILL_ROOT>/scripts/validate-swiss-deck.mjs path/to/index.html
 **根因**:把新增图片版式或实验结构写成了全局样式修改,或无意改动了原始基座类,例如 `.h-hero` / `.h-xl` 字重、`.tl-node` 列宽、`.duo-compare` 间距。
 
 **做法**:
-- 仓库内的 `assets/template-swiss.html` 是 XREAL Style 的 golden source 快照,但要以**实际页面用法**为准,不要只看未使用的 CSS helper
-- 标题字重以当前 Apple 式角色层级为准：`.h-hero` / `.h-xl` / `.h-hero-zh` / `.h-xl-zh` 使用 `var(--weight-display)`，不要恢复旧的 200/300 超细规则
+- 仓库内的 `assets/template-xreal.html` 是 XREAL Style 的 golden source 快照,但要以**实际页面用法**为准,不要只看未使用的 CSS helper
+- 标题字重按固定角色表执行：`.h-hero` / `.h-xl` / `.h-hero-zh` / `.h-xl-zh` 使用 `var(--weight-display)`；纯英文为 500，中文或中英混排为 600
 - 除品牌层、封面/封底纯黑机制、S22 图片槽位修复、横向时间线 label 居中修复、角色化字重层级和已登记组件规则外,不要改动原始基座 CSS/JS recipe
 - 新增图片能力必须绑定到 S22/S15/S16 原始槽位,不要发明新正文结构
-- 如果要修改 `assets/template-swiss.html`,先做原始参考对比;可接受差异只应是品牌层、纯黑封面/封底、S22 图片定位类、角色化字重 token、标准字距、实心圆点和已知动效修复
+- 如果要修改 `assets/template-xreal.html`,先做原始参考对比;可接受差异只应是品牌层、纯黑封面/封底、S22 图片定位类、角色化字重 token、标准字距、实心圆点和已知动效修复
 
 **自检命令**:
 - 运行本次测试目录里的 `compare-swiss-base.mjs`,确认输出里 `missing in template: 0`
@@ -276,18 +334,18 @@ node <SKILL_ROOT>/scripts/validate-swiss-deck.mjs path/to/index.html
 - 再回代码看结构:该页是否用了正确版式,必选组件是否齐,可选组件是否过度
 - 对照原始 PPT 时以实际画面为准;raw CSS helper 只能辅助,不能替代视觉判断
 - 判断问题来源:版式选错 / 必选组件缺失 / 可选组件滥用 / 间距和安全区问题
-- 通用版式(S03/S08/S11/S19)可多用;数据专用(S06/S07/S20/S21/S22)必须有真实数据或案例;结构专用(S14/S15/S17)必须有闭环、矩阵或层级关系
+- 通用版式(S03/S08/S11/S19)可多用;数据专用(S06/S07/S20/S21/S22/S23/S24)必须有真实数据或案例,S24 还必须有连续横轴;结构专用(S14/S15/S17)必须有闭环、矩阵或层级关系
 ---
 
 ### 0. 生成前必须通过的类名校验(最重要)
 
 **现象**：直接把 `layouts-swiss.md` 的骨架粘到新 HTML,结果样式全部丢失——大标题字重错误、数据大字报字体小得像正文、结构页挤成一坨、图片堆到浏览器底部。
 
-**根因**：如果 `assets/template-swiss.html` 的 `<style>` 里没有这些类的定义,浏览器就 fallback 到默认样式。
+**根因**：如果 `assets/template-xreal.html` 的 `<style>` 里没有这些类的定义,浏览器就 fallback 到默认样式。
 
 **做法**：
-- **生成 PPT 前,必须先 `Read` `assets/template-swiss.html` 的 `<style>`**,确认 `layouts-swiss.md` 用到的类都已定义
-- 常见 XREAL Style 类:`h-hero / h-statement / h-xl / h-md / t-cat / t-meta / lead / num-mega / card-ink / card-accent / card-fill / card-outlined / grid-12 / span-N / timeline-v / timeline-h / kpi-tower-row / h-bar-chart / frame-img / fit-contain / swiss-lined`
+- **生成 PPT 前,必须先 `Read` `assets/template-xreal.html` 的 `<style>`**,确认 `layouts-swiss.md` 用到的类都已定义
+- 常见 XREAL Style 类:`h-hero / h-statement / h-xl / h-md / t-cat / t-meta / lead / num-mega / card-ink / card-accent / card-fill / card-outlined / grid-12 / span-N / timeline-v / timeline-h / kpi-tower-row / h-bar-chart / xreal-data-chart / xreal-line-chart / frame-img / fit-contain / swiss-lined`
 - 如果某个类确实缺了,**在模板的 `<style>` 里补上**,不要在每页 inline 重写
 - 生成后打开浏览器,如果看到"大标题是非衬线"或"pipeline 步骤挤在一行",几乎 100% 是这个问题
 
@@ -408,7 +466,7 @@ CSS 里 `.frame-img img` 已经预设 `object-position:top`，只裁底。
 
 **现象**：为了"高级感"加了强阴影或黑框，瞬间变成商务 PPT。
 
-**做法**：图片保持直角、静态纯色托底；不要加底噪、`box-shadow` 或装饰性边框。结构确有需要时只使用 1px hairline。
+**做法**：图片统一使用 `--radius-sm:3px`、静态纯色托底；不要加底噪、`box-shadow`、发光或装饰性边框。结构确有需要时只使用 1px hairline。
 
 ---
 
@@ -502,13 +560,13 @@ Dark hero 不添加 shader 或装饰场；通过静态纯黑背景、明确主�
 - 单张 UI 截图如果放满宽后变成长条,优先拆成 2-3 个局部面板
 - 多面板拼排时每个 `.frame-img` 用同一个固定高度类,如 `.h-16` / `.h-18` / `.h-22`,不要用同一个超宽容器硬塞
 - 同一组图片的视觉大小必须一致,不要混用不同高度、不同缩放和不同边距密度
-- 如果确实需要全宽,必须生成比例足够长的横向图片,并在 prompt 里明确"ultra-wide horizontal strip"
+- 如果确实需要全宽,必须从资产库选择比例足够长的横向图片;没有合适资产时改用其他版式
 
-### 13d. 生成配图不要自带 slide 元素
+### 13d. 媒体资产不要与 slide 元素冲突
 
-- GPT-M 2.0 生成的配图只是嵌入素材,不要让图片自带页眉、页脚、标题、页码、角标、署名或装饰边框
+- 优先选择不含页眉、页脚、页码、角标或装饰边框的媒体资产
 - 流程图/信息图只保留核心图形和必要短标签,PPT 自己负责标题、页脚和 chrome
-- 如果生成图已经带了这些元素,优先重生成;不要在 PPT 里再叠一层 chrome 造成干扰
+- 如果资产自带元素与当前页面冲突,换用其他资产或无图版式,不要在 PPT 里重复叠加 chrome
 
 ### 13e. XREAL Style 图文混排不能只用一种
 
@@ -523,9 +581,9 @@ Dark hero 不添加 shader 或装饰场；通过静态纯黑背景、明确主�
 - 任一行 9-12 个中文字符时降到 `min(5.2vw,9.2vh)`
 - 3 行标题优先改写,不能为了标题大而挤掉下方图文内容
 
-### 14. 图片保持直角
+### 14. 卡片型实体块与图片统一使用 3px 小圆角，基线柱体底角保持直角
 
-XREAL Style 必须直角: `.frame-img` 和图片本身都不要圆角、阴影或消费 app 式卡片感。
+XREAL Style 的 `.frame-img`、`.sub-card`、`.stack-block`、KPI Tower 的 `.cap`、Horizontal Bar 的 `.row-track/.row-fill`、Three Forces 的 `.hero-ink-col/.force-card`、Multi-card Brief 的 `.brief-card` 统一使用 `border-radius:var(--radius-sm)`（3px）。KPI Tower 的 `.body-block`、S23 `.chart-bar` 和同类垂直柱体只保留 2-4px 顶部圆角，底部两角必须为 `0` 并与共同 x 轴齐平。页面画布、分割线和坐标轴保持直线；不使用阴影、大圆角、胶囊形或消费 app 式卡片感。
 ---
 
 ## 🔵 P3 · 操作细节
@@ -556,8 +614,9 @@ JS 动态计算总页数并扩展底部翻页圆点；页面内容层不得再�
 
 ```
 预检(生成前)
-  □ 已读过 template-swiss.html 的 <style>,确认所需类都存在
-  □ 已决定每页用哪个 S01-S22 版式
+  □ 新任务已完成 Skill 更新检查；如检测到更新，已询问用户并按其选择处理
+  □ 已读过 template-xreal.html 的 <style>,确认所需类都存在
+  □ 已决定每页使用哪个正式登记版式（S01-S08、S10-S24；S09 已移除）
   □ 已画出"主题节奏表":每页明确 hero dark / hero light / light / dark
   □ 节奏表满足硬规则:无连续 3 页同主题 / 有 ≥1 hero dark + ≥1 hero light(8 页以上) / 至少有 1 个 dark 正文页
   □ `<title>` 已改为实际 deck 标题(grep "[必填]" 应无结果)
@@ -568,7 +627,7 @@ JS 动态计算总页数并扩展底部翻页圆点；页面内容层不得再�
   □ XREAL:产品图标使用 Google Material Symbols Outlined,统一 `FILL 0`
   □ XREAL:红色仅用于明确的关键数据/警示语义,不成为第二套页面 accent
   □ XREAL Style:封面是 `slide accent` 满屏纯黑(不是 `slide light` 白底),data-layout 为 `XREAL-COVER-BLACK`
-  □ XREAL Style:封底是 `slide split` + 左 `b-accent` 纯黑 / 右 paper 3 条 takeaway,data-layout 为 `XREAL-CLOSING-BLACK`
+  □ XREAL Style:封底是最后一页，使用 `slide accent` 全屏纯黑 + 居中大号 `Thanks` + 底部中央小号 XREAL Logo,data-layout 为 `XREAL-CLOSING-BLACK`
   □ XREAL Style:`rg -n "ascii-bg" index.html` 无结果
   □ XREAL Style:封面、页眉、Logo 后和角标均没有页码或"01"等无语义编号
   □ XREAL Style:黑色背景上的强调字用 `font-style:italic`,禁止用额外颜色
@@ -583,6 +642,8 @@ JS 动态计算总页数并扩展底部翻页圆点；页面内容层不得再�
   □ 没有使用 emoji 作图标
   □ Skills / Harness 等术语用法统一
   □ 每页的 kicker + 标题 + 正文 三级信息清晰
+  □ S23/S24 的标题写成数据结论,单位、坐标标签、来源和系列含义齐全
+  □ S24 横轴确实是时间或连续变量,没有把无顺序类别强行连线
 
 排版
   □ 所有大标题没有出现 1 字 1 行的换行
@@ -597,7 +658,12 @@ JS 动态计算总页数并扩展底部翻页圆点；页面内容层不得再�
 视觉
   □ hero 页和 non-hero 页交替
   □ hero 页使用静态纯色背景,没有 WebGL、ASCII、点阵、纹理或动态装饰
-  □ 图片和 Bento 区块保持直角
+  □ S04/S05/S06/S07/S13/S16 的卡片型实体块、图片和 Bento 区块统一使用 3px 小圆角；S06/S23 等基线柱体仅顶部圆角、底角为 0 且贴齐 x 轴
+  □ S23/S24 图表占正文主导面积,使用 1px 中性网格线,最多一个红色关键系列/点
+  □ S24 SVG 只包含线、点和数据几何,没有 `<text>`、面积渐变或无说明双轴
+  □ ECharts 只用于登记的复杂图表类型,保留正式版式,使用离线 bundle 与 XREAL 受控主题
+  □ ECharts 页面在 B 静态模式可读,无默认 tooltip/toolbox、彩虹色、阴影、渐变或 dashboard 控件
+  □ 没有发光、霓虹、大圆角、胶囊形或 SVG/Canvas/CSS 插画配图
   □ 没有沉重的阴影和边框
 
 交互
@@ -610,11 +676,13 @@ JS 动态计算总页数并扩展底部翻页圆点；页面内容层不得再�
 
 动效
   □ `assets/motion.min.js` 存在(本地兜底)
+  □ 使用 ECharts 时 `assets/echarts.min.js` 存在且最终 HTML 已通过 `inline-echarts.mjs` 内联
   □ 低功耗模式下当前页内容仍全部可见,且没有遗留背景 canvas 挂 RAF 循环
   □ 翻页时内容逐个淡入,不是"啪"一下全出
   □ 大引用页 `<section>` 带 `data-animate="quote"`,每行 `<span data-anim="line">`
   □ Before/After 对比页 `<section>` 带 `data-animate="directional"`,左右列标 left/right
   □ Pipeline 页 `<section>` 带 `data-animate="pipeline"`,每 step 标 data-anim="step"
+  □ S23 使用 `chart-rise`,S24 使用 `line-draw`;低功耗模式下柱高、完整折线与终值仍可见
   □ `grep -c 'data-anim' index.html` 数量 ≥ 页数 × 3(平均每页 3 个以上标记)
 ```
 

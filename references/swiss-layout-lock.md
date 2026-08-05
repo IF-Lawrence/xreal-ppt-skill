@@ -4,17 +4,17 @@
 
 ## Golden Source
 
-版式基准是仓库内的 `assets/template-swiss.html`(由作者原始参考 PPT 派生;原始文件不随仓库分发,本文件登记的 S01-S22 即其版式快照)。
+版式基准是仓库内的 `assets/template-xreal.html`(由作者原始参考 PPT 派生;原始文件不随仓库分发)。当前正式登记 23 个版式：`S01-S08`、`S10-S24`；原 `S09 Dot Matrix Statement` 已移除。
 
-XREAL Style 生成时,除用户明确要求实验版式外,只能从下面登记的 22 个版式中选择。新增首页/尾页可以使用 Skill 里的纯黑版本 `XREAL-COVER-BLACK` / `XREAL-CLOSING-BLACK`,但正文页必须来自这 22 个版式。
+XREAL Style 生成时,除用户明确要求实验版式外,只能从下面登记的 23 个版式中选择。新增首页/尾页可以使用 Skill 里的纯黑版本 `XREAL-COVER-BLACK` / `XREAL-CLOSING-BLACK`,但正文页必须来自这 23 个版式。
 
 ## 生成前硬规则
 
 1. 每个正文页都必须先选一个登记版式,并在 `<section>` 上写 `data-layout="Sxx"`。
-2. 不允许临时发明 `P23/P24` 这类未出现在原始 22P 的正文结构。需要图片时,优先使用 `S22 Image Hero`;多图时使用 `S15/S16` 的原始网格骨架做图片格改造,不要发明新的证据墙。唯一登记的交互扩展是 `S08 + XREAL Map Component`,详见 `references/swiss-map-component.md`。
-3. 顶部中文标题默认左对齐并贴近左上内容轴。除原始 `S03/S09/S10` 这种 statement/split 版式外,不要把大标题放到页面水平中心。
-4. SVG 只能负责几何线条、圆、箭头、路径。不要在 SVG 里写可见文字;所有文字标签用 HTML 放在网格、卡片或 caption 里。
-5. 图片槽位和图片生成比例必须绑定。先确定版式和槽位,再生成图片。
+2. 不允许临时发明未登记正文结构。历史实验 ID `P23/P24` 继续禁用，与正式登记的 `S23/S24` 无关。需要图片时,优先使用 `S22 Image Hero`;多图时使用 `S15/S16` 的原始网格骨架做图片格改造,不要发明新的证据墙。唯一登记的交互扩展是 `S08 + XREAL Map Component`,详见 `references/swiss-map-component.md`。
+3. 顶部中文标题默认左对齐并贴近左上内容轴。除原始 `S03/S10` 这种 statement/split 版式以及只含 Logo + Thanks 的 `XREAL-CLOSING-BLACK` 封底外,不要把大标题放到页面水平中心。
+4. SVG 仅用于图表、地图、流程和数据几何，并在 `<svg>` 上标记 `data-svg-role="chart|map|flow|data-geometry"`；禁止把人物、设备、场景或抽象科技图形画成 SVG 插画配图。SVG 不写可见文字，所有文字标签用 HTML 放在网格、卡片或 caption 里。
+5. 图片槽位和媒体资产比例必须匹配。先确定版式和槽位,再从 `assets/media/` 或用户素材中选图。
 6. 首页/尾页的黑色区域必须为纯黑,不得加入 ASCII、点阵、纹理或动态背景。
 7. Logo 默认独立;如确有导航文字与 Logo 相邻,文字使用标准字距且视觉字高与 Logo 一致。
 8. 无信息价值的眉题、角标和分割线应删除;列表使用实心圆点,时间线节点名称使用 600 字重。
@@ -24,35 +24,83 @@ XREAL Style 生成时,除用户明确要求实验版式外,只能从下面登记
 12. 页面不显示页码;页眉、Logo 后和角标中均不得出现 `01 / NN` 一类计数。
 13. Logo 邻接文字必须按字体单独光学校准:IBM Plex Sans SC 使用 `.26 × Logo 宽度`,XREAL Diatype 使用 `.313 × Logo 宽度`。
 14. 底部导航为极低对比度弱提示:亮底普通/当前 `.08/.18`,暗底普通/当前 `.10/.22`;当前点禁止实色 accent。
+15. 页面画布、分割线和坐标轴保持直线；卡片型实体块统一使用 `--radius-sm:3px`。该规则明确覆盖 S04 Six Cells、S05 Three Layers、S06 KPI Tower、S07 Horizontal Bar、S13 Three Forces、S16 Multi-card Brief；不得使用不同圆角值、大圆角或胶囊形。接触共同基线的垂直柱体是语义例外：只保留 3px 顶部圆角，底角必须为直角并贴齐 x 轴。
+16. 禁止任何霓虹、发光边缘、`text-shadow`、`drop-shadow` 或非 `none` 的 `box-shadow`。
+17. `XREAL-CLOSING-BLACK` 必须是最后一个 section，使用全屏纯黑 `.slide.accent`；大号 `.xreal-closing-thanks` 居中，小号 `.xreal-closing-logo` 通过 `.xreal-closing-mark` 固定在底部中央。禁止 split、takeaway、作者日期、页码、CTA 或额外说明。
 
 ## 登记版式
 
 | ID | 原始页 | 名称 | 必须保留的骨架 | 图片规则 |
 |---|---:|---|---|---|
-| S01 | 01 | Index Cover | 三行 `cover-row`,左大编号,右大标题 | 无 |
+| S01 | 01 | Index Cover | 基础版保留三行 `cover-row`,左大编号,右大标题；章节标题页只使用下方登记的 `section-hero` 次级变体 | 无 |
 | S02 | 02 | Vertical Timeline + KPI | 顶部左对齐标题,中部 `.timeline-v`,底部 `.kpi-row-4` | 无 |
 | S03 | 03 | Split Statement | `.slide.split` 双半屏,左巨字,右灰底解释 | 无 |
-| S04 | 04 | Six Cells | 顶部左对齐标题,下方 `.sub-grid-3-2` 六卡 | 可把卡片内部换成小图标,不放大图 |
-| S05 | 05 | Three Layers | 顶部左对齐标题,下方 `.stack-row` 三大块 | 无 |
-| S06 | 06 | KPI Tower | 左标题+右说明,下方不等高 KPI 塔 | 无 |
-| S07 | 07 | Horizontal Bar | 左对齐标题,横向条形图 | 无 |
+| S04 | 04 | Six Cells | 顶部左对齐标题,下方 `.sub-grid-3-2` 六张独立小圆角卡 | 可把卡片内部换成小图标,不放大图 |
+| S05 | 05 | Three Layers | 顶部左对齐标题,下方 `.stack-row` 三个小圆角色块 | 无 |
+| S06 | 06 | KPI Tower | 左标题+右说明,下方不等高 KPI 塔；cap 四角小圆角，body 仅顶部小圆角且底部直角贴共同基线 | 无 |
+| S07 | 07 | Horizontal Bar | 左对齐标题,横向条形图；track 与 fill 使用小圆角但不得做成胶囊 | 无 |
 | S08 | 08 | Duo Compare | `.duo-compare` 两列 + 中线 | 无;地点/路线内容可使用 `S08 + XREAL Map Component` 替换右侧插槽 |
-| S09 | 09 | Dot Matrix Statement | 大号 statement + 点阵装饰 | 无 |
 | S10 | 10 | Split Closing | `.slide.split` 左巨字右列表 | 无 |
 | S11 | 11 | Horizontal Timeline | 原始 `grid-template-columns:auto 1fr` 头部 + `.timeline-h` | 无 |
 | S12 | 12 | Manifesto + Ink Banner | 大字 statement + 底部通栏 ink 条 | 无 |
-| S13 | 13 | Three Forces | 左 ink hero 块 + 右 3 张卡 | 无 |
+| S13 | 13 | Three Forces | 左 ink hero 小圆角色块 + 右 3 张小圆角卡 | 无 |
 | S14 | 14 | Loop Form | 左 4 步列表 + 右几何 loop | SVG 禁止文字,标签改 HTML |
 | S15 | 15 | Matrix + Hero Stat | 顶部左对齐标题,中段 6×2 矩阵,底部巨数 | 多图可改造矩阵格,同组统一 `21:9` |
-| S16 | 16 | Multi-card Brief | 顶部左对齐标题,下方 3×2 微卡 | 多图可改造卡片内容,同组统一 `21:9` |
+| S16 | 16 | Multi-card Brief | 顶部左对齐标题,下方 3×2 小圆角微卡 | 多图可改造卡片内容,同组统一 `21:9` |
 | S17 | 17 | System Diagram | 顶部左小标题+右段落,中部几何系统图,底部三列解释 | SVG 禁止文字,标签改 HTML |
 | S18 | 18 | Why Now | 三列递进 + 底部巨数 | 无 |
 | S19 | 19 | Four Cards | 顶部黑线 + 四列均分 | 无 |
 | S20 | 20 | Stacked KPI Ledger | 纵向账单式巨数 | 无 |
 | S21 | 21 | Tech Spec Sheet | 大标题 + 三 KPI + 右下竖线矩阵 | 无 |
 | S22 | 22 | Image Hero | 顶部全宽图 + 左上白块标题 + 下方三列 KPI | 主图按 `21:9` 生成,关键主体放中央安全区 |
+| S23 | 新增 | Data Chart | 顶部结论标题 + 单位/图例 + 主导分组柱图 + HTML 坐标标签 + 来源 | 无；只承载真实比较数据 |
+| S24 | 新增 | Line Chart | 顶部结论标题 + 单位/图例 + 主导折线图 + HTML 坐标标签 + 来源 | 无；只承载时间或连续变量趋势 |
+
+### XREAL-CLOSING-BLACK · Brand Back Cover
+
+- 使用场景:整套 deck 的唯一封底，必须是最后一页。
+- 必须结构:`.slide.accent` + `.xreal-closing-lockup` + `.xreal-closing-thanks` + `.xreal-closing-mark` + `.xreal-closing-logo`。
+- 内容边界:除 XREAL Logo 和 `Thanks` 外不显示其他内容，进入该页时底部分页导航隐藏；结论、行动建议、联系方式和署名必须在前一页完成。
+- 背景与 Logo:全屏 `#000000`，使用官方企业 Logo 并反白，不添加纹理、线条、页码或角标。
+- 动效:使用 `data-animate="closing-thanks"`，`Thanks` 先成为主视觉，底部 Logo 随后轻微落定。
+
+### S23 · Data Chart
+
+- 使用场景:3-8 个类别、2-4 个系列的同尺度比较；例如区域 × 产品、季度 × 渠道或方案 × 指标。
+- 必须结构:`.xreal-data-chart` + `.chart-legend` + `.chart-stage` + `.chart-y-labels` + `.chart-plot` + `.chart-groups` + `.chart-x-labels` + `.chart-source`。
+- 数据约束:每个柱必须对应真实数值并带 `data-value` / 可见值；必须显示单位和来源。不同量纲禁止强行共用一个纵轴。
+- 视觉约束:图表占页面主导面积；使用共同零基线、1px 中性网格线和最多 4 个稳定系列。柱体只保留顶部 3px 小圆角，底角为直角并贴齐 x 轴；只允许一个关键系列使用 XREAL 红色。
+- 动效:使用 `data-animate="chart-rise"`；柱从共同基线生长，图例与来源随后出现。
+
+### S24 · Line Chart
+
+- 使用场景:时间序列或其他有连续顺序的横轴，1-3 个系列、4-12 个采样点。
+- 必须结构:`.xreal-line-chart` + `.chart-legend` + `.line-stage` + `.chart-y-labels` + `.line-plot` + `svg[data-svg-role="chart"]` + `.chart-line` + `.line-x-labels` + `.chart-source`。
+- 数据约束:必须显示时间/连续变量标签、单位和来源；类别无连续顺序时不得使用折线图。不同量纲默认拆图，不使用无说明的双轴。
+- SVG 约束:SVG 只画折线、点和数据几何，不放 `<text>`；坐标、图例、终点值和注释全部使用 HTML。
+- 动效:使用 `data-animate="line-draw"`；坐标结构先出现，再依次绘制折线与关键点。
+
+### XREAL ECharts Component
+
+- 版式身份:复杂图表仍保留已登记 `data-layout`，并添加 `data-chart-engine="echarts"` 与登记的 `data-chart-kind`；它不是新的正文版式编号。
+- 适用骨架:S23 承载复杂比较/分布/矩阵，S24 承载趋势或柱线混合，S17 承载网络/流向/层级，S08 承载明确的地理数据编码。
+- 使用边界:简单分组柱图与简单折线仍优先使用 S23/S24 原生组件。ECharts 只用于 scatter/bubble、heatmap、waterfall、boxplot、candlestick、sankey、graph、tree、treemap 等复杂数据形状。
+- 必须结构:`.xreal-echart-stage` + `.xreal-echart[data-echarts-key]` + 容器外 `.chart-unit`、`.chart-legend`、`.chart-source`。
+- 视觉约束:只使用 XREAL 受控主题；禁止默认彩色主题、渐变、阴影、3D、发光、面积填充、toolbox 和 dashboard 控件。最多一个系列或数据项使用 `xrealCritical:true`。
+- 运行约束:默认 SVG 与无 tooltip；大于约 1,000 个图形元素时才可声明 Canvas 大数据模式。`B` 静态模式必须关闭 ECharts 动画。
+- 交付约束:运行 `scripts/inline-echarts.mjs` 生成离线单文件，并通过 validator。完整契约见 `references/xreal-echarts.md`。
 
 ## 登记扩展组件
+
+### S01 + Section Hero Variant
+
+- 使用场景:一个 deck 内部的章节标题页、议题切换或叙事阶段切换。
+- 版式身份:仍是 `data-layout="S01"`,并额外写 `data-variant="section-hero"`;不是新的正式版式编号。
+- 层级约束:视觉层级必须低于 S01 Index Cover。使用 `.xreal-section-title`,禁止使用 `.xreal-cover-title`;标题字号 token 必须满足 `page-title-size < section-hero-title-size < cover-title-size`。
+- 结构:正文级 `chrome-min` + 小型章节标识 + 单一章节主标题 + 1 句引导语 + 可选底部范围提示。它是标题 Hero,不是目录或索引。
+- 背景:可使用 `hero light`、浅灰纯色或 `hero dark`;不得使用满屏纯黑 `slide accent`,不得复制 S01 的三行 `cover-row` 索引结构。
+- 内容边界:不放巨大章节编号、目录列表、作者/日期、全 deck 主副标题组合、KPI、图表或大图。
+- 动效:使用 `data-animate="section-hero"`,入场节奏短于封面 hero,不制造新的视觉高潮。
 
 ### S08 + XREAL Map Component
 
@@ -76,7 +124,7 @@ XREAL Style 生成时,除用户明确要求实验版式外,只能从下面登记
 - 使用场景:将一个主叙事、两项指标和一条行动说明压缩成同页摘要。
 - 版式身份:仍是 `data-layout="S19"`，不是新正文页。
 - 使用 12 列非对称网格和 1px 间隙；主块 6 列 × 2 行，其余块保持 3/3/6 列关系。
-- 所有区块直角、无阴影、无圆角，不做按钮、控件或软件 dashboard 质感。
+- 所有区块统一使用 `--radius-sm:3px`、无阴影，不做大圆角、胶囊按钮或软件 dashboard 质感。
 - 黑白灰承担结构，只允许一个红色关键数字或信号。
 
 ## 图片槽位规则
@@ -88,16 +136,16 @@ XREAL Style 生成时,除用户明确要求实验版式外,只能从下面登记
 - 生成提示词必须包含: `21:9 ultra-wide strip`, `subject centered in the safe middle area`, `no title, no footer, no page chrome, no logo, no border`.
 - HTML 容器必须使用原始 S22 的顶部全宽图骨架;不要改成普通居中大图。
 - 照片用 `object-fit:cover;object-position:center 35%`。如果是人像/会议场景,不要用 `top center`。
-- 信息图/UI 截图如果放 S22,必须重新生成接近 `21:9`,并用 `object-fit:contain` 或保证核心内容在中央 70% 安全区。
+- 信息图/UI 截图如果放 S22,优先选择接近 `21:9` 的现有资产;否则使用 `object-fit:contain` 或改用其他版式。
 
 ### S15/S16 · Multi Image Grid
 
-- 生成比例:统一 `21:9` 或统一 `16:10`,不要混用。
+- 资产比例:统一 `21:9` 或统一 `16:10`,不要混用。
 - 同一组图片必须同高、同宽、同一容器背景。
 - 图片格必须吸附原始卡片网格,不要让图片自己决定宽高。
-- 如果图片是按槽位重新生成的 `s15-grid-21x9` / `s16-brief-21x9`,容器必须用 `.frame-img.r-21x9` 铺满槽位,不要再加 `.fit-contain`,也不要用固定 `height:18vh` 这类短槽把长图缩小。
-- `.fit-contain` 只用于必须保留原始比例的用户截图或文字密集图片;一旦决定重生成图片,就应该按槽位比例重生成并铺满。
-- 如果原始截图比例不可控,先按 `references/screenshot-framing.md` 做程序化比例适配;只有长截图、极窄截图或信息需要重构时,才用 GPT-M 2.0 重生成“截图再设计”。
+- 如果现有资产与 `s15-grid-21x9` / `s16-brief-21x9` 槽位比例匹配,容器使用 `.frame-img.r-21x9` 铺满;比例不匹配时使用 `.fit-contain` 或改用其他版式。
+- `.fit-contain` 用于必须保留原始比例的产品图、用户截图或文字密集图片。
+- 原始截图优先保真并使用 `fit-contain`;长截图可以截取关键区域或拆成多张,不要为统一比例重画截图内容。
 
 ## 禁止清单
 
