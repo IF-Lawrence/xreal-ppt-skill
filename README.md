@@ -6,6 +6,8 @@
 
 `xreal-ppt-skill` 是一个为 Codex 及兼容 Agent 环境设计的 XREAL 品牌演示文稿 Skill。它用锁定版式、品牌字体、官方媒体资产和自动校验器，生成可离线打开、横向翻页的单文件 HTML Deck。
 
+[![XREAL One Pro Deck 预览](./output/xreal-one-pro-test/render-all-layouts/montage.png)](./output/xreal-one-pro-test/index.source.html)
+
 ## 核心能力
 
 - 固定的 XREAL 黑、白、灰视觉体系，红色仅用于关键数据、风险和操作语义
