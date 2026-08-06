@@ -29,6 +29,7 @@ XREAL Style 生成时,除用户明确要求实验版式外,只能从下面登记
 16. 禁止任何霓虹、发光边缘、`text-shadow`、`drop-shadow` 或非 `none` 的 `box-shadow`。
 17. `XREAL-CLOSING-BLACK` 必须是最后一个 section，使用黑色基底 `.slide.accent`；大号 `.xreal-closing-thanks` 居中，小号 `.xreal-closing-logo` 通过 `.xreal-closing-mark` 固定在底部中央。可使用低干扰 lifestyle、conceptual 或品牌 KV 背景，但禁止直接产品 cutout / packshot、split、takeaway、作者日期、页码、CTA 或额外说明。
 18. 来源与说明注脚统一使用 `--footnote-size:max(11px,.62vw)`，左端对齐 `.canvas-card` 内容轴，底部统一停在 `--footnote-bottom-offset` 上方。`.section-hero-foot`、`.chart-foot`、`.roadmap-source`、`.milestone-source`、`.dense-source`、`.priority-source` 禁止 border、分割线、底色与额外 padding；该字号是来源注脚专用例外，不得用于正文、卡片说明或图表标签。
+19. 底栏与底部说明默认为无。只有必要来源、方法/样本口径、法务或风险免责声明、或对当前结论有信息增量的解释才可保留；标题区已经声明“虚构/示意”时不得在底部重复。产品名、口号、芯片名、功能列表和制作说明不是页脚内容，不得用来填充底部空白。
 
 ## 登记版式
 
@@ -39,7 +40,7 @@ XREAL Style 生成时,除用户明确要求实验版式外,只能从下面登记
 | S03 | 03 | Split Statement | `.slide.split` 双半屏,左巨字,右灰底解释 | 无 |
 | S04 | 04 | Six Cells | 顶部左对齐标题,下方 `.sub-grid-3-2` 六张独立小圆角卡 | 最多 1-2 张稀疏技术卡可配图；源画布留白大时用 `inset-prominent`，高度 28%-45%、宽度至少 80%，不加蒙版 |
 | S05 | 05 | Three Layers | 顶部左对齐标题,下方 `.stack-row` 三个小圆角色块 | 最多一个核心层可配图；横版低干扰媒体可全幅铺底并加深色渐变蒙版，否则 inset；图标默认保留 |
-| S06 | 06 | KPI Tower | 左标题+右说明,下方不等高 KPI 塔；cap 四角小圆角，body 仅顶部小圆角且底部直角贴共同基线 | 无 |
+| S06 | 06 | KPI Tower | 左标题+右说明,下方不等高 KPI 塔；cap 四角小圆角，body 仅顶部小圆角且底部直角，与共同基线零间距；允许 `margin-bottom:-1px` 消除 1px 边界缝隙 | 无 |
 | S07 | 07 | Horizontal Bar | 左对齐标题,横向条形图；标签列使用内容宽度，标签到 track 保持 16-32px 紧凑间距；track 与 fill 使用小圆角但不得做成胶囊；fill 以 `--value` 持久保存真实宽度，动效只做 `scaleX`；普通条统一单一系列色，最多一个语义关键项使用红色 | 无 |
 | S08 | 08 | Duo Compare | `.duo-compare` 两列 + 中线 | 无;地点/路线内容可使用 `S08 + XREAL Map Component` 替换右侧插槽 |
 | S11 | 11 | Horizontal Timeline | 原始 `grid-template-columns:auto 1fr` 头部 + `.timeline-h` | 无 |
@@ -48,7 +49,7 @@ XREAL Style 生成时,除用户明确要求实验版式外,只能从下面登记
 | S14 | 14 | Loop Form | 左 3-5 步列表 + 右单一细线闭环；灰色底环、方向段、HTML 节点与中心结论；最多一个返回段使用红色 | SVG 禁止文字,标签改 HTML；禁止粗圆环、浮动外标签与重复装饰点 |
 | S15 | 15 | Matrix + Hero Stat | 顶部左对齐标题,中段矩阵主动消费剩余高度,底部巨数；矩阵不得悬在上半页留下大块无意义空白 | 多图可改造矩阵格,同组统一 `21:9` |
 | S16 | 16 | Multi-card Brief | 顶部左对齐标题,下方 3×2 小圆角微卡；默认六卡等权。仅有明确优先级语义时，允许一张高对比卡并声明 `data-emphasis` | 多图可改造卡片内容,同组统一 `21:9` |
-| S17 | 17 | System Diagram | 先声明 `flow|hierarchy|network|containment`；左侧只放结论与解释，右侧为唯一关系图且至少占画布 42%；两列顶部误差 ≤16px；flow 使用 3-6 节点和明确连接，并纵向消费关系图区至少 85% 高度 | 禁止左侧复制阶段列表；同心圆仅限真实 containment；SVG 如使用则禁止文字，标签改 HTML |
+| S17 | 17 | System Diagram | 先声明 `flow|hierarchy|network|containment`；左侧只放结论与解释，右侧为唯一关系图且至少占画布 42%；两列顶部误差 ≤16px；flow 使用 3-6 节点和明确连接，并纵向消费关系图区至少 85% 高度；连接器独占上下节点间区域，箭头 ≥24px 且与关系标签共享中心轴 | 禁止左侧复制阶段列表；同心圆仅限真实 containment；SVG 如使用则禁止文字，标签改 HTML |
 | S18 | 18 | Why Now | 三列递进 + 底部巨数 | 无 |
 | S19 | 19 | Four Cards | 顶部黑线 + 四列均分 | Bento 扩展的稀疏 hero 主卡可使用全幅 contextual/lifestyle 媒体；宽高覆盖父卡至少 95%，文字压图时使用 `.28-.48` 深色蒙版；内部仍直角 |
 | S20 | 20 | Stacked KPI Ledger | 纵向账单式巨数 | 无 |

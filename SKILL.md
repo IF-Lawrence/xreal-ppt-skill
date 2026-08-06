@@ -133,6 +133,7 @@ cp "<SKILL_ROOT>/assets/brand/xreal-logo-black.svg" "项目/XXX/ppt/assets/brand
 - 正文页 `chrome-min` 使用紧凑导航级品牌尺寸；相邻文字字号由 Logo 宽度按字体度量分别计算，并与 Logo 垂直居中：IBM Plex Sans SC 使用 `.26`，XREAL Diatype 使用 `.313`。封面/封底才使用较大的品牌级尺寸
 - `chrome-min` 到首个正文块统一使用 `--chrome-content-gap:24px`，紧凑变体使用 `--chrome-content-gap-tight:16px`。不要在正文首块再叠加空白 margin 来补偿页眉；标题后的版式内部间距单独控制，避免整页内容被双重下推
 - 删除无信息价值的装饰角标、小标题和分割线；正文 bullet 使用实心圆点，不使用短横线
+- 不默认生成底栏、页脚说明或底部分割线。只有必要来源、方法/样本口径、法务或风险免责声明，以及对当前结论确有信息增量的解释可以保留为统一小注脚；若“虚构/示意”等状态已在标题区明确，禁止在底部重复。不得用产品名、口号、芯片名、功能列表或制作说明填充底部空白
 - 所有可见文字默认使用自然大小写与标准字距；英文眉题、导航、标签、图注和页脚禁止整词组全大写，也不要依赖 CSS `text-transform: uppercase`
 - 全大写只保留给 XREAL 官方字标、行业通用缩写（如 AI、AR、KPI、PPT）和短型号代码；不得把普通英文单词全大写作为装饰
 - 描述性小标题使用标准字距，辅助文字 tracking 不超过 `0.05em`；时间线节点名称使用 600 字重
@@ -172,6 +173,7 @@ cp "<SKILL_ROOT>/assets/brand/xreal-logo-black.svg" "项目/XXX/ppt/assets/brand
 - S14 闭环图使用左侧 3-5 步 + 右侧单一细线闭环，并在 `.loop-visual` 写入与节点数一致的 `data-loop-count="3|4|5"`。SVG 只画低对比 `.loop-track` 与至少 4 个 `.loop-segment`，HTML `.loop-node` 提供步骤标签，`.loop-core` 提供中心状态；最多一个 `.return` 返回段使用红色。禁止粗圆环、浮动外标签、重复装饰点和 SVG 文字。
 - S17 系统关系图必须先声明 `data-system-grammar="flow|hierarchy|network|containment"`。默认优先使用可复用的 HTML 节点和连接语义；只有内容确实表达 core/middle/outer 的包含关系时才使用同心圆。因果传递使用 flow，组织分层使用 hierarchy，多对多依赖使用 network；不得为了“像系统图”而放三个没有信息增量的圆。
 - S17 左侧只保留 `.system-kicker + .system-thesis + .system-summary`，用于一句结论和一段解释；右侧 `[data-system-grammar]` 承载唯一关系结构，两列顶部误差不得超过 16px。flow 语法使用纵向弹性的 `.system-flow`，关系容器必须占 `.system-diagram` 至少 85% 高度并让 3-6 个节点均衡消费可用空间，禁止把节点全部堆在顶部；也禁止在左侧再复制 Process / Orchestrate / Deliver 等阶段列表或出现“这里表达的是”“不是套圈”“图的目的是”等制作说明式文案。
+- S17 flow 的 `.system-link` 必须独占上下节点之间的连接区并水平居中；向下箭头显示尺寸至少 24px，推荐 26-28px，关系标签紧随箭头并共享中心轴。禁止把箭头塞进节点左侧编号列、贴住节点边缘，或用贯穿节点的装饰线替代明确连接器。
 - S23 分组柱图使用完整 1px hairline 绘图区边框，`--chart-safe-inline` 必须为首末柱预留至少 28px 左右安全区，`--chart-value-headroom` 为最高柱的数值标签预留顶部空间。`.chart-value` 必须以 `left:0;right:0;text-align:center` 覆盖整根柱宽，不使用 `translateX(-50%)` 居中，避免 `chart-rise` 的纵向 transform 覆盖后标签偏移；`.chart-x-labels` 使用相同左右 padding 保持类别中心对齐。
 - S24 折线图使用完整 1px hairline 绘图区边框，并在 `.line-plot` 内以 `.line-geometry` 包住 SVG、点和终值标签；该层左右安全区至少 28px，`.line-x-labels` 使用相同 padding。首末采样点、描边和终值标签都必须落在绘图区内部，不得依赖父容器裁切隐藏越界。`.line-end-label` 必须以透明底停在对应末端点的左上肩位，与点位横纵方向至少保持 4px 间距；禁止加白底/色块或压在线、点上。
 - 所有原生图表与 XREAL ECharts 共用 `--chart-series-1/2/3/4`、`--chart-critical`、`--chart-track`、`--chart-grid`、`--chart-frame`。稳定系列只按近黑→中性深灰→中性浅灰→最浅灰分配；不得混入蓝灰或临时色。红色不是默认第三系列色，只用于一个有明确结论、风险或警示依据的关键系列/数据点。S23/S24 的四边 frame 必须同色同粗，第一/最后网格线不得与 frame 重叠形成双描边。
@@ -267,6 +269,8 @@ S12 manifesto 中的产品标志只承担身份落款，不是第二主标题。
 产品组合同时包含时间/阶段和第二层级维度时，使用 `S25 Portfolio Roadmap Matrix`，而不是把媒体卡塞进 S23 柱图。S25 只允许 2-4 个 period、2-4 条中性泳道和 3-7 个媒体节点；纵轴标签列按内容收紧并左对齐，不为短标签预留大块空白；节点必须声明百分比 `--x/--y/--w/--h`，示意路线必须明确标注为 illustrative。需要用连续媒体证据讲述 4-6 个阶段时使用 `S26 Milestone Gallery`；每个 `.milestone-entry` 使用统一浅灰底、1px 边界、等距 padding 和 8px 小圆角，并包含阶段、媒体、标题和短说明。底部综合链保持扁平 hairline，不做按钮或 ribbon。
 
 S15 Matrix + Hero Stat 用于 8-12 个同类短项和一个汇总指标。`.matrix-fill` 必须以弹性行高主动消费正文剩余高度，至少约占页面高度 32%，矩阵到 `.hero-stat-bottom` 保持 8-40px 紧凑间距；不得让矩阵悬在上半页并在下方留下大块无意义空白。
+
+S06 KPI Tower 的各 `.body-block` 必须落在同一共同基线上，与 `.bar-towers` 的底部轴线零间距；允许在塔容器上使用 `margin-bottom:-1px` 抵消 1px 边界的渲染缝隙。柱体底角保持直角，不得做成悬浮在横线上的圆角矩形。
 
 当用户明确要求“一页总览”“不要拆分”，或内容只有同时可见才能完成比较、推演或共同判断时，使用 `S27 Dense Synthesis`。它固定为 1 个总述带 + 恰好 3 个主面板 + 7-12 个条目；三个面板可分别使用阶段比较、能力递进和特征解释，但必须共享同一结论。总述标签与结论共享同一左轴，三个主面板通过统一中性底色、等高外框和留白建立结构；内部条目默认不重复添加分割线。先删除重复措辞、调整列宽和内部网格，再处理溢出；不得删除关键内容或自动拆页。最多 1 个黑色焦点区和 1 张语义媒体；媒体只可作为焦点区的 `cover + darken` 背景，不缩成装饰缩略图。禁止 tab、badge、button、彩色面板、阴影和 dashboard 控件。
 

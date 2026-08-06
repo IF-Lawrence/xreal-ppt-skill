@@ -1028,15 +1028,15 @@
   .system-kicker{font-family:var(--deck-font);font-size:max(14px,.78vw);font-weight:var(--weight-label);color:var(--text-helper)}
   .system-thesis{font-size:min(3.2vw,5.4vh);line-height:1.05;font-weight:var(--weight-title);letter-spacing:-.025em;margin-top:1.4vh}
   .system-summary{font-size:max(16px,1vw);line-height:1.52;color:var(--text-secondary);margin-top:2vh;max-width:29ch}
-  .system-flow{display:flex;flex-direction:column;align-self:stretch;min-height:0;border-top:1px solid var(--border-strong)}
-  .system-node{flex:1 1 0;display:grid;grid-template-columns:minmax(0,8.8em) minmax(0,1fr);gap:1.8vw;align-items:center;padding:1.7vh 0;border-bottom:1px solid var(--border-subtle)}
+  .system-flow{display:flex;flex-direction:column;align-self:stretch;min-height:0}
+  .system-node{flex:1 1 0;display:grid;grid-template-columns:minmax(0,8.8em) minmax(0,1fr);gap:1.8vw;align-items:center;padding:1.7vh 1.2vw;background:var(--paper);border:1px solid var(--border-subtle);border-radius:var(--radius-sm)}
   .system-level{font-family:var(--mono);font-size:max(14px,.76vw);line-height:1.3;color:var(--text-helper)}
   .system-title{display:block;font-family:var(--sans),var(--sans-zh);font-size:min(2.15vw,3.8vh);line-height:1.05;font-weight:var(--weight-title);letter-spacing:-.02em}
   .system-effect{font-size:max(16px,.9vw);line-height:1.45;color:var(--text-secondary);margin-top:.6vh}
   .system-node.is-core .system-title{color:var(--accent)}
-  .system-link{flex:0 0 auto;display:grid;grid-template-columns:minmax(0,8.8em) minmax(0,1fr);gap:1.8vw;align-items:center;padding:.7vh 0;color:var(--text-helper)}
-  .system-link .material-symbols-outlined{justify-self:center;font-size:1.35vw;color:var(--accent)}
-  .system-link span:last-child{font-family:var(--mono);font-size:max(14px,.72vw);line-height:1.3}
+  .system-link{flex:0 0 max(42px,4.8vh);display:grid;grid-template-rows:auto auto;place-content:center;justify-items:center;gap:.15vh;padding:.25vh 0;color:var(--text-helper);text-align:center}
+  .system-link .material-symbols-outlined{font-size:max(26px,1.7vw);line-height:.8;color:var(--ink)}
+  .system-link span:last-child{font-family:var(--mono);font-size:max(14px,.72vw);line-height:1.2}
 
   /* 不等高柱状 KPI 塔 (参考图 6) */
   .bar-towers{
@@ -1046,7 +1046,7 @@
   }
   .bar-tower{
     display:flex;flex-direction:column;justify-content:flex-end;
-    min-height:0;height:100%
+    min-height:0;height:100%;margin-bottom:-1px
   }
   .bar-tower .cap{
     background:var(--grey-1);
@@ -1556,7 +1556,7 @@
   .layout-lab .matrix-cell{background:var(--grey-1);border-radius:var(--radius-sm);min-height:9vh;padding:1.4vh 1vw;display:flex;flex-direction:column;justify-content:space-between}
   .layout-lab .matrix-cell .matrix-nb{font-family:var(--mono);font-size:max(14px,.76vw);color:var(--text-helper)}
   .layout-lab .matrix-cell .matrix-name{font-size:max(17px,1.12vw);font-weight:600;line-height:1.1}
-  .layout-lab .hero-stat-bottom{display:flex;align-items:end;justify-content:space-between;gap:2vw;margin-top:2vh;padding-top:1.6vh;border-top:1px solid var(--ink)}
+  .layout-lab .hero-stat-bottom{display:flex;align-items:end;justify-content:space-between;gap:2vw;margin-top:2vh}
   .layout-lab .hero-stat-bottom .stat{font-size:min(7.4vw,12.5vh);line-height:.85;letter-spacing:-.06em;font-weight:var(--weight-emphasis)}
   .layout-lab .hero-stat-bottom .stat-label{font-size:max(16px,.98vw);line-height:1.4;color:var(--text-secondary);max-width:36ch}
   .layout-lab .why-now-grid{flex:1;min-height:0;display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border-subtle);margin-top:3vh}
@@ -1886,7 +1886,6 @@
       <article class="brief-card"><span class="t-h-prod">PS5 / Xbox</span><span class="t-helper">客厅里的个人影院</span></article>
       <article class="brief-card"><span class="t-h-prod">无人机遥控器</span><span class="t-helper">基于 DP 输出的现场视野</span></article>
     </div>
-    <div style="display:flex;justify-content:space-between;gap:2vw;margin-top:2vh;padding-top:1.2vh;border-top:1px solid var(--border-subtle)"><span class="t-helper">屏显菜单 · 画面大小 / 距离 / 亮度 / 显示模式</span><span class="t-helper">X1 Chip powered</span></div>
   </div>
 </section>
 
@@ -1916,7 +1915,6 @@
           <tr style="border-bottom:1px solid var(--border-subtle)"><td style="padding:16px 10px;font-weight:600">Clear</td><td style="padding:16px 10px">沟通与移动</td><td style="padding:16px 10px">现实优先</td><td style="padding:16px 10px;text-align:right;font-weight:600">4.7 · 5</td><td style="padding:16px 10px;text-align:right">4.0 h</td></tr>
         </tbody>
       </table>
-      <div style="display:flex;justify-content:space-between;gap:2vw;border-top:1px solid var(--border-subtle);padding-top:1.2vh"><span class="t-helper">Test fixture · fictional values</span><span class="t-helper">Table style check · no product claim</span></div>
     </div>
   </div>
 </section>
@@ -1967,7 +1965,6 @@
       <span class="row-lbl">声音细节</span><span class="row-track"><span class="row-fill" style="--value:69%"></span></span><span class="row-val">69<span class="unit">%</span></span>
       <span class="row-lbl">连接便利</span><span class="row-track"><span class="row-fill" style="--value:64%"></span></span><span class="row-val">64<span class="unit">%</span></span>
     </div>
-    <div class="lab-note" style="margin-top:auto;border-top:1px solid var(--border-subtle);padding-top:1.2vh">Fixture note · 以上分值为虚构用户调研示例，仅用于横向条形图样式。</div>
   </div>
 </section>
 
@@ -1982,7 +1979,6 @@
       <div class="th-node down"><span class="dot"></span><div class="label"><span class="yr">04</span><span class="name">校正</span><span class="desc">同步左右画面</span></div></div>
       <div class="th-node up accent"><span class="dot"></span><div class="label"><span class="yr">05</span><span class="name">输出</span><span class="desc">稳定显示到眼前</span></div></div>
     </div></div>
-    <div class="lab-note" style="border-top:1px solid var(--border-subtle);padding-top:1.2vh">Flow fixture · 五步只用于测试横向时间线的节点密度与上下标签。</div>
   </div>
 </section>
 
@@ -2016,7 +2012,7 @@
     <header class="chrome-min"><div class="l brand"><img class="xreal-logo" src="assets/brand/xreal-logo-black.svg" alt="XREAL"><span>One Pro · Feature matrix</span></div><div class="r">Matrix test</div></header>
     <div data-anim="line" class="lab-head"><div class="t-cat lab-synthetic">虚构测试数据 · 矩阵版式</div><h2 class="xreal-page-title">一副眼镜，覆盖十二种测试场景</h2></div>
     <div class="matrix-fill" data-anim="up"><div class="matrix-cell"><span class="matrix-nb">01</span><span class="matrix-name">通勤</span></div><div class="matrix-cell"><span class="matrix-nb">02</span><span class="matrix-name">候机</span></div><div class="matrix-cell"><span class="matrix-nb">03</span><span class="matrix-name">观影</span></div><div class="matrix-cell"><span class="matrix-nb">04</span><span class="matrix-name">游戏</span></div><div class="matrix-cell"><span class="matrix-nb">05</span><span class="matrix-name">多屏办公</span></div><div class="matrix-cell"><span class="matrix-nb">06</span><span class="matrix-name">远程会议</span></div><div class="matrix-cell"><span class="matrix-nb">07</span><span class="matrix-name">阅读</span></div><div class="matrix-cell"><span class="matrix-nb">08</span><span class="matrix-name">导航</span></div><div class="matrix-cell"><span class="matrix-nb">09</span><span class="matrix-name">无人机</span></div><div class="matrix-cell"><span class="matrix-nb">10</span><span class="matrix-name">掌机</span></div><div class="matrix-cell"><span class="matrix-nb">11</span><span class="matrix-name">客厅影院</span></div><div class="matrix-cell"><span class="matrix-nb">12</span><span class="matrix-name">移动展演</span></div></div>
-    <div class="hero-stat-bottom" data-anim="up"><div><div class="stat">12</div><div class="stat-label">虚构场景样本 · 仅用于矩阵密度与底部大数字测试</div></div><span class="t-meta">Fixture / matrix + hero stat</span></div>
+    <div class="hero-stat-bottom" data-anim="up"><div><div class="stat">12</div><div class="stat-label">覆盖通勤、工作、娱乐与移动展演场景</div></div></div>
   </div>
 </section>
 
@@ -2176,7 +2172,6 @@
       <h1 class="h-statement" style="font-family:var(--deck-font);font-weight:var(--weight-display);font-size:min(7.8vw,14vh);line-height:.98;letter-spacing:-.045em">戴上 XREAL One Pro，<br>开启空间计算时代。</h1>
       <div class="t-helper" style="align-self:end;padding-bottom:3vh">从巨幕影院到空间多屏，数字世界随身而行。</div>
     </div>
-    <div style="border-top:1px solid var(--border-strong);padding-top:1.4vh;display:flex;justify-content:space-between"><span class="t-meta">Wear Every World</span><span class="t-meta">XREAL One Pro</span></div>
   </div>
 </section>
 

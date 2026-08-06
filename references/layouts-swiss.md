@@ -267,7 +267,7 @@ XREAL Style 有 26 个正式登记版式（`S01-S08`、`S11-S28`）,生成时要
 | 发丝线 / border-bottom | 可选;只能用于建立层级,不能为了装饰堆线 |
 | KPI / 数字 | 只在有真实数据时使用;不要为概念解释编造数值 |
 | 图表单位 / 坐标 / 来源 | S23/S24 必选；SVG 只画几何，所有标签和来源使用 HTML |
-| `footnote` / 底部说明 | 可选；统一使用 `--footnote-size`、同一底部基线和内容左轴，不加分割线、底色或额外 padding |
+| `footnote` / 底部说明 | 默认不生成；仅必要来源、方法/样本口径、法务/风险免责声明或有信息增量的解释可选保留，并统一使用 `--footnote-size`、同一底部基线和内容左轴，不加分割线、底色或额外 padding；不得重复标题区已有的“虚构/示意”声明 |
 | `S08 + XREAL Map Component` | 地点/路线/人物住所关系专用;右侧地图必须有点、连线、卡片和 `+` / `-` / `Drag` 控制,详见 `swiss-map-component.md` |
 
 ### 通用版式 / 非通用版式
@@ -411,7 +411,7 @@ XREAL Style 有 26 个正式登记版式（`S01-S08`、`S11-S28`）,生成时要
 
 **用途**:中心论点、章节起始、口号。一页只放一句话 + 简单装饰。
 **适用内容类型**:**纯定性论断 / 口号 / 章节切换**。一句话压缩到 8-12 词,**不承载任何数据或列表**。如果需要数据支撑,改用 P18 Why Now;如果是封面,用 P1。
-**骨架**:左 1/3 空白 + 中段巨字陈述(8-10vw, `var(--weight-display)`) + 右下小字注脚 + 底部 hairline。
+**骨架**:左 1/3 空白 + 中段巨字陈述(8-10vw, `var(--weight-display)`) + 可选的真实来源/解释注脚；不默认添加底部 hairline、口号或产品名填充栏。
 **关键类**:`.h-statement`(9.6vw,letter-spacing:-.05em) `.stmt-anchor`
 **动效 recipe**:`statement-rise` — 大字按词序错峰升起(每词延迟 180ms)+ 注脚 fade in
 **示例代码**:
@@ -497,6 +497,8 @@ XREAL Style 有 26 个正式登记版式（`S01-S08`、`S11-S28`）,生成时要
 **适用内容类型**:**4 项可比量化数据**(必须有真实数值,bar 高度由数据决定)。典型如:成本、容量、计数、效率指标。**禁止**用于无数据的概念列举(那是 P4/P5 的事)。
 **骨架**:4 列均分,每列底部一根不同高度的黑色矩形(数据决定高度)+ 顶部图标 + 中段巨数 + 底部标签。
 **关键类**:`.bar-towers` `.bar-tower` `.cap` `.body-block`
+
+柱体 body 只保留顶部 8px 圆角，底角为直角；每根 `.bar-tower` 与共同基线零间距，允许 `margin-bottom:-1px` 抵消容器与柱体各自 1px 边界造成的视觉缝隙。
 **动效 recipe**:`tower-grow` — 标签先入 → 数字 scale 弹入 → tower scaleY 从 0 拉起(transform-origin:bottom)
 **圆角与基线规则**:每列 `.cap` 使用四角 `border-radius:var(--radius-sm)`（8px）；`.body-block` 只保留 8px 顶部圆角，底部两角为直角并与四列共同 x 轴齐平。四列高度可以不同，但不得出现四角圆角矩形贴在轴线上，也不得在柱体与轴之间留空。
 **示例代码**:
@@ -677,7 +679,7 @@ XREAL Style 有 26 个正式登记版式（`S01-S08`、`S11-S28`）,生成时要
 
 **用途**:表达组件之间的流向、层级、网络依赖或真实包含关系。
 **适用内容类型**:至少 3 个实体，且实体之间的关系本身是结论。先选择并声明 `data-system-grammar="flow|hierarchy|network|containment"`：能力/信息传递用 flow，组织或技术分层用 hierarchy，多对多依赖用 network，严格 core/middle/outer 包含才用 containment。同心圆不再是默认答案；如果三个圆只是在重复左侧三行文字，改用 P5 或删除图。
-**骨架**:左侧只保留一句结论与一段解释，使用 `.system-kicker + .system-thesis + .system-summary`；右侧占画布至少 42%，承载唯一关系图，两列顶部误差不超过 16px。flow 使用 3-6 个 `.system-node` 与 `nodeCount-1` 个 `.system-link`；`.system-flow` 必须纵向消费关系图区至少 85% 高度，节点用弹性高度均衡分布，不能全部堆在顶部。每个节点包含 `.system-level + .system-title + .system-effect`。标签使用 HTML，连接语义必须可读。
+**骨架**:左侧只保留一句结论与一段解释，使用 `.system-kicker + .system-thesis + .system-summary`；右侧占画布至少 42%，承载唯一关系图，两列顶部误差不超过 16px。flow 使用 3-6 个 `.system-node` 与 `nodeCount-1` 个 `.system-link`；`.system-flow` 必须纵向消费关系图区至少 85% 高度，节点用弹性高度均衡分布，不能全部堆在顶部。每个 `.system-link` 独占相邻节点之间的连接区，箭头显示尺寸至少 24px，并与其关系标签水平居中；禁止把连接器放进左侧编号列或让贯穿线穿过节点。每个节点包含 `.system-level + .system-title + .system-effect`。标签使用 HTML，连接语义必须可读。
 **关键类**:`.system-diagram` `.system-copy` `.system-kicker` `.system-thesis` `.system-summary` `.system-flow` `.system-node` `.system-link` `.system-level` `.system-title` `.system-effect`
 **禁止**:左侧再放 `.system-roles/.system-role` 或复制 Process / Orchestrate / Deliver 等阶段列表，形成与右图竞争的第二条信息路径；可见文案不得出现“这里表达的是”“不是套圈”“图的目的是”等制作说明。
 **动效 recipe**:`system-diagram` — 节点按关系方向进入，连接语义随后出现。

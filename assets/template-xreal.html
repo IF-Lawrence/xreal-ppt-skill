@@ -1085,15 +1085,15 @@
   .system-kicker{font-family:var(--deck-font);font-size:max(14px,.78vw);font-weight:var(--weight-label);color:var(--text-helper)}
   .system-thesis{font-size:min(3.2vw,5.4vh);line-height:1.05;font-weight:var(--weight-title);letter-spacing:-.025em;margin-top:1.4vh}
   .system-summary{font-size:max(16px,1vw);line-height:1.52;color:var(--text-secondary);margin-top:2vh;max-width:29ch}
-  .system-flow{display:flex;flex-direction:column;align-self:stretch;min-height:0;border-top:1px solid var(--border-strong)}
-  .system-node{flex:1 1 0;display:grid;grid-template-columns:minmax(0,8.8em) minmax(0,1fr);gap:1.8vw;align-items:center;padding:1.7vh 0;border-bottom:1px solid var(--border-subtle)}
+  .system-flow{display:flex;flex-direction:column;align-self:stretch;min-height:0}
+  .system-node{flex:1 1 0;display:grid;grid-template-columns:minmax(0,8.8em) minmax(0,1fr);gap:1.8vw;align-items:center;padding:1.7vh 1.2vw;background:var(--paper);border:1px solid var(--border-subtle);border-radius:var(--radius-sm)}
   .system-level{font-family:var(--mono);font-size:max(14px,.76vw);line-height:1.3;color:var(--text-helper)}
   .system-title{display:block;font-family:var(--sans),var(--sans-zh);font-size:min(2.15vw,3.8vh);line-height:1.05;font-weight:var(--weight-title);letter-spacing:-.02em}
   .system-effect{font-size:max(16px,.9vw);line-height:1.45;color:var(--text-secondary);margin-top:.6vh}
   .system-node.is-core .system-title{color:var(--accent)}
-  .system-link{flex:0 0 auto;display:grid;grid-template-columns:minmax(0,8.8em) minmax(0,1fr);gap:1.8vw;align-items:center;padding:.7vh 0;color:var(--text-helper)}
-  .system-link .material-symbols-outlined{justify-self:center;font-size:1.35vw;color:var(--accent)}
-  .system-link span:last-child{font-family:var(--mono);font-size:max(14px,.72vw);line-height:1.3}
+  .system-link{flex:0 0 max(42px,4.8vh);display:grid;grid-template-rows:auto auto;place-content:center;justify-items:center;gap:.15vh;padding:.25vh 0;color:var(--text-helper);text-align:center}
+  .system-link .material-symbols-outlined{font-size:max(26px,1.7vw);line-height:.8;color:var(--ink)}
+  .system-link span:last-child{font-family:var(--mono);font-size:max(14px,.72vw);line-height:1.2}
 
   /* 不等高柱状 KPI 塔 (参考图 6) */
   .bar-towers{
@@ -1103,7 +1103,7 @@
   }
   .bar-tower{
     display:flex;flex-direction:column;justify-content:flex-end;
-    min-height:0;height:100%
+    min-height:0;height:100%;margin-bottom:-1px
   }
   .bar-tower .cap{
     background:var(--grey-1);

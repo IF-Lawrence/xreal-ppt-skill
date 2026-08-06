@@ -1365,6 +1365,38 @@ async function runRenderedMeasurements() {
           const nodeRect = systemNode.getBoundingClientRect();
           if (nodeRect.height < 56) issues.push(`system node renders at only ${Math.round(nodeRect.height)}px high`);
         });
+        if (node.dataset.systemGrammar === 'flow') {
+          Array.from(node.querySelectorAll(':scope > .system-link')).forEach((link, index) => {
+            const arrow = link.querySelector('.material-symbols-outlined');
+            const label = Array.from(link.children).find((child) => !child.classList.contains('material-symbols-outlined'));
+            const previous = link.previousElementSibling;
+            const next = link.nextElementSibling;
+            if (!previous?.classList.contains('system-node') || !next?.classList.contains('system-node')) {
+              issues.push(`flow connector ${index + 1} is not placed directly between two system nodes`);
+              return;
+            }
+            const linkRect = link.getBoundingClientRect();
+            const previousRect = previous.getBoundingClientRect();
+            const nextRect = next.getBoundingClientRect();
+            if (linkRect.top < previousRect.bottom - 2 || linkRect.bottom > nextRect.top + 2) {
+              issues.push(`flow connector ${index + 1} overlaps a node instead of owning the gap between adjacent nodes`);
+            }
+            if (!arrow) {
+              issues.push(`flow connector ${index + 1} has no visible directional arrow`);
+            } else {
+              const arrowRect = arrow.getBoundingClientRect();
+              const arrowSize = parseFloat(getComputedStyle(arrow).fontSize);
+              if (!Number.isFinite(arrowSize) || arrowSize < 24) issues.push(`flow connector ${index + 1} arrow renders at ${arrowSize}px; expected at least 24px`);
+              if (label) {
+                const labelRect = label.getBoundingClientRect();
+                const centerDelta = Math.abs((arrowRect.left + arrowRect.width / 2) - (labelRect.left + labelRect.width / 2));
+                if (centerDelta > 4) issues.push(`flow connector ${index + 1} arrow and relation label are ${centerDelta.toFixed(1)}px off their shared center axis`);
+              }
+              const flowCenterDelta = Math.abs((arrowRect.left + arrowRect.width / 2) - (rect.left + rect.width / 2));
+              if (flowCenterDelta > 4) issues.push(`flow connector ${index + 1} arrow is ${flowCenterDelta.toFixed(1)}px away from the relationship column center`);
+            }
+          });
+        }
         return issues.map((issue) => ({ node: labelFor(node), issue }));
       });
 
@@ -1446,29 +1478,32 @@ async function runRenderedMeasurements() {
           '.bar-tower .body-block',
           '.v-bar-chart .col-bar',
           '.chart-bar',
-        ].join(','))).filter((node) => {
+        ].join(','))).flatMap((node) => {
           const r = node.getBoundingClientRect();
-          if (r.width < 2 || r.height < 2) return false;
+          if (r.width < 2 || r.height < 2) return [];
           const style = getComputedStyle(node);
           const topLeft = parseFloat(style.borderTopLeftRadius);
           const topRight = parseFloat(style.borderTopRightRadius);
           const bottomLeft = parseFloat(style.borderBottomLeftRadius);
           const bottomRight = parseFloat(style.borderBottomRightRadius);
-          return !Number.isFinite(topLeft) || topLeft < 7 || topLeft > 9
+          const issues = [];
+          if (!Number.isFinite(topLeft) || topLeft < 7 || topLeft > 9
             || !Number.isFinite(topRight) || topRight < 7 || topRight > 9
             || !Number.isFinite(bottomLeft) || Math.abs(bottomLeft) > .1
-            || !Number.isFinite(bottomRight) || Math.abs(bottomRight) > .1;
-        }).map((node) => {
-          const style = getComputedStyle(node);
-          return {
-            node: labelFor(node),
-            radii: [
+            || !Number.isFinite(bottomRight) || Math.abs(bottomRight) > .1) {
+            issues.push(`uses corner radii ${[
               style.borderTopLeftRadius,
               style.borderTopRightRadius,
               style.borderBottomRightRadius,
               style.borderBottomLeftRadius,
-            ].join(' '),
-          };
+            ].join(' ')}`);
+          }
+          const towerField = node.closest('.bar-towers');
+          if (towerField) {
+            const baselineGap = Math.abs(towerField.getBoundingClientRect().bottom - r.bottom);
+            if (baselineGap > 1.5) issues.push(`ends ${baselineGap.toFixed(1)}px away from the shared KPI Tower baseline`);
+          }
+          return issues.map((issue) => ({ node: labelFor(node), issue }));
         });
 
       const dataChartChecks = (el) => {
@@ -1582,6 +1617,28 @@ async function runRenderedMeasurements() {
             if (!Number.isFinite(childSize) || Math.abs(childSize - fontSize) > .5) issues.push(`child ${index + 1} renders at ${childSize}px instead of inheriting the shared footnote size`);
           });
           return issues.map((issue) => ({ node: labelFor(node), issue }));
+        });
+      };
+
+      const footerRailChecks = (el) => {
+        const canvas = el.querySelector('.canvas-card');
+        if (!canvas) return [];
+        const canvasRect = canvas.getBoundingClientRect();
+        const approved = '.section-hero-foot,.chart-foot,.roadmap-source,.milestone-source,.dense-source,.priority-source';
+        return Array.from(canvas.children).flatMap((node) => {
+          if (node.matches(approved)) return [];
+          const rect = node.getBoundingClientRect();
+          if (rect.bottom < canvasRect.top + canvasRect.height * .68 || rect.height > 96) return [];
+          const style = getComputedStyle(node);
+          const hasTopRule = parseFloat(style.borderTopWidth) > .5 && style.borderTopStyle !== 'none' && colorVisible(style.borderTopColor);
+          const isLooseLabNote = node.classList.contains('lab-note');
+          if (!hasTopRule && !isLooseLabNote) return [];
+          return [{
+            node: labelFor(node),
+            issue: isLooseLabNote
+              ? 'uses a loose .lab-note as a bottom footer without a registered source role'
+              : 'uses a small bottom rail with a decorative top divider instead of a registered source note',
+          }];
         });
       };
 
@@ -1849,6 +1906,7 @@ async function runRenderedMeasurements() {
           dataChartIssues: dataChartChecks(el),
           lineChartIssues: lineChartChecks(el),
           footnoteIssues: footnoteChecks(el),
+          footerRailIssues: footerRailChecks(el),
           portfolioRoadmapIssues: portfolioRoadmapChecks(el),
           milestoneGalleryIssues: milestoneGalleryChecks(el),
           denseSynthesisIssues: denseSynthesisChecks(el),
@@ -1933,7 +1991,7 @@ async function runRenderedMeasurements() {
         errors.push(`${prefix}: ${issue.node} uses vertical-align ${issue.verticalAlign}, opacity ${issue.opacity}, gap ${issue.gapRatio}em, and letter-spacing ${issue.letterSpacing}. KPI/chart units must use the shared upper-right shoulder; word units also require normal internal tracking.`);
       }
       for (const issue of m.baselineBarIssues) {
-        errors.push(`${prefix}: ${issue.node} uses corner radii ${issue.radii}. Baseline bars may round only the top corners (7-9px); bottom corners must be square and flush to the x-axis.`);
+        errors.push(`${prefix}: ${issue.node} ${issue.issue}. Baseline bars may round only the top corners (7-9px); bottom corners must be square and flush to the x-axis.`);
       }
       for (const issue of m.dataChartIssues) {
         errors.push(`${prefix}: ${issue.node} ${issue.issue}. S23 plots must protect edge bars and top labels, and every value must stay centered through the chart-rise animation.`);
@@ -1943,6 +2001,9 @@ async function runRenderedMeasurements() {
       }
       for (const issue of m.footnoteIssues) {
         errors.push(`${prefix}: ${issue.node} ${issue.issue}. Source and explanatory footnotes must share the small type token, canvas axis, nav-safe baseline, transparent surface, and no separator line.`);
+      }
+      for (const issue of m.footerRailIssues) {
+        errors.push(`${prefix}: ${issue.node} ${issue.issue}. Bottom rails default to absent; keep only necessary source, method, legal/risk, or genuinely additive explanation without a divider line.`);
       }
       for (const issue of m.portfolioRoadmapIssues) {
         errors.push(`${prefix}: ${issue.node} ${issue.issue}. S25 must keep a complete neutral two-axis plot with sparse, legible, non-overlapping media nodes.`);
