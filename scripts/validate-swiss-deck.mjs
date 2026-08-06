@@ -56,7 +56,7 @@ const allowedLayouts = new Set([
   'XREAL-CLOSING-BLACK',
   'S01', 'S02', 'S03', 'S04', 'S05', 'S06', 'S07', 'S08',
   'S11', 'S12', 'S13', 'S14', 'S15', 'S16', 'S17',
-  'S18', 'S19', 'S20', 'S21', 'S22', 'S23', 'S24', 'S25', 'S26',
+  'S18', 'S19', 'S20', 'S21', 'S22', 'S23', 'S24', 'S25', 'S26', 'S27',
 ]);
 const echartsKindsByLayout = new Map([
   ['S23', new Set(['bar', 'mixed', 'scatter', 'bubble', 'heatmap', 'waterfall', 'boxplot', 'candlestick'])],
@@ -305,7 +305,7 @@ slides.forEach((slide) => {
   }
 
   if (!layout) {
-    errors.push(`Slide ${slide.idx}: missing data-layout. XREAL Style locked mode requires a registered layout (S01-S08 or S11-S26) or XREAL-COVER-BLACK/XREAL-CLOSING-BLACK.`);
+    errors.push(`Slide ${slide.idx}: missing data-layout. XREAL Style locked mode requires a registered layout (S01-S08 or S11-S27) or XREAL-COVER-BLACK/XREAL-CLOSING-BLACK.`);
   } else if (!allowedLayouts.has(layout)) {
     errors.push(`Slide ${slide.idx}: data-layout="${layout}" is not registered in swiss-layout-lock.md.`);
   }
@@ -847,6 +847,45 @@ slides.forEach((slide) => {
       }
     });
     if (/\bclass="[^"]*\b(?:pill|badge|tab|button|ribbon)\b[^"]*"/i.test(slide.html)) errors.push(`Slide ${slide.idx}: S26 contains button/ribbon component classes. Use aligned small-radius cards and a hairline synthesis chain.`);
+  }
+
+  if (layout === 'S27') {
+    const classCount = (name, source = slide.html) => [...source.matchAll(/\bclass="([^"]*)"/g)]
+      .filter((match) => match[1].split(/\s+/).includes(name)).length;
+    const requiredOnce = ['dense-synthesis', 'dense-thesis', 'dense-columns', 'dense-source'];
+    requiredOnce.forEach((name) => {
+      const count = classCount(name);
+      if (count !== 1) errors.push(`Slide ${slide.idx}: S27 requires exactly one .${name}; found ${count}.`);
+    });
+    if (!/\bdata-animate="dense-synthesis"/.test(slide.tag)) {
+      errors.push(`Slide ${slide.idx}: S27 Dense Synthesis must use data-animate="dense-synthesis".`);
+    }
+    const panelBlocks = [...slide.html.matchAll(/<article\b(?=[^>]*\bclass="[^"]*\bdense-panel\b[^"]*")[^>]*>([\s\S]*?)<\/article>/g)].map((match) => match[1]);
+    const panelCount = panelBlocks.length;
+    const titleCount = classCount('dense-panel-title');
+    const bodyCount = classCount('dense-panel-body');
+    const itemCount = classCount('dense-item');
+    const focusCount = [...slide.html.matchAll(/\bclass="([^"]*)"/g)].filter((match) => {
+      const classes = match[1].split(/\s+/);
+      return classes.includes('dense-item') && classes.includes('is-focus');
+    }).length;
+    const mediaTags = [...slide.html.matchAll(/<img\b(?=[^>]*\bclass="[^"]*\bdense-media\b[^"]*")[^>]*>/g)].map((match) => match[0]);
+    if (panelCount !== 3 || titleCount !== 3 || bodyCount !== 3) {
+      errors.push(`Slide ${slide.idx}: S27 requires 3 complete .dense-panel regions; found ${panelCount} panels / ${titleCount} titles / ${bodyCount} bodies.`);
+    }
+    if (itemCount < 7 || itemCount > 12) errors.push(`Slide ${slide.idx}: S27 requires 7-12 .dense-item blocks; found ${itemCount}.`);
+    panelBlocks.forEach((panel, index) => {
+      const count = classCount('dense-item', panel);
+      if (count < 2) errors.push(`Slide ${slide.idx}: S27 panel ${index + 1} has only ${count} .dense-item block(s); each panel needs at least 2.`);
+    });
+    if (focusCount > 1) errors.push(`Slide ${slide.idx}: S27 allows at most one semantically justified .is-focus item; found ${focusCount}.`);
+    if (mediaTags.length > 1) errors.push(`Slide ${slide.idx}: S27 allows at most one semantic media item; found ${mediaTags.length}.`);
+    mediaTags.forEach((tag) => {
+      if (!/\bdata-image-slot="s27-dense-media"/.test(tag) || !/\bdata-media-role="dense-evidence"/.test(tag) || !/\bdata-media-fit="cover"/.test(tag) || !/\bdata-media-contrast="darken"/.test(tag)) {
+        errors.push(`Slide ${slide.idx}: S27 media must declare the dense slot, dense-evidence role, cover fit, and contrast="darken" for the registered focus background.`);
+      }
+    });
+    if (/\bclass="[^"]*\b(?:pill|badge|chip|tab|button|ribbon)\b[^"]*"/i.test(slide.html)) errors.push(`Slide ${slide.idx}: S27 contains dashboard/control classes. Keep the dense synthesis editorial and structural.`);
   }
 });
 
@@ -1525,6 +1564,42 @@ async function runRenderedMeasurements() {
         return issues.map((issue) => ({ node: labelFor(gallery), issue }));
       };
 
+      const denseSynthesisChecks = (el) => {
+        const synthesis = el.querySelector('.dense-synthesis');
+        const columns = el.querySelector('.dense-columns');
+        const panels = Array.from(el.querySelectorAll('.dense-panel'));
+        if (!synthesis || !columns || !panels.length) return [];
+        const issues = [];
+        const panelRects = panels.map((panel) => panel.getBoundingClientRect());
+        const topSpread = Math.max(...panelRects.map((rect) => rect.top)) - Math.min(...panelRects.map((rect) => rect.top));
+        const bottomSpread = Math.max(...panelRects.map((rect) => rect.bottom)) - Math.min(...panelRects.map((rect) => rect.bottom));
+        if (topSpread > 2 || bottomSpread > 2) issues.push(`dense panels do not share common top/bottom edges (${topSpread.toFixed(1)}px / ${bottomSpread.toFixed(1)}px spread)`);
+        panels.forEach((panel, index) => {
+          const style = getComputedStyle(panel);
+          const rect = panel.getBoundingClientRect();
+          const radius = parseFloat(style.borderTopLeftRadius);
+          const borderWidths = [style.borderTopWidth, style.borderRightWidth, style.borderBottomWidth, style.borderLeftWidth].map(parseFloat);
+          const paddings = [style.paddingTop, style.paddingRight, style.paddingBottom, style.paddingLeft].map(parseFloat);
+          if (rect.width < 250) issues.push(`panel ${index + 1} is only ${rect.width.toFixed(1)}px wide; rebalance columns instead of shrinking copy`);
+          if (!Number.isFinite(radius) || radius < 7 || radius > 9) issues.push(`panel ${index + 1} uses ${style.borderTopLeftRadius} radius; expected 8px`);
+          if (borderWidths.some((width) => !Number.isFinite(width) || width < .75 || width > 1.25)) issues.push(`panel ${index + 1} must use one uniform 1px boundary`);
+          if (paddings.some((value) => !Number.isFinite(value)) || Math.max(...paddings) - Math.min(...paddings) > 1.25) issues.push(`panel ${index + 1} must use equal padding on all four sides`);
+          if (style.boxShadow !== 'none') issues.push(`panel ${index + 1} uses a box shadow; S27 remains flat`);
+          if (panel.scrollHeight - panel.clientHeight > 2) issues.push(`panel ${index + 1} content overflows its region`);
+        });
+        el.querySelectorAll('.dense-item-copy').forEach((copy, index) => {
+          const size = parseFloat(getComputedStyle(copy).fontSize);
+          if (!Number.isFinite(size) || size < 15.5) issues.push(`item copy ${index + 1} renders at ${size}px; expected at least 16px`);
+        });
+        el.querySelectorAll('.dense-item-kicker,.dense-progress-num,.dense-thesis-label,.dense-source').forEach((meta, index) => {
+          const size = parseFloat(getComputedStyle(meta).fontSize);
+          if (!Number.isFinite(size) || size < 13.5) issues.push(`meta label ${index + 1} renders at ${size}px; expected at least 14px`);
+        });
+        if (el.querySelectorAll('.dense-item.is-focus').length > 1) issues.push('more than one dense item uses high-contrast focus styling');
+        if (columns.getBoundingClientRect().height / synthesis.getBoundingClientRect().height < .58) issues.push('three-panel field uses too little of the available synthesis height');
+        return issues.map((issue) => ({ node: labelFor(synthesis), issue }));
+      };
+
       return els.map((el, index) => {
         const er = el.getBoundingClientRect();
         const H = el.clientHeight;
@@ -1592,6 +1667,7 @@ async function runRenderedMeasurements() {
           lineChartIssues: lineChartChecks(el),
           portfolioRoadmapIssues: portfolioRoadmapChecks(el),
           milestoneGalleryIssues: milestoneGalleryChecks(el),
+          denseSynthesisIssues: denseSynthesisChecks(el),
           echartsIssues: Array.from(el.querySelectorAll('.xreal-echart')).filter((node) => node.dataset.echartsState !== 'ready').map((node) => ({
             state: node.dataset.echartsState || 'uninitialized',
             message: node.dataset.echartsMessage || 'Chart did not reach ready state.',
@@ -1682,6 +1758,9 @@ async function runRenderedMeasurements() {
       }
       for (const issue of m.milestoneGalleryIssues) {
         errors.push(`${prefix}: ${issue.node} ${issue.issue}. S26 must use aligned equal-height 8px cards, 35%-55% media evidence, and a hairline synthesis chain.`);
+      }
+      for (const issue of m.denseSynthesisIssues) {
+        errors.push(`${prefix}: ${issue.node} ${issue.issue}. S27 must preserve one-page comparison through three aligned neutral regions, readable type, and at most one focus block.`);
       }
       for (const issue of m.echartsIssues) {
         errors.push(`${prefix}: ECharts runtime is ${issue.state}: ${issue.message}`);

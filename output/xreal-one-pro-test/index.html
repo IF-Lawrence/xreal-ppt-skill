@@ -1363,7 +1363,7 @@
   .roadmap-copy{min-width:0;display:flex;flex-direction:column;gap:.45vh}
   .roadmap-title{font-size:max(16px,1vw);font-weight:var(--weight-title);line-height:1.08}
   .roadmap-meta{font-size:max(13px,.7vw);line-height:1.3;color:var(--text-secondary)}
-  .roadmap-source,.milestone-source{font-size:max(13px,.72vw);line-height:1.35;color:var(--text-helper);border-top:1px solid var(--border-subtle);padding-top:.9vh}
+  .roadmap-source,.milestone-source,.dense-source{font-size:max(14px,.72vw);line-height:1.35;color:var(--text-helper);border-top:1px solid var(--border-subtle);padding-top:.9vh}
 
   /* S26 Milestone Gallery: 连续年份卡片 + 媒体证据 + 底部综合链。 */
   .milestone-gallery{
@@ -1381,6 +1381,36 @@
   .milestone-chain{display:flex;align-items:flex-start;justify-content:flex-end;gap:1.2vw}
   .milestone-chain-step{position:relative;min-width:0;padding-top:.8vh;border-top:1px solid var(--ink);font-size:max(13px,.72vw);line-height:1.2;color:var(--text-secondary);white-space:nowrap}
   .milestone-chain-step:not(:last-child)::after{content:"→";position:absolute;left:calc(100% + .35vw);top:.55vh;color:var(--text-helper)}
+
+  /* S27 Dense Synthesis: 同页保留相互依赖的大量信息；以三组并行结构组织，不做 dashboard。 */
+  .dense-synthesis{display:grid;grid-template-rows:auto minmax(0,1fr) auto;gap:1.2vh;flex:1;min-height:0;margin-top:3.6vh}
+  .dense-thesis{display:grid;grid-template-columns:auto minmax(0,1fr);gap:1.2vw;align-items:start;padding:1.4vh 1.2vw;background:var(--ink);color:var(--paper);border:1px solid var(--ink);border-radius:var(--radius-sm)}
+  .dense-thesis-label{font-size:max(14px,.76vw);font-weight:var(--weight-label);line-height:1.35;color:rgba(255,255,255,.62);white-space:nowrap}
+  .dense-thesis-copy{font-size:max(18px,1vw);font-weight:var(--weight-label);line-height:1.42;max-width:92ch}
+  .dense-columns{display:grid;grid-template-columns:var(--dense-columns,1.08fr 1fr 1.16fr);gap:1vw;min-height:0}
+  .dense-panel{min-width:0;min-height:0;overflow:hidden;padding:var(--sp-5);display:grid;grid-template-rows:auto minmax(0,1fr);gap:1.6vh;background:var(--paper);border:1px solid var(--border-subtle);border-radius:var(--radius-sm);box-shadow:none}
+  .dense-panel-title{font-size:max(20px,1.3vw);font-weight:var(--weight-title);line-height:1.12;letter-spacing:-.015em}
+  .dense-panel-body{min-height:0;display:grid;align-content:stretch}
+  .dense-item{min-width:0;padding:1.15vh 0;border-top:1px solid var(--border-subtle)}
+  .dense-item:first-child{border-top-color:var(--border-strong)}
+  .dense-item-kicker{display:block;font-size:max(14px,.72vw);font-weight:var(--weight-label);line-height:1.25;color:var(--text-helper);margin-bottom:.55vh}
+  .dense-item-title{display:block;font-size:max(17px,.98vw);font-weight:var(--weight-title);line-height:1.18}
+  .dense-item-copy{font-size:max(16px,.82vw);line-height:1.4;color:var(--text-secondary);margin-top:.55vh}
+  .dense-comparison{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.9vw;height:100%}
+  .dense-comparison .dense-item{display:flex;flex-direction:column;justify-content:space-between;padding-inline:.1vw}
+  .dense-stage-mark{font-size:max(24px,1.8vw);font-weight:var(--weight-emphasis);line-height:1;letter-spacing:-.03em}
+  .dense-progression,.dense-feature-list{display:grid;grid-template-rows:repeat(3,minmax(0,1fr));height:100%}
+  .dense-progression .dense-item{display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:.8vw;align-content:center}
+  .dense-progress-num{font-size:max(14px,.72vw);font-weight:var(--weight-label);line-height:1.25;color:var(--text-helper)}
+  .dense-progression .dense-item-copy{grid-column:2}
+  .dense-item.is-focus{position:relative;isolation:isolate;overflow:hidden;margin:.7vh 0;padding:1.15vh .9vw;border:0;border-radius:var(--radius-sm);grid-template-columns:auto minmax(0,1fr);background:var(--ink);color:var(--paper)}
+  .dense-item.is-focus::after{content:"";position:absolute;inset:0;z-index:1;background:rgba(0,0,0,.34);pointer-events:none}
+  .dense-item.is-focus > :not(.dense-media){position:relative;z-index:2}
+  .dense-item.is-focus .dense-progress-num,.dense-item.is-focus .dense-item-copy{color:rgba(255,255,255,.66)}
+  .dense-media{position:absolute;inset:-42% -8% -24% 24%;z-index:0;width:84%;height:166%;object-fit:cover;object-position:center 60%;filter:brightness(1.08) saturate(.78)}
+  .dense-feature{display:grid;grid-template-columns:minmax(28px,2vw) minmax(0,1fr);column-gap:.8vw;align-content:center}
+  .dense-feature-icon{font-family:"Material Symbols Outlined";font-size:max(24px,1.55vw);font-weight:400;line-height:1;color:var(--ink)}
+  .dense-feature .dense-item-copy{grid-column:2}
 
   /* XREAL ECharts 扩展：复杂图表使用现有版式骨架，不生成 dashboard 容器 */
   .xreal-echart-stage{
@@ -1642,7 +1672,7 @@
      ============================================================ -->
 <!-- SLIDES_HERE · 在此处粘贴 <section class="slide ..."> 页面块
      - 页面骨架直接从 references/layouts-swiss.md 拷贝
-     - data-animate="..." 必须命中下方 RECIPES 字典里的已有 recipe 名之一；正式 S23/S24 分别使用 chart-rise / line-draw
+     - data-animate="..." 必须命中下方 RECIPES 字典里的已有 recipe 名之一；S23-S27 分别使用 chart-rise / line-draw / portfolio-roadmap / milestone-gallery / dense-synthesis
      - 主题色固定为本文件 :root 中的 XREAL 黑白灰体系 -->
 
 <section class="slide accent" data-layout="XREAL-COVER-BLACK" data-animate="hero" data-media-match="none">
@@ -2014,6 +2044,43 @@
     </div>
     <div class="milestone-synthesis" data-anim="synthesis"><p class="milestone-synthesis-copy">路线不是功能堆叠，而是从光学、计算到真实场景的连续交付。</p><div class="milestone-chain" aria-label="能力演进链"><span class="milestone-chain-step">光学</span><span class="milestone-chain-step">计算</span><span class="milestone-chain-step">显示</span><span class="milestone-chain-step">场景</span></div></div>
     <div class="milestone-source">Structure fixture · media selected for semantic evidence</div>
+  </div>
+</section>
+
+<section class="slide light layout-lab" data-layout="S27" data-animate="dense-synthesis">
+  <div class="canvas-card">
+    <header class="chrome-min"><div class="l brand"><img class="xreal-logo" src="assets/brand/xreal-logo-black.svg" alt="XREAL"><span>One Pro · Dense synthesis</span></div><div class="r">One-page overview</div></header>
+    <div data-anim="line" class="lab-head"><div class="t-cat lab-synthetic">示意结构 · 非产品路线或正式结论</div><h2 class="xreal-page-title">交互从指令输入走向情境协作</h2></div>
+    <div class="dense-synthesis">
+      <div class="dense-thesis"><span class="dense-thesis-label">共同判断</span><p class="dense-thesis-copy">输入、理解与协作不再是三个独立能力；设备形态、感知链路与智能代理需要在同一页被共同判断。</p></div>
+      <div class="dense-columns" style="--dense-columns:1.08fr 1fr 1.16fr">
+        <article class="dense-panel">
+          <h3 class="dense-panel-title">交互入口演进</h3>
+          <div class="dense-panel-body dense-comparison">
+            <div class="dense-item"><span class="dense-item-kicker">01 · PC</span><strong class="dense-stage-mark">桌面</strong><div><span class="dense-item-title">精确输入</span><p class="dense-item-copy">键鼠承担明确命令，信息集中在固定屏幕。</p></div></div>
+            <div class="dense-item"><span class="dense-item-kicker">02 · Mobile</span><strong class="dense-stage-mark">随身</strong><div><span class="dense-item-title">多点触控</span><p class="dense-item-copy">触控缩短操作路径，场景开始移动。</p></div></div>
+            <div class="dense-item"><span class="dense-item-kicker">03 · Spatial</span><strong class="dense-stage-mark">空间</strong><div><span class="dense-item-title">情境理解</span><p class="dense-item-copy">视线、环境与意图共同成为输入。</p></div></div>
+          </div>
+        </article>
+        <article class="dense-panel">
+          <h3 class="dense-panel-title">空间智能能力链</h3>
+          <div class="dense-panel-body dense-progression">
+            <div class="dense-item"><span class="dense-progress-num">01</span><div><span class="dense-item-title">注意力入口</span><p class="dense-item-copy">第一人称视角持续捕捉用户正在关注的对象。</p></div></div>
+            <div class="dense-item is-focus"><span class="dense-progress-num">02</span><div><span class="dense-item-title">感知叠加</span><p class="dense-item-copy">设备将场景信号与空间显示同步编排。</p></div><img class="dense-media" data-image-slot="s27-dense-media" data-media-role="dense-evidence" data-media-fit="cover" data-media-contrast="darken" src="images/28-dense-one-pro.png" alt="XREAL One Pro 正面三分之四视角产品图"></div>
+            <div class="dense-item"><span class="dense-progress-num">03</span><div><span class="dense-item-title">个人助理</span><p class="dense-item-copy">理解上下文后，系统才能主动提供连续协作。</p></div></div>
+          </div>
+        </article>
+        <article class="dense-panel">
+          <h3 class="dense-panel-title">头戴设备的三项要求</h3>
+          <div class="dense-panel-body dense-feature-list">
+            <div class="dense-item dense-feature"><span class="dense-feature-icon" aria-hidden="true">visibility</span><div><span class="dense-item-title">第一人称输入</span><p class="dense-item-copy">持续、自然地接收场景信号，减少重复说明。</p></div></div>
+            <div class="dense-item dense-feature"><span class="dense-feature-icon" aria-hidden="true">neurology</span><div><span class="dense-item-title">贴近人体感知</span><p class="dense-item-copy">视觉、听觉与语音在同一空间语境中协同。</p></div></div>
+            <div class="dense-item dense-feature"><span class="dense-feature-icon" aria-hidden="true">schedule</span><div><span class="dense-item-title">全天候佩戴</span><p class="dense-item-copy">重量、外形与连接方式必须适应真实日常。</p></div></div>
+          </div>
+        </article>
+      </div>
+      <div class="dense-source">Structure fixture · illustrative synthesis, not product roadmap or sourced market claim</div>
+    </div>
   </div>
 </section>
 
@@ -2933,6 +3000,20 @@ if(motion){
     if(source) animate(source, {opacity:[0,1]}, {duration:.3, delay:1.1, easing:EASE_PROD});
   }
 
+  /* ---------- recipe: dense-synthesis · S27 高密度同页综合 ---------- */
+  function rDenseSynthesis(slide){
+    const head = slide.querySelector('[data-anim="line"]');
+    if(head) fade(head, {duration:.5, y:8});
+    const thesis = slide.querySelector('.dense-thesis');
+    const source = slide.querySelector('.dense-source');
+    if(thesis) animate(thesis, {opacity:[0,1], y:[8,0]}, {duration:.4, delay:.22, easing:EASE_PROD});
+    slide.querySelectorAll('.dense-panel').forEach((panel, i)=>animate(panel,
+      {opacity:[0,1], y:[10,0]}, {duration:.44, delay:.42 + i*.11, easing:EASE_ENTRY_EXP}));
+    slide.querySelectorAll('.dense-item').forEach((item, i)=>animate(item,
+      {opacity:[0,1]}, {duration:.28, delay:.78 + i*.045, easing:EASE_PROD}));
+    if(source) animate(source, {opacity:[0,1]}, {duration:.28, delay:1.18, easing:EASE_PROD});
+  }
+
   /* ---------- recipe: duo-mirror · Latent vs Deterministic ----------
      左 80ms 入,vrule 从中心 scaleY 0→1,右 240ms 入 */
   function rDuoMirror(slide, all){
@@ -3360,12 +3441,13 @@ if(motion){
     'line-draw': rLineDraw,
     'portfolio-roadmap': rPortfolioRoadmap,
     'milestone-gallery': rMilestoneGallery,
+    'dense-synthesis': rDenseSynthesis,
   };
 
   function revealStatic(slide){
     resetAnims(slide);
     document.getAnimations?.().forEach(a=>a.cancel());
-    slide.querySelectorAll('[data-anim],.row-fill,.tl-node,.stack-block,.bar-tower,.sub-card,.col,.vrule,.kpi-cell,.card-fill,.card-accent,.card-ink,.chart-bar,.chart-value,.chart-line,.chart-point,.line-end-label,.roadmap-item,.milestone-entry,.milestone-synthesis')
+    slide.querySelectorAll('[data-anim],.row-fill,.tl-node,.stack-block,.bar-tower,.sub-card,.col,.vrule,.kpi-cell,.card-fill,.card-accent,.card-ink,.chart-bar,.chart-value,.chart-line,.chart-point,.line-end-label,.roadmap-item,.milestone-entry,.milestone-synthesis,.dense-thesis,.dense-panel,.dense-item,.dense-source')
       .forEach(el=>{
         el.style.opacity='1';
         el.style.transform='none';

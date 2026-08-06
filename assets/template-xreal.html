@@ -1409,7 +1409,7 @@
   .roadmap-copy{min-width:0;display:flex;flex-direction:column;gap:.45vh}
   .roadmap-title{font-size:max(16px,1vw);font-weight:var(--weight-title);line-height:1.08}
   .roadmap-meta{font-size:max(13px,.7vw);line-height:1.3;color:var(--text-secondary)}
-  .roadmap-source,.milestone-source{font-size:max(13px,.72vw);line-height:1.35;color:var(--text-helper);border-top:1px solid var(--border-subtle);padding-top:.9vh}
+  .roadmap-source,.milestone-source,.dense-source{font-size:max(14px,.72vw);line-height:1.35;color:var(--text-helper);border-top:1px solid var(--border-subtle);padding-top:.9vh}
 
   /* S26 Milestone Gallery: 连续年份卡片 + 媒体证据 + 底部综合链。 */
   .milestone-gallery{
@@ -1427,6 +1427,50 @@
   .milestone-chain{display:flex;align-items:flex-start;justify-content:flex-end;gap:1.2vw}
   .milestone-chain-step{position:relative;min-width:0;padding-top:.8vh;border-top:1px solid var(--ink);font-size:max(13px,.72vw);line-height:1.2;color:var(--text-secondary);white-space:nowrap}
   .milestone-chain-step:not(:last-child)::after{content:"→";position:absolute;left:calc(100% + .35vw);top:.55vh;color:var(--text-helper)}
+
+  /* S27 Dense Synthesis: 同页保留相互依赖的大量信息；以三组并行结构组织，不做 dashboard。 */
+  .dense-synthesis{
+    display:grid;grid-template-rows:auto minmax(0,1fr) auto;gap:1.2vh;
+    flex:1;min-height:0;margin-top:3.6vh
+  }
+  .dense-thesis{
+    display:grid;grid-template-columns:auto minmax(0,1fr);gap:1.2vw;align-items:start;
+    padding:1.4vh 1.2vw;background:var(--ink);color:var(--paper);
+    border:1px solid var(--ink);border-radius:var(--radius-sm)
+  }
+  .dense-thesis-label{font-size:max(14px,.76vw);font-weight:var(--weight-label);line-height:1.35;color:rgba(255,255,255,.62);white-space:nowrap}
+  .dense-thesis-copy{font-size:max(18px,1vw);font-weight:var(--weight-label);line-height:1.42;max-width:92ch}
+  .dense-columns{display:grid;grid-template-columns:var(--dense-columns,1.08fr 1fr 1.16fr);gap:1vw;min-height:0}
+  .dense-panel{
+    min-width:0;min-height:0;overflow:hidden;padding:var(--sp-5);
+    display:grid;grid-template-rows:auto minmax(0,1fr);gap:1.6vh;
+    background:var(--paper);border:1px solid var(--border-subtle);border-radius:var(--radius-sm);box-shadow:none
+  }
+  .dense-panel-title{font-size:max(20px,1.3vw);font-weight:var(--weight-title);line-height:1.12;letter-spacing:-.015em}
+  .dense-panel-body{min-height:0;display:grid;align-content:stretch}
+  .dense-item{min-width:0;padding:1.15vh 0;border-top:1px solid var(--border-subtle)}
+  .dense-item:first-child{border-top-color:var(--border-strong)}
+  .dense-item-kicker{display:block;font-size:max(14px,.72vw);font-weight:var(--weight-label);line-height:1.25;color:var(--text-helper);margin-bottom:.55vh}
+  .dense-item-title{display:block;font-size:max(17px,.98vw);font-weight:var(--weight-title);line-height:1.18}
+  .dense-item-copy{font-size:max(16px,.82vw);line-height:1.4;color:var(--text-secondary);margin-top:.55vh}
+  .dense-comparison{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.9vw;height:100%}
+  .dense-comparison .dense-item{display:flex;flex-direction:column;justify-content:space-between;padding-inline:.1vw}
+  .dense-stage-mark{font-size:max(24px,1.8vw);font-weight:var(--weight-emphasis);line-height:1;letter-spacing:-.03em}
+  .dense-progression,.dense-feature-list{display:grid;grid-template-rows:repeat(3,minmax(0,1fr));height:100%}
+  .dense-progression .dense-item{display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:.8vw;align-content:center}
+  .dense-progress-num{font-size:max(14px,.72vw);font-weight:var(--weight-label);line-height:1.25;color:var(--text-helper)}
+  .dense-progression .dense-item-copy{grid-column:2}
+  .dense-item.is-focus{
+    position:relative;isolation:isolate;overflow:hidden;margin:.7vh 0;padding:1.15vh .9vw;border:0;border-radius:var(--radius-sm);
+    grid-template-columns:auto minmax(0,1fr);background:var(--ink);color:var(--paper)
+  }
+  .dense-item.is-focus::after{content:"";position:absolute;inset:0;z-index:1;background:rgba(0,0,0,.34);pointer-events:none}
+  .dense-item.is-focus > :not(.dense-media){position:relative;z-index:2}
+  .dense-item.is-focus .dense-progress-num,.dense-item.is-focus .dense-item-copy{color:rgba(255,255,255,.66)}
+  .dense-media{position:absolute;inset:-42% -8% -24% 24%;z-index:0;width:84%;height:166%;object-fit:cover;object-position:center 60%;filter:brightness(1.08) saturate(.78)}
+  .dense-feature{display:grid;grid-template-columns:minmax(28px,2vw) minmax(0,1fr);column-gap:.8vw;align-content:center}
+  .dense-feature-icon{font-family:"Material Symbols Outlined";font-size:max(24px,1.55vw);font-weight:400;line-height:1;color:var(--ink)}
+  .dense-feature .dense-item-copy{grid-column:2}
 
   /* XREAL ECharts 扩展：复杂图表使用现有版式骨架，不生成 dashboard 容器 */
   .xreal-echart-stage{
@@ -1610,7 +1654,7 @@
      ============================================================ -->
 <!-- SLIDES_HERE · 在此处粘贴 <section class="slide ..."> 页面块
      - 页面骨架直接从 references/layouts-swiss.md 拷贝
-     - data-animate="..." 必须命中下方 RECIPES 字典里的已有 recipe 名之一；S23-S26 分别使用 chart-rise / line-draw / portfolio-roadmap / milestone-gallery
+     - data-animate="..." 必须命中下方 RECIPES 字典里的已有 recipe 名之一；S23-S27 分别使用 chart-rise / line-draw / portfolio-roadmap / milestone-gallery / dense-synthesis
      - 主题色固定为本文件 :root 中的 XREAL 黑白灰体系 -->
 
 <!-- ============ 示例:第 1 页 · Hero Cover · 纯黑色满屏(默认推荐) ============
@@ -2507,6 +2551,21 @@ if(motion){
     if(source) animate(source, {opacity:[0,1]}, {duration:.3, delay:1.1, easing:EASE_PROD});
   }
 
+  /* ---------- recipe: dense-synthesis · S27 高密度同页综合 ----------
+     先建立总判断，再并行呈现三组结构，最后展开组内条目。 */
+  function rDenseSynthesis(slide){
+    const head = slide.querySelector('[data-anim="line"]');
+    if(head) fade(head, {duration:.5, y:8});
+    const thesis = slide.querySelector('.dense-thesis');
+    const source = slide.querySelector('.dense-source');
+    if(thesis) animate(thesis, {opacity:[0,1], y:[8,0]}, {duration:.4, delay:.22, easing:EASE_PROD});
+    slide.querySelectorAll('.dense-panel').forEach((panel, i)=>animate(panel,
+      {opacity:[0,1], y:[10,0]}, {duration:.44, delay:.42 + i*.11, easing:EASE_ENTRY_EXP}));
+    slide.querySelectorAll('.dense-item').forEach((item, i)=>animate(item,
+      {opacity:[0,1]}, {duration:.28, delay:.78 + i*.045, easing:EASE_PROD}));
+    if(source) animate(source, {opacity:[0,1]}, {duration:.28, delay:1.18, easing:EASE_PROD});
+  }
+
   /* ---------- recipe: duo-mirror · Latent vs Deterministic ----------
      左 80ms 入,vrule 从中心 scaleY 0→1,右 240ms 入 */
   function rDuoMirror(slide, all){
@@ -2934,12 +2993,13 @@ if(motion){
     'line-draw': rLineDraw,
     'portfolio-roadmap': rPortfolioRoadmap,
     'milestone-gallery': rMilestoneGallery,
+    'dense-synthesis': rDenseSynthesis,
   };
 
   function revealStatic(slide){
     resetAnims(slide);
     document.getAnimations?.().forEach(a=>a.cancel());
-    slide.querySelectorAll('[data-anim],.row-fill,.tl-node,.stack-block,.bar-tower,.sub-card,.col,.vrule,.kpi-cell,.card-fill,.card-accent,.card-ink,.chart-bar,.chart-value,.chart-line,.chart-point,.line-end-label,.roadmap-item,.milestone-entry,.milestone-synthesis')
+    slide.querySelectorAll('[data-anim],.row-fill,.tl-node,.stack-block,.bar-tower,.sub-card,.col,.vrule,.kpi-cell,.card-fill,.card-accent,.card-ink,.chart-bar,.chart-value,.chart-line,.chart-point,.line-end-label,.roadmap-item,.milestone-entry,.milestone-synthesis,.dense-thesis,.dense-panel,.dense-item,.dense-source')
       .forEach(el=>{
         el.style.opacity='1';
         el.style.transform='none';

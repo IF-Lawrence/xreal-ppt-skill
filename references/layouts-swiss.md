@@ -1,6 +1,6 @@
 # Layouts · XREAL Style
 
-24 个正式登记版式 · 严格模块化网格 · 每个版式说明用途、骨架、关键类名、专属动效。
+25 个正式登记版式 · 严格模块化网格 · 每个版式说明用途、骨架、关键类名、专属动效。
 
 > 这是本 skill 唯一支持的版式系统。类名和结构都以 `assets/template-xreal.html` 为准；一份 deck 只能使用 XREAL Style 版式。
 
@@ -8,9 +8,9 @@
 
 ## XREAL Style locked mode(必须先读)
 
-本主题的 golden source 是仓库内的 `assets/template-xreal.html`(由作者本机的原始参考 PPT 派生;原始文件不随仓库分发)。`swiss-layout-lock.md` 当前登记 `S01-S08`、`S11-S26`；原 `S09 Dot Matrix Statement` 与 `S10 Split Closing` 已移除。
+本主题的 golden source 是仓库内的 `assets/template-xreal.html`(由作者本机的原始参考 PPT 派生;原始文件不随仓库分发)。`swiss-layout-lock.md` 当前登记 `S01-S08`、`S11-S27`；原 `S09 Dot Matrix Statement` 与 `S10 Split Closing` 已移除。
 
-生成正文页时不要把 XREAL Style 当成“自由组合的风格包”。默认只能使用 `references/swiss-layout-lock.md` 登记的 24 个版式（`S01-S08`、`S11-S26`）。每个 slide 都必须在 `<section>` 上写 `data-layout="Sxx"`。
+生成正文页时不要把 XREAL Style 当成“自由组合的风格包”。默认只能使用 `references/swiss-layout-lock.md` 登记的 25 个版式（`S01-S08`、`S11-S27`）。每个 slide 都必须在 `<section>` 上写 `data-layout="Sxx"`。
 
 **关键约束**:
 
@@ -61,7 +61,7 @@ XREAL Style 不是网页说明页,投屏时不能出现 10-12px 的注释字。�
 | 卡片描述 / 列表 / 时间线说明 / caption / 图注 | `16px` |
 | meta / kicker / mono label / 图表标签 | `14px` |
 
-内容过多时,先压缩文案、拆页或更换 Sxx 版式;禁止靠降低小字字号解决拥挤。图注、时间线说明、KPI 注释、底部 note 尤其要守住这个下限。
+内容过多时,先压缩重复文案或更换 Sxx 版式;禁止靠降低小字字号解决拥挤。若信息必须同时可见且拆开会破坏比较/依赖关系，使用 S27 调整列宽与内部语法，不自动拆页。图注、时间线说明、KPI 注释、底部 note 尤其要守住这个下限。
 
 **角色字重层级（XREAL Style 核心）** — 字重由内容角色固定，同一角色在整套 PPT 中保持一致：
 
@@ -206,13 +206,14 @@ chrome-min(页眉)、主体内容、底部 footnote 都是 canvas-card 的子元
 - 资产自带元素与页面 chrome 冲突时换图或换版式,不要重绘原始资产
 
 **版式多样性硬规则**
-XREAL Style 有 24 个正式登记版式（`S01-S08`、`S11-S26`）,生成时要主动展示版式系统,不要把所有内容都做成 `head + grid-reveal + card`:
+XREAL Style 有 25 个正式登记版式（`S01-S08`、`S11-S27`）,生成时要主动展示版式系统,不要把所有内容都做成 `head + grid-reveal + card`:
 
 - 7-8 页 deck 至少使用 **6 个不同 S 编号版式**
 - 不允许连续 3 页使用同一种主体结构(如三页连续 S19 / 普通卡片)
 - 如果是"测试模板"或"我想看看效果",必须覆盖:封面、收尾、至少 1 个对比/时间线(S08/S11/S02)、至少 1 个结构图(S14/S17/S15)、至少 1 个图片版式(S22 或 S15/S16 图片格)
 - 如果材料包含跨类别多系列数据或连续时间序列,必须在规划阶段显式比较 S23/S24 与现有 S06/S07/P02 的适配性；散点、热力、瀑布、箱线、桑基、网络或层级数据还必须评估 XREAL ECharts Component，不能继续把所有数据压成 KPI 卡片
 - 如果材料同时包含时间/阶段与第二层级维度，显式评估 S25；如果叙事依赖 4-6 张阶段媒体证据，显式评估 S26，不要退化为缺少媒体证据的普通文本卡列表
+- 如果材料必须在一页内同时比较 3 组相互依赖的信息，显式评估 S27；用户要求“不要拆分”时，先重排和去重，不自动分页
 - 图片页不等于新发明一页。单图用 S22,多图用 S15/S16 的原始网格骨架改造
 - 每页写代码前先列 `内部页序（不渲染）→ data-layout → 为什么选它 → 图片槽位`;生成后用 validator 检查
 
@@ -274,11 +275,11 @@ XREAL Style 有 24 个正式登记版式（`S01-S08`、`S11-S26`）,生成时要
 | 通用 | S01, S03, S08, S11, S19 | 大多数叙事 deck 都能用,但仍要满足内容形状 |
 | 条件通用 | S04, S13, S16 | 取决于数量是否刚好匹配:3/6 项 |
 | 数据专用 | S02, S06, S07, S18, S20, S21, S22, S23, S24 | 必须有真实时间、数值、指标或案例数据；S24 还必须有连续横轴 |
-| 结构专用 | S05, S14, S15, S17, S25, S26 | 必须有三层、闭环、矩阵、层级/生态关系、二维路线或媒体化阶段序列；不适合普通段落 |
+| 结构专用 | S05, S14, S15, S17, S25, S26, S27 | 必须有三层、闭环、矩阵、层级/生态关系、二维路线、媒体化阶段序列或必须同页的三组综合；不适合普通段落 |
 
 ---
 
-## 24 个登记版式
+## 25 个登记版式
 
 ### P1 · Cover · 封面页
 
@@ -994,6 +995,40 @@ XREAL Style 有 24 个正式登记版式（`S01-S08`、`S11-S26`）,生成时要
 
 ---
 
+### P27 · Dense Synthesis · 高密度同页综合
+
+**用途**:在拆页会破坏横向比较、依赖关系或共同判断时，把大量相关信息保留在同一页。
+**适用内容类型**:**1 个共同结论 + 恰好 3 个主信息区 + 7-12 个条目**。典型内容包括三个维度的同步判断、三个系统域的并行解释、阶段比较 + 能力链 + 要求列表。普通三栏摘要改用 S13/S19；原始大表格或多个独立复杂图表仍不适用。
+**骨架**:左上结论标题 / 全宽总述带 / 三个等高并行主面板 / 组内不同但明确的比较、递进或解释语法 / 来源或示意声明。
+**关键类**:`.dense-synthesis` `.dense-thesis` `.dense-columns` `.dense-panel` `.dense-panel-title` `.dense-panel-body` `.dense-item` `.dense-comparison` `.dense-progression` `.dense-feature-list` `.dense-source`
+**动效 recipe**:`dense-synthesis` — 标题与总述带先入 → 三主面板并行建立 → 组内条目分组进入。
+**注意**:
+- 参考图只提供“总述 + 三组并行 + 组内异构”的信息骨架；禁止复制蓝色主色、UI 控件、彩色面板、大圆角、阴影、pill 或不统一的图标风格。
+- 三个 `.dense-panel` 使用统一白/浅灰底、1px 中性边界、四边等距 padding、8px 小圆角和一致间距；内部条目优先使用 hairline，不继续堆多层圆角卡片。
+- 全页共 7-12 个 `.dense-item`，每面板至少 2 项；正文 ≥16px，meta ≥14px。最多一个有明确依据的 `.is-focus` 黑色焦点区和一张 `.dense-media`；媒体仅可作为该焦点区的 full-bleed 背景，并声明 `cover + darken`，不得缩成装饰缩略图。
+- 用户要求“一页总览”或“不要拆分”时，溢出优先通过删除重复措辞、缩短标签、调整列宽和内部网格解决；不得删除关键内容或自动拆页。
+- 三组信息必须共享一个可表述的共同结论；若三个面板互不相关，只是为了塞满页面，则应重新规划叙事。
+
+```html
+<section class="slide light" data-layout="S27" data-animate="dense-synthesis">
+  <div class="canvas-card">
+    <header class="chrome-min">...</header>
+    <div data-anim="line"><div class="t-cat">[必填] 综合主题</div><h2 class="xreal-page-title">[必填] 三组信息共同支持的结论</h2></div>
+    <div class="dense-synthesis">
+      <div class="dense-thesis"><span class="dense-thesis-label">共同判断</span><p class="dense-thesis-copy">[必填] 先说明为什么三组信息需要同时被理解。</p></div>
+      <div class="dense-columns" style="--dense-columns:1.08fr 1fr 1.16fr">
+        <article class="dense-panel"><h3 class="dense-panel-title">[必填] 比较维度</h3><div class="dense-panel-body dense-comparison"><div class="dense-item">...</div><div class="dense-item">...</div><div class="dense-item">...</div></div></article>
+        <article class="dense-panel"><h3 class="dense-panel-title">[必填] 能力递进</h3><div class="dense-panel-body dense-progression"><div class="dense-item">...</div><div class="dense-item is-focus">...</div><div class="dense-item">...</div></div></article>
+        <article class="dense-panel"><h3 class="dense-panel-title">[必填] 解释列表</h3><div class="dense-panel-body dense-feature-list"><div class="dense-item dense-feature">...</div><div class="dense-item dense-feature">...</div><div class="dense-item dense-feature">...</div></div></article>
+      </div>
+      <div class="dense-source">Source · [必填]；示意内容明确写 Illustrative</div>
+    </div>
+  </div>
+</section>
+```
+
+---
+
 ### XREAL ECharts Component · 复杂图表扩展
 
 **用途**:在不增加正文版式编号的前提下，用 Apache ECharts 处理复杂数据几何、布局、动画和必要交互。
@@ -1133,6 +1168,9 @@ XREAL Style 有 24 个正式登记版式（`S01-S08`、`S11-S26`）,生成时要
 | 案例图 + 数据落地 | P22 Image Hero |
 | 3-8 类别 × 2-4 系列同尺度比较 | P23 Data Chart |
 | 时间 / 连续变量趋势与拐点 | P24 Line Chart |
+| 时间 × 第二层级的产品组合迁移 | P25 Portfolio Roadmap Matrix |
+| 4-6 个阶段的媒体证据序列 | P26 Milestone Gallery |
+| 必须同页的三组相互依赖信息 | P27 Dense Synthesis |
 | 地点 / 路线 / 人物住所关系 | S08 + XREAL Map Component |
 | 单图解释论点 / 图文混排实验 | E01 XREAL Image Split（默认禁用） |
 | 2-3 张图片/截图证据链实验 | E02 XREAL Evidence Grid（默认禁用） |
@@ -1163,6 +1201,7 @@ XREAL Style 有 24 个正式登记版式（`S01-S08`、`S11-S26`）,生成时要
 | deck 收尾 | P9 Closing(每 deck 仅 1 次) | |
 | 1 张核心图片 + 一段解释 | S22 Image Hero 或用户明确启用 E01 | E01 默认禁用 |
 | 2-3 张同类图片 | S15/S16 图片格或用户明确启用 E02 | E02 默认禁用 |
+| 大量相互依赖信息必须同页 | P27 Dense Synthesis | 普通卡片网格 / 自动拆页 / dashboard 控件 |
 
 **雷区案例**:用 P7 H-Bar Chart 展示「智能补全 / 实时协作 / 自主代理」这种**无可比百分比的概念列举**,编造 96/88/78 之类数字 → **数据不可信,版式滥用**。这种内容应该用 P2(若有时间维度)或 P3 Statement(若是论断)。
 

@@ -1,6 +1,6 @@
 ---
 name: xreal-ppt-skill
-description: 生成、改版和校验 XREAL 品牌风格的横向翻页网页演示文稿（离线单文件 HTML）。使用 24 个锁定版式、XREAL 黑白灰与克制红色语义、XREAL Diatype 或 IBM Plex Sans SC、官方产品媒体资产、Motion One 动效以及受控 ECharts 复杂图表。用户要求制作或审查 XREAL 发布会、产品介绍、数据汇报、方法论、路线或地图类网页 PPT，或提到「XREAL Style」「XREAL PPT」「XREAL deck」「横向翻页 HTML PPT」时使用。
+description: 生成、改版和校验 XREAL 品牌风格的横向翻页网页演示文稿（离线单文件 HTML）。使用 25 个锁定版式、XREAL 黑白灰与克制红色语义、XREAL Diatype 或 IBM Plex Sans SC、官方产品媒体资产、Motion One 动效以及受控 ECharts 复杂图表。用户要求制作或审查 XREAL 发布会、产品介绍、数据汇报、方法论、路线、地图或高密度一页综合类网页 PPT，或提到「XREAL Style」「XREAL PPT」「XREAL deck」「横向翻页 HTML PPT」时使用。
 ---
 
 ## 这个 Skill 做什么
@@ -11,7 +11,7 @@ description: 生成、改版和校验 XREAL 品牌风格的横向翻页网页演
 - 按整套 PPT 的语言语境选择品牌字体：纯英文使用 XREAL Diatype，中文或中英混排使用 IBM Plex Sans SC
 - 12/16 列网格、非对称留白、统一 8px 小圆角色块和 1px hairline
 - 每份 deck 固定使用 XREAL 黑白灰品牌体系；红色只作为关键语义强调，不提供任意自定义颜色
-- 正文页使用 24 个锁定版式（`S01-S08`、`S11-S26`）；`S09 Dot Matrix Statement` 与 `S10 Split Closing` 已移除，首页/尾页使用明确登记的 XREAL 黑色基底变体
+- 正文页使用 25 个锁定版式（`S01-S08`、`S11-S27`）；`S09 Dot Matrix Statement` 与 `S10 Split Closing` 已移除，首页/尾页使用明确登记的 XREAL 黑色基底变体
 - 支持键盘、滚轮、触屏、ESC 索引、Google Material Symbols Outlined 图标和 Motion One 入场动效
 - 复杂散点、热力、瀑布、箱线、桑基、关系和层级图可使用受控的 XREAL ECharts Component；它扩展现有版式，不增加正文版式编号
 
@@ -26,7 +26,7 @@ description: 生成、改版和校验 XREAL 品牌风格的横向翻页网页演
 
 不适合：
 
-- 大段表格数据、同页堆叠多个复杂图表或 dashboard 式筛选器，优先拆页或改用数据分析工具
+- 大段原始表格、同页堆叠多个复杂图表或 dashboard 式筛选器，优先改用数据分析工具；若大量信息必须同时可见且彼此依赖，使用 S27 先压缩重复文案并重组，不要自动拆页
 - 培训课件或多人在线协作编辑
 
 ## 工作流
@@ -140,7 +140,7 @@ cp "<SKILL_ROOT>/assets/brand/xreal-logo-black.svg" "项目/XXX/ppt/assets/brand
 - 产品图标使用 Google Material Symbols Outlined，统一 `FILL 0`，不要使用 emoji、Lucide 或手绘 SVG 图标
 - 禁止 AI 或页面代码把人物、设备、场景、抽象科技图形绘制成 SVG、Canvas 或 CSS 插画配图；SVG 仅用于已有品牌资产和承担信息表达的图表、地图、流程、数据几何，并标记 `data-svg-role`
 - 黑、白、灰承担结构与信息层级；XREAL 红色仅用于关键数据/警示/关键操作语义，银色/金色仅作为极少量技术或价值标记
-- 卡片型实体块、图片框和控件统一使用 `--radius-sm:8px`；S04 Six Cells、S05 Three Layers、S06 KPI Tower、S07 Horizontal Bar、S13 Three Forces、S16 Multi-card Brief、S26 Milestone Gallery 必须应用该 token。S06/S23 等接触 x 轴的垂直柱体只保留顶部 8px 圆角，底角为直角并贴齐共同基线；独立 KPI cap 仍为四角小圆角。S19 Bento 只圆整体外框，内部区块保持直角。页面画布、分割线和坐标轴保持直线；禁止装饰性渐变、阴影、发光、大圆角、胶囊形、玻璃拟态或多色高亮。唯一例外是 full-bleed 照片/技术媒体为保护压图文字而使用的中性黑透明蒙版，可按文字位置由浅到深，但不得形成彩色或可感知的装饰渐变
+- 卡片型实体块、图片框和控件统一使用 `--radius-sm:8px`；S04 Six Cells、S05 Three Layers、S06 KPI Tower、S07 Horizontal Bar、S13 Three Forces、S16 Multi-card Brief、S26 Milestone Gallery 与 S27 Dense Synthesis 主面板必须应用该 token。S06/S23 等接触 x 轴的垂直柱体只保留顶部 8px 圆角，底角为直角并贴齐共同基线；独立 KPI cap 仍为四角小圆角。S19 Bento 只圆整体外框，内部区块保持直角。页面画布、分割线和坐标轴保持直线；禁止装饰性渐变、阴影、发光、大圆角、胶囊形、玻璃拟态或多色高亮。唯一例外是 full-bleed 照片/技术媒体为保护压图文字而使用的中性黑透明蒙版，可按文字位置由浅到深，但不得形成彩色或可感知的装饰渐变
 - S16 Multi-card Brief 默认六卡等权、全部使用中性白底卡；不得为了制造视觉焦点而强行强调。只有内容本身存在明确的首选、推荐、关键或风险优先级时，才允许最多一张 `.is-accent`，并必须添加 `data-emphasis="primary|recommended|critical|risk"` 说明语义
 - S04 `.sub-card` 与 S16 `.brief-card` 分别使用 `--sub-card-pad:2.2vh`、`--brief-card-pad:2.2vh`，四边内边距保持一致；禁止重新写成不同的 `vh / vw` 横纵 padding。S04 右上编号的 `top / right` 也必须使用同一个 `--sub-card-pad`
 - KPI / 图表展示级大数字的单位（如 `°`、`%`、`ms`、`Hz`、`in`）统一挂在数字右上肩位，使用 `vertical-align:text-top`、`--unit-mark-opacity:.62` 且不得与数字拆行；文字单位统一间距 `--unit-mark-gap:.18em`，角度使用更紧的 `--unit-degree-gap:.03em`。`screen` 等多字符英文词单位必须额外使用 `.unit-word`，恢复正常字距与词距，不得继承 KPI 数字的负 tracking。正文句子中的单位作为普通文本随正文基线。角度使用 Unicode `°` 或 `<sup class="unit-degree">°</sup>`，绝不使用下标；只有科学指数与数学/化学语义允许真正的上标或下标
@@ -239,7 +239,7 @@ S12 manifesto 中的产品标志只承担身份落款，不是第二主标题。
 
 #### 3.3 · 选择锁定版式
 
-正文页只能使用 24 个已登记版式（`S01-S08`、`S11-S26`）；`S09 Dot Matrix Statement` 与 `S10 Split Closing` 已移除。首页/尾页只能使用 `XREAL-COVER-BLACK` / `XREAL-CLOSING-BLACK`。每个 section 必须写 `data-layout="Sxx"`。
+正文页只能使用 25 个已登记版式（`S01-S08`、`S11-S27`）；`S09 Dot Matrix Statement` 与 `S10 Split Closing` 已移除。首页/尾页只能使用 `XREAL-COVER-BLACK` / `XREAL-CLOSING-BLACK`。每个 section 必须写 `data-layout="Sxx"`。
 
 封底 `XREAL-CLOSING-BLACK` 必须是整套 deck 的最后一个 section，并使用 `.slide.accent + .xreal-closing-lockup + .xreal-closing-thanks + .xreal-closing-mark + .xreal-closing-logo` 骨架与 `data-animate="closing-thanks"`。大号 `Thanks` 居中，小号企业 Logo 固定在底部中央；可按 `data-media-match` 使用安静的官方媒体背景。进入该页时隐藏底部分页导航。所有结论与行动建议应在封底前一页完成。
 
@@ -255,6 +255,7 @@ S12 manifesto 中的产品标志只承担身份落款，不是第二主标题。
 | S16 / S22 | 多卡简报 / 21:9 Image Hero |
 | S23 / S24 | 分组数据比较图 / 时间或连续变量折线趋势图 |
 | S25 / S26 | 时间 × 层级的产品路线矩阵 / 媒体证据支持的里程碑画廊 |
+| S27 | 必须同页保留的大量相互依赖信息：总述 + 三组并行综合 |
 
 默认 XREAL Style locked mode：不要临时启用历史实验 `P23/P24`、Evidence Grid、自由 SVG 页面或未登记正文结构；它们与正式 `S23/S24` 图表版式无关。只有用户明确要求实验版式时才可例外，并在验证时显式允许。
 
@@ -263,6 +264,8 @@ S12 manifesto 中的产品标志只承担身份落款，不是第二主标题。
 图表选版先判断数据形状：3-8 个无连续顺序类别 × 2-4 个同量纲系列使用 `S23 Data Chart`;时间或连续变量上的 1-3 个系列、每系列 4-12 个点使用 `S24 Line Chart`。简单柱图/折线优先使用原生组件；复杂分布、矩阵、流向、网络或层级数据才添加 `data-chart-engine="echarts"`，并按 `references/xreal-echarts.md` 映射到 S23/S24/S17/S08。所有图表必须提供单位、HTML 图例、数据来源和结论标题；不同量纲默认拆图，禁止无说明双轴。手写 SVG 只用于 S24 的折线与点且不写 `<text>`；ECharts 运行时生成的 SVG/Canvas 仅限合法图表几何。
 
 产品组合同时包含时间/阶段和第二层级维度时，使用 `S25 Portfolio Roadmap Matrix`，而不是把媒体卡塞进 S23 柱图。S25 只允许 2-4 个 period、2-4 条中性泳道和 3-7 个媒体节点；纵轴标签列按内容收紧并左对齐，不为短标签预留大块空白；节点必须声明百分比 `--x/--y/--w/--h`，示意路线必须明确标注为 illustrative。需要用连续媒体证据讲述 4-6 个阶段时使用 `S26 Milestone Gallery`；每个 `.milestone-entry` 使用统一浅灰底、1px 边界、等距 padding 和 8px 小圆角，并包含阶段、媒体、标题和短说明。底部综合链保持扁平 hairline，不做按钮或 ribbon。
+
+当用户明确要求“一页总览”“不要拆分”，或内容只有同时可见才能完成比较、推演或共同判断时，使用 `S27 Dense Synthesis`。它固定为 1 个总述带 + 恰好 3 个主面板 + 7-12 个条目；三个面板可分别使用阶段比较、能力递进和特征解释，但必须共享同一结论。先删除重复措辞、调整列宽和内部网格，再处理溢出；不得删除关键内容或自动拆页。最多 1 个黑色焦点区和 1 张语义媒体；媒体只可作为焦点区的 `cover + darken` 背景，不缩成装饰缩略图。禁止 tab、badge、button、彩色面板、阴影和 dashboard 控件。
 
 硬规则：7-8 页至少使用 6 个不同 `S` 编号，10 页以上至少使用 8 个；数据专用版式必须有真实数据，结构专用版式必须有对应的闭环、矩阵或层级关系。
 
@@ -280,7 +283,7 @@ S12 manifesto 中的产品标志只承担身份落款，不是第二主标题。
 
 #### 3.5 · 投屏字号与字重
 
-最低字号：正文/主要说明 `18px`，卡片描述/列表/时间线/caption `16px`，meta/kicker/图表标签 `14px`。内容放不下时删减、拆页或换版式，不要压到 10-13px。
+最低字号：正文/主要说明 `18px`，卡片描述/列表/时间线/caption `16px`，meta/kicker/图表标签 `14px`。内容放不下时先删减重复文案或换版式，不要压到 10-13px；若用户要求同页保留且信息相互依赖，改用 S27 并重排，不自动拆页。
 
 字重由信息角色固定，同一角色在整套 PPT 中保持一致：
 
@@ -334,12 +337,12 @@ node "<SKILL_ROOT>/scripts/validate-swiss-deck.mjs" "项目/XXX/ppt/index.html"
 
 1. **黑白灰结构 + 红色语义**：黑色承担结构，红色只在关键位置出现。
 2. **语境化无衬线排版**：纯英文 deck 使用 XREAL Diatype，中文或中英混排 deck 使用 IBM Plex Sans SC；任何衬线字体或按字符混用品牌字体都是错的。
-3. **卡片小圆角**：卡片型实体块统一使用 `--radius-sm:8px`，尤其是 S04/S05/S06/S07/S13/S16/S26；S06/S23 等基线柱体只圆顶部两角，底角为 0 并贴齐 x 轴；S19 Bento 只圆整体外框、内部区块直角；页面画布、分割线和坐标轴保持直线；禁止装饰性渐变、阴影、发光、霓虹、大圆角和胶囊形。full-bleed 媒体为保护文字使用的中性黑透明蒙版不属于装饰性渐变。
+3. **卡片小圆角**：卡片型实体块统一使用 `--radius-sm:8px`，尤其是 S04/S05/S06/S07/S13/S16/S26/S27；S06/S23 等基线柱体只圆顶部两角，底角为 0 并贴齐 x 轴；S19 Bento 只圆整体外框、内部区块直角；页面画布、分割线和坐标轴保持直线；禁止装饰性渐变、阴影、发光、霓虹、大圆角和胶囊形。full-bleed 媒体为保护文字使用的中性黑透明蒙版不属于装饰性渐变。
 4. **网格至上**：元素吸附到 12/16 列 grid，左对齐，用留白制造非对称。
 5. **角色化字体层级**：主标题与正文保持明显层级；纯英文主标题默认 500，中文或中英混排主标题默认 600，正文 400，标签 500。
 6. **图片是证据**：先匹配槽位和比例，再生成或适配图片。
 7. **动效可降级**：每页使用语义化 recipe；`B` 键必须能切换到静态可读状态。
-8. **版式必须登记**：正文只从 `S01-S08`、`S11-S26` 选择；`S09` 与 `S10` 已移除，实验结构必须显式标记。
+8. **版式必须登记**：正文只从 `S01-S08`、`S11-S27` 选择；`S09` 与 `S10` 已移除，实验结构必须显式标记。
 9. **复杂图表受控**：ECharts 只负责复杂数据几何、布局与交互，必须使用 XREAL 主题、类型白名单和离线单文件流程，不得带入默认 dashboard 视觉。
 10. **开场/收束媒体**：封面与封底使用 `#000000` 基底并声明 `data-media-match`；命中合适官方媒体时使用登记的背景类，不使用 ASCII、纹理、CSS 图形或动态背景。
 11. **减法优先**：移除无信息价值的角标、眉题和分割线；bullet 统一使用实心圆点。

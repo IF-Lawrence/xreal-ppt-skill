@@ -4,9 +4,9 @@
 
 ## Golden Source
 
-版式基准是仓库内的 `assets/template-xreal.html`(由作者原始参考 PPT 派生;原始文件不随仓库分发)。当前正式登记 24 个版式：`S01-S08`、`S11-S26`；原 `S09 Dot Matrix Statement` 与 `S10 Split Closing` 已移除。
+版式基准是仓库内的 `assets/template-xreal.html`(由作者原始参考 PPT 派生;原始文件不随仓库分发)。当前正式登记 25 个版式：`S01-S08`、`S11-S27`；原 `S09 Dot Matrix Statement` 与 `S10 Split Closing` 已移除。
 
-XREAL Style 生成时,除用户明确要求实验版式外,只能从下面登记的 24 个版式中选择。新增首页/尾页可以使用 Skill 里的黑色基底版本 `XREAL-COVER-BLACK` / `XREAL-CLOSING-BLACK`，并按媒体匹配结果选择纯黑或官方媒体背景；正文页必须来自这 24 个版式。
+XREAL Style 生成时,除用户明确要求实验版式外,只能从下面登记的 25 个版式中选择。新增首页/尾页可以使用 Skill 里的黑色基底版本 `XREAL-COVER-BLACK` / `XREAL-CLOSING-BLACK`，并按媒体匹配结果选择纯黑或官方媒体背景；正文页必须来自这 25 个版式。
 
 ## 生成前硬规则
 
@@ -25,7 +25,7 @@ XREAL Style 生成时,除用户明确要求实验版式外,只能从下面登记
 12. 页面不显示页码;页眉、Logo 后和角标中均不得出现 `01 / NN` 一类计数。
 13. Logo 邻接文字必须按字体单独光学校准:IBM Plex Sans SC 使用 `.26 × Logo 宽度`,XREAL Diatype 使用 `.313 × Logo 宽度`。
 14. 底部导航为极低对比度弱提示:亮底普通/当前 `.08/.18`,暗底普通/当前 `.10/.22`;当前点禁止实色 accent。
-15. 页面画布、分割线和坐标轴保持直线；卡片型实体块统一使用 `--radius-sm:8px`。该规则明确覆盖 S04 Six Cells、S05 Three Layers、S06 KPI Tower、S07 Horizontal Bar、S13 Three Forces、S16 Multi-card Brief、S26 Milestone Gallery；不得使用不同圆角值、大圆角或胶囊形。接触共同基线的垂直柱体是语义例外：只保留 8px 顶部圆角，底角必须为直角并贴齐 x 轴。S19 Bento 只圆整体外框，内部区块保持直角。
+15. 页面画布、分割线和坐标轴保持直线；卡片型实体块统一使用 `--radius-sm:8px`。该规则明确覆盖 S04 Six Cells、S05 Three Layers、S06 KPI Tower、S07 Horizontal Bar、S13 Three Forces、S16 Multi-card Brief、S26 Milestone Gallery 与 S27 Dense Synthesis 主面板；不得使用不同圆角值、大圆角或胶囊形。接触共同基线的垂直柱体是语义例外：只保留 8px 顶部圆角，底角必须为直角并贴齐 x 轴。S19 Bento 只圆整体外框，内部区块保持直角。
 16. 禁止任何霓虹、发光边缘、`text-shadow`、`drop-shadow` 或非 `none` 的 `box-shadow`。
 17. `XREAL-CLOSING-BLACK` 必须是最后一个 section，使用黑色基底 `.slide.accent`；大号 `.xreal-closing-thanks` 居中，小号 `.xreal-closing-logo` 通过 `.xreal-closing-mark` 固定在底部中央。可使用低干扰 lifestyle、conceptual 或品牌 KV 背景，但禁止直接产品 cutout / packshot、split、takeaway、作者日期、页码、CTA 或额外说明。
 
@@ -57,6 +57,7 @@ XREAL Style 生成时,除用户明确要求实验版式外,只能从下面登记
 | S24 | 新增 | Line Chart | 顶部结论标题 + 单位/图例 + 四边完整绘图区 + 主导折线图 + HTML 坐标标签 + 来源；SVG、端点与终值标签置于左右至少 28px 的 `.line-geometry` | 无；只承载时间或连续变量趋势 |
 | S25 | 新增 | Portfolio Roadmap Matrix | 顶部结论标题 + 时间轴 + 2-4 条中性能力泳道 + 3-7 个稀疏媒体节点 + 来源；节点以百分比坐标定位 | 每节点一张语义媒体；8px 小圆角，无阴影；示意路线必须明确声明 |
 | S26 | 新增 | Milestone Gallery | 顶部结论标题 + 4-6 张连续等高小圆角阶段卡；每卡含阶段、媒体、标题、短说明；底部综合结论 + 扁平能力链 + 来源 | 每阶段一张语义媒体；卡片与媒体框均为 8px，无阴影、无强调色卡 |
+| S27 | 新增 | Dense Synthesis | 顶部结论标题 + 全宽总述带 + 恰好 3 个并行主面板 + 来源；组内可分别使用比较、递进、解释语法 | 7-12 个条目；最多 1 个黑色焦点区与 1 张语义媒体；不得因密度自动拆页 |
 
 ### XREAL-CLOSING-BLACK · Brand Back Cover
 
@@ -99,6 +100,14 @@ XREAL Style 生成时,除用户明确要求实验版式外,只能从下面登记
 - 视觉约束:4-6 个 `.milestone-entry` 使用统一浅灰底、1px 中性边界、等距 padding 和 8px 小圆角，卡间距一致；媒体框同样使用 8px。卡片保持等高、无阴影、无单独强调色；底部能力链只用 hairline、自然文本与箭头，不做 filled ribbon、按钮或蓝色导航条。
 - 媒体约束:每个阶段必须有语义匹配媒体，比例与槽位一致；图片只作为证据，不用无关装饰图补齐数量。
 - 动效:使用 `data-animate="milestone-gallery"`；阶段列依次进入，最后呈现综合结论与能力链。
+
+### S27 · Dense Synthesis
+
+- 使用场景:大量信息必须在同一页共同判断，拆开后会破坏比较、依赖或因果关系；不是普通三栏摘要。
+- 必须结构:`.dense-synthesis` + `.dense-thesis` + `.dense-columns` + 恰好 3 个 `.dense-panel` + `.dense-source`；每个面板含 `.dense-panel-title`、`.dense-panel-body` 和至少 2 个 `.dense-item`，全页共 7-12 项。
+- 视觉约束:三个主面板等高、四边等距 padding、1px 中性边界、8px 小圆角、无阴影；内部使用 hairline，不把每个条目继续做成彩色卡片。最多一个 `.is-focus` 黑色焦点区和一张 `.dense-media`；媒体只作为焦点区的 `cover + darken` 背景，不做小缩略图。
+- 密度约束:正文不低于 16px，meta 不低于 14px。溢出时优先压缩重复措辞、调整列宽和内部网格；用户明确要求同页时不得删除关键内容或自动拆页。
+- 动效:使用 `data-animate="dense-synthesis"`；标题与总述带先出现，三主面板并行进入，再展开组内条目。
 
 ### XREAL ECharts Component
 
