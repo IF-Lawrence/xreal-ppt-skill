@@ -55,7 +55,7 @@ const allowedLayouts = new Set([
   'XREAL-COVER-BLACK',
   'XREAL-CLOSING-BLACK',
   'S01', 'S02', 'S03', 'S04', 'S05', 'S06', 'S07', 'S08',
-  'S10', 'S11', 'S12', 'S13', 'S14', 'S15', 'S16', 'S17',
+  'S11', 'S12', 'S13', 'S14', 'S15', 'S16', 'S17',
   'S18', 'S19', 'S20', 'S21', 'S22', 'S23', 'S24',
 ]);
 const echartsKindsByLayout = new Map([
@@ -305,7 +305,7 @@ slides.forEach((slide) => {
   }
 
   if (!layout) {
-    errors.push(`Slide ${slide.idx}: missing data-layout. XREAL Style locked mode requires a registered layout (S01-S08 or S10-S24) or XREAL-COVER-BLACK/XREAL-CLOSING-BLACK.`);
+    errors.push(`Slide ${slide.idx}: missing data-layout. XREAL Style locked mode requires a registered layout (S01-S08 or S11-S24) or XREAL-COVER-BLACK/XREAL-CLOSING-BLACK.`);
   } else if (!allowedLayouts.has(layout)) {
     errors.push(`Slide ${slide.idx}: data-layout="${layout}" is not registered in swiss-layout-lock.md.`);
   }
@@ -460,6 +460,40 @@ slides.forEach((slide) => {
     });
   }
 
+  if (layout === 'S12') {
+    const manifestoMediaTags = [...slide.html.matchAll(/<img\b(?=[^>]*\bclass=["'][^"']*\bmanifesto-media\b[^"']*["'])[^>]*>/gi)].map((match) => match[0]);
+    if (manifestoMediaTags.length > 1) {
+      errors.push(`Slide ${slide.idx}: S12 permits at most one contextual manifesto background; found ${manifestoMediaTags.length}.`);
+    }
+    manifestoMediaTags.forEach((tag) => {
+      if (!/\bdata-image-slot=["']s12-manifesto-background["']/i.test(tag) || !/\bdata-media-role=["']context-background["']/i.test(tag)) {
+        errors.push(`Slide ${slide.idx}: S12 .manifesto-media must declare data-image-slot="s12-manifesto-background" and data-media-role="context-background".`);
+      }
+      if (!/\bdata-media-kind=["'](?:lifestyle|conceptual|brand-kv)["']/i.test(tag)) {
+        errors.push(`Slide ${slide.idx}: S12 background media must be lifestyle, conceptual, or brand-kv; product cutouts and packshots are not permitted.`);
+      }
+      if (!/\bdata-media-fit=["']full-bleed["']/i.test(tag) || !/\bdata-media-contrast=["']darken["']/i.test(tag)) {
+        errors.push(`Slide ${slide.idx}: S12 background media must use data-media-fit="full-bleed" and data-media-contrast="darken".`);
+      }
+    });
+  }
+
+  if (layout === 'S14') {
+    const classCount = (className) => [...slide.html.matchAll(new RegExp(`<[^>]+\\bclass=["'][^"']*\\b${className}\\b[^"']*["'][^>]*>`, 'gi'))].length;
+    const nodeCount = classCount('loop-node');
+    const declaredNodeCount = Number(slide.html.match(/<[^>]+\bclass=["'][^"']*\bloop-visual\b[^"']*["'][^>]*\bdata-loop-count=["']([3-5])["'][^>]*>/i)?.[1]);
+    const segmentCount = classCount('loop-segment');
+    const returnCount = [...slide.html.matchAll(/<[^>]+\bclass=["'][^"']*\bloop-segment\b[^"']*\breturn\b[^"']*["'][^>]*>/gi)].length;
+    if (nodeCount < 3 || nodeCount > 5) errors.push(`Slide ${slide.idx}: S14 requires 3-5 HTML .loop-node labels; found ${nodeCount}.`);
+    if (declaredNodeCount !== nodeCount) errors.push(`Slide ${slide.idx}: S14 .loop-visual must declare data-loop-count matching its HTML nodes; declared ${Number.isFinite(declaredNodeCount) ? declaredNodeCount : 'none'}, found ${nodeCount}.`);
+    if (classCount('loop-core') !== 1) errors.push(`Slide ${slide.idx}: S14 requires exactly one .loop-core conclusion.`);
+    if (classCount('loop-track') !== 1 || segmentCount < 4) errors.push(`Slide ${slide.idx}: S14 requires one low-contrast .loop-track and at least four directional .loop-segment paths.`);
+    if (returnCount > 1) errors.push(`Slide ${slide.idx}: S14 permits red emphasis only on one semantic return segment; found ${returnCount}.`);
+    if (/<circle\b/i.test(slide.html) || /\bloop-(?:dot|label|ring)\b/i.test(slide.html)) {
+      errors.push(`Slide ${slide.idx}: S14 uses the retired coarse circle/dot/external-label grammar. Use one fine loop, HTML nodes, and a center conclusion.`);
+    }
+  }
+
   if (layout === 'S17') {
     const grammarTags = [...slide.html.matchAll(/<[^>]+\bdata-system-grammar=["'](flow|hierarchy|network|containment)["'][^>]*>/gi)];
     const nodeCount = [...slide.html.matchAll(/<article\b(?=[^>]*\bclass=["'][^"']*\bsystem-node\b[^"']*["'])[^>]*>/gi)].length;
@@ -603,7 +637,7 @@ slides.forEach((slide) => {
     errors.push(`Slide ${slide.idx}: decorative dot/pattern class found. Dot Matrix Statement was removed; use typography, grid, and semantic structure instead.`);
   }
 
-  const isStatement = layout === 'S03' || layout === 'S10' || layout === 'XREAL-COVER-BLACK' || layout === 'XREAL-CLOSING-BLACK';
+  const isStatement = layout === 'S03' || layout === 'XREAL-COVER-BLACK' || layout === 'XREAL-CLOSING-BLACK';
   const topChunk = slide.html.slice(0, 1800);
 
   if (!isStatement && /text-align\s*:\s*center/i.test(topChunk)) {
@@ -1049,6 +1083,25 @@ async function runRenderedMeasurements() {
             issues.push('row-local vertical axis is missing or does not align with the node centers');
           }
         });
+        timeline.querySelectorAll('.tl-head,.tl-node:not(:last-child)').forEach((row) => {
+          const rowRect = row.getBoundingClientRect();
+          const ruleStyle = getComputedStyle(row, '::after');
+          const ruleStart = rowRect.left + parseFloat(ruleStyle.left);
+          if (ruleStyle.display === 'none' || parseFloat(ruleStyle.height) < .5) {
+            issues.push('header or row separator is missing its 1px horizontal rule');
+          } else if (!Number.isFinite(ruleStart) || ruleStart <= expectedAxisX + 4) {
+            issues.push('horizontal row rule intersects the vertical axis; start it to the right of the axis column');
+          }
+        });
+        const headCols = Array.from(timeline.querySelectorAll('.tl-head > span')).slice(1);
+        const firstNode = timeline.querySelector('.tl-node');
+        const bodyCols = firstNode ? [firstNode.querySelector('.yr'), firstNode.querySelector('.multi'), firstNode.querySelector('.tl-copy')] : [];
+        headCols.forEach((head, index) => {
+          const body = bodyCols[index];
+          if (body && Math.abs(head.getBoundingClientRect().left - body.getBoundingClientRect().left) > 2) {
+            issues.push(`column ${index + 1} header is not left-aligned with its timeline values`);
+          }
+        });
         timeline.querySelectorAll('.tl-node .dot').forEach((dot) => {
           const rect = dot.getBoundingClientRect();
           const centerX = rect.left + rect.width / 2;
@@ -1088,13 +1141,48 @@ async function runRenderedMeasurements() {
         return issues.map((issue) => ({ node: labelFor(node), issue }));
       });
 
+      const manifestoMediaChecks = (el) => Array.from(el.querySelectorAll('.manifesto-media')).flatMap((node) => {
+        const style = getComputedStyle(node);
+        const rect = node.getBoundingClientRect();
+        const slideRect = el.getBoundingClientRect();
+        const scrimStyle = getComputedStyle(el, '::after');
+        const alphas = [...scrimStyle.backgroundImage.matchAll(/rgba?\([^)]*?[,\/]\s*([\d.]+)\s*\)/g)].map((match) => Number(match[1]));
+        const maxAlpha = alphas.length ? Math.max(...alphas) : NaN;
+        const brightness = Number(style.filter.match(/brightness\(([^)]+)\)/)?.[1]);
+        const issues = [];
+        if (style.objectFit !== 'cover') issues.push(`object-fit is ${style.objectFit}; expected cover`);
+        if (rect.width / slideRect.width < .95 || rect.height / slideRect.height < .95) issues.push('media does not cover at least 95% of the S12 slide on both axes');
+        if (scrimStyle.backgroundImage === 'none' || !Number.isFinite(maxAlpha) || maxAlpha < .42 || maxAlpha > .62) issues.push(`dark scrim is ${scrimStyle.backgroundImage}; expected a neutral black overlay with .42-.62 peak alpha`);
+        if (!Number.isFinite(brightness) || brightness < .65 || brightness > .9) issues.push(`brightness is ${Number.isFinite(brightness) ? brightness : style.filter}; expected .65-.90`);
+        return issues.map((issue) => ({ node: labelFor(node), issue }));
+      });
+
+      const loopDiagramChecks = (el) => Array.from(el.querySelectorAll('.loop-diagram')).flatMap((diagram) => {
+        const visual = diagram.querySelector('.loop-visual');
+        const nodes = Array.from(diagram.querySelectorAll('.loop-node'));
+        const core = diagram.querySelector('.loop-core');
+        if (!visual) return [{ node: labelFor(diagram), issue: 'has no .loop-visual relationship area' }];
+        const visualRect = visual.getBoundingClientRect();
+        const issues = [];
+        [...nodes, core].filter(Boolean).forEach((node) => {
+          const rect = node.getBoundingClientRect();
+          if (rect.left < visualRect.left - 1 || rect.right > visualRect.right + 1 || rect.top < visualRect.top - 1 || rect.bottom > visualRect.bottom + 1) {
+            issues.push(`${labelFor(node)} extends outside the loop visual frame`);
+          }
+        });
+        if (visualRect.height / diagram.getBoundingClientRect().height < .9) issues.push('loop visual does not consume the available diagram height');
+        return issues.map((issue) => ({ node: labelFor(visual), issue }));
+      });
+
       const systemRelationshipChecks = (el) => Array.from(el.querySelectorAll('[data-system-grammar]')).flatMap((node) => {
         const rect = node.getBoundingClientRect();
         const canvasRect = el.querySelector('.canvas-card')?.getBoundingClientRect();
         const copyRect = el.querySelector('.system-copy')?.getBoundingClientRect();
+        const diagramRect = node.closest('.system-diagram')?.getBoundingClientRect();
         const issues = [];
         if (canvasRect && rect.width / canvasRect.width < .42) issues.push(`relationship graphic uses only ${(rect.width / canvasRect.width * 100).toFixed(1)}% of the canvas width; expected at least 42%`);
         if (copyRect && Math.abs(copyRect.top - rect.top) > 16) issues.push(`left conclusion and right relationship graphic start ${Math.abs(copyRect.top - rect.top).toFixed(1)}px apart; expected no more than 16px`);
+        if (diagramRect && rect.height / diagramRect.height < .85) issues.push(`relationship graphic uses only ${(rect.height / diagramRect.height * 100).toFixed(1)}% of the available height; expected at least 85%`);
         node.querySelectorAll('.system-node').forEach((systemNode) => {
           const nodeRect = systemNode.getBoundingClientRect();
           if (nodeRect.height < 56) issues.push(`system node renders at only ${Math.round(nodeRect.height)}px high`);
@@ -1146,11 +1234,19 @@ async function runRenderedMeasurements() {
 
       const horizontalBarChecks = (el) => {
         const fills = Array.from(el.querySelectorAll('.h-bar-chart .row-fill'));
+        const labels = Array.from(el.querySelectorAll('.h-bar-chart .row-lbl'));
+        const tracks = Array.from(el.querySelectorAll('.h-bar-chart .row-track'));
         const sharedIssues = [];
         const normalColors = new Set(fills.filter((fill) => !fill.classList.contains('critical')).map((fill) => getComputedStyle(fill).backgroundColor));
         const criticalCount = fills.filter((fill) => fill.classList.contains('critical')).length;
         if (normalColors.size > 1) sharedIssues.push('single-series ranking alternates multiple ordinary fill colors; use one stable neutral series color');
         if (criticalCount > 1) sharedIssues.push(`uses ${criticalCount} critical bars; S07 allows at most one semantically justified red item`);
+        labels.forEach((label, index) => {
+          const track = tracks[index];
+          if (!track) return;
+          const gap = track.getBoundingClientRect().left - label.getBoundingClientRect().right;
+          if (gap < 16 || gap > 32) sharedIssues.push(`row ${index + 1} leaves ${gap.toFixed(1)}px between label and track; expected 16-32px`);
+        });
         return [
           ...sharedIssues.map((issue) => ({ node: labelFor(el.querySelector('.h-bar-chart')), issue })),
           ...fills.flatMap((fill) => {
@@ -1327,6 +1423,8 @@ async function runRenderedMeasurements() {
           horizontalBarIssues: horizontalBarChecks(el),
           productIdentityIssues: productIdentityChecks(el),
           closingMediaIssues: closingMediaChecks(el),
+          manifestoMediaIssues: manifestoMediaChecks(el),
+          loopDiagramIssues: loopDiagramChecks(el),
           systemRelationshipIssues: systemRelationshipChecks(el),
           unitAlignmentIssues: unitAlignmentChecks(el),
           baselineBarIssues: baselineBarChecks(el),
@@ -1395,6 +1493,12 @@ async function runRenderedMeasurements() {
       }
       for (const issue of m.closingMediaIssues) {
         errors.push(`${prefix}: ${issue.node} ${issue.issue}. Closing media should be a low-interference atmosphere layer behind Thanks, not a product display.`);
+      }
+      for (const issue of m.manifestoMediaIssues) {
+        errors.push(`${prefix}: ${issue.node} ${issue.issue}. S12 background media must be contextual, full-bleed, and protected by a neutral dark scrim; product cutouts and packshots are not permitted.`);
+      }
+      for (const issue of m.loopDiagramIssues) {
+        errors.push(`${prefix}: ${issue.node} ${issue.issue}. S14 must use one contained fine-line loop with aligned HTML nodes and one center conclusion.`);
       }
       for (const issue of m.systemRelationshipIssues) {
         errors.push(`${prefix}: ${issue.node} ${issue.issue}. S17 must use a top-aligned left conclusion and one dominant relationship structure, not competing information tracks.`);

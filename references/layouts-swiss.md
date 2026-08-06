@@ -1,6 +1,6 @@
 # Layouts · XREAL Style
 
-23 个正式登记版式 · 严格模块化网格 · 每个版式说明用途、骨架、关键类名、专属动效。
+22 个正式登记版式 · 严格模块化网格 · 每个版式说明用途、骨架、关键类名、专属动效。
 
 > 这是本 skill 唯一支持的版式系统。类名和结构都以 `assets/template-xreal.html` 为准；一份 deck 只能使用 XREAL Style 版式。
 
@@ -8,9 +8,9 @@
 
 ## XREAL Style locked mode(必须先读)
 
-本主题的 golden source 是仓库内的 `assets/template-xreal.html`(由作者本机的原始参考 PPT 派生;原始文件不随仓库分发)。`swiss-layout-lock.md` 当前登记 `S01-S08`、`S10-S24`；原 `S09 Dot Matrix Statement` 已移除。
+本主题的 golden source 是仓库内的 `assets/template-xreal.html`(由作者本机的原始参考 PPT 派生;原始文件不随仓库分发)。`swiss-layout-lock.md` 当前登记 `S01-S08`、`S11-S24`；原 `S09 Dot Matrix Statement` 与 `S10 Split Closing` 已移除。
 
-生成正文页时不要把 XREAL Style 当成“自由组合的风格包”。默认只能使用 `references/swiss-layout-lock.md` 登记的 23 个版式（`S01-S08`、`S10-S24`）。每个 slide 都必须在 `<section>` 上写 `data-layout="Sxx"`。
+生成正文页时不要把 XREAL Style 当成“自由组合的风格包”。默认只能使用 `references/swiss-layout-lock.md` 登记的 22 个版式（`S01-S08`、`S11-S24`）。每个 slide 都必须在 `<section>` 上写 `data-layout="Sxx"`。
 
 **关键约束**:
 
@@ -206,7 +206,7 @@ chrome-min(页眉)、主体内容、底部 footnote 都是 canvas-card 的子元
 - 资产自带元素与页面 chrome 冲突时换图或换版式,不要重绘原始资产
 
 **版式多样性硬规则**
-XREAL Style 有 23 个正式登记版式（`S01-S08`、`S10-S24`）,生成时要主动展示版式系统,不要把所有内容都做成 `head + grid-reveal + card`:
+XREAL Style 有 22 个正式登记版式（`S01-S08`、`S11-S24`）,生成时要主动展示版式系统,不要把所有内容都做成 `head + grid-reveal + card`:
 
 - 7-8 页 deck 至少使用 **6 个不同 S 编号版式**
 - 不允许连续 3 页使用同一种主体结构(如三页连续 S19 / 普通卡片)
@@ -270,14 +270,14 @@ XREAL Style 有 23 个正式登记版式（`S01-S08`、`S10-S24`）,生成时要
 
 | 类型 | 版式 | 使用边界 |
 |---|---|---|
-| 通用 | S01, S03, S08, S10, S11, S19 | 大多数叙事 deck 都能用,但仍要满足内容形状 |
+| 通用 | S01, S03, S08, S11, S19 | 大多数叙事 deck 都能用,但仍要满足内容形状 |
 | 条件通用 | S04, S13, S16 | 取决于数量是否刚好匹配:3/6 项 |
 | 数据专用 | S02, S06, S07, S18, S20, S21, S22, S23, S24 | 必须有真实时间、数值、指标或案例数据；S24 还必须有连续横轴 |
 | 结构专用 | S05, S14, S15, S17 | 必须有三层、闭环、矩阵、层级/生态关系;不适合普通段落 |
 
 ---
 
-## 23 个登记版式
+## 22 个登记版式
 
 ### P1 · Cover · 封面页
 
@@ -378,7 +378,7 @@ XREAL Style 有 23 个正式登记版式（`S01-S08`、`S10-S24`）,生成时要
 **骨架**:左侧 24px axis 列 + 10px 实心节点 + 1px 贯穿轴 / 右侧统一列头与节点信息(年份 + 同口径大字数据 + 阶段名 + 体验影响)。
 **关键类**:`.timeline-v` `.tl-head` `.tl-node` `.tl-axis` `.dot` `.yr` `.multi` `.tl-copy` `.tl-stage` `.tl-impact` `.kpi-row-4`
 **动效 recipe**:`timeline-vertical` — 节点按时间顺序由上到下点亮(dot 先 pop 再扩 → 文字横向滑入)
-**清晰度规则**:必须给时间、指标和阶段解释加统一列头；每行的 `.tl-stage` 是主解释，`.tl-impact` 说明变化带来的体验结果。`.timeline-v` 占正文宽度的 72%-82%，axis 列固定 24px；贯穿轴由各 `.tl-node::before` 连续绘制，`.tl-axis` 使用 grid 居中 10px 实心 dot，使 dot 中心与轴误差不超过 2px。行分隔线只覆盖 timeline 自身宽度，不延伸到整页边缘。不要只放“年份 + 数字 + 一句混合描述”，否则会退化成含糊的三列表格。
+**清晰度规则**:必须给时间、指标和阶段解释加统一列头；每行的 `.tl-stage` 是主解释，`.tl-impact` 说明变化带来的体验结果。`.timeline-v` 占正文宽度的 72%-82%，axis 列固定 24px；贯穿轴由各 `.tl-node::before` 连续绘制，`.tl-axis` 使用 grid 居中 10px 实心 dot，使 dot 中心与轴误差不超过 2px。表头与行横线由 `::after` 绘制，必须从 axis 列右侧开始，不穿过竖轴；列头与对应正文列保持左对齐。不要只放“年份 + 数字 + 一句混合描述”，否则会退化成含糊的三列表格。
 **示例代码**:
 ```html
 <section class="slide" data-animate="timeline-vertical">
@@ -517,6 +517,7 @@ XREAL Style 有 23 个正式登记版式（`S01-S08`、`S10-S24`）,生成时要
 **动效 recipe**:`hbar-grow` — 大标题先入 → 每行保持 `width:var(--value)`，仅从左侧执行 `scaleX(0→1)` + 末端数字 count-up；动画不得覆盖持久数据宽度
 **圆角规则**:`.row-track` 与 `.row-fill` 统一使用 `border-radius:var(--radius-sm)`（8px）；圆角不得等于条高的一半，禁止胶囊化。
 **配色规则**:P7 是单系列排名，所有普通 `.row-fill` 统一使用 `--chart-series-1`，不得交替黑/灰。标题结论明确指出首位、风险或关键项时，最多一个 `.critical` 使用 `--chart-critical`，其余仍保持同一中性色。
+**列宽规则**:标签列使用 `max-content`，并以 `max-width:10em` 限制极长标签；标签右侧到 track 左侧保持约 16-32px，不得用 9-11em 固定列制造大面积空白。
 **示例代码**:
 ```html
 <div class="h-bar-chart">
@@ -617,6 +618,7 @@ XREAL Style 有 23 个正式登记版式（`S01-S08`、`S10-S24`）,生成时要
 **适用内容类型**:**章节性收束 / 阶段性宣言**(用于 deck 中段而非结尾,P9 是 deck 终结)。承载「主张 + 简短说明 + ink 通栏宣言」三段结构,无数据。
 **骨架**:上半屏左侧 t-cat + 大字 4 行宣言 + 右侧短段说明 / 下半屏 ink 通栏(无左右下边距)+ 反白短句 + Material Symbols 图标矩阵。
 **关键类**:`.manifesto-top` `.ink-banner-full`(`margin:0 -5vw -4.4vh` 取消父级 padding)
+**媒体规则**:宣言与 lifestyle、conceptual 或品牌 KV 明确匹配时，可增加 `.manifesto-media[data-image-slot="s12-manifesto-background"][data-media-role="context-background"]` 作为全幅背景，并声明 `data-media-fit="full-bleed"`、`data-media-contrast="darken"`。媒体覆盖页面至少 95%，使用约 `.42-.58` 的中性黑蒙版保护白字；禁止透明产品 cutout、白底产品图与标准 packshot。无合适媒体时保持纯黑。
 **产品身份规则**:当宣言明确属于单一产品且 `00-product-marks/` 有官方标志时，横幅识别位优先使用 `.xreal-product-mark[data-image-slot="product-mark"][data-media-role="product-identity"]`，不要用手打产品名替代。企业 XREAL Logo 仍保留在页眉。产品标志只作为身份落款，宽度为横幅的 18%-26%（标准 `min(23vw,320px)`），不得成为第二主标题。
 **动效 recipe**:`manifesto` — 大字三段错峰升起 → 底 ink 条横向 scaleX 0→1 铺开 → 反白文字 fade in
 **注意**:Skill File 那段小字 **顶对齐于右侧大字基线**(`align-items:flex-start;padding-top:1.2vw`)
@@ -638,10 +640,10 @@ XREAL Style 有 23 个正式登记版式（`S01-S08`、`S10-S24`）,生成时要
 
 **用途**:自学闭环、自动化流程(3-5 步循环)。
 **适用内容类型**:**循环 / 闭环流程**(终点回到起点,3-5 步)。如自学循环、CI/CD、反馈闭环、agent loop。**线性流程禁用**(那是 P11)。
-**骨架**:左 4 行编号步骤(顶对齐) / 右侧 SVG 同心圆环 / 中央巨字 LOOP / 节点统一灰底直角方块(不用圆点交替色)。
-**关键类**:`.loop-diagram` `.loop-steps` `.loop-svg`
-**动效 recipe**:`loop-form` — 左侧步骤纵向序列 → 右 SVG 圆环 stroke-dashoffset 描线 → 节点序列点亮
-**注意**:左右**整体居中对齐**(顶部对齐 + 高度等同)
+**骨架**:左侧 3-5 行编号步骤 / 右侧单一细线 rounded-rectangle 闭环。`.loop-visual` 使用与节点数一致的 `data-loop-count="3|4|5"` 选择登记好的标签位置；SVG 只画一条低对比底环与至少 4 个方向段；HTML `.loop-node` 标出各步骤，中央 `.loop-core` 放循环所维持的状态或结论。
+**关键类**:`.loop-diagram` `.loop-steps` `.loop-visual` `.loop-svg` `.loop-track` `.loop-segment` `.loop-node` `.loop-core`
+**动效 recipe**:`loop-form` — 左侧步骤纵向序列 → 右侧方向段按循环顺序出现 → HTML 节点与中心结论落定
+**注意**:左右整体等高并填满可用正文区。普通方向段统一 ink，仅“返回起点”的一段可使用 `--chart-critical`；禁止粗圆环、浮动外标签、重复装饰圆点和 SVG 文字。
 
 ---
 
@@ -671,7 +673,7 @@ XREAL Style 有 23 个正式登记版式（`S01-S08`、`S10-S24`）,生成时要
 
 **用途**:表达组件之间的流向、层级、网络依赖或真实包含关系。
 **适用内容类型**:至少 3 个实体，且实体之间的关系本身是结论。先选择并声明 `data-system-grammar="flow|hierarchy|network|containment"`：能力/信息传递用 flow，组织或技术分层用 hierarchy，多对多依赖用 network，严格 core/middle/outer 包含才用 containment。同心圆不再是默认答案；如果三个圆只是在重复左侧三行文字，改用 P5 或删除图。
-**骨架**:左侧只保留一句结论与一段解释，使用 `.system-kicker + .system-thesis + .system-summary`；右侧占画布至少 42%，承载唯一关系图，两列顶部误差不超过 16px。flow 使用 3-6 个 `.system-node` 与 `nodeCount-1` 个 `.system-link`；每个节点包含 `.system-level + .system-title + .system-effect`。标签使用 HTML，连接语义必须可读。
+**骨架**:左侧只保留一句结论与一段解释，使用 `.system-kicker + .system-thesis + .system-summary`；右侧占画布至少 42%，承载唯一关系图，两列顶部误差不超过 16px。flow 使用 3-6 个 `.system-node` 与 `nodeCount-1` 个 `.system-link`；`.system-flow` 必须纵向消费关系图区至少 85% 高度，节点用弹性高度均衡分布，不能全部堆在顶部。每个节点包含 `.system-level + .system-title + .system-effect`。标签使用 HTML，连接语义必须可读。
 **关键类**:`.system-diagram` `.system-copy` `.system-kicker` `.system-thesis` `.system-summary` `.system-flow` `.system-node` `.system-link` `.system-level` `.system-title` `.system-effect`
 **禁止**:左侧再放 `.system-roles/.system-role` 或复制 Process / Orchestrate / Deliver 等阶段列表，形成与右图竞争的第二条信息路径；可见文案不得出现“这里表达的是”“不是套圈”“图的目的是”等制作说明。
 **动效 recipe**:`system-diagram` — 节点按关系方向进入，连接语义随后出现。

@@ -4,15 +4,15 @@
 
 ## Golden Source
 
-版式基准是仓库内的 `assets/template-xreal.html`(由作者原始参考 PPT 派生;原始文件不随仓库分发)。当前正式登记 23 个版式：`S01-S08`、`S10-S24`；原 `S09 Dot Matrix Statement` 已移除。
+版式基准是仓库内的 `assets/template-xreal.html`(由作者原始参考 PPT 派生;原始文件不随仓库分发)。当前正式登记 22 个版式：`S01-S08`、`S11-S24`；原 `S09 Dot Matrix Statement` 与 `S10 Split Closing` 已移除。
 
-XREAL Style 生成时,除用户明确要求实验版式外,只能从下面登记的 23 个版式中选择。新增首页/尾页可以使用 Skill 里的黑色基底版本 `XREAL-COVER-BLACK` / `XREAL-CLOSING-BLACK`，并按媒体匹配结果选择纯黑或官方媒体背景；正文页必须来自这 23 个版式。
+XREAL Style 生成时,除用户明确要求实验版式外,只能从下面登记的 22 个版式中选择。新增首页/尾页可以使用 Skill 里的黑色基底版本 `XREAL-COVER-BLACK` / `XREAL-CLOSING-BLACK`，并按媒体匹配结果选择纯黑或官方媒体背景；正文页必须来自这 22 个版式。
 
 ## 生成前硬规则
 
 1. 每个正文页都必须先选一个登记版式,并在 `<section>` 上写 `data-layout="Sxx"`。
 2. 不允许临时发明未登记正文结构。历史实验 ID `P23/P24` 继续禁用，与正式登记的 `S23/S24` 无关。需要图片时,优先使用 `S22 Image Hero`;多图时使用 `S15/S16` 的原始网格骨架做图片格改造,不要发明新的证据墙。唯一登记的交互扩展是 `S08 + XREAL Map Component`,详见 `references/swiss-map-component.md`。
-3. 顶部中文标题默认左对齐并贴近左上内容轴。除原始 `S03/S10` 这种 statement/split 版式以及只含 Logo + Thanks 的 `XREAL-CLOSING-BLACK` 封底外,不要把大标题放到页面水平中心。
+3. 顶部中文标题默认左对齐并贴近左上内容轴。除 `S03` statement 版式以及只含 Logo + Thanks 的 `XREAL-CLOSING-BLACK` 封底外,不要把大标题放到页面水平中心。
 4. SVG 仅用于图表、地图、流程和数据几何，并在 `<svg>` 上标记 `data-svg-role="chart|map|flow|data-geometry"`；禁止把人物、设备、场景或抽象科技图形画成 SVG 插画配图。SVG 不写可见文字，所有文字标签用 HTML 放在网格、卡片或 caption 里。
 5. 图片槽位和媒体资产比例必须匹配。先确定版式和槽位,再从 `assets/media/` 或用户素材中选图。
 6. 首页/尾页必须以纯黑为基底并声明 `data-media-match="matched|none"`；匹配到合适官方媒体时可使用受控背景图，但不得加入 ASCII、点阵、纹理、CSS 图形或动态背景。
@@ -34,21 +34,20 @@ XREAL Style 生成时,除用户明确要求实验版式外,只能从下面登记
 | ID | 原始页 | 名称 | 必须保留的骨架 | 图片规则 |
 |---|---:|---|---|---|
 | S01 | 01 | Index Cover | 基础版保留三行 `cover-row`,左大编号,右大标题；章节标题页只使用下方登记的 `section-hero` 次级变体 | 无 |
-| S02 | 02 | Vertical Timeline + KPI | 顶部左对齐标题；中部 `.timeline-v` 占正文宽度 72%-82%，必须含统一 `.tl-head` 与按行连续绘制的贯穿轴/节点，以及“年份 + 同口径指标 + 阶段名 + 体验影响”；横线不得延伸到整页边缘；底部 `.kpi-row-4` | 无 |
+| S02 | 02 | Vertical Timeline + KPI | 顶部左对齐标题；中部 `.timeline-v` 占正文宽度 72%-82%，必须含统一 `.tl-head` 与按行连续绘制的贯穿轴/节点，以及“年份 + 同口径指标 + 阶段名 + 体验影响”；行横线必须从 axis 列右侧开始，不与竖轴叠线；底部 `.kpi-row-4` | 无 |
 | S03 | 03 | Split Statement | `.slide.split` 双半屏,左巨字,右灰底解释 | 无 |
 | S04 | 04 | Six Cells | 顶部左对齐标题,下方 `.sub-grid-3-2` 六张独立小圆角卡 | 最多 1-2 张稀疏技术卡可配图；源画布留白大时用 `inset-prominent`，高度 28%-45%、宽度至少 80%，不加蒙版 |
 | S05 | 05 | Three Layers | 顶部左对齐标题,下方 `.stack-row` 三个小圆角色块 | 最多一个核心层可配图；横版低干扰媒体可全幅铺底并加深色渐变蒙版，否则 inset；图标默认保留 |
 | S06 | 06 | KPI Tower | 左标题+右说明,下方不等高 KPI 塔；cap 四角小圆角，body 仅顶部小圆角且底部直角贴共同基线 | 无 |
-| S07 | 07 | Horizontal Bar | 左对齐标题,横向条形图；track 与 fill 使用小圆角但不得做成胶囊；fill 以 `--value` 持久保存真实宽度，动效只做 `scaleX`；普通条统一单一系列色，最多一个语义关键项使用红色 | 无 |
+| S07 | 07 | Horizontal Bar | 左对齐标题,横向条形图；标签列使用内容宽度，标签到 track 保持 16-32px 紧凑间距；track 与 fill 使用小圆角但不得做成胶囊；fill 以 `--value` 持久保存真实宽度，动效只做 `scaleX`；普通条统一单一系列色，最多一个语义关键项使用红色 | 无 |
 | S08 | 08 | Duo Compare | `.duo-compare` 两列 + 中线 | 无;地点/路线内容可使用 `S08 + XREAL Map Component` 替换右侧插槽 |
-| S10 | 10 | Split Closing | `.slide.split` 左巨字右列表 | 无 |
 | S11 | 11 | Horizontal Timeline | 原始 `grid-template-columns:auto 1fr` 头部 + `.timeline-h` | 无 |
-| S12 | 12 | Manifesto + Ink Banner | 大字 statement + 底部通栏 ink 条；产品标志仅作身份落款，占横幅 18%-26% | 无 |
+| S12 | 12 | Manifesto + Ink Banner | 大字 statement + 底部通栏 ink 条；产品标志仅作身份落款，占横幅 18%-26% | 可按语境使用横版 lifestyle、conceptual 或品牌 KV 全幅背景并加深色蒙版；禁止透明产品 cutout / packshot；无合适媒体时保持纯黑 |
 | S13 | 13 | Three Forces | 左 ink hero 小圆角色块 + 右 3 张小圆角卡 | 无 |
-| S14 | 14 | Loop Form | 左 4 步列表 + 右几何 loop | SVG 禁止文字,标签改 HTML |
+| S14 | 14 | Loop Form | 左 3-5 步列表 + 右单一细线闭环；灰色底环、方向段、HTML 节点与中心结论；最多一个返回段使用红色 | SVG 禁止文字,标签改 HTML；禁止粗圆环、浮动外标签与重复装饰点 |
 | S15 | 15 | Matrix + Hero Stat | 顶部左对齐标题,中段 6×2 矩阵,底部巨数 | 多图可改造矩阵格,同组统一 `21:9` |
 | S16 | 16 | Multi-card Brief | 顶部左对齐标题,下方 3×2 小圆角微卡；默认六卡等权。仅有明确优先级语义时，允许一张高对比卡并声明 `data-emphasis` | 多图可改造卡片内容,同组统一 `21:9` |
-| S17 | 17 | System Diagram | 先声明 `flow|hierarchy|network|containment`；左侧只放结论与解释，右侧为唯一关系图且至少占画布 42%；两列顶部误差 ≤16px；flow 使用 3-6 节点和明确连接 | 禁止左侧复制阶段列表；同心圆仅限真实 containment；SVG 如使用则禁止文字，标签改 HTML |
+| S17 | 17 | System Diagram | 先声明 `flow|hierarchy|network|containment`；左侧只放结论与解释，右侧为唯一关系图且至少占画布 42%；两列顶部误差 ≤16px；flow 使用 3-6 节点和明确连接，并纵向消费关系图区至少 85% 高度 | 禁止左侧复制阶段列表；同心圆仅限真实 containment；SVG 如使用则禁止文字，标签改 HTML |
 | S18 | 18 | Why Now | 三列递进 + 底部巨数 | 无 |
 | S19 | 19 | Four Cards | 顶部黑线 + 四列均分 | Bento 扩展的稀疏 hero 主卡可使用全幅 contextual/lifestyle 媒体；宽高覆盖父卡至少 95%，文字压图时使用 `.28-.48` 深色蒙版；内部仍直角 |
 | S20 | 20 | Stacked KPI Ledger | 纵向账单式巨数 | 无 |

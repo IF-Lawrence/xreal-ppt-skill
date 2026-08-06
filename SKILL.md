@@ -1,6 +1,6 @@
 ---
 name: xreal-ppt-skill
-description: 生成、改版和校验 XREAL 品牌风格的横向翻页网页演示文稿（离线单文件 HTML）。使用 23 个锁定版式、XREAL 黑白灰与克制红色语义、XREAL Diatype 或 IBM Plex Sans SC、官方产品媒体资产、Motion One 动效以及受控 ECharts 复杂图表。用户要求制作或审查 XREAL 发布会、产品介绍、数据汇报、方法论、路线或地图类网页 PPT，或提到「XREAL Style」「XREAL PPT」「XREAL deck」「横向翻页 HTML PPT」时使用。
+description: 生成、改版和校验 XREAL 品牌风格的横向翻页网页演示文稿（离线单文件 HTML）。使用 22 个锁定版式、XREAL 黑白灰与克制红色语义、XREAL Diatype 或 IBM Plex Sans SC、官方产品媒体资产、Motion One 动效以及受控 ECharts 复杂图表。用户要求制作或审查 XREAL 发布会、产品介绍、数据汇报、方法论、路线或地图类网页 PPT，或提到「XREAL Style」「XREAL PPT」「XREAL deck」「横向翻页 HTML PPT」时使用。
 ---
 
 ## 这个 Skill 做什么
@@ -11,7 +11,7 @@ description: 生成、改版和校验 XREAL 品牌风格的横向翻页网页演
 - 按整套 PPT 的语言语境选择品牌字体：纯英文使用 XREAL Diatype，中文或中英混排使用 IBM Plex Sans SC
 - 12/16 列网格、非对称留白、统一 8px 小圆角色块和 1px hairline
 - 每份 deck 固定使用 XREAL 黑白灰品牌体系；红色只作为关键语义强调，不提供任意自定义颜色
-- 正文页使用 23 个锁定版式（`S01-S08`、`S10-S24`）；`S09` 已移除，首页/尾页使用明确登记的 XREAL 黑色基底变体
+- 正文页使用 22 个锁定版式（`S01-S08`、`S11-S24`）；`S09 Dot Matrix Statement` 与 `S10 Split Closing` 已移除，首页/尾页使用明确登记的 XREAL 黑色基底变体
 - 支持键盘、滚轮、触屏、ESC 索引、Google Material Symbols Outlined 图标和 Motion One 入场动效
 - 复杂散点、热力、瀑布、箱线、桑基、关系和层级图可使用受控的 XREAL ECharts Component；它扩展现有版式，不增加正文版式编号
 
@@ -127,8 +127,8 @@ cp "<SKILL_ROOT>/assets/brand/xreal-logo-black.svg" "项目/XXX/ppt/assets/brand
 - 禁止按单个字符、文本框或页面的中英文内容拆分字体；一套 deck 只使用一套主字体
 - 纯英文 deck 将 `<html lang>` 设为 `en`；中文或中英混排 deck 设为 `zh-CN`
 - 每页 `chrome-min` 的品牌位置使用 `assets/brand/xreal-logo-black.svg`
-- 封面与封底使用 `#000000` 黑色基底；媒体审计命中时允许一张官方照片、KV、产品 beauty 或透明产品图作为全屏背景，不添加 ASCII、点阵、纹理、CSS 图形或动态装饰背景
-- 封底固定为品牌收束页：大号 `Thanks` 作为画面中心主视觉，小号反白 XREAL Logo 放在底部中央；匹配到安静的产品图时可作为低干扰背景，但不重复结论、takeaway、作者日期、页码或其他说明文字
+- 封面与封底使用 `#000000` 黑色基底；媒体审计命中时允许一张官方照片或 KV 作为全屏背景，封面还可使用匹配的 product beauty；封底只使用低干扰 lifestyle、conceptual 或品牌 KV，禁止透明产品图与 packshot。两者都不添加 ASCII、点阵、纹理、CSS 图形或动态装饰背景
+- 封底固定为品牌收束页：大号 `Thanks` 作为画面中心主视觉，小号反白 XREAL Logo 放在底部中央；匹配到安静的 lifestyle、conceptual 或品牌 KV 时可作为低干扰背景，但不直接使用产品 cutout / packshot，也不重复结论、takeaway、作者日期、页码或其他说明文字
 - Logo 默认独立出现，不在右侧附加说明文字；确需相邻文字时，文字视觉字高与 Logo 高度一致、使用标准字距，并与 Logo 保持至少 `1.6vw` 的明确间距
 - 正文页 `chrome-min` 使用紧凑导航级品牌尺寸；相邻文字字号由 Logo 宽度按字体度量分别计算，并与 Logo 垂直居中：IBM Plex Sans SC 使用 `.26`，XREAL Diatype 使用 `.313`。封面/封底才使用较大的品牌级尺寸
 - `chrome-min` 到首个正文块统一使用 `--chrome-content-gap:24px`，紧凑变体使用 `--chrome-content-gap-tight:16px`。不要在正文首块再叠加空白 margin 来补偿页眉；标题后的版式内部间距单独控制，避免整页内容被双重下推
@@ -166,10 +166,12 @@ cp "<SKILL_ROOT>/assets/brand/xreal-logo-black.svg" "项目/XXX/ppt/assets/brand
 - 网格：`grid-12`、`grid-2-9`、`grid-2-9-5`、`span-N`
 - 卡片：`card-ink`、`card-accent`、`card-fill`、`card-outlined`
 - 图表：`kpi-tower-row`、`bar-tower`、`h-bar-chart`、`timeline-v`、`timeline-h`、`xreal-pie-layout`、`xreal-pie-legend`；复杂图表扩展使用 `xreal-echart-stage`、`xreal-echart`
-- S02 纵向时间线必须显式标出列含义，并让每个节点形成“时间 + 同口径指标 + 阶段名称 + 体验影响”四层语义。使用 `.tl-head`、`.tl-axis > .dot`、`.yr`、`.multi`、`.tl-copy > .tl-stage + .tl-impact`；节点圆点必须真实可见并与贯穿轴居中，不能退化成没有方向关系的三列表格。`.timeline-v` 只占正文宽度的 72%-82%，贯穿轴由每个 `.tl-node::before` 连续绘制并与 dot 对齐；不要用脱离行结构的全局轴线，也不要让横向分隔线无限延伸到整页边缘。
-- S07 横向条形图把真实宽度持久写入 `.row-fill` 的 `--value`，CSS 使用 `width:var(--value)`；动效只能从左侧执行 `scaleX(0→1)`，禁止把 inline `width` 改成 `0%` 或在动画结束后丢失数据宽度。静态模式和动效结束后 fill 都必须可见并与 `--value` 一致。排名属于单系列：所有普通 bar 使用同一个 `--chart-series-1`，不得交替黑/灰制造假系列；只有标题结论明确指向某一项时，才允许一个 `.critical` 使用 `--chart-critical`。
+- S02 纵向时间线必须显式标出列含义，并让每个节点形成“时间 + 同口径指标 + 阶段名称 + 体验影响”四层语义。使用 `.tl-head`、`.tl-axis > .dot`、`.yr`、`.multi`、`.tl-copy > .tl-stage + .tl-impact`；节点圆点必须真实可见并与贯穿轴居中，不能退化成没有方向关系的三列表格。`.timeline-v` 只占正文宽度的 72%-82%，贯穿轴由每个 `.tl-node::before` 连续绘制并与 dot 对齐；横向分隔线由 `::after` 从 axis 列右侧开始，禁止穿过竖轴或延伸到整页边缘；列头与对应正文列必须左对齐。
+- S07 横向条形图把真实宽度持久写入 `.row-fill` 的 `--value`，CSS 使用 `width:var(--value)`；动效只能从左侧执行 `scaleX(0→1)`，禁止把 inline `width` 改成 `0%` 或在动画结束后丢失数据宽度。标签列使用 `max-content` 并限制最大宽度，标签到 track 保持 16-32px 紧凑间距。静态模式和动效结束后 fill 都必须可见并与 `--value` 一致。排名属于单系列：所有普通 bar 使用同一个 `--chart-series-1`，不得交替黑/灰制造假系列；只有标题结论明确指向某一项时，才允许一个 `.critical` 使用 `--chart-critical`。
+- S12 manifesto 可在语境明确匹配时使用 `.manifesto-media[data-image-slot="s12-manifesto-background"][data-media-role="context-background"]` 全幅背景；只选择 lifestyle、conceptual 或品牌 KV，声明 `data-media-fit="full-bleed" data-media-contrast="darken"`，覆盖页面至少 95% 并以中性黑蒙版保护白字。禁止透明产品 cutout、白底产品图或 packshot；无合适媒体时保持纯黑。
+- S14 闭环图使用左侧 3-5 步 + 右侧单一细线闭环，并在 `.loop-visual` 写入与节点数一致的 `data-loop-count="3|4|5"`。SVG 只画低对比 `.loop-track` 与至少 4 个 `.loop-segment`，HTML `.loop-node` 提供步骤标签，`.loop-core` 提供中心状态；最多一个 `.return` 返回段使用红色。禁止粗圆环、浮动外标签、重复装饰点和 SVG 文字。
 - S17 系统关系图必须先声明 `data-system-grammar="flow|hierarchy|network|containment"`。默认优先使用可复用的 HTML 节点和连接语义；只有内容确实表达 core/middle/outer 的包含关系时才使用同心圆。因果传递使用 flow，组织分层使用 hierarchy，多对多依赖使用 network；不得为了“像系统图”而放三个没有信息增量的圆。
-- S17 左侧只保留 `.system-kicker + .system-thesis + .system-summary`，用于一句结论和一段解释；右侧 `[data-system-grammar]` 承载唯一关系结构，两列顶部误差不得超过 16px。flow 语法使用 `.system-flow`，禁止在左侧再复制 Process / Orchestrate / Deliver 等阶段列表，也禁止出现“这里表达的是”“不是套圈”“图的目的是”等制作说明式文案。
+- S17 左侧只保留 `.system-kicker + .system-thesis + .system-summary`，用于一句结论和一段解释；右侧 `[data-system-grammar]` 承载唯一关系结构，两列顶部误差不得超过 16px。flow 语法使用纵向弹性的 `.system-flow`，关系容器必须占 `.system-diagram` 至少 85% 高度并让 3-6 个节点均衡消费可用空间，禁止把节点全部堆在顶部；也禁止在左侧再复制 Process / Orchestrate / Deliver 等阶段列表或出现“这里表达的是”“不是套圈”“图的目的是”等制作说明式文案。
 - S23 分组柱图使用完整 1px hairline 绘图区边框，`--chart-safe-inline` 必须为首末柱预留至少 28px 左右安全区，`--chart-value-headroom` 为最高柱的数值标签预留顶部空间。`.chart-value` 必须以 `left:0;right:0;text-align:center` 覆盖整根柱宽，不使用 `translateX(-50%)` 居中，避免 `chart-rise` 的纵向 transform 覆盖后标签偏移；`.chart-x-labels` 使用相同左右 padding 保持类别中心对齐。
 - S24 折线图使用完整 1px hairline 绘图区边框，并在 `.line-plot` 内以 `.line-geometry` 包住 SVG、点和终值标签；该层左右安全区至少 28px，`.line-x-labels` 使用相同 padding。首末采样点、描边和终值标签都必须落在绘图区内部，不得依赖父容器裁切隐藏越界。
 - 所有原生图表与 XREAL ECharts 共用 `--chart-series-1/2/3/4`、`--chart-critical`、`--chart-track`、`--chart-grid`、`--chart-frame`。稳定系列只按近黑→中性深灰→中性浅灰→最浅灰分配；不得混入蓝灰或临时色。红色不是默认第三系列色，只用于一个有明确结论、风险或警示依据的关键系列/数据点。S23/S24 的四边 frame 必须同色同粗，第一/最后网格线不得与 frame 重叠形成双描边。
@@ -218,6 +220,7 @@ S12 manifesto 中的产品标志只承担身份落款，不是第二主标题。
 - 不设机械的“每页一图”配额；优先覆盖封面、封底、章节 Hero 和需要视觉证据的正文页。素材数量多时提高有效覆盖率，仍以语义匹配和可读性优先。
 - 技术卡片可以配图，但先判断媒体是否能解释该技术点，而不是只填空白。S04 最多为 1-2 张 `.sub-card.has-media` 增加 `.card-media-slot[data-media-role="technical-evidence"]`；紧边透明 cutout 使用 `data-media-fit="inset"` + contain，主体在画布内偏小或卡片留白明显时使用 `data-media-fit="inset-prominent"` + cover，高度约占父卡 28%-45%、宽度至少占父卡 80%，与文字分区且不加蒙版。
 - S05 最多为一个核心 `.stack-block.has-media` 增加 `.stack-card-media[data-media-role="technical-evidence"]`。短文案与低干扰横版媒体可使用 `.media-full-bleed`、`data-media-fit="full-bleed" data-media-contrast="darken"` 全幅铺底；通过渐变深色蒙版保护底部文字，同时保留 `.layer-icon` 作为语义标记。只有媒体主体与图标明显冲突时才调整图标位置，不因配图自动删除图标。若素材不适合压字，回退到 inset/contain，高度约占父卡 18%-45%。
+- S12 宣言页存在清晰语境匹配时，可使用横版 lifestyle、conceptual 或品牌 KV 作为 `.manifesto-media` 全幅背景；媒体不得是透明产品 cutout / packshot，必须以中性黑蒙版保护白字与页眉，并保留底部 ink 通栏和产品身份落款层级。无合适媒体时保持纯黑，不为填空白强行用图。
 - S19 Bento 的大面积 `.hero` 主卡在存在合适 lifestyle / contextual 媒体且文字较少时，可以使用 `.hero.has-media + .bento-hero-media[data-media-role="context-evidence"]` 全幅铺底，并声明 `data-media-fit="full-bleed" data-media-contrast="darken"`。媒体应在宽高两个方向覆盖父卡至少 95%；文字直接反白，不叠白色或半透明面板。统一通过 `--media-scrim-alpha:.38` 加深色蒙版，可在 `.28-.48` 内按素材亮度微调，同时保留图片细节；S19 仍只圆整体外框，媒体和内部 article 不增加独立圆角。
 - 只有文字直接叠在照片或场景媒体上时才使用深色蒙版；图片与文字互不重叠的 inset / contain 证据图不加蒙版。若 `.48` 仍无法保证可读性，应更换图片、调整 `object-position` 或改为无图版式，而不是继续压暗。
 - 不给信息已经密集、没有清晰媒体对应关系或需要保真阅读的卡片硬塞图片；此时保留留白是正确选择。
@@ -236,13 +239,13 @@ S12 manifesto 中的产品标志只承担身份落款，不是第二主标题。
 
 #### 3.3 · 选择锁定版式
 
-正文页只能使用 23 个已登记版式（`S01-S08`、`S10-S24`）；`S09` 已移除。首页/尾页只能使用 `XREAL-COVER-BLACK` / `XREAL-CLOSING-BLACK`。每个 section 必须写 `data-layout="Sxx"`。
+正文页只能使用 22 个已登记版式（`S01-S08`、`S11-S24`）；`S09 Dot Matrix Statement` 与 `S10 Split Closing` 已移除。首页/尾页只能使用 `XREAL-COVER-BLACK` / `XREAL-CLOSING-BLACK`。每个 section 必须写 `data-layout="Sxx"`。
 
 封底 `XREAL-CLOSING-BLACK` 必须是整套 deck 的最后一个 section，并使用 `.slide.accent + .xreal-closing-lockup + .xreal-closing-thanks + .xreal-closing-mark + .xreal-closing-logo` 骨架与 `data-animate="closing-thanks"`。大号 `Thanks` 居中，小号企业 Logo 固定在底部中央；可按 `data-media-match` 使用安静的官方媒体背景。进入该页时隐藏底部分页导航。所有结论与行动建议应在封底前一页完成。
 
 | 版式 | 用途 |
 |---|---|
-| S01 / S10 | Index Cover / 收束；章节标题 Hero 使用 `S01 + section-hero` 登记变体 |
+| S01 | Index Cover；章节标题 Hero 使用 `S01 + section-hero` 登记变体 |
 | S02 / S11 | 垂直 / 横向时间线 |
 | S03 | 核心论点 / statement |
 | S04 / S05 / S13 / S17 | 定义、分层、三力、系统关系 |
@@ -333,7 +336,7 @@ node "<SKILL_ROOT>/scripts/validate-swiss-deck.mjs" "项目/XXX/ppt/index.html"
 5. **角色化字体层级**：主标题与正文保持明显层级；纯英文主标题默认 500，中文或中英混排主标题默认 600，正文 400，标签 500。
 6. **图片是证据**：先匹配槽位和比例，再生成或适配图片。
 7. **动效可降级**：每页使用语义化 recipe；`B` 键必须能切换到静态可读状态。
-8. **版式必须登记**：正文只从 `S01-S08`、`S10-S24` 选择；`S09` 已移除，实验结构必须显式标记。
+8. **版式必须登记**：正文只从 `S01-S08`、`S11-S24` 选择；`S09` 与 `S10` 已移除，实验结构必须显式标记。
 9. **复杂图表受控**：ECharts 只负责复杂数据几何、布局与交互，必须使用 XREAL 主题、类型白名单和离线单文件流程，不得带入默认 dashboard 视觉。
 10. **开场/收束媒体**：封面与封底使用 `#000000` 基底并声明 `data-media-match`；命中合适官方媒体时使用登记的背景类，不使用 ASCII、纹理、CSS 图形或动态背景。
 11. **减法优先**：移除无信息价值的角标、眉题和分割线；bullet 统一使用实心圆点。
