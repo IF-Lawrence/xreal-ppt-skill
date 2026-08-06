@@ -33,15 +33,15 @@
 - `--border-subtle` 1px 发丝细线 #e0e0e0
 
 **排版**
-- 字体按整套 deck 的语言语境选择：纯英文统一使用 XREAL Diatype；中文或中英混排统一使用 IBM Plex Sans SC
-- 所有组件继承 `var(--deck-font)`；禁止按字符、文本框或页面拆分字体。中英混排 deck 中的英文、数字、元数据、代码、日期和图表标签也使用 IBM Plex Sans SC
+- 字体按整套 deck 的语言语境选择：纯英文统一使用 XREAL Diatype；中文或中英混排统一使用 IBM Plex Sans SC；日语或日英混排统一使用 IBM Plex Sans JP
+- 所有组件继承 `var(--deck-font)`；禁止按字符、文本框或页面拆分字体。混排 deck 中的英文、数字、元数据、代码、日期和图表标签也使用对应整套主字体
 - 字重按信息角色分配,不按字号反比：主标题使用 `var(--weight-display)`，页面标题使用 `var(--weight-title)`，正文 400，标签 500，关键数据 600-700
-- 纯英文 XREAL Diatype 主标题默认 500；中文或中英混排 IBM Plex Sans SC 主标题默认 600。内容文字禁止使用 100/200/300
+- 纯英文 XREAL Diatype 主标题默认 500；中文/日语及对应混排 IBM Plex Sans SC / JP 主标题默认 600。内容文字禁止使用 100/200/300
 - 大字号收紧:`letter-spacing:-.04em` / `line-height:.9`
 - 表格数字：使用当前 deck 主字体，并以 `font-feature-settings:"tnum"` 保持纵向对齐
 
-**中文大标题字号分档**
-中文方块字的视觉面积比英文更重,不能直接套英文页的 `6.8vw-7vw`。生成前先按中文标题长度降级:
+**中日文大标题字号分档**
+中日文字形的视觉面积比英文更重,不能直接套英文页的 `6.8vw-7vw`。生成前先按标题长度降级；日文假名较多时同样从此档位起步，再按实际换行微调：
 
 | 中文标题形态 | 推荐字号 |
 |---|---|
@@ -68,12 +68,12 @@ XREAL Style 不是网页说明页,投屏时不能出现 10-12px 的注释字。�
 
 | 信息角色 | 推荐字重 | 典型场景 |
 |---|---|---|
-| Hero / 封面 / 章节主标题 | XREAL 500 / IBM Plex Sans SC 600 | h-hero、h-xl、h-statement |
-| 页面标题 / 模块标题 | XREAL 500 / IBM Plex Sans SC 600 | h-md、卡片标题、takeaway 标题 |
-| 关键 KPI / 数据 | XREAL 500 / IBM Plex Sans SC 600；每页单个核心数据可用 700 | 巨号 KPI、大编号、结论数字 |
+| Hero / 封面 / 章节主标题 | XREAL 500 / IBM Plex Sans SC / JP 600 | h-hero、h-xl、h-statement |
+| 页面标题 / 模块标题 | XREAL 500 / IBM Plex Sans SC / JP 600 | h-md、卡片标题、takeaway 标题 |
+| 关键 KPI / 数据 | XREAL 500 / IBM Plex Sans SC / JP 600；每页单个核心数据可用 700 | 巨号 KPI、大编号、结论数字 |
 | 副标题 / lead | 400 | 引子、产品说明、摘要 |
 | 正文 / 描述 | 400 | 正文段落、卡片描述、说明文字 |
-| caption / 辅助元数据 | XREAL 400 / IBM Plex Sans SC Text 450 | 图注、来源、辅助信息 |
+| caption / 辅助元数据 | XREAL 400 / IBM Plex Sans SC / JP Text 450 | 图注、来源、辅助信息 |
 | kicker / 导航标签 / 图表标签 | 500 | 栏目、导航、图表标签 |
 
 **硬规则:**
@@ -96,6 +96,7 @@ XREAL Style 不是网页说明页,投屏时不能出现 10-12px 的注释字。�
 
 - 纯英文 deck 使用 `<html lang="en">`，全局主字体为 XREAL Diatype
 - 中文或中英混排 deck 使用 `<html lang="zh-CN">`，全局主字体为 IBM Plex Sans SC
+- 日语或日英混排 deck 使用 `<html lang="ja">`，全局主字体为 IBM Plex Sans JP
 - `var(--sans)`、`var(--sans-zh)` 和 `var(--mono)` 仅作为旧组件兼容接口，均指向 `var(--deck-font)`；不要用它们拆分语言字体
 - `--accent` 固定为黑色结构锚点；品牌红色只用于明确的关键数据/警示/操作语义
 - `chrome-min` 的左侧品牌位置可使用：
@@ -242,13 +243,13 @@ XREAL Style 有 26 个正式登记版式（`S01-S08`、`S11-S28`）,生成时要
 
 | 视觉锚点 | 原始 PPT 的实际做法 | 生成时的规则 |
 |---|---|---|
-| 大标题重量 | 纯英文标题 500，中文或中英混排标题 600，正文 400，标签 500 | 同一内容角色在整套 PPT 中保持固定字重 |
+| 大标题重量 | 纯英文标题 500，中文/日语及对应混排标题 600，正文 400，标签 500 | 同一内容角色在整套 PPT 中保持固定字重 |
 | 留白 | 页面经常只占上半屏或中部,底部留给 nav 和少量 footnote | 注脚统一停在导航安全区上方，不要为了"填满"而把内容推到底 |
 | 分割线 | 只在章节边界、证据墙、卡片层级处使用 1px hairline | 不要给每个内容块都加线 |
 | 描述性小标题 | 使用品牌主字体 500、自然大小写和标准字距 | 不使用全大写或夸张 tracking 制造“科技感” |
 | 列表 bullet | 使用实心圆点 | 不使用短横线代替 bullet |
 | Logo 邻接文字 | 默认无;确有导航价值时字高匹配 Logo | 不把 deck 名、风格名接在 Logo 后 |
-| 正文页页眉品牌区 | Logo `max(60px,5.2vw)`；IBM Plex Sans SC 使用 `.26`，XREAL Diatype 使用 `.313`，并垂直居中 | 不共用单一比例，不与页面标题争抢层级 |
+| 正文页页眉品牌区 | Logo `max(60px,5.2vw)`；IBM Plex Sans SC / JP 使用 `.26`，XREAL Diatype 使用 `.313`，并垂直居中 | 不共用单一比例，不与页面标题争抢层级 |
 | 封面/封底品牌区 | Logo `max(72px,6.8vw)`；文字继续使用对应字体的 `.26` / `.313` 光学比例 | 不复制正文页 Logo 尺寸 |
 | 底部导航 | 亮底 `.08/.18`，暗底 `.10/.22`；当前点仅加宽并略提高透明度 | 不使用实色 `var(--accent)` 或高对比黑白 |
 | 标题与内容 | 标题区和正文/图表之间有明显空气感 | 复杂页用 grid `gap`,不要让内容贴着标题 |
@@ -292,7 +293,7 @@ XREAL Style 有 26 个正式登记版式（`S01-S08`、`S11-S28`）,生成时要
 - `<section class="slide accent">` 使用满屏黑色基底,**不是** light 白底
 - 必须声明 `data-media-match="matched|none"`。有匹配的横版 KV、lifestyle、conceptual 或 product beauty 时，使用 `.xreal-cover-media` 全屏铺底；没有合适素材才保持纯黑
 - 背景媒体必须直接支撑 deck 主张、保留约 30% quiet zone，并通过亮度控制保证文字对比；不得插入 ASCII、点阵、纹理、CSS 图形或动态背景
-- 主标题反白使用 `var(--weight-display)`；中文标题保持正体，纯英文标题如确有必要可用一次同字重斜体强调，不额外使用红色
+- 主标题反白使用 `var(--weight-display)`；中文与日文标题保持正体，纯英文标题如确有必要可用一次同字重斜体强调，不额外使用红色
 - 页面不显示页码，也不要再放编号大字"01"
 - Logo 默认独立,右侧不要附加 deck 名或风格说明;如确有导航文字相邻,文字标准字距且视觉字高与 Logo 一致，并至少保留 `1.6vw` 的清晰间距
 - 删除无信息价值的右下角角标和底部分割线
@@ -679,7 +680,7 @@ XREAL Style 有 26 个正式登记版式（`S01-S08`、`S11-S28`）,生成时要
 
 **用途**:表达组件之间的流向、层级、网络依赖或真实包含关系。
 **适用内容类型**:至少 3 个实体，且实体之间的关系本身是结论。先选择并声明 `data-system-grammar="flow|hierarchy|network|containment"`：能力/信息传递用 flow，组织或技术分层用 hierarchy，多对多依赖用 network，严格 core/middle/outer 包含才用 containment。同心圆不再是默认答案；如果三个圆只是在重复左侧三行文字，改用 P5 或删除图。
-**骨架**:左侧只保留一句结论与一段解释，使用 `.system-kicker + .system-thesis + .system-summary`；右侧占画布至少 42%，承载唯一关系图，两列顶部误差不超过 16px。flow 使用 3-6 个 `.system-node` 与 `nodeCount-1` 个 `.system-link`；`.system-flow` 必须纵向消费关系图区至少 85% 高度，节点用弹性高度均衡分布，不能全部堆在顶部。每个 `.system-link` 独占相邻节点之间的连接区，箭头显示尺寸至少 24px，并与其关系标签水平居中；禁止把连接器放进左侧编号列或让贯穿线穿过节点。每个节点包含 `.system-level + .system-title + .system-effect`。标签使用 HTML，连接语义必须可读。
+**骨架**:左侧只保留一句结论与一段解释，使用 `.system-kicker + .system-thesis + .system-summary`；右侧占画布至少 42%，承载唯一关系图，两列顶部误差不超过 16px。flow 使用 3-6 个 `.system-node` 与 `nodeCount-1` 个 `.system-link`；`.system-flow` 必须纵向消费关系图区至少 85% 高度，节点用弹性高度均衡分布，不能全部堆在顶部。每个 `.system-link` 独占相邻节点之间的连接区：箭头显示尺寸至少 24px，并位于左侧 `.system-level` 阶段栏；关系标签左对齐到右侧 `.system-title` 正文列。禁止箭头漂到正文中央、贴住外边缘或让贯穿线穿过节点。每个节点包含 `.system-level + .system-title + .system-effect`。标签使用 HTML，连接语义必须可读。
 **关键类**:`.system-diagram` `.system-copy` `.system-kicker` `.system-thesis` `.system-summary` `.system-flow` `.system-node` `.system-link` `.system-level` `.system-title` `.system-effect`
 **禁止**:左侧再放 `.system-roles/.system-role` 或复制 Process / Orchestrate / Deliver 等阶段列表，形成与右图竞争的第二条信息路径；可见文案不得出现“这里表达的是”“不是套圈”“图的目的是”等制作说明。
 **动效 recipe**:`system-diagram` — 节点按关系方向进入，连接语义随后出现。
@@ -975,12 +976,13 @@ XREAL Style 有 26 个正式登记版式（`S01-S08`、`S11-S28`）,生成时要
 
 **用途**:用连续媒体证据解释技术、产品或组织能力如何分阶段演进。
 **适用内容类型**:**4-6 个阶段**，每阶段都具备一张语义匹配媒体和一句独立说明。
-**骨架**:左上结论标题 / 连续可变宽阶段卡 / 每卡的阶段、媒体、标题和说明 / 底部综合结论与扁平能力链 / 来源。
+**骨架**:左上结论标题 / 连续可变宽阶段卡 / 每卡的媒体、标题和说明 / 可选的真实年份或独立阶段标识 / 底部综合结论与扁平能力链 / 来源。
 **关键类**:`.milestone-gallery` `.milestone-entry` `.milestone-year` `.milestone-media` `.milestone-title` `.milestone-copy` `.milestone-synthesis` `.milestone-chain` `.milestone-chain-step` `.milestone-source`
 **动效 recipe**:`milestone-gallery` — 阶段列依次入场 → 综合结论与能力链落定。
 **注意**:
 - 4-6 个 `.milestone-entry` 使用统一浅灰底、1px 中性边界、四边等距 padding 和 `--radius-sm:8px`，卡间距一致且全部等高。
 - `.milestone-media` 同样使用 8px 小圆角；不使用阴影、单独强调色卡、大圆角、filled ribbon 或蓝色导航条。
+- `.milestone-year` 默认省略；只有真实年份、版本号或与主标题不同的阶段名具有信息增量时才保留，并且必须在所有卡片中一致出现。禁止用编号加英文翻译重复下方标题。
 - 只使用与阶段语义匹配的媒体；缺少证据时减少阶段，不用无关图片填空。
 
 ```html
@@ -989,7 +991,7 @@ XREAL Style 有 26 个正式登记版式（`S01-S08`、`S11-S28`）,生成时要
     <header class="chrome-min">...</header>
     <div data-anim="line"><div class="t-cat">[必填] 演进主题</div><h2 class="xreal-page-title">[必填] 阶段序列的结论</h2></div>
     <div class="milestone-gallery" style="--milestone-columns:1fr 1.2fr 1fr 1fr">
-      <article class="milestone-entry"><span class="milestone-year">01 · Stage</span><img class="milestone-media" data-image-slot="s26-milestone-media" data-media-role="milestone-evidence" data-media-fit="cover" data-media-contrast="none" src="images/stage-01.jpg" alt="[必填]"><h3 class="milestone-title">[必填] 里程碑</h3><p class="milestone-copy">[必填] 一句证据说明。</p></article>
+      <article class="milestone-entry"><img class="milestone-media" data-image-slot="s26-milestone-media" data-media-role="milestone-evidence" data-media-fit="cover" data-media-contrast="none" src="images/stage-01.jpg" alt="[必填]"><h3 class="milestone-title">[必填] 里程碑</h3><p class="milestone-copy">[必填] 一句证据说明。</p></article>
       <!-- 共 4-6 个 milestone-entry -->
     </div>
     <div class="milestone-synthesis"><p class="milestone-synthesis-copy">[必填] 跨阶段综合结论。</p><div class="milestone-chain"><span class="milestone-chain-step">Stage A</span><span class="milestone-chain-step">Stage B</span><span class="milestone-chain-step">Stage C</span></div></div>
@@ -1009,7 +1011,7 @@ XREAL Style 有 26 个正式登记版式（`S01-S08`、`S11-S28`）,生成时要
 **动效 recipe**:`dense-synthesis` — 标题与总述带先入 → 三主面板并行建立 → 组内条目分组进入。
 **注意**:
 - 参考图只提供“总述 + 三组并行 + 组内异构”的信息骨架；禁止复制蓝色主色、UI 控件、彩色面板、大圆角、阴影、pill 或不统一的图标风格。
-- 三个 `.dense-panel` 使用统一白/浅灰底、1px 中性边界、四边等距 padding、8px 小圆角和一致间距；内部条目优先使用 hairline，不继续堆多层圆角卡片。
+- 三个 `.dense-panel` 使用统一白/浅灰底、1px 中性边界、四边等距 padding、8px 小圆角和一致间距；内部条目不重复堆 hairline。`.dense-comparison` 的三项若需要增强区分，可使用三个等宽、无边框、无阴影的浅中性子区域，且各项内容在顶部紧凑成组；其他语法保持扁平，不继续堆多层卡片。
 - 全页共 7-12 个 `.dense-item`，每面板至少 2 项；正文 ≥16px，meta ≥14px。最多一个有明确依据的 `.is-focus` 黑色焦点区和一张 `.dense-media`；媒体仅可作为该焦点区的 full-bleed 背景，并声明 `cover + darken`，不得缩成装饰缩略图。
 - 用户要求“一页总览”或“不要拆分”时，溢出优先通过删除重复措辞、缩短标签、调整列宽和内部网格解决；不得删除关键内容或自动拆页。
 - 三组信息必须共享一个可表述的共同结论；若三个面板互不相关，只是为了塞满页面，则应重新规划叙事。

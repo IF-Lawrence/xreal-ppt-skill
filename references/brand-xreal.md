@@ -46,11 +46,13 @@
 
 - 英文标准字体：XREAL Diatype，文件位于 `assets/fonts/XREALDiatype-*.otf`
 - 中文标准字体：IBM Plex Sans SC，文件位于 `assets/fonts/IBMPlexSansSC-*.otf`
+- 日语标准字体：IBM Plex Sans JP，文件位于 `assets/fonts/IBMPlexSansJP-*.otf`
 - 字体选择以整套 PPT 的语言语境为单位，不按字符语言拆分。
 - 纯英文 PPT：整套统一使用 XREAL Diatype。
 - 中文或中英混排 PPT：整套统一使用 IBM Plex Sans SC；其中的英文、数字、元数据、代码、日期、数据标签和技术标识也使用 IBM Plex Sans SC。
+- 日语或日英混排 PPT：整套统一使用 IBM Plex Sans JP；其中的英文、数字、元数据、代码、日期、数据标签和技术标识也使用 IBM Plex Sans JP。
 - 一套 PPT 只使用一套主字体，不在不同页面、文本框或中英文字符之间切换品牌字体。
-- 中文与中英混排标题全部使用正体；禁止在 `h1`、`h2`、`h3` 和 `.xreal-*-title` 中使用斜体。纯英文标题可在确有必要时使用一次克制的斜体强调。
+- 中文、日语及对应混排标题全部使用正体；禁止在 `h1`、`h2`、`h3` 和 `.xreal-*-title` 中使用斜体。纯英文标题可在确有必要时使用一次克制的斜体强调。
 
 字体语境：
 
@@ -59,15 +61,17 @@
 | 纯英文 | XREAL Diatype | 主标题 Medium；正文 Regular；标签 Medium；关键数字 Medium / Bold |
 | 中文 | IBM Plex Sans SC | 主标题 SemiBold；正文 Regular / Text；标签 Medium；关键数字 SemiBold / Bold |
 | 中英混排 | IBM Plex Sans SC | 主标题 SemiBold；正文 Regular / Text；标签 Medium；关键数字 SemiBold / Bold |
+| 日语 | IBM Plex Sans JP | 主标题 SemiBold；正文 Regular / Text；标签 Medium；关键数字 SemiBold / Bold |
+| 日英混排 | IBM Plex Sans JP | 主标题 SemiBold；正文 Regular / Text；标签 Medium；关键数字 SemiBold / Bold |
 
-模板语言标记：纯英文使用 `<html lang="en">`；中文或中英混排使用 `<html lang="zh-CN">`。模板根据该标记在 deck 层级设置主字体；不要为局部英文或数字覆盖 `font-family`。
+模板语言标记：纯英文使用 `<html lang="en">`；中文或中英混排使用 `<html lang="zh-CN">`；日语或日英混排使用 `<html lang="ja">`。模板根据该标记在 deck 层级设置主字体；不要为局部英文或数字覆盖 `font-family`。
 
 字重按内容角色固定：
 
-- 主标题和页面标题：纯英文使用 XREAL Diatype Medium（500）；中文或中英混排使用 IBM Plex Sans SC SemiBold（600）。
+- 主标题和页面标题：纯英文使用 XREAL Diatype Medium（500）；中文/日语及对应混排使用 IBM Plex Sans SC / JP SemiBold（600）。
 - 章节标题、卡片标题、导航文字和标签：统一使用 Medium（500）。
-- 正文和说明文字：使用 Regular（400）；中文或中英混排中的小字号辅助文字、图注和元数据可使用 Text（450）。
-- 关键数字和结论：纯英文使用 Medium（500），中文或中英混排使用 SemiBold（600）；每页最重要的单个数据可提升为 Bold（700）。
+- 正文和说明文字：使用 Regular（400）；中文/日语及对应混排中的小字号辅助文字、图注和元数据可使用 Text（450）。
+- 关键数字和结论：纯英文使用 Medium（500），中文/日语及对应混排使用 SemiBold（600）；每页最重要的单个数据可提升为 Bold（700）。
 - 同一内容角色在整套 PPT 中保持相同字重，字号变化不改变其字重。默认内容样式使用 Regular / Text、Medium / SemiBold 和 Bold 三个层级。
 
 标题层级固定为：
@@ -93,8 +97,8 @@
 - 底部注脚和底栏默认不生成。只在必要来源、方法/样本口径、法务或风险免责声明，以及对当前结论有信息增量时保留；若标题区已说明“虚构/示意”，底部不得重复。产品名、口号、芯片名、功能列表与制作说明不能作为填空式页脚。
 - `S23 Data Chart` 使用共同零基线比较 3-8 个类别 × 2-4 个同量纲系列；`S24 Line Chart` 只用于时间或连续变量,限制 1-3 条线。
 - `S25 Portfolio Roadmap Matrix` 只借用二维坐标与泳道的信息结构：年份/阶段使用自然文字和 hairline，不使用蓝色 tabs；泳道只使用白/中性灰，节点媒体和实体块统一 8px 小圆角、无阴影，最多一个有依据的关键节点使用红色。
-- `S26 Milestone Gallery` 使用连续等高的小圆角阶段卡片；每张卡统一浅灰底、1px 中性边界、等距 padding 和 8px 圆角，媒体框同样使用 8px。卡片之间保留一致小间距，不使用阴影、强调色卡或大圆角。底部综合链保持 hairline、自然文本与箭头，不使用 filled ribbon 或按钮。
-- `S27 Dense Synthesis` 只在大量相互依赖信息必须同页呈现时使用。总述标签与结论共享同一左轴；三个并行主面板统一浅灰底、1px 中性外边界、四边等距 padding 和 8px 圆角，内部主要靠标题层级、列宽与留白组织，不为每个条目重复画 hairline，也不复制参考图的蓝色主色、UI 控件、彩色面板或大圆角。全页最多一个黑色焦点区和一张语义媒体；媒体只作为该焦点区的 `cover + darken` 背景，不做小缩略图。
+- `S26 Milestone Gallery` 使用连续等高的小圆角阶段卡片；每张卡统一浅灰底、1px 中性边界、等距 padding 和 8px 圆角，媒体框同样使用 8px。阶段眉题默认省略，只有真实年份、版本或独立阶段名有信息增量时才整组使用，不能重复翻译卡片标题。卡片之间保留一致小间距，不使用阴影、强调色卡或大圆角。底部综合链保持 hairline、自然文本与箭头，不使用 filled ribbon 或按钮。
+- `S27 Dense Synthesis` 只在大量相互依赖信息必须同页呈现时使用。总述标签与结论共享同一左轴；三个并行主面板统一浅灰底、1px 中性外边界、四边等距 padding 和 8px 圆角，内部主要靠标题层级、列宽与留白组织，不为每个条目重复画 hairline，也不复制参考图的蓝色主色、UI 控件、彩色面板或大圆角。横向三项比较若难以区分，可用三个等宽、无边框、无阴影的浅中性子区域，并将每项文字紧凑聚合在顶部。全页最多一个黑色焦点区和一张语义媒体；媒体只作为该焦点区的 `cover + darken` 背景，不做小缩略图。
 - `S28 Priority Bento` 通过卡片面积表达同一主题内的真实卖点优先级，不通过多色卡片制造层级。恰好一个主卡、2-3 个中卡和若干支持卡共享白/浅灰/近黑体系，每张卡独立使用 8px 小圆角、1px 中性边界和无阴影表面；至少三种面积，最多一个红色语义点。媒体只用于语义证据，压图文字使用中性深色蒙版并直接反白，不叠白色面板。
 - 不同量纲默认拆图；不使用无说明双轴。折线通过线型、点型或终值标签辅助区分，不能只依赖颜色。
 - 复杂数据形状可使用登记的 XREAL ECharts Component，但必须由 XREAL 主题覆盖默认样式。ECharts 内部标题、图例、toolbox 默认关闭；单位、图例和来源继续使用版式中的 HTML。
@@ -111,7 +115,7 @@
 - Logo 默认放在每页 `chrome-min` 的左侧品牌位置或封面左上角；唯一例外是 `XREAL-CLOSING-BLACK` 封底，小号 Logo 固定在画面底部中央，中心位置留给大号 `Thanks`。
 - Logo 默认独立出现，右侧不附加 deck 名、章节名或风格说明。
 - 只有栏目名等确有导航价值的信息才可与 Logo 相邻；相邻文字使用品牌主字体、标准字距，视觉字高须与 Logo 图形字高一致，并与 Logo 保持至少 `1.6vw` 的明确间距。
-- 正文页页眉属于导航层级，必须低于页面标题：Logo 使用 `max(60px,5.2vw)`；IBM Plex Sans SC 相邻文字使用 `.26 × Logo 宽度`，XREAL Diatype 因 cap-height 约为 `0.70em`，使用 `.313 × Logo 宽度`，两者都与 Logo 垂直居中。
+- 正文页页眉属于导航层级，必须低于页面标题：Logo 使用 `max(60px,5.2vw)`；IBM Plex Sans SC / JP 相邻文字使用 `.26 × Logo 宽度`，XREAL Diatype 因 cap-height 约为 `0.70em`，使用 `.313 × Logo 宽度`，三者都与 Logo 垂直居中。
 - 页眉只承担导航，不应把正文压到页面中部。`chrome-min` 到下一个直接正文块使用 `--chrome-content-gap:24px`；确需紧凑时使用 `--chrome-content-gap-tight:16px`，不使用 48px 及更大的全局页眉下间距。
 - 封面可使用品牌层级尺寸：Logo 使用 `max(72px,6.8vw)`。封底 Logo 降为 `max(96px,7.2vw)` 并固定在底部中央；`Thanks` 使用 `min(10vw,17vh)` 的显示级字号居中，不添加相邻导航文字。
 - 只使用黑色 Logo；在 `dark` / `accent` 背景上通过 CSS `filter:invert(1)` 反白显示。

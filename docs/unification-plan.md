@@ -14,7 +14,7 @@
 | 模块 | A 旧杂志分支 | XREAL Style |
 |---|---|---|
 | 低功耗事件名 | `ppt-low-power-change` | `swiss-low-power-change` |
-| localStorage key | `guizang-ppt-low-power`(共用!) | 同左 |
+| localStorage key | `xreal-ppt-low-power`(共用!) | 同左 |
 | ESC 索引缩略图可见性修复 | ✅(本次补齐) | ✅ |
 | `?slide=N` 直达参数 | ✅(本次补齐) | ✅ |
 | Windows 字重补偿 `is-win` | 缺失 | ✅ |

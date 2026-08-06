@@ -1,6 +1,6 @@
 ---
 name: xreal-ppt-skill
-description: 生成、改版和校验 XREAL 品牌风格的横向翻页网页演示文稿（离线单文件 HTML）。使用 26 个锁定版式、XREAL 黑白灰与克制红色语义、XREAL Diatype 或 IBM Plex Sans SC、官方产品媒体资产、Motion One 动效以及受控 ECharts 复杂图表。用户要求制作或审查 XREAL 发布会、产品介绍、数据汇报、方法论、路线、地图、高密度一页综合或重点卖点 Bento 类网页 PPT，或提到「XREAL Style」「XREAL PPT」「XREAL deck」「横向翻页 HTML PPT」时使用。
+description: 生成、改版和校验 XREAL 品牌风格的横向翻页网页演示文稿（离线单文件 HTML）。使用 26 个锁定版式、XREAL 黑白灰与克制红色语义、XREAL Diatype、IBM Plex Sans SC 或 IBM Plex Sans JP，支持英文、中文、日语及对应混排语境，并使用官方产品媒体资产、Motion One 动效和受控 ECharts 复杂图表。用户要求制作或审查 XREAL 发布会、产品介绍、数据汇报、方法论、路线、地图、高密度一页综合或重点卖点 Bento 类网页 PPT，或提到「XREAL Style」「XREAL PPT」「XREAL deck」「横向翻页 HTML PPT」时使用。
 ---
 
 ## 这个 Skill 做什么
@@ -8,7 +8,7 @@ description: 生成、改版和校验 XREAL 品牌风格的横向翻页网页演
 生成一份**单文件 HTML**的横向翻页 PPT，唯一视觉系统是 **XREAL Style**：
 
 - 封面与封底以静态纯黑为基底；语义匹配到合适的官方媒体时，优先使用受控全屏媒体背景，正文使用纯白、浅灰或纯黑结构；
-- 按整套 PPT 的语言语境选择品牌字体：纯英文使用 XREAL Diatype，中文或中英混排使用 IBM Plex Sans SC
+- 按整套 PPT 的语言语境选择品牌字体：纯英文使用 XREAL Diatype，中文或中英混排使用 IBM Plex Sans SC，日语或日英混排使用 IBM Plex Sans JP
 - 12/16 列网格、非对称留白、统一 8px 小圆角色块和 1px hairline
 - 每份 deck 固定使用 XREAL 黑白灰品牌体系；红色只作为关键语义强调，不提供任意自定义颜色
 - 正文页使用 26 个锁定版式（`S01-S08`、`S11-S28`）；`S09 Dot Matrix Statement` 与 `S10 Split Closing` 已移除，首页/尾页使用明确登记的 XREAL 黑色基底变体
@@ -123,14 +123,14 @@ cp "<SKILL_ROOT>/assets/brand/xreal-logo-black.svg" "项目/XXX/ppt/assets/brand
 
 读取 `references/brand-xreal.md`，并遵守：
 
-- 先在整套 PPT 层级判断语言语境：纯英文 deck 统一使用 XREAL Diatype；中文或中英混排 deck 统一使用 IBM Plex Sans SC，包括其中的英文、数字、元数据与图表标签
+- 先在整套 PPT 层级判断语言语境：纯英文 deck 统一使用 XREAL Diatype；中文或中英混排 deck 统一使用 IBM Plex Sans SC；日语或日英混排 deck 统一使用 IBM Plex Sans JP。混排中的英文、数字、元数据与图表标签均跟随整套 deck 主字体
 - 禁止按单个字符、文本框或页面的中英文内容拆分字体；一套 deck 只使用一套主字体
-- 纯英文 deck 将 `<html lang>` 设为 `en`；中文或中英混排 deck 设为 `zh-CN`
+- 纯英文 deck 将 `<html lang>` 设为 `en`；中文或中英混排 deck 设为 `zh-CN`；日语或日英混排 deck 设为 `ja`
 - 每页 `chrome-min` 的品牌位置使用 `assets/brand/xreal-logo-black.svg`
 - 封面与封底使用 `#000000` 黑色基底；媒体审计命中时允许一张官方照片或 KV 作为全屏背景，封面还可使用匹配的 product beauty；封底只使用低干扰 lifestyle、conceptual 或品牌 KV，禁止透明产品图与 packshot。两者都不添加 ASCII、点阵、纹理、CSS 图形或动态装饰背景
 - 封底固定为品牌收束页：大号 `Thanks` 作为画面中心主视觉，小号反白 XREAL Logo 放在底部中央；匹配到安静的 lifestyle、conceptual 或品牌 KV 时可作为低干扰背景，但不直接使用产品 cutout / packshot，也不重复结论、takeaway、作者日期、页码或其他说明文字
 - Logo 默认独立出现，不在右侧附加说明文字；确需相邻文字时，文字视觉字高与 Logo 高度一致、使用标准字距，并与 Logo 保持至少 `1.6vw` 的明确间距
-- 正文页 `chrome-min` 使用紧凑导航级品牌尺寸；相邻文字字号由 Logo 宽度按字体度量分别计算，并与 Logo 垂直居中：IBM Plex Sans SC 使用 `.26`，XREAL Diatype 使用 `.313`。封面/封底才使用较大的品牌级尺寸
+- 正文页 `chrome-min` 使用紧凑导航级品牌尺寸；相邻文字字号由 Logo 宽度按字体度量分别计算，并与 Logo 垂直居中：IBM Plex Sans SC / JP 使用 `.26`，XREAL Diatype 使用 `.313`。封面/封底才使用较大的品牌级尺寸
 - `chrome-min` 到首个正文块统一使用 `--chrome-content-gap:24px`，紧凑变体使用 `--chrome-content-gap-tight:16px`。不要在正文首块再叠加空白 margin 来补偿页眉；标题后的版式内部间距单独控制，避免整页内容被双重下推
 - 删除无信息价值的装饰角标、小标题和分割线；正文 bullet 使用实心圆点，不使用短横线
 - 不默认生成底栏、页脚说明或底部分割线。只有必要来源、方法/样本口径、法务或风险免责声明，以及对当前结论确有信息增量的解释可以保留为统一小注脚；若“虚构/示意”等状态已在标题区明确，禁止在底部重复。不得用产品名、口号、芯片名、功能列表或制作说明填充底部空白
@@ -145,7 +145,7 @@ cp "<SKILL_ROOT>/assets/brand/xreal-logo-black.svg" "项目/XXX/ppt/assets/brand
 - S16 Multi-card Brief 默认六卡等权、全部使用中性白底卡；不得为了制造视觉焦点而强行强调。只有内容本身存在明确的首选、推荐、关键或风险优先级时，才允许最多一张 `.is-accent`，并必须添加 `data-emphasis="primary|recommended|critical|risk"` 说明语义
 - S04 `.sub-card` 与 S16 `.brief-card` 分别使用 `--sub-card-pad:2.2vh`、`--brief-card-pad:2.2vh`，四边内边距保持一致；禁止重新写成不同的 `vh / vw` 横纵 padding。S04 右上编号的 `top / right` 也必须使用同一个 `--sub-card-pad`
 - KPI / 图表展示级大数字的单位（如 `°`、`%`、`ms`、`Hz`、`in`）统一挂在数字右上肩位，使用 `vertical-align:text-top`、`--unit-mark-opacity:.62` 且不得与数字拆行；文字单位统一间距 `--unit-mark-gap:.18em`，角度使用更紧的 `--unit-degree-gap:.03em`。`screen` 等多字符英文词单位必须额外使用 `.unit-word`，恢复正常字距与词距，不得继承 KPI 数字的负 tracking。正文句子中的单位作为普通文本随正文基线。角度使用 Unicode `°` 或 `<sup class="unit-degree">°</sup>`，绝不使用下标；只有科学指数与数学/化学语义允许真正的上标或下标
-- 中文与中英混排标题保持正体，禁止在 `h1` / `h2` / `h3` 或标题类中使用斜体；纯英文标题如确有必要，只允许一次克制的斜体强调
+- 中文、日语及对应混排标题保持正体，禁止在 `h1` / `h2` / `h3` 或标题类中使用斜体；纯英文标题如确有必要，只允许一次克制的斜体强调
 - 保留方向键翻页、`B` 静态模式和 `ESC` 索引功能，但不在页面右下角显示操作提示
 - 页面不显示 `01 / 09`、`06 / 07` 等页码；顺序通过底部导航和演讲结构表达
 - 底部导航只作为弱提示：亮底普通点透明度 `.08`、当前点 `.18`；暗底普通点 `.10`、当前点 `.22`。不要用不透明黑色、白色或 `var(--accent)` 显示当前点
@@ -173,7 +173,7 @@ cp "<SKILL_ROOT>/assets/brand/xreal-logo-black.svg" "项目/XXX/ppt/assets/brand
 - S14 闭环图使用左侧 3-5 步 + 右侧单一细线闭环，并在 `.loop-visual` 写入与节点数一致的 `data-loop-count="3|4|5"`。SVG 只画低对比 `.loop-track` 与至少 4 个 `.loop-segment`，HTML `.loop-node` 提供步骤标签，`.loop-core` 提供中心状态；最多一个 `.return` 返回段使用红色。禁止粗圆环、浮动外标签、重复装饰点和 SVG 文字。
 - S17 系统关系图必须先声明 `data-system-grammar="flow|hierarchy|network|containment"`。默认优先使用可复用的 HTML 节点和连接语义；只有内容确实表达 core/middle/outer 的包含关系时才使用同心圆。因果传递使用 flow，组织分层使用 hierarchy，多对多依赖使用 network；不得为了“像系统图”而放三个没有信息增量的圆。
 - S17 左侧只保留 `.system-kicker + .system-thesis + .system-summary`，用于一句结论和一段解释；右侧 `[data-system-grammar]` 承载唯一关系结构，两列顶部误差不得超过 16px。flow 语法使用纵向弹性的 `.system-flow`，关系容器必须占 `.system-diagram` 至少 85% 高度并让 3-6 个节点均衡消费可用空间，禁止把节点全部堆在顶部；也禁止在左侧再复制 Process / Orchestrate / Deliver 等阶段列表或出现“这里表达的是”“不是套圈”“图的目的是”等制作说明式文案。
-- S17 flow 的 `.system-link` 必须独占上下节点之间的连接区并水平居中；向下箭头显示尺寸至少 24px，推荐 26-28px，关系标签紧随箭头并共享中心轴。禁止把箭头塞进节点左侧编号列、贴住节点边缘，或用贯穿节点的装饰线替代明确连接器。
+- S17 flow 的 `.system-link` 必须独占上下节点之间的连接区；向下箭头放在左侧阶段栏并显示至少 24px，推荐 26-28px，关系标签左对齐到右侧节点正文列。箭头应与上下节点的 `.system-level` 共享阶段轴，禁止贴住卡片外缘、漂到正文中央，或用贯穿节点的装饰线替代明确连接器。
 - S23 分组柱图使用完整 1px hairline 绘图区边框，`--chart-safe-inline` 必须为首末柱预留至少 28px 左右安全区，`--chart-value-headroom` 为最高柱的数值标签预留顶部空间。`.chart-value` 必须以 `left:0;right:0;text-align:center` 覆盖整根柱宽，不使用 `translateX(-50%)` 居中，避免 `chart-rise` 的纵向 transform 覆盖后标签偏移；`.chart-x-labels` 使用相同左右 padding 保持类别中心对齐。
 - S24 折线图使用完整 1px hairline 绘图区边框，并在 `.line-plot` 内以 `.line-geometry` 包住 SVG、点和终值标签；该层左右安全区至少 28px，`.line-x-labels` 使用相同 padding。首末采样点、描边和终值标签都必须落在绘图区内部，不得依赖父容器裁切隐藏越界。`.line-end-label` 必须以透明底停在对应末端点的左上肩位，与点位横纵方向至少保持 4px 间距；禁止加白底/色块或压在线、点上。
 - 所有原生图表与 XREAL ECharts 共用 `--chart-series-1/2/3/4`、`--chart-critical`、`--chart-track`、`--chart-grid`、`--chart-frame`。稳定系列只按近黑→中性深灰→中性浅灰→最浅灰分配；不得混入蓝灰或临时色。红色不是默认第三系列色，只用于一个有明确结论、风险或警示依据的关键系列/数据点。S23/S24 的四边 frame 必须同色同粗，第一/最后网格线不得与 frame 重叠形成双描边。
@@ -266,13 +266,13 @@ S12 manifesto 中的产品标志只承担身份落款，不是第二主标题。
 
 图表选版先判断数据形状：3-8 个无连续顺序类别 × 2-4 个同量纲系列使用 `S23 Data Chart`;时间或连续变量上的 1-3 个系列、每系列 4-12 个点使用 `S24 Line Chart`。简单柱图/折线优先使用原生组件；复杂分布、矩阵、流向、网络或层级数据才添加 `data-chart-engine="echarts"`，并按 `references/xreal-echarts.md` 映射到 S23/S24/S17/S08。所有图表必须提供单位、HTML 图例、数据来源和结论标题；不同量纲默认拆图，禁止无说明双轴。手写 SVG 只用于 S24 的折线与点且不写 `<text>`；ECharts 运行时生成的 SVG/Canvas 仅限合法图表几何。
 
-产品组合同时包含时间/阶段和第二层级维度时，使用 `S25 Portfolio Roadmap Matrix`，而不是把媒体卡塞进 S23 柱图。S25 只允许 2-4 个 period、2-4 条中性泳道和 3-7 个媒体节点；纵轴标签列按内容收紧并左对齐，不为短标签预留大块空白；节点必须声明百分比 `--x/--y/--w/--h`，示意路线必须明确标注为 illustrative。需要用连续媒体证据讲述 4-6 个阶段时使用 `S26 Milestone Gallery`；每个 `.milestone-entry` 使用统一浅灰底、1px 边界、等距 padding 和 8px 小圆角，并包含阶段、媒体、标题和短说明。底部综合链保持扁平 hairline，不做按钮或 ribbon。
+产品组合同时包含时间/阶段和第二层级维度时，使用 `S25 Portfolio Roadmap Matrix`，而不是把媒体卡塞进 S23 柱图。S25 只允许 2-4 个 period、2-4 条中性泳道和 3-7 个媒体节点；纵轴标签列按内容收紧并左对齐，不为短标签预留大块空白；节点必须声明百分比 `--x/--y/--w/--h`，示意路线必须明确标注为 illustrative。需要用连续媒体证据讲述 4-6 个阶段时使用 `S26 Milestone Gallery`；每个 `.milestone-entry` 使用统一浅灰底、1px 边界、等距 padding 和 8px 小圆角，并包含媒体、标题和短说明。`.milestone-year` 只在真实年份、明确阶段名或版本号提供了标题之外的信息时使用；使用时每卡都出现，不使用时整组删除，禁止用 `01 · Optics` / `04 · Everyday` 这类重复翻译标题制造层级。底部综合链保持扁平 hairline，不做按钮或 ribbon。
 
 S15 Matrix + Hero Stat 用于 8-12 个同类短项和一个汇总指标。`.matrix-fill` 必须以弹性行高主动消费正文剩余高度，至少约占页面高度 32%，矩阵到 `.hero-stat-bottom` 保持 8-40px 紧凑间距；不得让矩阵悬在上半页并在下方留下大块无意义空白。
 
 S06 KPI Tower 的各 `.body-block` 必须落在同一共同基线上，与 `.bar-towers` 的底部轴线零间距；允许在塔容器上使用 `margin-bottom:-1px` 抵消 1px 边界的渲染缝隙。柱体底角保持直角，不得做成悬浮在横线上的圆角矩形。
 
-当用户明确要求“一页总览”“不要拆分”，或内容只有同时可见才能完成比较、推演或共同判断时，使用 `S27 Dense Synthesis`。它固定为 1 个总述带 + 恰好 3 个主面板 + 7-12 个条目；三个面板可分别使用阶段比较、能力递进和特征解释，但必须共享同一结论。总述标签与结论共享同一左轴，三个主面板通过统一中性底色、等高外框和留白建立结构；内部条目默认不重复添加分割线。先删除重复措辞、调整列宽和内部网格，再处理溢出；不得删除关键内容或自动拆页。最多 1 个黑色焦点区和 1 张语义媒体；媒体只可作为焦点区的 `cover + darken` 背景，不缩成装饰缩略图。禁止 tab、badge、button、彩色面板、阴影和 dashboard 控件。
+当用户明确要求“一页总览”“不要拆分”，或内容只有同时可见才能完成比较、推演或共同判断时，使用 `S27 Dense Synthesis`。它固定为 1 个总述带 + 恰好 3 个主面板 + 7-12 个条目；三个面板可分别使用阶段比较、能力递进和特征解释，但必须共享同一结论。总述标签与结论共享同一左轴，三个主面板通过统一中性底色、等高外框和留白建立结构；内部条目默认不重复添加分割线。三项横向比较若仅靠空白难以区分，可使用三个等宽、无边框、无阴影的浅中性子区域，并把 kicker、阶段名、能力名和说明紧凑聚合在各自顶部；不得把信息拉散到容器四角。先删除重复措辞、调整列宽和内部网格，再处理溢出；不得删除关键内容或自动拆页。最多 1 个黑色焦点区和 1 张语义媒体；媒体只可作为焦点区的 `cover + darken` 背景，不缩成装饰缩略图。禁止 tab、badge、button、彩色面板、阴影和 dashboard 控件。
 
 当同一主题中存在一个明确核心卖点、2-3 个次级技术点和若干支持信息，且面积差异能比颜色更准确地表达优先级时，使用 `S28 Priority Bento`。它固定为 12 列 × 6 行网格、6-9 张 `.priority-tile`、恰好 1 张 `.is-primary`、2-3 张 `.is-secondary`，并至少包含 3 种不同卡片面积。每张卡必须通过 `--col/--span/--row/--rows` 明确占位；主卡至少 5 列 × 3 行且占内容网格约 28%-48%。大小只能由内容优先级决定，不得随机拼贴。全页使用白、浅灰和近黑结构，所有卡片独立使用 8px 小圆角、1px 中性边界、无阴影；最多 1 个红色语义点。使用 1-4 张语义匹配媒体：压图文字必须 `cover + darken` 并直接反白，非压字媒体使用 `contain + none`，不得叠白色文字面板。禁止渐变、多彩卡片、pill、badge、button、tab、ribbon 与软件控件感。
 
@@ -299,12 +299,12 @@ S06 KPI Tower 的各 `.body-block` 必须落在同一共同基线上，与 `.bar
 
 | 信息角色 | 推荐字重 |
 |---|---|
-| Hero / 封面 / 章节主标题 | 纯英文 XREAL Diatype 500；中文或中英混排 IBM Plex Sans SC 600 |
-| 页面标题 / 模块标题 | 纯英文 500；中文或中英混排 600 |
-| 关键 KPI / 数据 | 纯英文 500；中文或中英混排 600；每页最重要的单个数据可使用 700 |
+| Hero / 封面 / 章节主标题 | 纯英文 XREAL Diatype 500；中文/日语及对应混排 IBM Plex Sans SC / JP 600 |
+| 页面标题 / 模块标题 | 纯英文 500；中文/日语及对应混排 600 |
+| 关键 KPI / 数据 | 纯英文 500；中文/日语及对应混排 600；每页最重要的单个数据可使用 700 |
 | 副标题 / lead | 400 |
 | 正文 / 描述 | 400 |
-| caption / 辅助元数据 | 纯英文 400；中文或中英混排 450 |
+| caption / 辅助元数据 | 纯英文 400；中文/日语及对应混排 450 |
 | kicker / 导航标签 / 图表标签 | 500 |
 
 中文标题使用双约束 `font-size:min(Xvw,Yvh)`；2 行或更长时先改写标题，再降字号。内容文字禁止使用 100/200/300。
@@ -346,10 +346,10 @@ node "<SKILL_ROOT>/scripts/validate-swiss-deck.mjs" "项目/XXX/ppt/index.html"
 ## XREAL Style 核心原则
 
 1. **黑白灰结构 + 红色语义**：黑色承担结构，红色只在关键位置出现。
-2. **语境化无衬线排版**：纯英文 deck 使用 XREAL Diatype，中文或中英混排 deck 使用 IBM Plex Sans SC；任何衬线字体或按字符混用品牌字体都是错的。
+2. **语境化无衬线排版**：纯英文 deck 使用 XREAL Diatype，中文或中英混排 deck 使用 IBM Plex Sans SC，日语或日英混排 deck 使用 IBM Plex Sans JP；任何衬线字体或按字符混用品牌字体都是错的。
 3. **卡片小圆角**：卡片型实体块统一使用 `--radius-sm:8px`，尤其是 S04/S05/S06/S07/S13/S16/S26/S27/S28；S06/S23 等基线柱体只圆顶部两角，底角为 0 并贴齐 x 轴；S19 Bento 只圆整体外框、内部区块直角；页面画布、分割线和坐标轴保持直线；禁止装饰性渐变、阴影、发光、霓虹、大圆角和胶囊形。full-bleed 媒体为保护文字使用的中性黑透明蒙版不属于装饰性渐变。
 4. **网格至上**：元素吸附到 12/16 列 grid，左对齐，用留白制造非对称。
-5. **角色化字体层级**：主标题与正文保持明显层级；纯英文主标题默认 500，中文或中英混排主标题默认 600，正文 400，标签 500。
+5. **角色化字体层级**：主标题与正文保持明显层级；纯英文主标题默认 500，中文/日语及对应混排主标题默认 600，正文 400，标签 500。
 6. **图片是证据**：先匹配槽位和比例，再生成或适配图片。
 7. **动效可降级**：每页使用语义化 recipe；`B` 键必须能切换到静态可读状态。
 8. **版式必须登记**：正文只从 `S01-S08`、`S11-S28` 选择；`S09` 与 `S10` 已移除，实验结构必须显式标记。
@@ -366,7 +366,7 @@ xreal-ppt-skill/
 ├── assets/
 │   ├── template-xreal.html
 │   ├── brand/xreal-logo-black.svg
-│   ├── fonts/ (XREAL Diatype + IBM Plex Sans SC)
+│   ├── fonts/ (XREAL Diatype + IBM Plex Sans SC + IBM Plex Sans JP)
 │   ├── media/
 │   │   ├── aura/
 │   │   ├── one-pro/

@@ -49,7 +49,7 @@ XREAL Style 生成时,除用户明确要求实验版式外,只能从下面登记
 | S14 | 14 | Loop Form | 左 3-5 步列表 + 右单一细线闭环；灰色底环、方向段、HTML 节点与中心结论；最多一个返回段使用红色 | SVG 禁止文字,标签改 HTML；禁止粗圆环、浮动外标签与重复装饰点 |
 | S15 | 15 | Matrix + Hero Stat | 顶部左对齐标题,中段矩阵主动消费剩余高度,底部巨数；矩阵不得悬在上半页留下大块无意义空白 | 多图可改造矩阵格,同组统一 `21:9` |
 | S16 | 16 | Multi-card Brief | 顶部左对齐标题,下方 3×2 小圆角微卡；默认六卡等权。仅有明确优先级语义时，允许一张高对比卡并声明 `data-emphasis` | 多图可改造卡片内容,同组统一 `21:9` |
-| S17 | 17 | System Diagram | 先声明 `flow|hierarchy|network|containment`；左侧只放结论与解释，右侧为唯一关系图且至少占画布 42%；两列顶部误差 ≤16px；flow 使用 3-6 节点和明确连接，并纵向消费关系图区至少 85% 高度；连接器独占上下节点间区域，箭头 ≥24px 且与关系标签共享中心轴 | 禁止左侧复制阶段列表；同心圆仅限真实 containment；SVG 如使用则禁止文字，标签改 HTML |
+| S17 | 17 | System Diagram | 先声明 `flow|hierarchy|network|containment`；左侧只放结论与解释，右侧为唯一关系图且至少占画布 42%；两列顶部误差 ≤16px；flow 使用 3-6 节点和明确连接，并纵向消费关系图区至少 85% 高度；连接器独占上下节点间区域，箭头 ≥24px 并位于左侧阶段栏，关系标签对齐右侧正文列 | 禁止左侧复制阶段列表；同心圆仅限真实 containment；SVG 如使用则禁止文字，标签改 HTML |
 | S18 | 18 | Why Now | 三列递进 + 底部巨数 | 无 |
 | S19 | 19 | Four Cards | 顶部黑线 + 四列均分 | Bento 扩展的稀疏 hero 主卡可使用全幅 contextual/lifestyle 媒体；宽高覆盖父卡至少 95%，文字压图时使用 `.28-.48` 深色蒙版；内部仍直角 |
 | S20 | 20 | Stacked KPI Ledger | 纵向账单式巨数 | 无 |
@@ -58,7 +58,7 @@ XREAL Style 生成时,除用户明确要求实验版式外,只能从下面登记
 | S23 | 新增 | Data Chart | 顶部结论标题 + 单位/图例 + 四边完整绘图区 + 主导分组柱图 + HTML 坐标标签 + 来源；首末柱至少 28px 安全边距，顶部为数值留 headroom，数值以整柱宽文本层居中 | 无；只承载真实比较数据 |
 | S24 | 新增 | Line Chart | 顶部结论标题 + 单位/图例 + 四边完整绘图区 + 主导折线图 + HTML 坐标标签 + 来源；SVG、端点与终值标签置于左右至少 28px 的 `.line-geometry` | 无；只承载时间或连续变量趋势 |
 | S25 | 新增 | Portfolio Roadmap Matrix | 顶部结论标题 + 时间轴 + 2-4 条中性能力泳道 + 3-7 个稀疏媒体节点 + 来源；节点以百分比坐标定位 | 每节点一张语义媒体；8px 小圆角，无阴影；示意路线必须明确声明 |
-| S26 | 新增 | Milestone Gallery | 顶部结论标题 + 4-6 张连续等高小圆角阶段卡；每卡含阶段、媒体、标题、短说明；底部综合结论 + 扁平能力链 + 来源 | 每阶段一张语义媒体；卡片与媒体框均为 8px，无阴影、无强调色卡 |
+| S26 | 新增 | Milestone Gallery | 顶部结论标题 + 4-6 张连续等高小圆角阶段卡；每卡含媒体、标题、短说明，可选真实年份/独立阶段标识；底部综合结论 + 扁平能力链 + 来源 | 每阶段一张语义媒体；卡片与媒体框均为 8px，无阴影、无强调色卡 |
 | S27 | 新增 | Dense Synthesis | 顶部结论标题 + 单一左轴总述带 + 恰好 3 个等高中性主面板 + 来源；组内可分别使用比较、递进、解释语法，条目间不重复画分割线 | 7-12 个条目；最多 1 个黑色焦点区与 1 张语义媒体；不得因密度自动拆页 |
 | S28 | 新增 | Priority Bento | 顶部结论标题 + 12×6 面积网格 + 1 个主卡 + 2-3 个中卡 + 支持卡 + 来源 | 6-9 卡、至少 3 种面积、1-4 张语义媒体；面积由内容优先级决定 |
 
@@ -99,7 +99,7 @@ XREAL Style 生成时,除用户明确要求实验版式外,只能从下面登记
 ### S26 · Milestone Gallery
 
 - 使用场景:用 4-6 张语义媒体证明一条技术、产品或组织能力的阶段演进。
-- 必须结构:`.milestone-gallery` + 4-6 个 `.milestone-entry`；每项含 `.milestone-year`、`.milestone-media`、`.milestone-title`、`.milestone-copy`；底部包含 `.milestone-synthesis`、`.milestone-chain` 和 `.milestone-source`。
+- 必须结构:`.milestone-gallery` + 4-6 个 `.milestone-entry`；每项含 `.milestone-media`、`.milestone-title`、`.milestone-copy`；底部包含 `.milestone-synthesis`、`.milestone-chain` 和 `.milestone-source`。`.milestone-year` 可选，只在真实年份、版本号或独立阶段名有信息增量时使用；若使用则每项都必须出现，禁止重复翻译主标题。
 - 视觉约束:4-6 个 `.milestone-entry` 使用统一浅灰底、1px 中性边界、等距 padding 和 8px 小圆角，卡间距一致；媒体框同样使用 8px。卡片保持等高、无阴影、无单独强调色；底部能力链只用 hairline、自然文本与箭头，不做 filled ribbon、按钮或蓝色导航条。
 - 媒体约束:每个阶段必须有语义匹配媒体，比例与槽位一致；图片只作为证据，不用无关装饰图补齐数量。
 - 动效:使用 `data-animate="milestone-gallery"`；阶段列依次进入，最后呈现综合结论与能力链。
@@ -108,7 +108,7 @@ XREAL Style 生成时,除用户明确要求实验版式外,只能从下面登记
 
 - 使用场景:大量信息必须在同一页共同判断，拆开后会破坏比较、依赖或因果关系；不是普通三栏摘要。
 - 必须结构:`.dense-synthesis` + `.dense-thesis` + `.dense-columns` + 恰好 3 个 `.dense-panel` + `.dense-source`；每个面板含 `.dense-panel-title`、`.dense-panel-body` 和至少 2 个 `.dense-item`，全页共 7-12 项。
-- 视觉约束:总述标签与结论共享同一左轴；三个主面板等高、浅灰底、四边等距 padding、1px 中性外边界、8px 小圆角、无阴影。内部通过标题层级、列宽和留白组织，不为每个条目重复添加 hairline，也不把条目做成彩色卡片。最多一个 `.is-focus` 黑色焦点区和一张 `.dense-media`；媒体只作为焦点区的 `cover + darken` 背景，不做小缩略图。
+- 视觉约束:总述标签与结论共享同一左轴；三个主面板等高、浅灰底、四边等距 padding、1px 中性外边界、8px 小圆角、无阴影。内部通过标题层级、列宽和留白组织，不为每个条目重复添加 hairline，也不使用彩色卡片。`.dense-comparison` 可用三个等宽、无边框、无阴影的浅中性子区域增强区分，各项内容必须紧凑聚合在顶部。最多一个 `.is-focus` 黑色焦点区和一张 `.dense-media`；媒体只作为焦点区的 `cover + darken` 背景，不做小缩略图。
 - 密度约束:正文不低于 16px，meta 不低于 14px。溢出时优先压缩重复措辞、调整列宽和内部网格；用户明确要求同页时不得删除关键内容或自动拆页。
 - 动效:使用 `data-animate="dense-synthesis"`；标题与总述带先出现，三主面板并行进入，再展开组内条目。
 

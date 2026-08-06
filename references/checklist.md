@@ -79,12 +79,12 @@ node <SKILL_ROOT>/scripts/validate-swiss-deck.mjs path/to/index.html
 **做法（角色字重层级 ⭐）**:
 字重由内容角色固定，同一角色在整套 PPT 中保持一致：
 
-- Hero / 封面 / 章节主标题 → `var(--weight-display)`：XREAL Diatype **500**，IBM Plex Sans SC **600**
-- 页面标题 / 模块标题 → `var(--weight-title)`：XREAL Diatype **500**，IBM Plex Sans SC **600**
-- 关键 KPI / 数据 → 纯英文 **500**，中文或中英混排 **600**；每页最重要的单个数据可使用 **700**
+- Hero / 封面 / 章节主标题 → `var(--weight-display)`：XREAL Diatype **500**，IBM Plex Sans SC / JP **600**
+- 页面标题 / 模块标题 → `var(--weight-title)`：XREAL Diatype **500**，IBM Plex Sans SC / JP **600**
+- 关键 KPI / 数据 → 纯英文 **500**，中文/日语及对应混排 **600**；每页最重要的单个数据可使用 **700**
 - 副标题 / lead → **400**
 - 正文 / 描述 → **400**
-- caption / 辅助元数据 → 纯英文 **400**，中文或中英混排 **450**
+- caption / 辅助元数据 → 纯英文 **400**，中文/日语及对应混排 **450**
 - kicker / 导航标签 / 图表标签 → **500**
 - 强调字使用同字重斜体、600/700 或品牌红色语义建立层级。
 - 默认内容样式使用 Regular / Text、Medium / SemiBold 和 Bold 三个层级。
@@ -156,7 +156,7 @@ node <SKILL_ROOT>/scripts/validate-swiss-deck.mjs path/to/index.html
 - **封底强制 `<section class="slide accent">`** 使用黑色基底，大号 `.xreal-closing-thanks` 作为居中主视觉，小号 `.xreal-closing-logo` 通过 `.xreal-closing-mark` 固定在底部中央；存在匹配的低干扰 lifestyle、conceptual 或品牌 KV 时可使用 `.xreal-closing-media` 背景。禁止直接放透明产品 cutout、白底产品图或 packshot
 - 封底必须是最后一个 section，进入该页时隐藏底部分页导航；不放 takeaway、宣言、作者日期、页码、联系方式、CTA、眉题或装饰线，所有结论在前一页完成
 - Logo 默认独立,右侧不接 deck 名、章节名或风格说明;确有导航文字时,文字标准字距且视觉字高与 Logo 一致
-- 正文页 chrome 品牌区使用紧凑导航级尺寸；IBM Plex Sans SC 相邻文字按 Logo 宽度的 `.26` 计算，XREAL Diatype 按 `.313` 计算，并与 Logo 垂直居中；封面/封底才使用较大品牌级尺寸
+- 正文页 chrome 品牌区使用紧凑导航级尺寸；IBM Plex Sans SC / JP 相邻文字按 Logo 宽度的 `.26` 计算，XREAL Diatype 按 `.313` 计算，并与 Logo 垂直居中；封面/封底才使用较大品牌级尺寸
 - 页眉到首个正文块使用 `--chrome-content-gap:24px`，紧凑变体使用 `16px`；不要使用 48px 全局下间距，也不要让首块额外 margin 与页眉间距叠加
 - 普通英文眉题、导航、标签、图注和页脚使用自然大小写;禁止整词组全大写,也禁止 CSS `text-transform:uppercase`
 - 全大写只允许 XREAL 字标、行业通用缩写和短型号代码;辅助文字 `letter-spacing` 默认 normal,最大不超过 `0.05em`
@@ -350,7 +350,7 @@ node <SKILL_ROOT>/scripts/validate-swiss-deck.mjs path/to/index.html
 
 **做法**:
 - 仓库内的 `assets/template-xreal.html` 是 XREAL Style 的 golden source 快照,但要以**实际页面用法**为准,不要只看未使用的 CSS helper
-- 标题字重按固定角色表执行：`.h-hero` / `.h-xl` / `.h-hero-zh` / `.h-xl-zh` 使用 `var(--weight-display)`；纯英文为 500，中文或中英混排为 600
+- 标题字重按固定角色表执行：`.h-hero` / `.h-xl` / `.h-hero-zh` / `.h-xl-zh` 使用 `var(--weight-display)`；纯英文为 500，中文/日语及对应混排为 600
 - 除品牌层、封面/封底黑色基底与媒体匹配机制、S22 图片槽位修复、横向时间线 label 居中修复、角色化字重层级和已登记组件规则外,不要改动原始基座 CSS/JS recipe
 - 新增图片能力必须绑定到 S22/S15/S16 原始槽位,不要发明新正文结构
 - 如果要修改 `assets/template-xreal.html`,先做原始参考对比;可接受差异只应是品牌层、封面/封底黑色基底与媒体匹配、S22 图片定位类、角色化字重 token、标准字距、实心圆点和已知动效修复
@@ -474,8 +474,9 @@ CSS 里 `.frame-img img` 已经预设 `object-position:top`，只裁底。
 
 **做法**：
 - 纯英文 PPT → 整套使用 **XREAL Diatype**
-- 中文或中英混排 PPT → 整套使用 **IBM Plex Sans SC**
-- 中英混排中的英文、数字、元数据、代码、页码、日期、图表标签和技术标识也使用 **IBM Plex Sans SC**
+- 中文或中英混排 PPT → `<html lang="zh-CN">`，整套使用 **IBM Plex Sans SC**
+- 日语或日英混排 PPT → `<html lang="ja">`，整套使用 **IBM Plex Sans JP**
+- 混排中的英文、数字、元数据、代码、页码、日期、图表标签和技术标识也使用对应整套主字体
 - 不按字符、文本框或页面切换字体；一套 PPT 只使用一套主字体
 
 品牌字体使用模板内置的本地字体文件；Google Fonts CDN 仅用于 Material Symbols Outlined 图标。
@@ -629,7 +630,7 @@ S04 `.sub-card` 同样使用 `--sub-card-pad:2.2vh` 保持四边相等；右上 
 
 ### 14b. 单位和中文标题
 
-KPI / 图表中的展示级单位统一挂在数字右上肩位：`°`、`in`、`Hz`、`ms`、`%` 都使用 `vertical-align:text-top` 和 `.62` 中性透明度，并保持数字 + 单位不可拆行。文字单位与数字间距为 `.18em`；`°` 使用 `.03em` 的紧间距。正文句子中的单位作为普通文本随正文基线。角度写作 `57°` 或 `57<sup class="unit-degree">°</sup>`，禁止 `<sub>°</sub>`。中文或中英混排标题保持正体，不使用 `<i>`、`<em>` 或 `font-style:italic`。
+KPI / 图表中的展示级单位统一挂在数字右上肩位：`°`、`in`、`Hz`、`ms`、`%` 都使用 `vertical-align:text-top` 和 `.62` 中性透明度，并保持数字 + 单位不可拆行。文字单位与数字间距为 `.18em`；`°` 使用 `.03em` 的紧间距。正文句子中的单位作为普通文本随正文基线。角度写作 `57°` 或 `57<sup class="unit-degree">°</sup>`，禁止 `<sub>°</sub>`。中文、日语及对应混排标题保持正体，不使用 `<i>`、`<em>` 或 `font-style:italic`。
 ---
 
 ## 🔵 P3 · 操作细节
@@ -667,7 +668,8 @@ JS 动态计算总页数并扩展底部翻页圆点；页面内容层不得再�
   □ 节奏表满足硬规则:无连续 3 页同主题 / 有 ≥1 hero dark + ≥1 hero light(8 页以上) / 至少有 1 个 dark 正文页
   □ `<title>` 已改为实际 deck 标题(grep "[必填]" 应无结果)
   □ XREAL:已复制 `assets/fonts/` 与 `assets/brand/xreal-logo-black.svg`
-  □ XREAL:已按整套 PPT 语境选择主字体——纯英文为 XREAL Diatype,中文或中英混排为 IBM Plex Sans SC
+  □ XREAL:已按整套 PPT 语境选择主字体——纯英文为 XREAL Diatype，中文或中英混排为 IBM Plex Sans SC，日语或日英混排为 IBM Plex Sans JP
+  □ XREAL:语言标记正确——英文 `lang="en"`，中文 `lang="zh-CN"`，日语 `lang="ja"`
   □ XREAL:未按字符、文本框或页面混用两套品牌字体
   □ XREAL:每页 chrome-min 的品牌位置使用 XREAL Logo,深色背景反白
   □ XREAL:已建立媒体编排表；只复制已分配槽位的素材，`images/` 不存在无说明的孤儿媒体
@@ -678,17 +680,17 @@ JS 动态计算总页数并扩展底部翻页圆点；页面内容层不得再�
   □ XREAL Style:当封面/封底存在合适媒体时已使用对应 `.xreal-cover-media` / `.xreal-closing-media`；若为 `none`，确实没有通过语义、quiet zone 与对比度检查的素材
   □ XREAL Style:`rg -n "ascii-bg" index.html` 无结果
   □ XREAL Style:封面、页眉、Logo 后和角标均没有页码或"01"等无语义编号
-  □ XREAL Style:中文标题保持正体；纯英文黑色背景标题如确有必要，才使用一次克制斜体强调
+  □ XREAL Style:中文与日文标题保持正体；纯英文黑色背景标题如确有必要，才使用一次克制斜体强调
   □ XREAL Style:Logo 默认独立;相邻文字如存在,字高与 Logo 一致、使用标准字距，并保留至少 `1.6vw` 间距
   □ XREAL Style:正文页页眉品牌区明显小于封面/封底,且不与页面标题争抢层级
   □ XREAL Style:所有带 `chrome-min` 的版式，页眉到首个正文块为 24px（tight 为 16px），没有被额外首块 margin 双重下推
-  □ XREAL Style:英文页眉使用 `.313` 光学比例,中文或中英混排使用 `.26`,视觉字高均与 Logo 一致
+  □ XREAL Style:英文页眉使用 `.313` 光学比例，中文/日语及对应混排使用 `.26`，视觉字高均与 Logo 一致
   □ XREAL Style:普通英文短语使用自然大小写;全大写只用于 XREAL 字标、通用缩写和短型号代码
   □ XREAL Style:没有无信息价值的角标、重复小标题和装饰性分割线
   □ XREAL Style:S04/S05/S19 卡片媒体都有明确语义角色；没有给密集卡片强塞图片，S19 hero 文字直接反白且内部没有新增圆角
   □ S02 纵向时间线有统一列头；宽度为正文的 72%-82%，每个节点都包含可见且对齐的 dot、年份、同口径指标、阶段名和体验影响；贯穿轴按行连续，横线从 axis 右侧开始且不与竖轴叠线，列头与正文列左对齐
   □ S17 已声明 flow / hierarchy / network / containment；左侧只有结论与解释，右侧为唯一关系结构，两列顶部误差 ≤16px；flow 纵向占满关系图区至少 85%、节点均衡分布，没有重复阶段列表或制作说明式文案，同心圆只用于真实包含关系
-  □ S17 flow 的每个连接器独占相邻节点间区域；箭头 ≥24px，箭头和关系标签共享水平中心轴，没有放进左侧编号列或被节点边界遮挡
+  □ S17 flow 的每个连接器独占相邻节点间区域；箭头 ≥24px 并位于左侧阶段栏、与上下 `.system-level` 共轴，关系标签左对齐右侧正文列，连接器未被节点边界遮挡
   □ S14 使用单一细线闭环、3-5 个 HTML 节点与一个中心结论；SVG 无文字，最多一个红色返回段，无粗圆环或重复装饰点
   □ 单一产品 deck 已检查 `00-product-marks/`；有官方产品标志时没有继续用手打产品名替代，且产品标志未侵入页眉企业 Logo 位
   □ S12 manifesto 中的产品标志只作身份落款，宽度为页面内容宽度的 10%-16%，没有成为第二主标题；底部身份行透明且没有整块黑色通栏；如使用背景媒体，仅使用匹配的 lifestyle/conceptual/品牌 KV，覆盖 ≥95% 且有深色蒙版
@@ -705,8 +707,8 @@ JS 动态计算总页数并扩展底部翻页圆点；页面内容层不得再�
   □ S23 四边 plot frame 同色同粗且没有与首末网格线叠加；首末柱与边界至少 28px、没有贴边或裁切，最高数值留在 plot 内；每个 `.chart-value` 与对应柱体水平中心对齐，且不依赖水平 transform
   □ S24 横轴确实是时间或连续变量,没有把无顺序类别强行连线；四边 plot frame 同色同粗、首末网格线不重叠，`.line-geometry` 左右至少 28px，首末点、描边和终值标签都没有越界；终值标签透明底并位于端点左上肩位，没有压线或压点
   □ S25 确实存在时间/阶段与第二层级维度；2-4 个 period、2-4 条中性 lane、3-7 个媒体节点均完整落在 plot 内，节点不重叠；纵轴标签列收紧并左对齐，标签到 plot 为 12-24px；示意位置已声明 illustrative
-  □ S26 有 4-6 个完整阶段，每阶段的媒体都与语义匹配；卡片统一浅灰底、1px 边界、等距 padding、8px 圆角且等高，底部综合链没有变成按钮或 filled ribbon
-  □ S27 只在信息必须同时可见时使用；有 1 个总述带、恰好 3 个等高主面板、7-12 个条目和来源；总述文字共享同一左轴，内部没有重复分割线；每面板至少 2 项，正文 ≥16px、meta ≥14px，最多 1 个焦点区与 1 张 `cover + darken` 背景媒体，没有自动拆页
+  □ S26 有 4-6 个完整阶段，每阶段的媒体都与语义匹配；卡片统一浅灰底、1px 边界、等距 padding、8px 圆角且等高；阶段眉题仅在真实年份/版本/独立阶段名有信息增量时整组出现，没有重复翻译主标题；底部综合链没有变成按钮或 filled ribbon
+  □ S27 只在信息必须同时可见时使用；有 1 个总述带、恰好 3 个等高主面板、7-12 个条目和来源；总述文字共享同一左轴，内部没有重复分割线；横向比较项可用无边框中性子区域区分且文字紧凑聚合在顶部；每面板至少 2 项，正文 ≥16px、meta ≥14px，最多 1 个焦点区与 1 张 `cover + darken` 背景媒体，没有自动拆页
   □ S28 只在存在真实卖点优先级时使用；12×6 网格中有 6-9 卡、恰好 1 个主卡、2-3 个中卡、至少 3 种面积且无重叠越界；主卡占约 28%-48%，1-4 张媒体均符合 cover/darken 或 contain/none 契约
 
 排版
@@ -725,7 +727,7 @@ JS 动态计算总页数并扩展底部翻页圆点；页面内容层不得再�
   □ S04/S05/S06/S07/S13/S16/S26/S27/S28 的卡片型实体块和图片统一使用 8px 小圆角；S06/S23 等基线柱体仅顶部圆角、底角为 0 且贴齐 x 轴；S19 Bento 只圆整体外框、内部直角
   □ S06 KPI Tower 每根柱体与共同基线零间距；1px 边界没有形成悬浮缝隙
   □ S04/S16 卡片四边 padding 相等，S04 编号的 top/right 相等；S16 默认六卡等权，若存在强调卡，其内容确有优先级依据、已声明 `data-emphasis`，且反白文字有足够反差
-  □ KPI / 图表大数字的单位统一位于右上肩位且不拆行；`screen` 等英文词单位使用 `.unit-word` 与正常字距；正文单位随正文基线；角度没有使用下标；中文标题没有斜体
+  □ KPI / 图表大数字的单位统一位于右上肩位且不拆行；`screen` 等英文词单位使用 `.unit-word` 与正常字距；正文单位随正文基线；角度没有使用下标；中文与日文标题没有斜体
   □ S22 图片上的标题为直接叠加的高对比文本，没有白底卡片、色块或半透明面板
   □ S07/S23/S24 与 ECharts 共用 `--chart-series-1/2/3/4` 中性色阶和 `--chart-critical`；没有蓝灰/临时色或无语义红色，最多一个红色关键系列/点
   □ S24 SVG 只包含线、点和数据几何,没有 `<text>`、面积渐变或无说明双轴

@@ -133,21 +133,42 @@ const inferredProductLine = inferredProductLines.find(({ pattern }) => (slideTex
 if (inferredProductLine && !productLine) {
   errors.push(`Product identity mismatch: slide content repeatedly identifies product line "${inferredProductLine}" but body has no data-product-line declaration. Run the product identity audit before media selection.`);
 }
-const hasCjkContent = /[\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff]/u.test(slideText);
+const hasJapaneseKana = /[\u3040-\u309f\u30a0-\u30ff\u31f0-\u31ff\uff66-\uff9d]/u.test(slideText);
+const hasHanContent = /[\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff]/u.test(slideText);
+const isJapaneseDeck = documentLang.startsWith('ja');
+const isChineseDeck = documentLang.startsWith('zh');
+const isEnglishDeck = documentLang.startsWith('en');
 
-if (hasCjkContent && !documentLang.startsWith('zh')) {
+if (hasJapaneseKana && !isJapaneseDeck) {
+  errors.push('Font context mismatch: Japanese or Japanese-English deck must use <html lang="ja"> so the whole deck uses IBM Plex Sans JP.');
+}
+if (!isJapaneseDeck && hasHanContent && !isChineseDeck) {
   errors.push('Font context mismatch: Chinese or mixed-language deck must use <html lang="zh-CN"> so the whole deck uses IBM Plex Sans SC.');
 }
-if (!hasCjkContent && !documentLang.startsWith('en')) {
+if (!hasJapaneseKana && !hasHanContent && !isEnglishDeck) {
   errors.push('Font context mismatch: all-English deck must use <html lang="en"> so the whole deck uses XREAL Diatype.');
+}
+
+const japaneseTypographyBlock = htmlForStatic.match(/html\[lang\^?=["']ja["']\]\s*\{([^}]*)\}/i)?.[1] ?? '';
+const japaneseFontFaces = [...htmlForStatic.matchAll(/@font-face\s*\{[^}]*font-family\s*:\s*["']IBM Plex Sans JP["'][^}]*\}/gi)];
+if (isJapaneseDeck) {
+  if (japaneseFontFaces.length < 8) {
+    errors.push(`Japanese font bundle mismatch: expected 8 IBM Plex Sans JP @font-face declarations; found ${japaneseFontFaces.length}.`);
+  }
+  if (!/--font-ibm-plex-jp\s*:\s*["']IBM Plex Sans JP["']/i.test(htmlForStatic)) {
+    errors.push('Japanese font token missing: define --font-ibm-plex-jp with IBM Plex Sans JP.');
+  }
+  if (!/--deck-font\s*:\s*var\(--font-ibm-plex-jp\)/i.test(japaneseTypographyBlock)) {
+    errors.push('Japanese typography context missing: html[lang^="ja"] must set --deck-font to var(--font-ibm-plex-jp).');
+  }
 }
 
 const englishTypographyBlock = htmlForStatic.match(/html\[lang\^?=["']en["']\]\s*\{([^}]*)\}/i)?.[1] ?? '';
 const englishChromeRatio = Number(englishTypographyBlock.match(/--chrome-label-optical-ratio\s*:\s*([0-9.]+)/i)?.[1]);
-if (documentLang.startsWith('en') && (!Number.isFinite(englishChromeRatio) || englishChromeRatio < 0.305 || englishChromeRatio > 0.32)) {
+if (isEnglishDeck && (!Number.isFinite(englishChromeRatio) || englishChromeRatio < 0.305 || englishChromeRatio > 0.32)) {
   errors.push('English chrome mismatch: XREAL Diatype needs --chrome-label-optical-ratio around .313 so adjacent labels match the XREAL Logo visual height.');
 }
-if (documentLang.startsWith('en')) {
+if (isEnglishDeck) {
   const enCoverTitleVw = Number(englishTypographyBlock.match(/--cover-title-size\s*:\s*min\(\s*([0-9.]+)vw/i)?.[1]);
   const enSectionTitleVw = Number(englishTypographyBlock.match(/--section-hero-title-size\s*:\s*min\(\s*([0-9.]+)vw/i)?.[1]);
   const enPageTitleVw = Number(englishTypographyBlock.match(/--page-title-size\s*:\s*min\(\s*([0-9.]+)vw/i)?.[1]);
@@ -220,7 +241,7 @@ if (/#nav\s+\.dot\.active\s*\{[^}]*background\s*:\s*var\(--accent\)/i.test(htmlF
 
 const contentWeightSource = htmlForStatic.replace(/@font-face\s*\{[^}]*\}/gi, '');
 if (/font-weight\s*:\s*(?:100|200|300|800|900)\b/i.test(contentWeightSource)) {
-  errors.push('Typography hierarchy mismatch: use the fixed role weights only—English display/title/key data 500; Chinese or mixed display/title/key data 600; body 400; support text 400/450; labels 500; one core datum may use 700.');
+  errors.push('Typography hierarchy mismatch: use the fixed role weights only—English display/title/key data 500; Chinese/Japanese or mixed display/title/key data 600; body 400; support text 400/450; labels 500; one core datum may use 700.');
 }
 
 const nonNoneBoxShadows = [...htmlForStatic.matchAll(/box-shadow\s*:\s*(?!none\b)[^;}]+/gi)];
@@ -292,11 +313,11 @@ slides.forEach((slide) => {
     errors.push(`Slide ${slide.idx}: unapproved all-caps copy (${[...new Set(unapprovedAllCaps)].join(', ')}). Use sentence/natural case; only brand marks, standard acronyms, and short model codes may stay all caps.`);
   }
 
-  if (documentLang.startsWith('zh')) {
+  if (isChineseDeck || isJapaneseDeck) {
     const headingBlocks = [...slide.html.matchAll(/<h[1-3]\b[^>]*>[\s\S]*?<\/h[1-3]>/gi)].map((match) => match[0]);
-    const italicChineseHeadings = headingBlocks.filter((block) => /<(?:i|em)\b|font-style\s*:\s*italic/i.test(block));
-    if (italicChineseHeadings.length) {
-      errors.push(`Slide ${slide.idx}: Chinese titles must remain upright. Remove <i>, <em>, or font-style:italic from heading content.`);
+    const italicCjkHeadings = headingBlocks.filter((block) => /<(?:i|em)\b|font-style\s*:\s*italic/i.test(block));
+    if (italicCjkHeadings.length) {
+      errors.push(`Slide ${slide.idx}: Chinese and Japanese titles must remain upright. Remove <i>, <em>, or font-style:italic from heading content.`);
     }
   }
 
@@ -846,8 +867,11 @@ slides.forEach((slide) => {
     const copyCount = [...slide.html.matchAll(/\bclass="[^"]*\bmilestone-copy\b[^"]*"/g)].length;
     const chainCount = [...slide.html.matchAll(/\bclass="[^"]*\bmilestone-chain-step\b[^"]*"/g)].length;
     if (entryCount < 4 || entryCount > 6) errors.push(`Slide ${slide.idx}: S26 requires 4-6 .milestone-entry columns; found ${entryCount}.`);
-    if ([yearCount, mediaTags.length, titleCount, copyCount].some((count) => count !== entryCount)) {
-      errors.push(`Slide ${slide.idx}: every S26 entry needs one year, media, title, and copy; found ${entryCount} entries / ${yearCount} years / ${mediaTags.length} media / ${titleCount} titles / ${copyCount} copy blocks.`);
+    if ([mediaTags.length, titleCount, copyCount].some((count) => count !== entryCount)) {
+      errors.push(`Slide ${slide.idx}: every S26 entry needs one media item, title, and copy; found ${entryCount} entries / ${mediaTags.length} media / ${titleCount} titles / ${copyCount} copy blocks.`);
+    }
+    if (yearCount !== 0 && yearCount !== entryCount) {
+      errors.push(`Slide ${slide.idx}: optional .milestone-year labels must appear on every entry or be removed from the whole gallery; found ${yearCount} for ${entryCount} entries.`);
     }
     if (chainCount < 3 || chainCount > 6) errors.push(`Slide ${slide.idx}: S26 requires 3-6 .milestone-chain-step labels; found ${chainCount}.`);
     mediaTags.forEach((tag, index) => {
@@ -1387,13 +1411,22 @@ async function runRenderedMeasurements() {
               const arrowRect = arrow.getBoundingClientRect();
               const arrowSize = parseFloat(getComputedStyle(arrow).fontSize);
               if (!Number.isFinite(arrowSize) || arrowSize < 24) issues.push(`flow connector ${index + 1} arrow renders at ${arrowSize}px; expected at least 24px`);
-              if (label) {
+              const previousLevel = previous.querySelector('.system-level');
+              const nextLevel = next.querySelector('.system-level');
+              [previousLevel, nextLevel].filter(Boolean).forEach((level, levelIndex) => {
+                const levelRect = level.getBoundingClientRect();
+                const axisDelta = Math.abs((arrowRect.left + arrowRect.width / 2) - (levelRect.left + levelRect.width / 2));
+                if (axisDelta > 4) issues.push(`flow connector ${index + 1} arrow is ${axisDelta.toFixed(1)}px off the ${levelIndex ? 'next' : 'previous'} node stage axis`);
+              });
+              if (!label) {
+                issues.push(`flow connector ${index + 1} has no relation label aligned to the node content column`);
+              } else {
                 const labelRect = label.getBoundingClientRect();
-                const centerDelta = Math.abs((arrowRect.left + arrowRect.width / 2) - (labelRect.left + labelRect.width / 2));
-                if (centerDelta > 4) issues.push(`flow connector ${index + 1} arrow and relation label are ${centerDelta.toFixed(1)}px off their shared center axis`);
+                const titleRect = previous.querySelector('.system-title')?.getBoundingClientRect();
+                if (titleRect && Math.abs(labelRect.left - titleRect.left) > 4) issues.push(`flow connector ${index + 1} relation label starts ${Math.abs(labelRect.left - titleRect.left).toFixed(1)}px away from the node content axis`);
+                const arrowToLabelGap = labelRect.left - (arrowRect.left + arrowRect.width / 2);
+                if (arrowToLabelGap < 24) issues.push(`flow connector ${index + 1} leaves only ${arrowToLabelGap.toFixed(1)}px from the arrow axis to its relation label`);
               }
-              const flowCenterDelta = Math.abs((arrowRect.left + arrowRect.width / 2) - (rect.left + rect.width / 2));
-              if (flowCenterDelta > 4) issues.push(`flow connector ${index + 1} arrow is ${flowCenterDelta.toFixed(1)}px away from the relationship column center`);
             }
           });
         }
@@ -1775,6 +1808,27 @@ async function runRenderedMeasurements() {
           const borders = [style.borderTopWidth, style.borderRightWidth, style.borderBottomWidth, style.borderLeftWidth].map(parseFloat);
           if (borders.some((width) => Number.isFinite(width) && width > .1)) issues.push(`item ${index + 1} repeats internal divider lines; use spacing and hierarchy inside the panel`);
         });
+        const comparison = el.querySelector('.dense-comparison');
+        if (comparison) {
+          const comparisonItems = Array.from(comparison.querySelectorAll(':scope > .dense-item'));
+          if (comparisonItems.length !== 3) issues.push(`dense comparison uses ${comparisonItems.length} items; expected exactly 3 distinct comparison regions`);
+          comparisonItems.forEach((item, index) => {
+            const itemStyle = getComputedStyle(item);
+            const panelColor = getComputedStyle(item.closest('.dense-panel')).backgroundColor;
+            if (!colorVisible(itemStyle.backgroundColor) || itemStyle.backgroundColor === panelColor) issues.push(`comparison item ${index + 1} does not have a distinct neutral surface from its parent panel`);
+            const kicker = item.querySelector('.dense-item-kicker');
+            const mark = item.querySelector('.dense-stage-mark');
+            const title = item.querySelector('.dense-item-title');
+            if (kicker && mark) {
+              const gap = mark.getBoundingClientRect().top - kicker.getBoundingClientRect().bottom;
+              if (gap < 0 || gap > 24) issues.push(`comparison item ${index + 1} leaves ${gap.toFixed(1)}px between kicker and stage mark; keep each comparison group compact`);
+            }
+            if (mark && title) {
+              const gap = title.getBoundingClientRect().top - mark.getBoundingClientRect().bottom;
+              if (gap < 0 || gap > 28) issues.push(`comparison item ${index + 1} leaves ${gap.toFixed(1)}px between stage mark and capability title; do not distribute one group across the full panel height`);
+            }
+          });
+        }
         el.querySelectorAll('.dense-item-kicker,.dense-progress-num,.dense-thesis-label').forEach((meta, index) => {
           const size = parseFloat(getComputedStyle(meta).fontSize);
           if (!Number.isFinite(size) || size < 13.5) issues.push(`meta label ${index + 1} renders at ${size}px; expected at least 14px`);

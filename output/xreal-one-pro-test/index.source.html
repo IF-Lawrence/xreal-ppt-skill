@@ -1034,9 +1034,9 @@
   .system-title{display:block;font-family:var(--sans),var(--sans-zh);font-size:min(2.15vw,3.8vh);line-height:1.05;font-weight:var(--weight-title);letter-spacing:-.02em}
   .system-effect{font-size:max(16px,.9vw);line-height:1.45;color:var(--text-secondary);margin-top:.6vh}
   .system-node.is-core .system-title{color:var(--accent)}
-  .system-link{flex:0 0 max(42px,4.8vh);display:grid;grid-template-rows:auto auto;place-content:center;justify-items:center;gap:.15vh;padding:.25vh 0;color:var(--text-helper);text-align:center}
-  .system-link .material-symbols-outlined{font-size:max(26px,1.7vw);line-height:.8;color:var(--ink)}
-  .system-link span:last-child{font-family:var(--mono);font-size:max(14px,.72vw);line-height:1.2}
+  .system-link{flex:0 0 max(42px,4.8vh);display:grid;grid-template-columns:minmax(0,8.8em) minmax(0,1fr);gap:1.8vw;align-items:center;padding:.25vh 1.2vw;color:var(--text-helper);text-align:left}
+  .system-link .material-symbols-outlined{justify-self:center;font-size:max(26px,1.7vw);line-height:.8;color:var(--ink)}
+  .system-link span:last-child{justify-self:start;font-family:var(--mono);font-size:max(14px,.72vw);line-height:1.2}
 
   /* 不等高柱状 KPI 塔 (参考图 6) */
   .bar-towers{
@@ -1376,8 +1376,9 @@
     display:grid;grid-template-columns:var(--milestone-columns,repeat(4,minmax(0,1fr)));
     gap:1vw;flex:1;min-height:0;margin-top:3.6vh
   }
-  .milestone-entry{min-width:0;padding:1.4vh;background:var(--grey-1);border:1px solid var(--border-subtle);border-radius:var(--radius-sm);overflow:hidden;display:grid;grid-template-rows:auto minmax(0,23vh) auto 1fr;gap:1.6vh}
-  .milestone-year{font-size:max(16px,1.3vw);font-weight:var(--weight-emphasis);line-height:1;color:var(--text-helper)}
+  .milestone-entry{min-width:0;padding:1.4vh;background:var(--grey-1);border:1px solid var(--border-subtle);border-radius:var(--radius-sm);overflow:hidden;display:grid;grid-template-rows:minmax(0,24vh) auto 1fr;gap:1.6vh}
+  .milestone-entry:has(>.milestone-year){grid-template-rows:auto minmax(0,23vh) auto 1fr}
+  .milestone-year{font-size:max(14px,.86vw);font-weight:var(--weight-label);line-height:1;color:var(--text-helper)}
   .milestone-media{display:block;width:100%;height:100%;min-height:12vh;object-fit:cover;border-radius:var(--radius-sm);background:var(--paper)}
   .milestone-media[data-media-fit="contain"]{object-fit:contain}
   .milestone-title{font-size:max(18px,1.25vw);font-weight:var(--weight-title);line-height:1.08}
@@ -1401,9 +1402,10 @@
   .dense-item-kicker{display:block;font-size:max(14px,.72vw);font-weight:var(--weight-label);line-height:1.25;color:var(--text-helper);margin-bottom:.55vh}
   .dense-item-title{display:block;font-size:max(17px,.98vw);font-weight:var(--weight-title);line-height:1.18}
   .dense-item-copy{font-size:max(16px,.82vw);line-height:1.4;color:var(--text-secondary);margin-top:.55vh}
-  .dense-comparison{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1.2vw;height:100%}
-  .dense-comparison .dense-item{display:flex;flex-direction:column;justify-content:space-between;padding-inline:.1vw}
-  .dense-stage-mark{font-size:max(24px,1.8vw);font-weight:var(--weight-emphasis);line-height:1;letter-spacing:-.03em}
+  .dense-comparison{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.65vw;height:100%}
+  .dense-comparison .dense-item{display:grid;grid-template-rows:auto auto auto;align-content:start;gap:.65vh;padding:1.15vh .8vw;background:rgba(255,255,255,.72);border-radius:var(--radius-sm)}
+  .dense-comparison .dense-item-kicker{margin-bottom:0}
+  .dense-stage-mark{font-size:max(22px,1.55vw);font-weight:var(--weight-emphasis);line-height:1;letter-spacing:-.03em;margin:.35vh 0 .55vh}
   .dense-progression,.dense-feature-list{display:grid;grid-template-rows:repeat(3,minmax(0,1fr));gap:.7vh;height:100%}
   .dense-progression .dense-item{display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:.8vw;align-content:center}
   .dense-progress-num{font-size:max(14px,.72vw);font-weight:var(--weight-label);line-height:1.25;color:var(--text-helper)}
@@ -1691,7 +1693,7 @@
     document.body.classList.add('is-win');
   }
   (function(){
-    const KEY = 'guizang-ppt-low-power';
+    const KEY = 'xreal-ppt-low-power';
     const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
     const stored = localStorage.getItem(KEY);
     window.__lowPowerMode = stored === '1' || (stored === null && reduced);
@@ -2082,10 +2084,10 @@
     <header class="chrome-min"><div class="l brand"><img class="xreal-logo" src="assets/brand/xreal-logo-black.svg" alt="XREAL"><span>One Pro · Milestones</span></div><div class="r">Media evidence</div></header>
     <div data-anim="line" class="lab-head"><div class="t-cat">能力演进 · 媒体证据序列</div><h2 class="xreal-page-title">每次能力跃迁，都由一项可见证据支撑</h2></div>
     <div class="milestone-gallery" data-anim="gallery" style="--milestone-columns:1fr 1.08fr 1.08fr 1.16fr">
-      <article class="milestone-entry"><span class="milestone-year">01 · Optics</span><img class="milestone-media" data-image-slot="s26-milestone-media" data-media-role="milestone-evidence" data-media-fit="cover" data-media-contrast="none" src="images/27-milestone-optics.jpg" alt="One Pro 光机结构特写"><h3 class="milestone-title">光学结构</h3><p class="milestone-copy">从镜片与光机开始，先把画面边界和清晰度建立起来。</p></article>
-      <article class="milestone-entry"><span class="milestone-year">02 · Compute</span><img class="milestone-media" data-image-slot="s26-milestone-media" data-media-role="milestone-evidence" data-media-fit="cover" data-media-contrast="none" src="images/27-milestone-chip.png" alt="X1 芯片装配展示"><h3 class="milestone-title">X1 芯片</h3><p class="milestone-copy">把空间响应压到端侧，让显示、声音与连接同步运作。</p></article>
-      <article class="milestone-entry"><span class="milestone-year">03 · Display</span><img class="milestone-media" data-image-slot="s26-milestone-media" data-media-role="milestone-evidence" data-media-fit="cover" data-media-contrast="none" src="images/27-milestone-display.png" alt="One Pro 光机爆炸结构图"><h3 class="milestone-title">空间显示</h3><p class="milestone-copy">计算进入光学系统，形成稳定、可持续观看的空间画面。</p></article>
-      <article class="milestone-entry"><span class="milestone-year">04 · Everyday</span><img class="milestone-media" data-image-slot="s26-milestone-media" data-media-role="milestone-evidence" data-media-fit="cover" data-media-contrast="none" src="images/27-milestone-scene.png" alt="用户佩戴 One Pro 查看空间财报"><h3 class="milestone-title">日常应用</h3><p class="milestone-copy">能力最终进入工作与生活，而不是停留在参数表里。</p></article>
+      <article class="milestone-entry"><img class="milestone-media" data-image-slot="s26-milestone-media" data-media-role="milestone-evidence" data-media-fit="cover" data-media-contrast="none" src="images/27-milestone-optics.jpg" alt="One Pro 光机结构特写"><h3 class="milestone-title">光学结构</h3><p class="milestone-copy">从镜片与光机开始，先把画面边界和清晰度建立起来。</p></article>
+      <article class="milestone-entry"><img class="milestone-media" data-image-slot="s26-milestone-media" data-media-role="milestone-evidence" data-media-fit="cover" data-media-contrast="none" src="images/27-milestone-chip.png" alt="X1 芯片装配展示"><h3 class="milestone-title">X1 芯片</h3><p class="milestone-copy">把空间响应压到端侧，让显示、声音与连接同步运作。</p></article>
+      <article class="milestone-entry"><img class="milestone-media" data-image-slot="s26-milestone-media" data-media-role="milestone-evidence" data-media-fit="cover" data-media-contrast="none" src="images/27-milestone-display.png" alt="One Pro 光机爆炸结构图"><h3 class="milestone-title">空间显示</h3><p class="milestone-copy">计算进入光学系统，形成稳定、可持续观看的空间画面。</p></article>
+      <article class="milestone-entry"><img class="milestone-media" data-image-slot="s26-milestone-media" data-media-role="milestone-evidence" data-media-fit="cover" data-media-contrast="none" src="images/27-milestone-scene.png" alt="用户佩戴 One Pro 查看空间财报"><h3 class="milestone-title">日常应用</h3><p class="milestone-copy">能力最终进入工作与生活，而不是停留在参数表里。</p></article>
     </div>
     <div class="milestone-synthesis" data-anim="synthesis"><p class="milestone-synthesis-copy">路线不是功能堆叠，而是从光学、计算到真实场景的连续交付。</p><div class="milestone-chain" aria-label="能力演进链"><span class="milestone-chain-step">光学</span><span class="milestone-chain-step">计算</span><span class="milestone-chain-step">显示</span><span class="milestone-chain-step">场景</span></div></div>
     <div class="milestone-source">Structure fixture · media selected for semantic evidence</div>
