@@ -25,7 +25,7 @@ XREAL Style 生成时,除用户明确要求实验版式外,只能从下面登记
 12. 页面不显示页码;页眉、Logo 后和角标中均不得出现 `01 / NN` 一类计数。
 13. Logo 邻接文字必须按字体单独光学校准:IBM Plex Sans SC 使用 `.26 × Logo 宽度`,XREAL Diatype 使用 `.313 × Logo 宽度`。
 14. 底部导航为极低对比度弱提示:亮底普通/当前 `.08/.18`,暗底普通/当前 `.10/.22`;当前点禁止实色 accent。
-15. 页面画布、分割线和坐标轴保持直线；卡片型实体块统一使用 `--radius-sm:8px`。该规则明确覆盖 S04 Six Cells、S05 Three Layers、S06 KPI Tower、S07 Horizontal Bar、S13 Three Forces、S16 Multi-card Brief；不得使用不同圆角值、大圆角或胶囊形。接触共同基线的垂直柱体是语义例外：只保留 8px 顶部圆角，底角必须为直角并贴齐 x 轴。S19 Bento 只圆整体外框，内部区块保持直角。
+15. 页面画布、分割线和坐标轴保持直线；卡片型实体块统一使用 `--radius-sm:8px`。该规则明确覆盖 S04 Six Cells、S05 Three Layers、S06 KPI Tower、S07 Horizontal Bar、S13 Three Forces、S16 Multi-card Brief、S26 Milestone Gallery；不得使用不同圆角值、大圆角或胶囊形。接触共同基线的垂直柱体是语义例外：只保留 8px 顶部圆角，底角必须为直角并贴齐 x 轴。S19 Bento 只圆整体外框，内部区块保持直角。
 16. 禁止任何霓虹、发光边缘、`text-shadow`、`drop-shadow` 或非 `none` 的 `box-shadow`。
 17. `XREAL-CLOSING-BLACK` 必须是最后一个 section，使用黑色基底 `.slide.accent`；大号 `.xreal-closing-thanks` 居中，小号 `.xreal-closing-logo` 通过 `.xreal-closing-mark` 固定在底部中央。可使用低干扰 lifestyle、conceptual 或品牌 KV 背景，但禁止直接产品 cutout / packshot、split、takeaway、作者日期、页码、CTA 或额外说明。
 
@@ -56,7 +56,7 @@ XREAL Style 生成时,除用户明确要求实验版式外,只能从下面登记
 | S23 | 新增 | Data Chart | 顶部结论标题 + 单位/图例 + 四边完整绘图区 + 主导分组柱图 + HTML 坐标标签 + 来源；首末柱至少 28px 安全边距，顶部为数值留 headroom，数值以整柱宽文本层居中 | 无；只承载真实比较数据 |
 | S24 | 新增 | Line Chart | 顶部结论标题 + 单位/图例 + 四边完整绘图区 + 主导折线图 + HTML 坐标标签 + 来源；SVG、端点与终值标签置于左右至少 28px 的 `.line-geometry` | 无；只承载时间或连续变量趋势 |
 | S25 | 新增 | Portfolio Roadmap Matrix | 顶部结论标题 + 时间轴 + 2-4 条中性能力泳道 + 3-7 个稀疏媒体节点 + 来源；节点以百分比坐标定位 | 每节点一张语义媒体；8px 小圆角，无阴影；示意路线必须明确声明 |
-| S26 | 新增 | Milestone Gallery | 顶部结论标题 + 4-6 个连续阶段列；每列含阶段、媒体、标题、短说明；底部综合结论 + 扁平能力链 + 来源 | 每阶段一张语义媒体；媒体框 8px，阶段列本身无卡片圆角或阴影 |
+| S26 | 新增 | Milestone Gallery | 顶部结论标题 + 4-6 张连续等高小圆角阶段卡；每卡含阶段、媒体、标题、短说明；底部综合结论 + 扁平能力链 + 来源 | 每阶段一张语义媒体；卡片与媒体框均为 8px，无阴影、无强调色卡 |
 
 ### XREAL-CLOSING-BLACK · Brand Back Cover
 
@@ -88,7 +88,7 @@ XREAL Style 生成时,除用户明确要求实验版式外,只能从下面登记
 - 使用场景:产品组合沿时间/阶段和能力、定位、成熟度等第二维度共同迁移。
 - 必须结构:`.portfolio-roadmap` + `.roadmap-year-axis` + `.roadmap-y-axis` + `.roadmap-plot` + 2-4 个 `.roadmap-lane` + 3-7 个 `.roadmap-item` + `.roadmap-source`。
 - 节点约束:每个节点必须包含 `.roadmap-media`、`.roadmap-title`、`.roadmap-meta`，并以百分比声明 `--x/--y/--w/--h`；节点之间不得重叠或越过 plot。
-- 视觉约束:只使用白/浅灰泳道和 1px hairline；不得复制参考图的蓝色年份按钮、多彩背景、pill 标签、阴影或 dashboard 控件。最多一个有明确依据的 `.critical` 节点使用红色。
+- 视觉约束:只使用白/浅灰泳道和 1px hairline；纵轴标签列按 4-5 个字的内容宽度收紧、左对齐，标签到 plot 保持约 12-24px，不允许固定宽列制造左侧空洞；不得复制参考图的蓝色年份按钮、多彩背景、pill 标签、阴影或 dashboard 控件。最多一个有明确依据的 `.critical` 节点使用红色。
 - 数据边界:若位置是推演、示意或规划假设，必须在来源行明确标注 illustrative / scenario，不得伪装成正式发布、价格或路线承诺。
 - 动效:使用 `data-animate="portfolio-roadmap"`；轴线与泳道先出现，节点按时间顺序进入。
 
@@ -96,7 +96,7 @@ XREAL Style 生成时,除用户明确要求实验版式外,只能从下面登记
 
 - 使用场景:用 4-6 张语义媒体证明一条技术、产品或组织能力的阶段演进。
 - 必须结构:`.milestone-gallery` + 4-6 个 `.milestone-entry`；每项含 `.milestone-year`、`.milestone-media`、`.milestone-title`、`.milestone-copy`；底部包含 `.milestone-synthesis`、`.milestone-chain` 和 `.milestone-source`。
-- 视觉约束:阶段列通过连续 1px 竖线组织，列本身保持扁平，不做独立白卡、大圆角或阴影。媒体框使用 8px 小圆角；底部能力链只用 hairline、自然文本与箭头，不做 filled ribbon、按钮或蓝色导航条。
+- 视觉约束:4-6 个 `.milestone-entry` 使用统一浅灰底、1px 中性边界、等距 padding 和 8px 小圆角，卡间距一致；媒体框同样使用 8px。卡片保持等高、无阴影、无单独强调色；底部能力链只用 hairline、自然文本与箭头，不做 filled ribbon、按钮或蓝色导航条。
 - 媒体约束:每个阶段必须有语义匹配媒体，比例与槽位一致；图片只作为证据，不用无关装饰图补齐数量。
 - 动效:使用 `data-animate="milestone-gallery"`；阶段列依次进入，最后呈现综合结论与能力链。
 

@@ -1339,11 +1339,11 @@
     display:grid;grid-template-rows:auto minmax(0,1fr) auto;gap:1.1vh;
     flex:1;min-height:0;margin-top:3.6vh;font-feature-settings:"tnum"
   }
-  .roadmap-year-axis,.roadmap-body{display:grid;grid-template-columns:minmax(88px,7.5vw) minmax(0,1fr);gap:1.2vw}
+  .roadmap-year-axis,.roadmap-body{display:grid;grid-template-columns:minmax(64px,4.6vw) minmax(0,1fr);gap:1vw}
   .roadmap-periods{display:grid;grid-template-columns:repeat(var(--periods),minmax(0,1fr));border-bottom:1px solid var(--border-strong)}
   .roadmap-period{padding:0 0 .8vh;text-align:center;font-size:max(14px,.82vw);font-weight:var(--weight-label);color:var(--text-helper)}
   .roadmap-y-axis{display:grid;grid-template-rows:repeat(var(--lanes),minmax(0,1fr));text-align:right}
-  .roadmap-y-axis span{display:flex;align-items:center;justify-content:flex-end;font-size:max(14px,.78vw);line-height:1.25;color:var(--text-helper)}
+  .roadmap-y-axis span{display:flex;align-items:center;justify-content:flex-start;text-align:left;white-space:nowrap;font-size:max(14px,.78vw);line-height:1.25;color:var(--text-helper)}
   .roadmap-plot{position:relative;min-height:0;border:1px solid var(--border-strong);overflow:hidden;background:var(--paper)}
   .roadmap-lanes{position:absolute;inset:0;display:grid;grid-template-rows:repeat(var(--lanes),minmax(0,1fr))}
   .roadmap-lane{background:var(--paper);border-bottom:1px solid var(--border-subtle)}
@@ -1365,15 +1365,14 @@
   .roadmap-meta{font-size:max(13px,.7vw);line-height:1.3;color:var(--text-secondary)}
   .roadmap-source,.milestone-source{font-size:max(13px,.72vw);line-height:1.35;color:var(--text-helper);border-top:1px solid var(--border-subtle);padding-top:.9vh}
 
-  /* S26 Milestone Gallery: 连续年份列 + 媒体证据 + 底部综合链；列本身保持扁平。 */
+  /* S26 Milestone Gallery: 连续年份卡片 + 媒体证据 + 底部综合链。 */
   .milestone-gallery{
     display:grid;grid-template-columns:var(--milestone-columns,repeat(4,minmax(0,1fr)));
-    flex:1;min-height:0;margin-top:3.6vh;border-top:1px solid var(--border-strong);border-bottom:1px solid var(--border-subtle)
+    gap:1vw;flex:1;min-height:0;margin-top:3.6vh
   }
-  .milestone-entry{min-width:0;padding:1.3vh 1.15vw 1.5vh;border-left:1px solid var(--border-subtle);display:grid;grid-template-rows:auto minmax(0,1fr) auto auto;gap:1.6vh}
-  .milestone-entry:first-child{border-left:0}
+  .milestone-entry{min-width:0;padding:1.4vh;background:var(--grey-1);border:1px solid var(--border-subtle);border-radius:var(--radius-sm);overflow:hidden;display:grid;grid-template-rows:auto minmax(0,23vh) auto 1fr;gap:1.6vh}
   .milestone-year{font-size:max(16px,1.3vw);font-weight:var(--weight-emphasis);line-height:1;color:var(--text-helper)}
-  .milestone-media{display:block;width:100%;height:100%;min-height:12vh;max-height:24vh;object-fit:cover;border-radius:var(--radius-sm);background:var(--grey-1)}
+  .milestone-media{display:block;width:100%;height:100%;min-height:12vh;object-fit:cover;border-radius:var(--radius-sm);background:var(--paper)}
   .milestone-media[data-media-fit="contain"]{object-fit:contain}
   .milestone-title{font-size:max(18px,1.25vw);font-weight:var(--weight-title);line-height:1.08}
   .milestone-copy{font-size:max(14px,.78vw);line-height:1.38;color:var(--text-secondary)}

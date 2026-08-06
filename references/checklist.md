@@ -205,14 +205,14 @@ node <SKILL_ROOT>/scripts/validate-swiss-deck.mjs path/to/index.html
 
 ### 0-B-5. S25/S26 必须保留结构语义，不复制参考图视觉
 
-**现象**:产品路线被做成蓝色 dashboard，或里程碑被做成一排独立白卡和 filled ribbon；虽然信息来自参考图，但已经破坏 XREAL 设计规范。
+**现象**:产品路线被做成蓝色 dashboard，纵轴短标签占用过宽空列；或里程碑卡片使用大圆角、阴影、强调色和 filled ribbon，破坏 XREAL 设计规范。
 
 **做法**:
 - `S25 Portfolio Roadmap Matrix` 只用于时间/阶段 × 第二层级维度；限制 2-4 个 period、2-4 条中性 lane、3-7 个媒体节点。
-- S25 每个节点都包含媒体、标题、meta 和百分比 `--x/--y/--w/--h`；节点不得重叠或越界。示意/推演位置必须在来源行声明 illustrative。
+- S25 每个节点都包含媒体、标题、meta 和百分比 `--x/--y/--w/--h`；节点不得重叠或越界。纵轴短标签列必须收紧并左对齐，标签到 plot 保持 12-24px。示意/推演位置必须在来源行声明 illustrative。
 - `S26 Milestone Gallery` 只用于 4-6 个有媒体证据的阶段；每项必须有阶段、媒体、标题和短说明。
-- S26 阶段列只用连续 1px 竖线组织；底部综合链保持 hairline + 文本 + 箭头，不做按钮、ribbon 或蓝色导航条。
-- 两者只使用黑白灰结构；媒体框和 S25 节点使用 8px 小圆角、无阴影。红色最多标记一个有语义依据的关键节点。
+- S26 每个阶段使用统一浅灰底、1px 边界、等距 padding 和 8px 小圆角卡片；卡片等高、间距一致，不使用阴影或单独强调色。底部综合链保持 hairline + 文本 + 箭头，不做按钮、ribbon 或蓝色导航条。
+- 两者只使用黑白灰结构；媒体框、S25 节点和 S26 卡片使用 8px 小圆角、无阴影。红色最多标记一个有语义依据的关键节点。
 
 **自检命令**:
 - `rg -n 'data-layout="S25"[^>]*data-animate="portfolio-roadmap"|data-layout="S26"[^>]*data-animate="milestone-gallery"' index.html`
@@ -612,7 +612,7 @@ Dark hero 不添加 shader 或装饰场；通过静态黑色基底、明确主�
 
 ### 14. 卡片型实体块与图片统一使用 8px 小圆角，基线柱体底角保持直角
 
-XREAL Style 的 `.frame-img`、`.sub-card`、`.stack-block`、KPI Tower 的 `.cap`、Horizontal Bar 的 `.row-track/.row-fill`、Three Forces 的 `.hero-ink-col/.force-card`、Multi-card Brief 的 `.brief-card` 统一使用 `border-radius:var(--radius-sm)`（8px）。KPI Tower 的 `.body-block`、S23 `.chart-bar` 和同类垂直柱体只保留 7-9px 顶部圆角，底部两角必须为 `0` 并与共同 x 轴齐平。S19 Bento 仅整体外框圆角，内部区块必须为直角。页面画布、分割线和坐标轴保持直线；不使用阴影、大圆角、胶囊形或消费 app 式卡片感。
+XREAL Style 的 `.frame-img`、`.sub-card`、`.stack-block`、KPI Tower 的 `.cap`、Horizontal Bar 的 `.row-track/.row-fill`、Three Forces 的 `.hero-ink-col/.force-card`、Multi-card Brief 的 `.brief-card`、Milestone Gallery 的 `.milestone-entry` 统一使用 `border-radius:var(--radius-sm)`（8px）。KPI Tower 的 `.body-block`、S23 `.chart-bar` 和同类垂直柱体只保留 7-9px 顶部圆角，底部两角必须为 `0` 并与共同 x 轴齐平。S19 Bento 仅整体外框圆角，内部区块必须为直角。页面画布、分割线和坐标轴保持直线；不使用阴影、大圆角、胶囊形或消费 app 式卡片感。
 
 ### 14a. Multi-card Brief 默认等权，强调必须有语义依据
 
@@ -694,8 +694,8 @@ JS 动态计算总页数并扩展底部翻页圆点；页面内容层不得再�
   □ S07 每个 `.row-fill` 都以 `--value` 持久保存真实宽度；动效结束和 B 静态模式下仍可见，实际宽度与 `--value` 一致；标签列按内容收紧，标签到 track 间距 16-32px；普通条同色，最多一个有结论依据的 `.critical` 红色关键项
   □ S23 四边 plot frame 同色同粗且没有与首末网格线叠加；首末柱与边界至少 28px、没有贴边或裁切，最高数值留在 plot 内；每个 `.chart-value` 与对应柱体水平中心对齐，且不依赖水平 transform
   □ S24 横轴确实是时间或连续变量,没有把无顺序类别强行连线；四边 plot frame 同色同粗、首末网格线不重叠，`.line-geometry` 左右至少 28px，首末点、描边和终值标签都没有越界
-  □ S25 确实存在时间/阶段与第二层级维度；2-4 个 period、2-4 条中性 lane、3-7 个媒体节点均完整落在 plot 内，节点不重叠，示意位置已声明 illustrative
-  □ S26 有 4-6 个完整阶段，每阶段的媒体都与语义匹配；阶段列平整连续，底部综合链没有变成按钮或 filled ribbon
+  □ S25 确实存在时间/阶段与第二层级维度；2-4 个 period、2-4 条中性 lane、3-7 个媒体节点均完整落在 plot 内，节点不重叠；纵轴标签列收紧并左对齐，标签到 plot 为 12-24px；示意位置已声明 illustrative
+  □ S26 有 4-6 个完整阶段，每阶段的媒体都与语义匹配；卡片统一浅灰底、1px 边界、等距 padding、8px 圆角且等高，底部综合链没有变成按钮或 filled ribbon
 
 排版
   □ 所有大标题没有出现 1 字 1 行的换行
@@ -710,13 +710,13 @@ JS 动态计算总页数并扩展底部翻页圆点；页面内容层不得再�
 视觉
   □ hero 页和 non-hero 页交替
   □ hero 页使用静态纯色背景,没有 WebGL、ASCII、点阵、纹理或动态装饰
-  □ S04/S05/S06/S07/S13/S16 的卡片型实体块和图片统一使用 8px 小圆角；S06/S23 等基线柱体仅顶部圆角、底角为 0 且贴齐 x 轴；S19 Bento 只圆整体外框、内部直角
+  □ S04/S05/S06/S07/S13/S16/S26 的卡片型实体块和图片统一使用 8px 小圆角；S06/S23 等基线柱体仅顶部圆角、底角为 0 且贴齐 x 轴；S19 Bento 只圆整体外框、内部直角
   □ S04/S16 卡片四边 padding 相等，S04 编号的 top/right 相等；S16 默认六卡等权，若存在强调卡，其内容确有优先级依据、已声明 `data-emphasis`，且反白文字有足够反差
   □ KPI / 图表大数字的单位统一位于右上肩位且不拆行；`screen` 等英文词单位使用 `.unit-word` 与正常字距；正文单位随正文基线；角度没有使用下标；中文标题没有斜体
   □ S22 图片上的标题为直接叠加的高对比文本，没有白底卡片、色块或半透明面板
   □ S07/S23/S24 与 ECharts 共用 `--chart-series-1/2/3/4` 中性色阶和 `--chart-critical`；没有蓝灰/临时色或无语义红色，最多一个红色关键系列/点
   □ S24 SVG 只包含线、点和数据几何,没有 `<text>`、面积渐变或无说明双轴
-  □ S25/S26 没有复制参考图的蓝色 tabs、多彩泳道、卡片墙、大圆角或阴影；媒体框和 S25 节点保持 8px 小圆角
+  □ S25/S26 没有复制参考图的蓝色 tabs、多彩泳道、大圆角或阴影；媒体框、S25 节点和 S26 阶段卡保持 8px 小圆角
   □ ECharts 只用于登记的复杂图表类型,保留正式版式,使用离线 bundle 与 XREAL 受控主题
   □ ECharts 页面在 B 静态模式可读,无默认 tooltip/toolbox、彩虹色、阴影、渐变或 dashboard 控件
   □ 没有发光、霓虹、大圆角、胶囊形或 SVG/Canvas/CSS 插画配图

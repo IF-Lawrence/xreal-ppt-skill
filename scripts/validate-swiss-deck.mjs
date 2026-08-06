@@ -846,7 +846,7 @@ slides.forEach((slide) => {
         errors.push(`Slide ${slide.idx}: S26 media ${index + 1} must declare the registered slot, milestone-evidence role, cover|contain fit, and contrast="none".`);
       }
     });
-    if (/\bclass="[^"]*\b(?:pill|badge|tab|button|ribbon)\b[^"]*"/i.test(slide.html)) errors.push(`Slide ${slide.idx}: S26 contains button/ribbon component classes. Use continuous flat columns and a hairline synthesis chain.`);
+    if (/\bclass="[^"]*\b(?:pill|badge|tab|button|ribbon)\b[^"]*"/i.test(slide.html)) errors.push(`Slide ${slide.idx}: S26 contains button/ribbon component classes. Use aligned small-radius cards and a hairline synthesis chain.`);
   }
 });
 
@@ -983,7 +983,7 @@ async function runRenderedMeasurements() {
           '.h-bar-chart .row-track', '.h-bar-chart .row-fill',
           '.bar-row .bar-track', '.bar-row .bar-fill',
           '.hero-ink-col', '.force-card', '.brief-card',
-          '.xreal-bento',
+          '.xreal-bento', '.milestone-entry',
         ].join(','))).filter((node) => {
           const r = node.getBoundingClientRect();
           if (r.width < 20 || r.height < 20) return false;
@@ -1433,6 +1433,7 @@ async function runRenderedMeasurements() {
       const portfolioRoadmapChecks = (el) => {
         const plot = el.querySelector('.roadmap-plot');
         const periods = el.querySelector('.roadmap-periods');
+        const yAxis = el.querySelector('.roadmap-y-axis');
         const items = Array.from(el.querySelectorAll('.roadmap-item'));
         if (!plot || !items.length) return [];
         const issues = [];
@@ -1440,6 +1441,16 @@ async function runRenderedMeasurements() {
         const periodRect = periods?.getBoundingClientRect();
         if (periodRect && (Math.abs(periodRect.left - plotRect.left) > 2 || Math.abs(periodRect.right - plotRect.right) > 2)) {
           issues.push('top period axis does not align with the roadmap plot boundaries');
+        }
+        if (yAxis) {
+          const axisRect = yAxis.getBoundingClientRect();
+          const axisGap = plotRect.left - axisRect.right;
+          if (axisRect.width > 80) issues.push(`y-axis label column is ${axisRect.width.toFixed(1)}px wide; expected at most 80px for short labels`);
+          if (axisGap < 10 || axisGap > 24) issues.push(`y-axis labels leave ${axisGap.toFixed(1)}px before the plot; expected 10-24px`);
+          yAxis.querySelectorAll('span').forEach((label, index) => {
+            const style = getComputedStyle(label);
+            if (style.justifyContent !== 'flex-start' || style.textAlign !== 'left') issues.push(`y-axis label ${index + 1} is not left-aligned`);
+          });
         }
         items.forEach((item, index) => {
           const rect = item.getBoundingClientRect();
@@ -1488,6 +1499,7 @@ async function runRenderedMeasurements() {
         if (topSpread > 2 || bottomSpread > 2) issues.push(`milestone columns do not share common top/bottom edges (${topSpread.toFixed(1)}px / ${bottomSpread.toFixed(1)}px spread)`);
         entries.forEach((entry, index) => {
           const entryRect = entry.getBoundingClientRect();
+          const entryStyle = getComputedStyle(entry);
           const media = entry.querySelector('.milestone-media');
           const mediaRect = media?.getBoundingClientRect();
           if (!mediaRect) return;
@@ -1495,6 +1507,14 @@ async function runRenderedMeasurements() {
           if (ratio < .35 || ratio > .55) issues.push(`entry ${index + 1} media uses ${(ratio * 100).toFixed(1)}% of column height; expected 35%-55%`);
           const radius = parseFloat(getComputedStyle(media).borderTopLeftRadius);
           if (!Number.isFinite(radius) || radius < 7 || radius > 9) issues.push(`entry ${index + 1} media uses ${getComputedStyle(media).borderTopLeftRadius} radius; expected 8px`);
+          const cardRadius = parseFloat(entryStyle.borderTopLeftRadius);
+          if (!Number.isFinite(cardRadius) || cardRadius < 7 || cardRadius > 9) issues.push(`entry ${index + 1} card uses ${entryStyle.borderTopLeftRadius} radius; expected 8px`);
+          const borderWidths = [entryStyle.borderTopWidth, entryStyle.borderRightWidth, entryStyle.borderBottomWidth, entryStyle.borderLeftWidth].map(parseFloat);
+          if (borderWidths.some((width) => !Number.isFinite(width) || width < .75 || width > 1.25)) issues.push(`entry ${index + 1} must use one uniform 1px boundary`);
+          const paddings = [entryStyle.paddingTop, entryStyle.paddingRight, entryStyle.paddingBottom, entryStyle.paddingLeft].map(parseFloat);
+          if (paddings.some((value) => !Number.isFinite(value)) || Math.max(...paddings) - Math.min(...paddings) > 1.25) issues.push(`entry ${index + 1} must use equal padding on all four sides`);
+          if (entryStyle.backgroundColor === getComputedStyle(el).backgroundColor) issues.push(`entry ${index + 1} background merges into the slide; use the registered neutral card fill`);
+          if (entryStyle.boxShadow !== 'none') issues.push(`entry ${index + 1} uses a box shadow; S26 cards remain flat`);
           if (entry.scrollHeight - entry.clientHeight > 2) issues.push(`entry ${index + 1} text overflows its column`);
         });
         const chain = el.querySelector('.milestone-chain');
@@ -1661,7 +1681,7 @@ async function runRenderedMeasurements() {
         errors.push(`${prefix}: ${issue.node} ${issue.issue}. S25 must keep a complete neutral two-axis plot with sparse, legible, non-overlapping media nodes.`);
       }
       for (const issue of m.milestoneGalleryIssues) {
-        errors.push(`${prefix}: ${issue.node} ${issue.issue}. S26 must use aligned flat columns, 35%-55% media evidence, and a hairline synthesis chain.`);
+        errors.push(`${prefix}: ${issue.node} ${issue.issue}. S26 must use aligned equal-height 8px cards, 35%-55% media evidence, and a hairline synthesis chain.`);
       }
       for (const issue of m.echartsIssues) {
         errors.push(`${prefix}: ECharts runtime is ${issue.state}: ${issue.message}`);
