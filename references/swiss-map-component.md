@@ -13,7 +13,7 @@
 - `<section>` 仍写 `data-layout="S08"`;不要新增 `P23/P24` 或自定义正文页。
 - 页面结构必须是:顶部标题 + 左侧说明卡片 + 右侧地图卡片。
 - 地图标记由 HTML 组件组成:点 `.pin-dot` + 连线 `.pin-line` + 卡片 `.pin-card`。
-- SVG 只画 fallback 关系线,不要在 SVG 里写文字。
+- SVG 只画 fallback 关系线，标记 `data-svg-role="map"`，不在 SVG 里写文字或插画。
 - MapLibre 地图默认关闭滚轮缩放和拖动,避免触发 PPT 翻页。
 - 右上角必须有 `+` / `-` / `Drag` 控制。用户点击 `Drag` 后才允许拖动地图。
 - 必须有静态 fallback:CDN 或地图瓦片失败时,仍能看到点位、关系线和卡片。
@@ -40,7 +40,7 @@ const MAP_RELATIONS = [
 
 ## 必要 CSS
 
-放到生成页 `<head>` 的额外 `<style>` 中,不要改 `template-swiss.html` 的全局基座类。
+放到生成页 `<head>` 的额外 `<style>` 中,不要改 `template-xreal.html` 的全局基座类。
 
 ```html
 <link href="https://unpkg.com/maplibre-gl@5.14.0/dist/maplibre-gl.css" rel="stylesheet">
@@ -48,19 +48,19 @@ const MAP_RELATIONS = [
 <style>
 .history-map-grid{display:grid;grid-template-columns:4.2fr 7.8fr;gap:2vw;flex:1;min-height:0;margin-top:2vh;align-items:stretch}
 .history-side{display:grid;grid-template-rows:1.08fr repeat(4,1fr);gap:1vh;min-height:0;height:100%}
-.history-side-head{background:var(--accent);color:var(--accent-on);padding:2.2vh 1.4vw 1.8vh;border-radius:3px}
+.history-side-head{background:var(--accent);color:var(--accent-on);padding:2.2vh 1.4vw 1.8vh;border-radius:var(--radius-sm)}
 .history-side-head .big{font-family:var(--sans),var(--sans-zh);font-size:max(22px,2.2vw);font-weight:var(--weight-title);line-height:1.08;letter-spacing:-.02em}
 .history-side-head .small{font-family:var(--sans),var(--sans-zh);font-size:max(11px,.82vw);font-weight:400;line-height:1.55;color:rgba(255,255,255,.82);margin-top:1.2vh}
-.relation-card{background:var(--grey-1);padding:1.45vh 1.1vw;border-radius:3px;display:grid;grid-template-columns:auto 1fr;gap:.8vw;align-items:start;min-height:0}
+.relation-card{background:var(--grey-1);padding:1.45vh 1.1vw;border-radius:var(--radius-sm);display:grid;grid-template-columns:auto 1fr;gap:.8vw;align-items:start;min-height:0}
 .relation-card .nb{font-family:var(--mono);font-size:max(10px,.75vw);letter-spacing:.04em;color:var(--accent)}
 .relation-card .ttl{font-family:var(--sans),var(--sans-zh);font-size:max(14px,1.05vw);font-weight:500;line-height:1.25}
 .relation-card .desc{font-family:var(--sans),var(--sans-zh);font-size:max(11px,.78vw);line-height:1.5;color:var(--text-secondary);margin-top:.55vh}
-.map-panel{position:relative;background:var(--grey-1);border-radius:3px;overflow:hidden;min-height:0;height:100%}
-.map-panel .map-title{position:absolute;top:1.4vh;left:1.2vw;z-index:3;background:rgba(250,250,248,.92);padding:1.2vh 1vw;border-radius:3px;max-width:28vw}
+.map-panel{position:relative;background:var(--grey-1);border-radius:var(--radius-sm);overflow:hidden;min-height:0;height:100%}
+.map-panel .map-title{position:absolute;top:1.4vh;left:1.2vw;z-index:3;background:rgba(250,250,248,.92);padding:1.2vh 1vw;border-radius:var(--radius-sm);max-width:28vw}
 .map-panel .map-title .k{font-family:var(--mono);font-size:max(10px,.72vw);letter-spacing:normal;color:var(--text-helper)}
 .map-panel .map-title .t{font-family:var(--sans),var(--sans-zh);font-size:max(18px,1.5vw);font-weight:400;letter-spacing:-.015em;margin-top:.4vh}
-.map-controls{position:absolute;top:1.4vh;right:1.2vw;z-index:4;display:flex;gap:6px;background:rgba(250,250,248,.9);padding:6px;border-radius:3px}
-.map-ctrl{min-width:32px;height:32px;border:1px solid var(--ink);background:transparent;color:var(--ink);font-family:var(--mono);font-size:12px;letter-spacing:normal;text-transform:none;border-radius:0;cursor:pointer}
+.map-controls{position:absolute;top:1.4vh;right:1.2vw;z-index:4;display:flex;gap:6px;background:rgba(250,250,248,.9);padding:6px;border-radius:var(--radius-sm)}
+.map-ctrl{min-width:32px;height:32px;border:1px solid var(--ink);background:transparent;color:var(--ink);font-family:var(--mono);font-size:12px;letter-spacing:normal;text-transform:none;border-radius:var(--radius-sm);cursor:pointer}
 .map-ctrl.drag{min-width:58px}
 .map-ctrl.active{background:var(--accent);border-color:var(--accent);color:var(--accent-on)}
 .wudadao-map,.swiss-map{position:absolute;inset:0;background:#f4f4f0}
@@ -69,11 +69,11 @@ const MAP_RELATIONS = [
 .static-relations{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
 .static-relations line{stroke:var(--accent);stroke-width:.24;stroke-dasharray:1.4 1.2;opacity:.68}
 .static-marker{position:absolute;transform:translate(-50%,-50%);width:0;height:0}
-.static-marker .pin-dot,.person-marker .pin-dot{position:absolute;left:-6px;top:-6px;width:12px;height:12px;border-radius:50%;background:var(--ink);border:2px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,.22)}
+.static-marker .pin-dot,.person-marker .pin-dot{position:absolute;left:-6px;top:-6px;width:12px;height:12px;border-radius:50%;background:var(--ink);border:2px solid #fff}
 .static-marker.accent .pin-dot,.person-marker.accent .pin-dot{background:var(--accent)}
 .static-marker .pin-line,.person-marker .pin-line{position:absolute;left:7px;top:0;width:24px;height:1px;background:var(--ink);opacity:.45}
 .static-marker.accent .pin-line,.person-marker.accent .pin-line{background:var(--accent);opacity:.75}
-.static-marker .pin-card,.person-marker .pin-card{position:absolute;left:31px;top:-18px;min-width:72px;background:rgba(250,250,248,.9);box-shadow:0 0 0 1px rgba(0,0,0,.06);border-radius:2px;padding:6px 7px;font-family:var(--sans),var(--sans-zh);white-space:nowrap}
+.static-marker .pin-card,.person-marker .pin-card{position:absolute;left:31px;top:-18px;min-width:72px;background:rgba(250,250,248,.9);border-radius:var(--radius-sm);padding:6px 7px;font-family:var(--sans),var(--sans-zh);white-space:nowrap}
 .static-marker .pin-name,.person-marker .pin-name{font-size:12px;line-height:1.05;color:var(--ink)}
 .static-marker .pin-meta,.person-marker .pin-meta{font-family:var(--mono);font-size:9px;line-height:1;letter-spacing:normal;color:var(--text-helper);margin-top:4px;text-transform:none}
 .static-marker.accent .pin-name,.person-marker.accent .pin-name{color:var(--accent)}
@@ -111,7 +111,7 @@ const MAP_RELATIONS = [
         </div>
         <div id="swiss-map" class="swiss-map" data-points='[填入 JSON]' data-relations='[填入 JSON]'>
           <div class="map-static" aria-hidden="true">
-            <svg class="static-relations" viewBox="0 0 100 100" preserveAspectRatio="none">[静态连线]</svg>
+            <svg class="static-relations" data-svg-role="map" viewBox="0 0 100 100" preserveAspectRatio="none">[静态连线]</svg>
             [静态 marker 卡片]
           </div>
         </div>

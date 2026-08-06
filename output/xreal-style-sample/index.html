@@ -49,6 +49,7 @@
     --brand-red:#D71920;      /* XREAL 关键数据/警示语义，默认不启用 */
     --brand-silver:#A7ADB4;   /* XREAL 技术质感语义，默认不启用 */
     --brand-gold:#B08D57;     /* XREAL 品牌价值语义，默认不启用 */
+    --radius-sm:3px;
 
     /* ============ Carbon 文本角色 token (role-based,代替 opacity) ============
        亮底:  primary 主文 / secondary 次文 / helper 辅助 / placeholder 占位
@@ -73,6 +74,14 @@
     --weight-body:400;
     --weight-label:500;
     --weight-emphasis:600;
+    --chrome-body-logo-width:max(60px,5.2vw);
+    --chrome-label-optical-ratio:.26;
+    --chrome-body-label-size:calc(var(--chrome-body-logo-width) * var(--chrome-label-optical-ratio));
+    --chrome-feature-logo-width:max(72px,6.8vw);
+    --chrome-feature-label-size:calc(var(--chrome-feature-logo-width) * var(--chrome-label-optical-ratio));
+    --cover-title-size:min(7.2vw,12.6vh);
+    --section-hero-title-size:min(5.6vw,9.8vh);
+    --page-title-size:min(4.5vw,7.8vh);
     /* 兼容既有组件接口：全部指向同一 deck 主字体，禁止据此拆分中英文 */
     --sans:var(--deck-font);
     --sans-zh:var(--deck-font);
@@ -109,11 +118,21 @@
 
     /* 底部分页组件安全区: 主内容最低处不要进入这条区域 */
     --nav-safe-bottom:8vh;
+    --nav-dot-alpha:.08;
+    --nav-dot-hover-alpha:.14;
+    --nav-dot-active-alpha:.18;
+    --nav-dot-dark-alpha:.10;
+    --nav-dot-dark-active-alpha:.22;
   }
   html[lang^="en"]{
     --deck-font:var(--font-xreal);
+    /* XREAL Diatype cap-height 约 0.70em，需比 IBM Plex Sans SC 放大以匹配 Logo 视觉字高 */
+    --chrome-label-optical-ratio:.313;
     --weight-display:500;
     --weight-title:500;
+    --cover-title-size:min(5.6vw,9.8vh);
+    --section-hero-title-size:min(4.6vw,8vh);
+    --page-title-size:min(3.8vw,6.6vh);
   }
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{
@@ -146,6 +165,10 @@
   .slide[data-layout="XREAL-COVER-BLACK"],
   .slide[data-layout="XREAL-COVER-BLACK"] .canvas-card,
   .slide[data-layout="XREAL-CLOSING-BLACK"] .half.b-accent{background:var(--pure-black)}
+  .xreal-closing-lockup{flex:1;position:relative;display:flex;align-items:center;justify-content:center;text-align:center}
+  .xreal-closing-mark{position:absolute;left:50%;bottom:0;transform:translateX(-50%)}
+  .xreal-closing-logo{display:block;width:max(96px,7.2vw);height:auto;filter:invert(1)}
+  .xreal-closing-thanks{font-family:var(--deck-font);font-size:min(10vw,17vh);line-height:.9;font-weight:var(--weight-display);letter-spacing:-.035em;color:var(--paper)}
   .slide.accent .accent-block{background:var(--accent-on);color:var(--accent)}
 
   /* Hero 页透出网格背景多一点 */
@@ -181,7 +204,7 @@
   .chrome{
     display:flex;justify-content:space-between;align-items:flex-start;
     font-family:var(--mono);
-    font-size:14px;letter-spacing:.16em;text-transform:uppercase;
+    font-size:14px;letter-spacing:normal;text-transform:none;
     opacity:.7;margin-bottom:auto
   }
   .chrome .l,.chrome .r{display:flex;gap:1.6em;align-items:center}
@@ -191,7 +214,7 @@
     margin-top:auto;
     display:flex;justify-content:space-between;align-items:flex-end;
     font-family:var(--mono);
-    font-size:14px;letter-spacing:.14em;text-transform:uppercase;
+    font-size:14px;letter-spacing:normal;text-transform:none;
     opacity:.55;
     padding-top:2vh;
     border-top:1px solid currentColor;
@@ -293,13 +316,13 @@
   .meta{
     font-family:var(--mono);
     font-size:max(14px,.82vw);
-    letter-spacing:.18em;text-transform:uppercase;
+    letter-spacing:normal;text-transform:none;
     opacity:.6;
   }
   .meta-row{
     display:flex;gap:1.4em;align-items:baseline;flex-wrap:wrap;
     font-family:var(--mono);
-    font-size:max(14px,.88vw);letter-spacing:.16em;text-transform:uppercase;
+    font-size:max(14px,.88vw);letter-spacing:normal;text-transform:none;
     opacity:.65;
   }
   .meta-row span:not(.dot){display:inline-block}
@@ -356,7 +379,7 @@
   .stat-card .stat-label{
     font-family:var(--mono);
     font-size:max(14px,.82vw);
-    letter-spacing:.24em;text-transform:uppercase;
+    letter-spacing:normal;text-transform:none;
     opacity:.6;
   }
   .stat-card .stat-nb{
@@ -494,7 +517,7 @@
   .callout .cite,.callout .callout-src{
     display:block;margin-top:1.2vh;
     font-family:var(--mono);
-    font-size:14px;letter-spacing:.16em;text-transform:uppercase;
+    font-size:14px;letter-spacing:normal;text-transform:none;
     opacity:.6;
   }
 
@@ -556,7 +579,7 @@
     display:block;margin-top:.8vh;
     font-family:var(--mono);
     font-size:max(14px,.82vw);
-    letter-spacing:.2em;text-transform:uppercase;
+    letter-spacing:normal;text-transform:none;
     opacity:.6;
   }
   figure.frame-img,figure.tile{margin:0;display:flex;flex-direction:column;min-width:0}
@@ -584,7 +607,7 @@
     display:flex;justify-content:space-between;gap:var(--sp-5);
     margin-top:var(--sp-4);
     font-family:var(--mono);font-size:max(14px,.74vw);
-    letter-spacing:.16em;text-transform:uppercase;color:var(--text-helper);
+    letter-spacing:normal;text-transform:none;color:var(--text-helper);
     border-top:1px solid var(--border-subtle);padding-top:var(--sp-4)
   }
   .swiss-img-caption strong{
@@ -595,7 +618,7 @@
   /* ============ Bar Chart (扁平几何图表) ============ */
   .bar-chart{display:flex;flex-direction:column;gap:1.4vh}
   .bar-row{display:grid;grid-template-columns:8em 1fr 4em;gap:1.4vw;align-items:center}
-  .bar-row .bar-label{font-family:var(--mono);font-size:max(14px,.84vw);letter-spacing:.14em;text-transform:uppercase;opacity:.7}
+  .bar-row .bar-label{font-family:var(--mono);font-size:max(14px,.84vw);letter-spacing:normal;text-transform:none;opacity:.7}
   .bar-row .bar-track{height:14px;background:rgba(127,127,127,.18);position:relative}
   .bar-row .bar-fill{height:100%;background:var(--accent);position:absolute;left:0;top:0}
   .bar-row .bar-fill.ink{background:currentColor}
@@ -604,16 +627,12 @@
   /* ============ 导航 ============ */
   /* 底部分页导航: 仅保留方块本身,无背景无描边 */
   #nav{position:fixed;left:50%;bottom:2vh;transform:translateX(-50%);z-index:30;display:flex;gap:10px;padding:0;background:transparent;border:0}
-  #nav .dot{width:6px;height:6px;background:rgba(0,0,0,.28);cursor:pointer;transition:all .25s ease;border:0;padding:0;border-radius:0}
-  #nav .dot:hover{background:rgba(0,0,0,.55)}
-  #nav .dot.active{background:var(--accent);width:18px}
-  body.dark-bg #nav .dot{background:rgba(255,255,255,.32)}
-  body.dark-bg #nav .dot.active{background:var(--accent)}
+  #nav .dot{width:6px;height:6px;background:rgba(0,0,0,var(--nav-dot-alpha));cursor:pointer;transition:all .25s ease;border:0;padding:0;border-radius:0}
+  #nav .dot:hover{background:rgba(0,0,0,var(--nav-dot-hover-alpha))}
+  #nav .dot.active{background:rgba(0,0,0,var(--nav-dot-active-alpha));width:18px}
+  body.dark-bg #nav .dot{background:rgba(255,255,255,var(--nav-dot-dark-alpha))}
+  body.dark-bg #nav .dot.active{background:rgba(255,255,255,var(--nav-dot-dark-active-alpha))}
 
-  #hint{position:fixed;bottom:2.4vh;right:2.5vw;z-index:30;font-family:var(--mono);font-size:14px;letter-spacing:.14em;text-transform:uppercase;opacity:.4}
-  body.dark-bg #hint{color:var(--paper);opacity:.4}
-  body.low-power #hint{color:var(--accent);opacity:.72}
-  body.dark-bg.low-power #hint{color:var(--paper);opacity:.72}
 
   /* ESC 索引页: 动画元素强制可见 (覆盖 motion-ready 的 opacity:0) */
   #overview [data-anim]{opacity:1!important;transform:none!important}
@@ -641,7 +660,7 @@
 
   /* ============================================================
      ↓↓↓ V2 EXTENSIONS · Canvas Mode + 参考图新类
-     验证效果后沉淀回 template-swiss.html
+     验证效果后沉淀回 template-xreal.html
      ============================================================ */
 
   /* 全屏铺满模式 · 关闭 WebGL · 卡片即页面 */
@@ -709,7 +728,7 @@
     border-left:1px solid var(--grey-2)
   }
   .kpi-row-4 > .kpi-cell:first-child{padding-left:0;border-left:none}
-  .kpi-cell .lbl{font-family:var(--mono);font-size:max(14px,.78vw);letter-spacing:.18em;text-transform:uppercase;opacity:.55;margin-bottom:1.2vh}
+  .kpi-cell .lbl{font-family:var(--mono);font-size:max(14px,.78vw);letter-spacing:normal;text-transform:none;opacity:.55;margin-bottom:1.2vh}
   .kpi-cell .nb{font-family:var(--sans);font-weight:var(--weight-emphasis);font-size:3.2vw;line-height:1;letter-spacing:-.025em;font-feature-settings:"tnum"}
   .kpi-cell .nb .unit{font-size:.32em;font-weight:var(--weight-label);opacity:.6;margin-left:.1em;vertical-align:.4em}
   .kpi-cell .note{font-family:var(--sans),var(--sans-zh);font-size:max(16px,.92vw);line-height:1.5;opacity:.7;margin-top:1.2vh}
@@ -849,7 +868,7 @@
   .sub-card .nb-corner{
     position:absolute;top:1.6vh;right:1.4vw;
     font-family:var(--mono);font-size:max(14px,.8vw);
-    letter-spacing:.16em;opacity:.55
+    letter-spacing:.04em;opacity:.55
   }
   .sub-card .ttl{font-family:var(--sans),var(--sans-zh);font-weight:500;font-size:max(17px,1.5vw);line-height:1.2;letter-spacing:-.015em;margin-bottom:1vh}
   .sub-card .desc{font-family:var(--sans),var(--sans-zh);font-size:max(16px,.94vw);line-height:1.55;opacity:.78;margin-top:auto}
@@ -867,7 +886,7 @@
   .stack-block.b-accent{background:var(--accent);color:var(--accent-on)}
   .stack-block.b-grey{background:var(--grey-1);color:var(--ink)}
   .stack-block.b-ink{background:var(--ink);color:var(--paper)}
-  .stack-block .layer-nb{font-family:var(--mono);font-size:max(14px,.84vw);letter-spacing:.18em;opacity:.65;margin-bottom:auto}
+  .stack-block .layer-nb{font-family:var(--mono);font-size:max(14px,.84vw);letter-spacing:.04em;opacity:.65;margin-bottom:auto}
   .stack-block .layer-icon{margin-bottom:1.6vh}
   .stack-block .layer-icon svg{width:3vw;height:3vw}
   .stack-block .layer-icon .stroke{fill:none;stroke:currentColor;stroke-width:1.6}
@@ -931,7 +950,7 @@
   .t-meta{
     font-family:var(--mono);
     font-size:14px;font-weight:500;
-    letter-spacing:.14em;text-transform:uppercase;
+    letter-spacing:normal;text-transform:none;
     color:var(--text-helper);line-height:1.45
   }
 
@@ -1092,7 +1111,7 @@
   }
   .v-bar-chart .col-lbl{
     font-family:var(--mono);font-size:max(14px,.78vw);
-    letter-spacing:.14em;text-transform:uppercase;opacity:.6;
+    letter-spacing:normal;text-transform:none;opacity:.6;
     text-align:center;flex:0 0 auto
   }
 
@@ -1153,7 +1172,7 @@
   .canvas-card .chrome-min{
     display:flex;justify-content:space-between;align-items:flex-start;
     font-family:var(--mono);font-size:14px;font-weight:500;
-    letter-spacing:.14em;text-transform:uppercase;
+    letter-spacing:normal;text-transform:none;
     color:var(--text-helper);
     flex:0 0 auto;
     margin-bottom:var(--sp-9);   /* 48px */
@@ -1164,11 +1183,14 @@
   }
   .xreal-logo{display:block;width:max(72px,7.2vw);height:auto;flex:0 0 auto}
   .chrome-min .brand{display:flex;align-items:center;gap:1.2vw;min-width:0}
-  .chrome-min .brand .xreal-logo{width:max(72px,6.8vw)}
+  .chrome-min .brand .xreal-logo{width:var(--chrome-feature-logo-width)}
   .chrome-min .brand > span{
-    font-family:var(--deck-font);font-size:max(22px,2.1vw);line-height:1;
+    font-family:var(--deck-font);font-size:var(--chrome-feature-label-size);line-height:1;
     font-weight:500;letter-spacing:normal;text-transform:none
   }
+  .slide:not([data-layout="XREAL-COVER-BLACK"]):not([data-layout="XREAL-CLOSING-BLACK"]) .chrome-min .brand{gap:.9vw}
+  .slide:not([data-layout="XREAL-COVER-BLACK"]):not([data-layout="XREAL-CLOSING-BLACK"]) .chrome-min .brand .xreal-logo{width:var(--chrome-body-logo-width)}
+  .slide:not([data-layout="XREAL-COVER-BLACK"]):not([data-layout="XREAL-CLOSING-BLACK"]) .chrome-min .brand > span{font-size:var(--chrome-body-label-size)}
   .xreal-logo.logo-inverse{filter:invert(1)}
   .slide.dark .xreal-logo,.slide.accent .xreal-logo,.split-half .half.b-ink .xreal-logo,.split-half .half.b-accent .xreal-logo{filter:invert(1)}
   .slide.dark .canvas-card .chrome-min,.split-half .half.b-ink .canvas-card .chrome-min{color:rgba(255,255,255,.62)}
@@ -1193,14 +1215,10 @@
     document.body.classList.add('is-win');
   }
   (function(){
-    const KEY = 'guizang-ppt-low-power';
+    const KEY = 'xreal-ppt-low-power';
     const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
     const stored = localStorage.getItem(KEY);
     window.__lowPowerMode = stored === '1' || (stored === null && reduced);
-    function updateHint(){
-      const hint = document.getElementById('hint');
-      if(hint) hint.textContent = `← → 翻页 · B ${window.__lowPowerMode ? '动态' : '静态'} · ESC 索引`;
-    }
     window.__setLowPowerMode = function(on, opts={}){
       window.__lowPowerMode = !!on;
       document.body.classList.toggle('low-power', window.__lowPowerMode);
@@ -1208,34 +1226,30 @@
       if(window.__lowPowerMode && document.getAnimations){
         document.getAnimations().forEach(a=>a.cancel());
       }
-      updateHint();
       dispatchEvent(new CustomEvent('swiss-low-power-change', {detail:{on:window.__lowPowerMode}}));
       if(window.__playSlide) window.__playSlide(window.__currentSlideIndex || 0);
     };
     document.body.classList.toggle('low-power', window.__lowPowerMode);
-    addEventListener('DOMContentLoaded', updateHint, {once:true});
   })();
 </script>
 
 <canvas id="bg-grid" class="bg"></canvas>
-<div id="hint">← → 翻页 · B 静态 · ESC 索引</div>
 
 <div id="deck">
 
 <!-- ============================================================
      SLIDES 插入区 · 在此处填充所有 <section class="slide ..."> 页面
      页面骨架参考 references/layouts-swiss.md
-     主题色配置参考 references/themes-swiss.md
+     唯一主题变量定义在本文件 :root，品牌语义参考 references/brand-xreal.md
      ============================================================ -->
 <!-- 01 · Cover -->
 <section class="slide accent" data-layout="XREAL-COVER-BLACK" data-animate="hero">
   <div class="canvas-card">
     <div class="chrome-min">
       <div class="l brand"><img class="xreal-logo" src="assets/brand/xreal-logo-black.svg" alt="XREAL"></div>
-      <div class="r">01 / 06 · 2026</div>
     </div>
     <div style="flex:1;display:grid;grid-template-rows:auto 1fr auto;gap:2.6vh">
-      <div data-anim="kicker" class="t-meta" style="color:rgba(255,255,255,.78);letter-spacing:.22em">SPATIAL COMPUTING · BRAND EXPRESSION</div>
+      <div data-anim="kicker" class="t-meta" style="color:rgba(255,255,255,.78)">Spatial computing · Brand expression</div>
       <h1 data-anim="title" style="align-self:center;max-width:12ch;font-family:var(--deck-font);font-weight:var(--weight-display);font-size:min(8.8vw,15vh);line-height:.98;letter-spacing:-.025em;color:#fff">让空间计算<br>回到人的视线里</h1>
       <div data-anim="bottom" style="display:grid;grid-template-columns:1fr;gap:4vw;align-items:end">
         <div class="lead" style="max-width:34ch;color:rgba(255,255,255,.86)">理性、专业、可信，也保留面向未来的锋芒。</div>
@@ -1248,8 +1262,7 @@
 <section class="slide light" data-layout="S03" data-animate="statement">
   <div class="canvas-card">
     <div class="chrome-min" data-anim="line">
-      <div class="l brand"><img class="xreal-logo" src="assets/brand/xreal-logo-black.svg" alt="XREAL"><span>POSITION · DESIGN ATTITUDE</span></div>
-      <div class="r">02 / 06</div>
+      <div class="l brand"><img class="xreal-logo" src="assets/brand/xreal-logo-black.svg" alt="XREAL"><span>Position · Design attitude</span></div>
     </div>
     <div style="flex:1;display:grid;grid-template-columns:3fr 9fr;align-items:center">
       <div></div>
@@ -1261,7 +1274,7 @@
         </div>
       </div>
     </div>
-    <div class="t-meta" style="display:flex;justify-content:space-between;border-top:1px solid var(--border-subtle);padding-top:1.6vh"><span>CLARITY BEFORE DECORATION</span><span>XREAL STYLE</span></div>
+    <div class="t-meta" style="display:flex;justify-content:space-between;border-top:1px solid var(--border-subtle);padding-top:1.6vh"><span>Clarity before decoration</span><span>XREAL Style</span></div>
   </div>
 </section>
 
@@ -1269,15 +1282,14 @@
 <section class="slide light" data-layout="S04" data-animate="grid-reveal">
   <div class="canvas-card">
     <div class="chrome-min tight" data-anim="line">
-      <div class="l brand"><img class="xreal-logo" src="assets/brand/xreal-logo-black.svg" alt="XREAL"><span>SYSTEM · SIX PRINCIPLES</span></div>
-      <div class="r">03 / 06</div>
+      <div class="l brand"><img class="xreal-logo" src="assets/brand/xreal-logo-black.svg" alt="XREAL"><span>System · Six principles</span></div>
     </div>
     <div style="display:grid;grid-template-columns:8fr 4fr;gap:3vw;align-items:end">
       <h2 style="font-family:var(--deck-font);font-weight:var(--weight-title);font-size:min(4.8vw,8.4vh);line-height:1.02;letter-spacing:-.025em">一套可复用的<br>视觉秩序</h2>
       <p class="body" style="color:var(--text-secondary)">每个元素都有职责。没有为了“看起来高级”而存在的装饰。</p>
     </div>
     <div class="sub-grid-3-2" style="margin-top:3.2vh">
-      <article class="sub-card" style="border-radius:0"><span class="material-symbols-outlined">grid_view</span><span class="nb-corner">01</span><h3 class="ttl">严格网格</h3><p class="desc">12 / 16 列建立稳定的信息轴。</p></article>
+      <article class="sub-card" style="border-radius:0"><span class="material-symbols-outlined">grid_view</span><span class="nb-corner">01</span><h3 class="ttl">严格网格</h3><p class="desc">12 列或 16 列建立稳定的信息轴。</p></article>
       <article class="sub-card" style="border-radius:0"><span class="material-symbols-outlined">format_bold</span><span class="nb-corner">02</span><h3 class="ttl">角色字重</h3><p class="desc">标题 500 / 600，正文 400，标签 500。</p></article>
       <article class="sub-card" style="border-radius:0;border-top:3px solid var(--brand-red)"><span class="material-symbols-outlined xreal-critical">emergency</span><span class="nb-corner">03</span><h3 class="ttl">红色即信号</h3><p class="desc">只在关键数据、警示和操作中出现。</p></article>
       <article class="sub-card" style="border-radius:0"><span class="material-symbols-outlined">contrast</span><span class="nb-corner">04</span><h3 class="ttl">黑白灰结构</h3><p class="desc">颜色服务层级，不制造第二主题。</p></article>
@@ -1291,20 +1303,19 @@
 <section class="slide light" data-layout="S08" data-animate="duo-mirror">
   <div class="canvas-card">
     <div class="chrome-min tight" data-anim="line">
-      <div class="l brand"><img class="xreal-logo" src="assets/brand/xreal-logo-black.svg" alt="XREAL"><span>CONTRAST · VISUAL DECISION</span></div>
-      <div class="r">04 / 06</div>
+      <div class="l brand"><img class="xreal-logo" src="assets/brand/xreal-logo-black.svg" alt="XREAL"><span>Contrast · Visual decision</span></div>
     </div>
     <h2 style="font-family:var(--deck-font);font-weight:var(--weight-title);font-size:min(4.6vw,8vh);line-height:1.04;letter-spacing:-.025em">品牌层级来自克制，<br>不来自装饰</h2>
     <div class="duo-compare" style="margin-top:5vh">
       <div class="col">
-        <div class="col-tag"><span class="num">A</span><span>GENERIC TECH</span></div>
+        <div class="col-tag"><span class="num">A</span><span>Generic tech</span></div>
         <h3 class="col-ttl">看起来很“科技”</h3>
         <p class="col-desc">渐变、发光、圆角卡片和多色强调同时出现，信息与装饰争夺注意力。</p>
         <ul class="col-list"><li>视觉风格先于内容</li><li>每个模块都在争抢焦点</li><li>跨页面难以保持一致</li></ul>
       </div>
       <div class="vrule"></div>
       <div class="col">
-        <div class="col-tag"><span class="num">B</span><span>XREAL STYLE</span></div>
+        <div class="col-tag"><span class="num">B</span><span>XREAL Style</span></div>
         <h3 class="col-ttl">让重点自己<span class="xreal-critical">发声</span></h3>
         <p class="col-desc">黑白灰承担结构，品牌红只标记真正需要被看见的决策点。</p>
         <ul class="col-list"><li>信息层级先于视觉效果</li><li>标题、正文和标签职责明确</li><li>不同媒介保持同一识别度</li></ul>
@@ -1317,8 +1328,7 @@
 <section class="slide light" data-layout="S11" data-animate="timeline-walk">
   <div class="canvas-card">
     <div class="chrome-min tight" data-anim="line">
-      <div class="l brand"><img class="xreal-logo" src="assets/brand/xreal-logo-black.svg" alt="XREAL"><span>WORKFLOW · CONTEXT FIRST</span></div>
-      <div class="r">05 / 06</div>
+      <div class="l brand"><img class="xreal-logo" src="assets/brand/xreal-logo-black.svg" alt="XREAL"><span>Workflow · Context first</span></div>
     </div>
     <div style="display:grid;grid-template-columns:8fr 4fr;gap:3vw;align-items:end">
       <h2 style="font-family:var(--deck-font);font-weight:var(--weight-title);font-size:min(4.8vw,8.4vh);line-height:1.02;letter-spacing:-.025em">先判断语境，<br>再建立表达</h2>
@@ -1333,31 +1343,17 @@
         <div class="th-node up"><span class="dot" style="background:var(--brand-red)"></span><div class="label"><span class="yr xreal-critical">05</span><span class="name xreal-critical">验证重点</span><span class="desc">只保留一个红色信号</span></div></div>
       </div>
     </div>
-    <div class="t-meta" style="display:flex;justify-content:space-between;border-top:1px solid var(--border-subtle);padding-top:1.6vh"><span>CONTEXT → TYPE → GRID → SIGNAL</span><span>ONE DECK · ONE FONT</span></div>
+    <div class="t-meta" style="display:flex;justify-content:space-between;border-top:1px solid var(--border-subtle);padding-top:1.6vh"><span>Context → Type → Grid → Signal</span><span>One deck · One font</span></div>
   </div>
 </section>
 
 <!-- 06 · Closing -->
-<section class="slide split" data-layout="XREAL-CLOSING-BLACK" data-animate="split-statement">
+<section class="slide accent" data-layout="XREAL-CLOSING-BLACK" data-animate="closing-thanks">
   <div class="canvas-card">
-    <div class="split-half">
-      <div class="half b-accent" style="padding:5.6vh 3.6vw 4.4vh;justify-content:space-between;position:relative;overflow:hidden">
-        <div class="chrome-min" style="margin-bottom:0;position:relative;z-index:1">
-          <div class="l brand"><img class="xreal-logo" src="assets/brand/xreal-logo-black.svg" alt="XREAL"><span>06 / 06</span></div><div class="r">CLOSING</div>
-        </div>
-        <div data-anim="manifesto" style="display:flex;flex-direction:column;gap:2vh;position:relative;z-index:1;margin:auto 0">
-          <h2 style="font-family:var(--deck-font);font-size:min(6.2vw,10.8vh);line-height:.98;letter-spacing:-.025em;font-weight:var(--weight-display);color:#fff">清晰，<br>才是先锋。</h2>
-          <p style="font-family:var(--deck-font);font-size:max(16px,1.05vw);line-height:1.6;color:rgba(255,255,255,.82);font-weight:400;max-width:28ch">当形式退后一步，产品价值才能向前一步。</p>
-        </div>
-      </div>
-      <div class="half" style="padding:5.6vh 3.6vw 4.4vh;justify-content:space-between">
-        <div class="chrome-min"><div class="l brand"><img class="xreal-logo" src="assets/brand/xreal-logo-black.svg" alt="XREAL"><span>TAKEAWAYS</span></div><div class="r">03 RULES</div></div>
-        <div data-anim="rules" style="display:flex;flex-direction:column;gap:0">
-          <div style="display:grid;grid-template-columns:auto 1fr;gap:2vw;align-items:start;padding:2.6vh 0;border-top:1px solid var(--border-subtle)"><div style="font-weight:var(--weight-emphasis);font-size:min(4vw,7vh);line-height:.9">01</div><div><h3 style="font-weight:var(--weight-title);font-size:max(20px,1.65vw);line-height:1.2;margin-bottom:.8vh">语境决定字体</h3><p class="body-sm">一套 PPT 只使用一套主字体。</p></div></div>
-          <div style="display:grid;grid-template-columns:auto 1fr;gap:2vw;align-items:start;padding:2.6vh 0;border-top:1px solid var(--border-subtle)"><div style="font-weight:var(--weight-emphasis);font-size:min(4vw,7vh);line-height:.9">02</div><div><h3 style="font-weight:var(--weight-title);font-size:max(20px,1.65vw);line-height:1.2;margin-bottom:.8vh">角色决定字重</h3><p class="body-sm">主标题稳定明确，正文保持中性。</p></div></div>
-          <div style="display:grid;grid-template-columns:auto 1fr;gap:2vw;align-items:start;padding:2.6vh 0;border-top:1px solid var(--border-subtle);border-bottom:2px solid var(--brand-red)"><div class="xreal-critical" style="font-weight:700;font-size:min(4vw,7vh);line-height:.9">03</div><div><h3 class="xreal-critical" style="font-weight:var(--weight-title);font-size:max(20px,1.65vw);line-height:1.2;margin-bottom:.8vh">红色只标记关键</h3><p class="body-sm">强调必须有明确的信息语义。</p></div></div>
-        </div>
-        <div class="t-meta" style="color:var(--text-helper);text-align:right">END · XREAL STYLE</div>
+    <div class="xreal-closing-lockup">
+      <div data-anim="closing-thanks" class="xreal-closing-thanks">Thanks</div>
+      <div class="xreal-closing-mark">
+        <img data-anim="closing-logo" class="xreal-closing-logo" src="assets/brand/xreal-logo-black.svg" alt="XREAL">
       </div>
     </div>
   </div>
@@ -1567,7 +1563,7 @@ function buildOverview(){
     wrap.appendChild(clone);
     const label=document.createElement('div');
     /* ESC 索引卡 label */
-  label.style.cssText='padding:6px 10px;font-family:var(--mono);font-size:14px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink);opacity:.7';
+  label.style.cssText='padding:6px 10px;font-family:var(--mono);font-size:14px;letter-spacing:normal;text-transform:none;color:var(--ink);opacity:.7';
     label.textContent=(i+1)+' / '+total;
     card.appendChild(wrap);
     card.appendChild(label);
