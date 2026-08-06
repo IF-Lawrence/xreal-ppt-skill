@@ -39,7 +39,7 @@ XREAL Style 生成时,除用户明确要求实验版式外,只能从下面登记
 | S04 | 04 | Six Cells | 顶部左对齐标题,下方 `.sub-grid-3-2` 六张独立小圆角卡 | 最多 1-2 张稀疏技术卡可配图；源画布留白大时用 `inset-prominent`，高度 28%-45%、宽度至少 80%，不加蒙版 |
 | S05 | 05 | Three Layers | 顶部左对齐标题,下方 `.stack-row` 三个小圆角色块 | 最多一个核心层可配图；横版低干扰媒体可全幅铺底并加深色渐变蒙版，否则 inset；图标默认保留 |
 | S06 | 06 | KPI Tower | 左标题+右说明,下方不等高 KPI 塔；cap 四角小圆角，body 仅顶部小圆角且底部直角贴共同基线 | 无 |
-| S07 | 07 | Horizontal Bar | 左对齐标题,横向条形图；track 与 fill 使用小圆角但不得做成胶囊；fill 以 `--value` 持久保存真实宽度，动效只做 `scaleX` | 无 |
+| S07 | 07 | Horizontal Bar | 左对齐标题,横向条形图；track 与 fill 使用小圆角但不得做成胶囊；fill 以 `--value` 持久保存真实宽度，动效只做 `scaleX`；普通条统一单一系列色，最多一个语义关键项使用红色 | 无 |
 | S08 | 08 | Duo Compare | `.duo-compare` 两列 + 中线 | 无;地点/路线内容可使用 `S08 + XREAL Map Component` 替换右侧插槽 |
 | S10 | 10 | Split Closing | `.slide.split` 左巨字右列表 | 无 |
 | S11 | 11 | Horizontal Timeline | 原始 `grid-template-columns:auto 1fr` 头部 + `.timeline-h` | 无 |
@@ -70,7 +70,7 @@ XREAL Style 生成时,除用户明确要求实验版式外,只能从下面登记
 - 使用场景:3-8 个类别、2-4 个系列的同尺度比较；例如区域 × 产品、季度 × 渠道或方案 × 指标。
 - 必须结构:`.xreal-data-chart` + `.chart-legend` + `.chart-stage` + `.chart-y-labels` + `.chart-plot` + `.chart-groups` + `.chart-x-labels` + `.chart-source`。
 - 数据约束:每个柱必须对应真实数值并带 `data-value` / 可见值；必须显示单位和来源。不同量纲禁止强行共用一个纵轴。
-- 视觉约束:图表占页面主导面积；使用四边完整的 1px 中性 hairline frame、共同零基线、1px 中性网格线和最多 4 个稳定系列。柱体只保留顶部 8px 小圆角，底角为直角并贴齐 x 轴；只允许一个关键系列使用 XREAL 红色。首末柱与绘图区边界至少保留 28px，最高数值标签不得越过 plot 顶部；数值标签中心与柱体中心误差不超过 2px。
+- 视觉约束:图表占页面主导面积；使用四边同色同粗的单一 1px `--chart-frame`、共同零基线、1px `--chart-grid` 和最多 4 个按 `--chart-series-1/2/3/4` 映射的稳定系列；第一/最后网格线不得与 frame 重叠。柱体只保留顶部 8px 小圆角，底角为直角并贴齐 x 轴；红色不是默认系列色，只允许一个有明确结论依据的关键系列/点使用。首末柱与绘图区边界至少保留 28px，最高数值标签不得越过 plot 顶部；数值标签中心与柱体中心误差不超过 2px。
 - 动效:使用 `data-animate="chart-rise"`；柱从共同基线生长，图例与来源随后出现。
 
 ### S24 · Line Chart
@@ -79,7 +79,7 @@ XREAL Style 生成时,除用户明确要求实验版式外,只能从下面登记
 - 必须结构:`.xreal-line-chart` + `.chart-legend` + `.line-stage` + `.chart-y-labels` + `.line-plot` + `.line-geometry` + `svg[data-svg-role="chart"]` + `.chart-line` + `.line-x-labels` + `.chart-source`。
 - 数据约束:必须显示时间/连续变量标签、单位和来源；类别无连续顺序时不得使用折线图。不同量纲默认拆图，不使用无说明的双轴。
 - SVG 约束:SVG 只画折线、点和数据几何，不放 `<text>`；坐标、图例、终点值和注释全部使用 HTML。
-- 视觉约束:绘图区四边使用完整的 1px 中性 hairline；`.line-geometry` 左右安全区至少 28px，并与 `.line-x-labels` 对齐。首末点、描边和终值标签必须完整落在 frame 内，不得依赖裁切隐藏越界。
+- 视觉约束:绘图区四边使用同色同粗的单一 1px `--chart-frame`，第一/最后网格线不得与 frame 重叠；折线按与 S23 相同的 `--chart-series-*` 映射。`.line-geometry` 左右安全区至少 28px，并与 `.line-x-labels` 对齐。首末点、描边和终值标签必须完整落在 frame 内，不得依赖裁切隐藏越界。
 - 动效:使用 `data-animate="line-draw"`；坐标结构先出现，再依次绘制折线与关键点。
 
 ### XREAL ECharts Component

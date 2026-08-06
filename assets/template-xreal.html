@@ -60,6 +60,14 @@
     --chart-safe-inline:max(28px,1.9vw); /* S23 首末柱不得贴边或被裁切 */
     --chart-value-headroom:max(24px,2.8vh); /* 为柱顶数值预留独立空间 */
     --line-chart-safe-inline:max(36px,2.6vw); /* S24 端点、圆点与终值标签的安全区 */
+    --chart-series-1:#0a0a0a; /* 主系列：近黑 */
+    --chart-series-2:#525252; /* 次系列：中性深灰 */
+    --chart-series-3:#a3a3a3; /* 第三系列：中性浅灰 */
+    --chart-series-4:#d6dade; /* 第四系列：最浅灰 */
+    --chart-critical:#D71920; /* 仅明确关键结论使用 */
+    --chart-track:#f2f3f4;
+    --chart-grid:#e0e0e0;
+    --chart-frame:#a3a3a3;
 
     /* ============ Carbon 文本角色 token (role-based,代替 opacity) ============
        亮底:  primary 主文 / secondary 次文 / helper 辅助 / placeholder 占位
@@ -1156,25 +1164,27 @@
   }
   .h-bar-chart .row-track{
     height:max(24px,2.8vh);
-    background:var(--grey-1);
+    background:var(--chart-track);
     position:relative;
     overflow:hidden;
     border-radius:var(--radius-sm)
   }
   .h-bar-chart .row-fill{
     display:block;width:var(--value);height:100%;min-width:2px;
-    background:var(--ink);
+    background:var(--chart-series-1);
     transform-origin:left center;
     border-radius:var(--radius-sm)
   }
-  .h-bar-chart .row-fill.accent{background:var(--accent)}
-  .h-bar-chart .row-fill.grey{background:var(--grey-3)}
+  .h-bar-chart .row-fill.accent{background:var(--chart-series-1)}
+  .h-bar-chart .row-fill.grey,.h-bar-chart .row-fill.series-2{background:var(--chart-series-2)}
+  .h-bar-chart .row-fill.critical{background:var(--chart-critical)}
   .h-bar-chart .row-val{
     font-family:var(--sans);font-weight:var(--weight-emphasis);
     font-size:max(16px,1.5vw);
     letter-spacing:-.02em;
     line-height:1
   }
+  .h-bar-chart .row-val.critical{color:var(--chart-critical)}
   .h-bar-chart .row-val .unit{
     font-size:.5em;opacity:var(--unit-mark-opacity);font-weight:var(--weight-label);
     margin-left:var(--unit-mark-gap);letter-spacing:.04em;vertical-align:text-top
@@ -1246,11 +1256,11 @@
   }
   .chart-legend{display:flex;align-items:center;justify-content:flex-end;gap:1.4vw;flex-wrap:wrap}
   .chart-legend-item{display:inline-flex;align-items:center;gap:.5vw;white-space:nowrap}
-  .chart-swatch{display:inline-block;width:10px;height:10px;background:var(--ink);flex:0 0 auto}
-  .chart-swatch.series-2{background:var(--grey-3)}
-  .chart-swatch.series-3{background:var(--grey-2)}
-  .chart-swatch.series-4{background:var(--brand-silver)}
-  .chart-swatch.critical{background:var(--brand-red)}
+  .chart-swatch{display:inline-block;width:10px;height:10px;background:var(--chart-series-1);flex:0 0 auto}
+  .chart-swatch.series-2{background:var(--chart-series-2)}
+  .chart-swatch.series-3{background:var(--chart-series-3)}
+  .chart-swatch.series-4{background:var(--chart-series-4)}
+  .chart-swatch.critical{background:var(--chart-critical)}
   .chart-stage,.line-stage{
     display:grid;grid-template-columns:minmax(44px,4.2vw) minmax(0,1fr);
     grid-template-rows:minmax(0,1fr) auto;column-gap:1vw;row-gap:1vh;min-height:42vh
@@ -1263,15 +1273,14 @@
   .chart-y-labels span:last-child{align-self:end}
   .chart-plot,.line-plot{
     grid-column:2;grid-row:1;position:relative;min-height:0;
-    border-left:1px solid var(--border-strong);border-bottom:1px solid var(--border-strong);
-    border-top:1px solid var(--border-subtle);border-right:1px solid var(--border-subtle)
+    box-sizing:border-box;border:1px solid var(--chart-frame)
   }
   .chart-grid{
     position:absolute;inset:0;display:grid;grid-template-rows:repeat(4,1fr) auto;
     pointer-events:none
   }
-  .chart-grid i{display:block;border-top:1px solid var(--border-subtle)}
-  .chart-grid i:first-child{border-top-color:var(--border-strong)}
+  .chart-grid i{display:block;border-top:1px solid var(--chart-grid)}
+  .chart-grid i:first-child,.chart-grid i:last-child{border-top:0}
   .chart-groups{
     position:absolute;inset:0;display:grid;grid-template-columns:repeat(var(--groups),minmax(0,1fr));
     gap:1.2vw;align-items:stretch;padding:var(--chart-value-headroom) var(--chart-safe-inline) 0
@@ -1281,13 +1290,13 @@
     gap:.35vw;align-items:end;min-width:0
   }
   .chart-bar{
-    position:relative;height:calc(var(--value) * 1%);min-height:2px;background:var(--ink);
+    position:relative;height:calc(var(--value) * 1%);min-height:2px;background:var(--chart-series-1);
     transform-origin:bottom center;border-radius:var(--radius-sm) var(--radius-sm) 0 0
   }
-  .chart-bar.series-2{background:var(--grey-3)}
-  .chart-bar.series-3{background:var(--grey-2)}
-  .chart-bar.series-4{background:var(--brand-silver)}
-  .chart-bar.critical{background:var(--brand-red)}
+  .chart-bar.series-2{background:var(--chart-series-2)}
+  .chart-bar.series-3{background:var(--chart-series-3)}
+  .chart-bar.series-4{background:var(--chart-series-4)}
+  .chart-bar.critical{background:var(--chart-critical)}
   .chart-value{
     position:absolute;left:0;right:0;bottom:calc(100% + .5vh);text-align:center;
     font-family:var(--deck-font);font-size:max(14px,.76vw);font-weight:var(--weight-label);
@@ -1305,16 +1314,16 @@
   .line-geometry{position:absolute;inset:0 var(--line-chart-safe-inline)}
   .line-chart-svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
   .chart-line{
-    fill:none;stroke:var(--ink);stroke-width:3;vector-effect:non-scaling-stroke;
+    fill:none;stroke:var(--chart-series-1);stroke-width:3;vector-effect:non-scaling-stroke;
     stroke-linejoin:round;stroke-linecap:square
   }
-  .chart-line.series-2{stroke:var(--grey-3);stroke-dasharray:10 7}
-  .chart-line.series-3{stroke:var(--brand-silver);stroke-dasharray:3 6}
-  .chart-line.critical{stroke:var(--brand-red)}
-  .chart-point{fill:var(--paper);stroke:var(--ink);stroke-width:2;vector-effect:non-scaling-stroke}
-  .chart-point.series-2{stroke:var(--grey-3)}
-  .chart-point.series-3{stroke:var(--brand-silver)}
-  .chart-point.critical{fill:var(--brand-red);stroke:var(--brand-red)}
+  .chart-line.series-2{stroke:var(--chart-series-2);stroke-dasharray:10 7}
+  .chart-line.series-3{stroke:var(--chart-series-3);stroke-dasharray:3 6}
+  .chart-line.critical{stroke:var(--chart-critical)}
+  .chart-point{fill:var(--paper);stroke:var(--chart-series-1);stroke-width:2;vector-effect:non-scaling-stroke}
+  .chart-point.series-2{stroke:var(--chart-series-2)}
+  .chart-point.series-3{stroke:var(--chart-series-3)}
+  .chart-point.critical{fill:var(--chart-critical);stroke:var(--chart-critical)}
   .line-end-label{
     position:absolute;left:clamp(0%,calc(var(--x) * 1%),100%);top:clamp(0%,calc(var(--y) * 1%),100%);
     transform:translate(-100%,-50%);padding-left:.5vw;
@@ -1322,7 +1331,7 @@
     color:var(--text-primary);background:var(--paper)
   }
   .line-end-label.series-2{color:var(--text-secondary)}
-  .line-end-label.critical{color:var(--brand-red)}
+  .line-end-label.critical{color:var(--chart-critical)}
   .slide.dark .chart-swatch.series-1,.slide.dark .chart-bar.series-1{background:var(--paper)}
   .slide.dark .chart-line.series-1{stroke:var(--paper)}
   .slide.dark .chart-point.series-1{fill:var(--ink);stroke:var(--paper)}
@@ -1605,11 +1614,11 @@
   const palette = dark => ({
     paper: dark ? readCss('--ink','#0a0a0a') : readCss('--paper','#ffffff'),
     text: dark ? readCss('--paper','#ffffff') : readCss('--ink','#0a0a0a'),
-    secondary: dark ? '#c6c6c6' : readCss('--grey-3','#6f6f6f'),
-    helper: dark ? '#8d8d8d' : readCss('--grey-2','#c6c6c6'),
+    secondary: dark ? '#c6c6c6' : readCss('--chart-series-2','#525252'),
+    helper: dark ? '#8d8d8d' : readCss('--chart-series-3','#a3a3a3'),
     faint: dark ? '#525252' : readCss('--grey-1','#f4f4f4'),
-    silver: readCss('--brand-silver','#a7adb4'),
-    red: readCss('--brand-red','#d71920'),
+    silver: readCss('--chart-series-4','#d6dade'),
+    red: readCss('--chart-critical','#d71920'),
   });
 
   function loadLibrary(){

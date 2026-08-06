@@ -81,7 +81,7 @@ window.XREAL_ECHARTS_OPTIONS = {
 运行时会强制应用 XREAL 主题：
 
 - 透明背景；标题、图例、toolbox 由 HTML 版式控制，ECharts 内部默认关闭。
-- 黑、深灰、浅灰、银色为稳定系列色；仅一个系列或数据项可声明 `xrealCritical:true` 使用品牌红。
+- 原生图表和 ECharts 共用 `--chart-series-1/2/3/4` 的近黑、中性深灰、中性浅灰、最浅灰顺序；不得引入默认主题蓝、蓝灰或临时色。仅一个有明确结论、风险或警示依据的系列/数据项可声明 `xrealCritical:true`，并使用 `--chart-critical` 品牌红。
 - 坐标轴、网格和关系线使用 1px hairline；文字跟随整套 deck 字体。
 - 柱体从共同零基线长出；垂直柱仅顶部 8px 圆角，水平柱仅末端 8px 圆角。
 - 禁止 `shadowBlur`、`shadowColor`、`colorStops`、非空 `areaStyle`、`decal`、3D、发光和连续彩虹色带。

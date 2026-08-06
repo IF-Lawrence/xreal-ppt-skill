@@ -516,6 +516,7 @@ XREAL Style 有 23 个正式登记版式（`S01-S08`、`S10-S24`）,生成时要
 **关键类**:`.h-bar-chart` `.row-lbl` `.row-track` `.row-fill` `.row-val`
 **动效 recipe**:`hbar-grow` — 大标题先入 → 每行保持 `width:var(--value)`，仅从左侧执行 `scaleX(0→1)` + 末端数字 count-up；动画不得覆盖持久数据宽度
 **圆角规则**:`.row-track` 与 `.row-fill` 统一使用 `border-radius:var(--radius-sm)`（8px）；圆角不得等于条高的一半，禁止胶囊化。
+**配色规则**:P7 是单系列排名，所有普通 `.row-fill` 统一使用 `--chart-series-1`，不得交替黑/灰。标题结论明确指出首位、风险或关键项时，最多一个 `.critical` 使用 `--chart-critical`，其余仍保持同一中性色。
 **示例代码**:
 ```html
 <div class="h-bar-chart">
@@ -793,9 +794,10 @@ XREAL Style 有 23 个正式登记版式（`S01-S08`、`S10-S24`）,生成时要
 **注意**:
 - 柱高必须由 `data-value` 与 `--value` 对应真实数值；共同零基线不可截断。
 - 每个柱提供可见值或明确的 HTML 终值标签；纵轴单位与来源必填。
-- 绘图区四边使用完整的 1px 中性 hairline；`--chart-safe-inline` 为首末柱保留至少 28px，`--chart-value-headroom` 保护最高数值标签。不得让柱体或标签贴到绘图区边界，也不能用 overflow 裁切制造“图表完整”的假象。
+- 绘图区四边使用同色同粗的单一 1px `--chart-frame`，第一/最后网格线不得叠在 frame 上；`--chart-safe-inline` 为首末柱保留至少 28px，`--chart-value-headroom` 保护最高数值标签。不得让柱体或标签贴到绘图区边界，也不能用 overflow 裁切制造“图表完整”的假象。
 - `.chart-value` 使用整柱宽定位 `left:0;right:0;text-align:center`，不要用水平 transform 居中；否则 `chart-rise` 的纵向 transform 会覆盖它。`.chart-x-labels` 使用与柱组相同的左右安全 padding。
 - 最多 4 个系列，黑/深灰/浅灰承担常规系列，只允许一个关键系列使用 XREAL 红色。
+- 系列色严格按 `--chart-series-1/2/3/4` 顺序映射；红色不是默认第三系列色，只有结论明确要求强调时才改用 `--chart-critical`。
 - 网格线保持 1px 中性 hairline；禁止渐变、3D、阴影、图标柱和装饰性多色。
 
 ```html
@@ -866,7 +868,7 @@ XREAL Style 有 23 个正式登记版式（`S01-S08`、`S10-S24`）,生成时要
 - 不使用无说明的双轴；不同量纲默认拆页或使用共享尺度的小多图。
 - 折线不做面积渐变，不使用平滑曲线掩盖真实采样点；关键拐点可用一个红色点或一条红色系列。
 - 每条线必须可通过图例、线型/点型或直接终值标签识别，不能只依赖颜色。
-- 绘图区四边使用完整的 1px 中性 hairline；SVG、数据点与终值标签必须共同放入 `.line-geometry`，左右安全区至少 28px。`.line-x-labels` 使用相同左右 padding，首末点、描边和终值标签都必须完整落在 frame 内。
+- 绘图区四边使用同色同粗的单一 1px `--chart-frame`，第一/最后网格线不得叠在 frame 上；SVG、数据点与终值标签必须共同放入 `.line-geometry`，左右安全区至少 28px。`.line-x-labels` 使用相同左右 padding，首末点、描边和终值标签都必须完整落在 frame 内。系列色与 S23 使用同一套 `--chart-series-*` 映射。
 
 ```html
 <section class="slide light" data-layout="S24" data-animate="line-draw">

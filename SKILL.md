@@ -167,11 +167,12 @@ cp "<SKILL_ROOT>/assets/brand/xreal-logo-black.svg" "项目/XXX/ppt/assets/brand
 - 卡片：`card-ink`、`card-accent`、`card-fill`、`card-outlined`
 - 图表：`kpi-tower-row`、`bar-tower`、`h-bar-chart`、`timeline-v`、`timeline-h`、`xreal-pie-layout`、`xreal-pie-legend`；复杂图表扩展使用 `xreal-echart-stage`、`xreal-echart`
 - S02 纵向时间线必须显式标出列含义，并让每个节点形成“时间 + 同口径指标 + 阶段名称 + 体验影响”四层语义。使用 `.tl-head`、`.tl-axis > .dot`、`.yr`、`.multi`、`.tl-copy > .tl-stage + .tl-impact`；节点圆点必须真实可见并与贯穿轴居中，不能退化成没有方向关系的三列表格。`.timeline-v` 只占正文宽度的 72%-82%，贯穿轴由每个 `.tl-node::before` 连续绘制并与 dot 对齐；不要用脱离行结构的全局轴线，也不要让横向分隔线无限延伸到整页边缘。
-- S07 横向条形图把真实宽度持久写入 `.row-fill` 的 `--value`，CSS 使用 `width:var(--value)`；动效只能从左侧执行 `scaleX(0→1)`，禁止把 inline `width` 改成 `0%` 或在动画结束后丢失数据宽度。静态模式和动效结束后 fill 都必须可见并与 `--value` 一致。
+- S07 横向条形图把真实宽度持久写入 `.row-fill` 的 `--value`，CSS 使用 `width:var(--value)`；动效只能从左侧执行 `scaleX(0→1)`，禁止把 inline `width` 改成 `0%` 或在动画结束后丢失数据宽度。静态模式和动效结束后 fill 都必须可见并与 `--value` 一致。排名属于单系列：所有普通 bar 使用同一个 `--chart-series-1`，不得交替黑/灰制造假系列；只有标题结论明确指向某一项时，才允许一个 `.critical` 使用 `--chart-critical`。
 - S17 系统关系图必须先声明 `data-system-grammar="flow|hierarchy|network|containment"`。默认优先使用可复用的 HTML 节点和连接语义；只有内容确实表达 core/middle/outer 的包含关系时才使用同心圆。因果传递使用 flow，组织分层使用 hierarchy，多对多依赖使用 network；不得为了“像系统图”而放三个没有信息增量的圆。
 - S17 左侧只保留 `.system-kicker + .system-thesis + .system-summary`，用于一句结论和一段解释；右侧 `[data-system-grammar]` 承载唯一关系结构，两列顶部误差不得超过 16px。flow 语法使用 `.system-flow`，禁止在左侧再复制 Process / Orchestrate / Deliver 等阶段列表，也禁止出现“这里表达的是”“不是套圈”“图的目的是”等制作说明式文案。
 - S23 分组柱图使用完整 1px hairline 绘图区边框，`--chart-safe-inline` 必须为首末柱预留至少 28px 左右安全区，`--chart-value-headroom` 为最高柱的数值标签预留顶部空间。`.chart-value` 必须以 `left:0;right:0;text-align:center` 覆盖整根柱宽，不使用 `translateX(-50%)` 居中，避免 `chart-rise` 的纵向 transform 覆盖后标签偏移；`.chart-x-labels` 使用相同左右 padding 保持类别中心对齐。
 - S24 折线图使用完整 1px hairline 绘图区边框，并在 `.line-plot` 内以 `.line-geometry` 包住 SVG、点和终值标签；该层左右安全区至少 28px，`.line-x-labels` 使用相同 padding。首末采样点、描边和终值标签都必须落在绘图区内部，不得依赖父容器裁切隐藏越界。
+- 所有原生图表与 XREAL ECharts 共用 `--chart-series-1/2/3/4`、`--chart-critical`、`--chart-track`、`--chart-grid`、`--chart-frame`。稳定系列只按近黑→中性深灰→中性浅灰→最浅灰分配；不得混入蓝灰或临时色。红色不是默认第三系列色，只用于一个有明确结论、风险或警示依据的关键系列/数据点。S23/S24 的四边 frame 必须同色同粗，第一/最后网格线不得与 frame 重叠形成双描边。
 - 信息组：`xreal-bento`；整体外框使用 `--radius-sm:8px`、内部区块直角、无阴影，一个红色语义点
 - 装饰：`hr-hairline`
 - 图片：`frame-img`、`fit-contain`、`r-21x9`、`r-16x9`、`r-16x10`、`h-22`、`h-26`、`swiss-lined`；卡片媒体使用 `card-media-slot`、`stack-card-media`、`bento-hero-media`

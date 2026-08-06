@@ -1126,7 +1126,34 @@ async function runRenderedMeasurements() {
         };
       });
 
-      const horizontalBarChecks = (el) => Array.from(el.querySelectorAll('.h-bar-chart .row-fill')).flatMap((fill) => {
+      const plotFrameChecks = (plot) => {
+        const issues = [];
+        const style = getComputedStyle(plot);
+        const widths = [style.borderTopWidth, style.borderRightWidth, style.borderBottomWidth, style.borderLeftWidth].map(parseFloat);
+        const colors = [style.borderTopColor, style.borderRightColor, style.borderBottomColor, style.borderLeftColor];
+        if (widths.some((width) => !Number.isFinite(width) || width < .75 || width > 1.25) || Math.max(...widths) - Math.min(...widths) > .1) {
+          issues.push(`plot frame widths are ${widths.map((width) => Number.isFinite(width) ? width.toFixed(1) : 'invalid').join('/')}; expected one uniform 1px frame`);
+        }
+        if (new Set(colors).size !== 1) {
+          issues.push(`plot frame colors differ across sides (${colors.join(' / ')})`);
+        }
+        const edgeGridLines = [plot.querySelector('.chart-grid i:first-child'), plot.querySelector('.chart-grid i:last-child')].filter(Boolean);
+        if (edgeGridLines.some((line) => parseFloat(getComputedStyle(line).borderTopWidth) > .1)) {
+          issues.push('first or last grid line overlaps the outer frame and creates a double stroke');
+        }
+        return issues;
+      };
+
+      const horizontalBarChecks = (el) => {
+        const fills = Array.from(el.querySelectorAll('.h-bar-chart .row-fill'));
+        const sharedIssues = [];
+        const normalColors = new Set(fills.filter((fill) => !fill.classList.contains('critical')).map((fill) => getComputedStyle(fill).backgroundColor));
+        const criticalCount = fills.filter((fill) => fill.classList.contains('critical')).length;
+        if (normalColors.size > 1) sharedIssues.push('single-series ranking alternates multiple ordinary fill colors; use one stable neutral series color');
+        if (criticalCount > 1) sharedIssues.push(`uses ${criticalCount} critical bars; S07 allows at most one semantically justified red item`);
+        return [
+          ...sharedIssues.map((issue) => ({ node: labelFor(el.querySelector('.h-bar-chart')), issue })),
+          ...fills.flatMap((fill) => {
         const track = fill.closest('.row-track');
         if (!track) return [{ node: labelFor(fill), issue: 'has no .row-track parent' }];
         const declared = parseFloat(getComputedStyle(fill).getPropertyValue('--value'));
@@ -1137,7 +1164,9 @@ async function runRenderedMeasurements() {
         if (!Number.isFinite(declared) || declared <= 0 || declared > 100) issues.push(`declares invalid --value ${declared}`);
         if (actual < 1 || Math.abs(actual - declared) > 2) issues.push(`renders at ${actual.toFixed(1)}% while --value is ${Number.isFinite(declared) ? declared : 'invalid'}%; the fill may have collapsed after animation`);
         return issues.map((issue) => ({ node: labelFor(fill), issue }));
-      });
+          }),
+        ];
+      };
 
       const baselineBarChecks = (el) => Array.from(el.querySelectorAll([
           '.bar-tower .body-block',
@@ -1174,10 +1203,14 @@ async function runRenderedMeasurements() {
         if (!plot || !bars.length) return [];
         const issues = [];
         const plotRect = plot.getBoundingClientRect();
-        const plotStyle = getComputedStyle(plot);
-        if (parseFloat(plotStyle.borderRightWidth) < .5 || parseFloat(plotStyle.borderTopWidth) < .5) {
-          issues.push('plot frame has no top/right hairline, making the final series look cropped');
-        }
+        issues.push(...plotFrameChecks(plot));
+        ['series-1','series-2','series-3','series-4','critical'].forEach((className) => {
+          const swatch = el.querySelector(`.chart-swatch.${className}`);
+          const bar = el.querySelector(`.chart-bar.${className}`);
+          if (swatch && bar && getComputedStyle(swatch).backgroundColor !== getComputedStyle(bar).backgroundColor) {
+            issues.push(`${className} legend swatch and bar use different colors`);
+          }
+        });
         const ordered = bars.slice().sort((a, b) => a.getBoundingClientRect().left - b.getBoundingClientRect().left);
         const firstRect = ordered[0].getBoundingClientRect();
         const lastRect = ordered[ordered.length - 1].getBoundingClientRect();
@@ -1214,11 +1247,17 @@ async function runRenderedMeasurements() {
         const issues = [];
         const plotRect = plot.getBoundingClientRect();
         const geometryRect = geometry.getBoundingClientRect();
-        const plotStyle = getComputedStyle(plot);
         const leftGap = geometryRect.left - plotRect.left;
         const rightGap = plotRect.right - geometryRect.right;
         if (leftGap < 28 || rightGap < 28) issues.push(`line geometry safety is ${leftGap.toFixed(1)}px left / ${rightGap.toFixed(1)}px right; expected at least 28px`);
-        if (parseFloat(plotStyle.borderRightWidth) < .5 || parseFloat(plotStyle.borderTopWidth) < .5) issues.push('plot frame has no top/right hairline');
+        issues.push(...plotFrameChecks(plot));
+        ['series-1','series-2','series-3','critical'].forEach((className) => {
+          const swatch = el.querySelector(`.chart-swatch.${className}`);
+          const line = el.querySelector(`.chart-line.${className}`);
+          if (swatch && line && getComputedStyle(swatch).backgroundColor !== getComputedStyle(line).stroke) {
+            issues.push(`${className} legend swatch and line use different colors`);
+          }
+        });
         points.forEach((point, index) => {
           const rect = point.getBoundingClientRect();
           if (rect.left < plotRect.left - 1 || rect.right > plotRect.right + 1) issues.push(`point ${index + 1} is clipped by the plot boundary`);
