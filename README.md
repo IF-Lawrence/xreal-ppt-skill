@@ -4,9 +4,11 @@
 [![Codex Skill](https://img.shields.io/badge/Codex-Skill-111111?style=flat-square)](./SKILL.md)
 [![Output](https://img.shields.io/badge/Output-Single--file%20HTML-D71920?style=flat-square)](./assets/template-xreal.html)
 
+> 声明：本项目是基于 [op7418/guizang-ppt-skill](https://github.com/op7418/guizang-ppt-skill) 修改并面向 XREAL 场景重构的版本。
+
 `xreal-ppt-skill` 是一个为 Codex 及兼容 Agent 环境设计的 XREAL 品牌演示文稿 Skill。它用锁定版式、品牌字体、官方媒体资产和自动校验器，生成可离线打开、横向翻页的单文件 HTML Deck。
 
-![XREAL Style 预览](./output/xreal-style-sample/preview.png)
+[![XREAL One Pro Deck 预览](./output/xreal-one-pro-test/render-all-layouts/montage.png)](./output/xreal-one-pro-test/index.source.html)
 
 ## 核心能力
 
