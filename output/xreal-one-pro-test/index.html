@@ -57,8 +57,9 @@
     --brief-card-pad:2.2vh;
     --sub-card-pad:2.2vh;
     --media-scrim-alpha:.38;
-    --chart-safe-inline:max(24px,1.6vw);
+    --chart-safe-inline:max(28px,1.9vw);
     --chart-value-headroom:max(24px,2.8vh);
+    --line-chart-safe-inline:max(36px,2.6vw);
 
     /* ============ Carbon 文本角色 token (role-based,代替 opacity) ============
        亮底:  primary 主文 / secondary 次文 / helper 辅助 / placeholder 占位
@@ -776,6 +777,9 @@
     font-feature-settings:"tnum"
   }
   .kpi-thin .unit{display:inline-block;font-size:.3em;font-weight:var(--weight-label);line-height:1;opacity:var(--unit-mark-opacity);margin-left:var(--unit-mark-gap);vertical-align:text-top}
+  .kpi-thin .unit.unit-word,.kpi-thin-sm .unit.unit-word{
+    font-size:.24em;letter-spacing:normal;word-spacing:normal;margin-left:.24em;white-space:nowrap
+  }
   .kpi-thin.accent{color:var(--accent)}
   .kpi-thin-sm{
     font-family:var(--sans);font-weight:var(--weight-title);
@@ -801,27 +805,17 @@
   .kpi-cell .nb .unit{display:inline-block;font-size:.32em;font-weight:var(--weight-label);line-height:1;opacity:var(--unit-mark-opacity);margin-left:var(--unit-mark-gap);vertical-align:text-top}
   .kpi-cell .note{font-family:var(--sans),var(--sans-zh);font-size:max(16px,.92vw);line-height:1.5;opacity:.7;margin-top:1.2vh}
 
-  /* 时间线轴 — 通用 axis token, 横纵共享
-     axis 列 = 24px 固定宽,dot 直径 8px,绝对居中在 axis 列中线 (12px)
-     虚线绝对定位 left:12px,与 dot 中心严格对齐 */
+  /* 时间线轴 — 通用 axis token, 横纵共享。
+     S02 只占正文宽度的 72%-82%，轴线由每行自身连续绘制，避免横线无限延伸。 */
   .timeline-v{
     --tl-axis-w:24px;        /* axis 列固定宽度 */
     --tl-dot:10px;           /* 圆点直径 */
-    position:relative;width:100%;margin-top:var(--sp-7)
-  }
-  .timeline-v::before{
-    content:"";position:absolute;
-    left:calc(var(--tl-axis-w) / 2);
-    transform:translateX(-50%);
-    top:calc(3.2vh + var(--sp-5));bottom:var(--sp-7);
-    width:1px;
-    background:var(--border-strong);
-    opacity:.62;pointer-events:none;z-index:0
+    position:relative;width:81%;min-width:0;margin-top:var(--sp-7)
   }
   .tl-head,.tl-node{
     display:grid;
-    grid-template-columns:var(--tl-axis-w) minmax(0,7em) minmax(0,8.4em) minmax(0,1fr);
-    gap:0 var(--sp-5)
+    grid-template-columns:var(--tl-axis-w) minmax(0,6em) minmax(0,7.4em) minmax(0,1fr);
+    gap:0 var(--sp-4)
   }
   .tl-head{
     align-items:end;padding:0 0 1.4vh;border-bottom:1px solid var(--border-strong);
@@ -831,8 +825,13 @@
   .tl-node{
     position:relative;
     align-items:center;
-    padding:2.4vh 0;
+    padding:1.8vh 0;
     border-bottom:1px solid var(--border-subtle)
+  }
+  .tl-node::before{
+    content:"";position:absolute;left:calc(var(--tl-axis-w) / 2);top:0;bottom:0;
+    width:1px;transform:translateX(-50%);background:var(--border-strong);
+    opacity:.62;pointer-events:none;z-index:0
   }
   .tl-node:last-child{border-bottom:0}
   .tl-axis{height:100%;display:grid;place-items:center;position:relative}
@@ -867,7 +866,8 @@
   .tl-node.accent .multi{color:var(--accent)}
   .tl-node .desc,.tl-node .tl-copy{
     font-family:var(--sans),var(--sans-zh);
-    min-width:0
+    min-width:0;
+    color:var(--text-primary)
   }
   .tl-node .tl-copy{display:grid;gap:.5vh}
   .tl-node .tl-stage{font-size:max(17px,1.08vw);line-height:1.25;font-weight:600;color:var(--ink)}
@@ -1130,8 +1130,8 @@
   /* 横向柱图: 标签列 + 柱体列 + 数值列 — 严格 XREAL Style 网格 */
   .h-bar-chart{
     display:grid;
-    grid-template-columns:11em minmax(0,1fr) 8em;
-    gap:1.6vh 1.6vw;
+    grid-template-columns:minmax(9em,11em) minmax(0,1fr) minmax(4em,5.5em);
+    gap:1.2vh 1.4vw;
     align-items:center;
     margin-top:2.4vh;
     font-feature-settings:"tnum"
@@ -1144,16 +1144,16 @@
     text-align:left
   }
   .h-bar-chart .row-track{
-    height:3.2vh;
+    height:max(24px,2.8vh);
     background:var(--grey-1);
     position:relative;
     overflow:hidden;
     border-radius:var(--radius-sm)
   }
   .h-bar-chart .row-fill{
-    height:100%;
+    display:block;width:var(--value);height:100%;min-width:2px;
     background:var(--ink);
-    transition:width 1s cubic-bezier(.5,0,.2,1);
+    transform-origin:left center;
     border-radius:var(--radius-sm)
   }
   .h-bar-chart .row-fill.accent{background:var(--accent)}
@@ -1252,7 +1252,8 @@
   .chart-y-labels span:last-child{align-self:end}
   .chart-plot,.line-plot{
     grid-column:2;grid-row:1;position:relative;min-height:0;
-    border-left:1px solid var(--border-strong);border-bottom:1px solid var(--border-strong)
+    border-left:1px solid var(--border-strong);border-bottom:1px solid var(--border-strong);
+    border-top:1px solid var(--border-subtle);border-right:1px solid var(--border-subtle)
   }
   .chart-grid{
     position:absolute;inset:0;display:grid;grid-template-rows:repeat(4,1fr) auto;
@@ -1286,10 +1287,11 @@
     font-family:var(--deck-font);font-size:max(14px,.76vw);color:var(--text-helper)
   }
   .chart-x-labels{display:grid;grid-template-columns:repeat(var(--groups),minmax(0,1fr));padding-inline:var(--chart-safe-inline)}
-  .line-x-labels{display:flex;justify-content:space-between}
+  .line-x-labels{display:flex;justify-content:space-between;padding-inline:var(--line-chart-safe-inline)}
   .chart-foot{border-top:1px solid var(--border-subtle);padding-top:1.2vh;align-items:flex-start}
   .chart-source{max-width:58%}
   .chart-note{max-width:38%;text-align:right;color:var(--text-secondary)}
+  .line-geometry{position:absolute;inset:0 var(--line-chart-safe-inline)}
   .line-chart-svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
   .chart-line{
     fill:none;stroke:var(--ink);stroke-width:3;vector-effect:non-scaling-stroke;
@@ -1814,12 +1816,12 @@
     <header class="chrome-min"><div class="l brand"><img class="xreal-logo" src="assets/brand/xreal-logo-black.svg" alt="XREAL"><span>One Pro · Ranking test</span></div><div class="r">Horizontal bar</div></header>
     <div data-anim="line" class="lab-head"><div class="t-cat lab-synthetic">虚构测试数据 · 横向排名</div><h2 class="xreal-page-title">用户感知最先被哪一项能力改变</h2></div>
     <div data-anim="bars" class="h-bar-chart" style="margin-top:5vh">
-      <span class="row-lbl">视野宽度</span><span class="row-track"><span class="row-fill accent" style="width:92%"></span></span><span class="row-val">92<span class="unit">%</span></span>
-      <span class="row-lbl">空间稳定</span><span class="row-track"><span class="row-fill" style="width:86%"></span></span><span class="row-val">86<span class="unit">%</span></span>
-      <span class="row-lbl">画面纯净</span><span class="row-track"><span class="row-fill grey" style="width:78%"></span></span><span class="row-val">78<span class="unit">%</span></span>
-      <span class="row-lbl">佩戴舒适</span><span class="row-track"><span class="row-fill" style="width:74%"></span></span><span class="row-val">74<span class="unit">%</span></span>
-      <span class="row-lbl">声音细节</span><span class="row-track"><span class="row-fill grey" style="width:69%"></span></span><span class="row-val">69<span class="unit">%</span></span>
-      <span class="row-lbl">连接便利</span><span class="row-track"><span class="row-fill" style="width:64%"></span></span><span class="row-val">64<span class="unit">%</span></span>
+      <span class="row-lbl">视野宽度</span><span class="row-track"><span class="row-fill accent" style="--value:92%"></span></span><span class="row-val">92<span class="unit">%</span></span>
+      <span class="row-lbl">空间稳定</span><span class="row-track"><span class="row-fill" style="--value:86%"></span></span><span class="row-val">86<span class="unit">%</span></span>
+      <span class="row-lbl">画面纯净</span><span class="row-track"><span class="row-fill grey" style="--value:78%"></span></span><span class="row-val">78<span class="unit">%</span></span>
+      <span class="row-lbl">佩戴舒适</span><span class="row-track"><span class="row-fill" style="--value:74%"></span></span><span class="row-val">74<span class="unit">%</span></span>
+      <span class="row-lbl">声音细节</span><span class="row-track"><span class="row-fill grey" style="--value:69%"></span></span><span class="row-val">69<span class="unit">%</span></span>
+      <span class="row-lbl">连接便利</span><span class="row-track"><span class="row-fill" style="--value:64%"></span></span><span class="row-val">64<span class="unit">%</span></span>
     </div>
     <div class="lab-note" style="margin-top:auto;border-top:1px solid var(--border-subtle);padding-top:1.2vh">Fixture note · 以上分值为虚构用户调研示例，仅用于横向条形图样式。</div>
   </div>
@@ -1829,7 +1831,7 @@
   <div class="canvas-card"><div class="split-half">
     <div class="half b-accent" data-anim="left" style="padding:5.6vh 3.6vw 4.4vh;position:relative;overflow:hidden">
       <div class="chrome-min tight"><div class="l brand"><img class="xreal-logo" src="assets/brand/xreal-logo-black.svg" alt="XREAL"><span>One Pro · Closing test</span></div><div class="r">Split closing</div></div>
-      <div style="margin-top:auto"><div class="t-meta" style="color:rgba(255,255,255,.68)">虚构结论</div><div class="kpi-thin" style="color:#fff">1<span class="unit">screen</span></div><h2 style="font-size:min(3.4vw,6vh);line-height:1.04;font-weight:var(--weight-title);margin-top:2vh;color:#fff">把现实留在眼前，把空间放在眼前。</h2></div>
+      <div style="margin-top:auto"><div class="t-meta" style="color:rgba(255,255,255,.68)">虚构结论</div><div class="kpi-thin" style="color:#fff">1<span class="unit unit-word">screen</span></div><h2 style="font-size:min(3.4vw,6vh);line-height:1.04;font-weight:var(--weight-title);margin-top:2vh;color:#fff">把现实留在眼前，把空间放在眼前。</h2></div>
     </div>
     <div class="half r-border" data-anim="right" style="padding:5.6vh 3.6vw 4.4vh;background:var(--paper)">
       <div class="chrome-min tight"><div class="l brand"><img class="xreal-logo" src="assets/brand/xreal-logo-black.svg" alt="XREAL"><span>Test takeaway</span></div></div>
@@ -1922,7 +1924,7 @@
   <div class="canvas-card">
     <header class="chrome-min"><div class="l brand"><img class="xreal-logo" src="assets/brand/xreal-logo-black.svg" alt="XREAL"><span>One Pro · Trend test</span></div><div class="r">Continuous series</div></header>
     <div data-anim="line" class="lab-head"><div class="t-cat lab-synthetic">虚构测试数据 · 趋势折线图</div><h2 class="xreal-page-title">低延迟体验在连续测试中逐步稳定</h2></div>
-    <div data-anim="chart" class="xreal-line-chart" data-chart-unit="index" aria-label="空间显示稳定性与传统方案基线的虚构趋势"><div class="chart-meta-row"><span class="chart-unit">Unit · index</span><div class="chart-legend" aria-label="数据系列"><span class="chart-legend-item"><i class="chart-swatch series-1"></i>One Pro fixture</span><span class="chart-legend-item"><i class="chart-swatch series-2"></i>Baseline fixture</span></div></div><div class="line-stage"><div class="chart-y-labels"><span>100</span><span>75</span><span>50</span><span>25</span><span>0</span></div><div class="line-plot"><div class="chart-grid" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><svg class="line-chart-svg" data-svg-role="chart" viewBox="0 0 1000 400" preserveAspectRatio="none" role="img" aria-label="两条虚构稳定性趋势线"><path data-anim="chart-line" class="chart-line series-1" d="M0 300 L250 248 L500 202 L750 122 L1000 60"></path><path data-anim="chart-line" class="chart-line series-2" d="M0 320 L250 296 L500 272 L750 236 L1000 208"></path><g class="chart-points series-1"><circle class="chart-point series-1" cx="0" cy="300" r="5"></circle><circle class="chart-point series-1" cx="250" cy="248" r="5"></circle><circle class="chart-point series-1" cx="500" cy="202" r="5"></circle><circle class="chart-point series-1" cx="750" cy="122" r="5"></circle><circle class="chart-point series-1" cx="1000" cy="60" r="5"></circle></g><g class="chart-points series-2"><circle class="chart-point series-2" cx="0" cy="320" r="5"></circle><circle class="chart-point series-2" cx="250" cy="296" r="5"></circle><circle class="chart-point series-2" cx="500" cy="272" r="5"></circle><circle class="chart-point series-2" cx="750" cy="236" r="5"></circle><circle class="chart-point series-2" cx="1000" cy="208" r="5"></circle></g></svg><span class="line-end-label series-1" style="--x:100;--y:14">86</span><span class="line-end-label series-2" style="--x:100;--y:52">48</span></div><div class="line-x-labels" style="--points:5"><span>第 1 轮</span><span>第 2 轮</span><span>第 3 轮</span><span>第 4 轮</span><span>第 5 轮</span></div></div><div class="chart-foot"><span class="chart-source">Source · fictional fixture / style validation</span><span class="chart-note">同一量纲下的连续采样示例</span></div></div>
+    <div data-anim="chart" class="xreal-line-chart" data-chart-unit="index" aria-label="空间显示稳定性与传统方案基线的虚构趋势"><div class="chart-meta-row"><span class="chart-unit">Unit · index</span><div class="chart-legend" aria-label="数据系列"><span class="chart-legend-item"><i class="chart-swatch series-1"></i>One Pro fixture</span><span class="chart-legend-item"><i class="chart-swatch series-2"></i>Baseline fixture</span></div></div><div class="line-stage"><div class="chart-y-labels"><span>100</span><span>75</span><span>50</span><span>25</span><span>0</span></div><div class="line-plot"><div class="chart-grid" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><div class="line-geometry"><svg class="line-chart-svg" data-svg-role="chart" viewBox="0 0 1000 400" preserveAspectRatio="none" role="img" aria-label="两条虚构稳定性趋势线"><path data-anim="chart-line" class="chart-line series-1" d="M0 300 L250 248 L500 202 L750 122 L1000 60"></path><path data-anim="chart-line" class="chart-line series-2" d="M0 320 L250 296 L500 272 L750 236 L1000 208"></path><g class="chart-points series-1"><circle class="chart-point series-1" cx="0" cy="300" r="5"></circle><circle class="chart-point series-1" cx="250" cy="248" r="5"></circle><circle class="chart-point series-1" cx="500" cy="202" r="5"></circle><circle class="chart-point series-1" cx="750" cy="122" r="5"></circle><circle class="chart-point series-1" cx="1000" cy="60" r="5"></circle></g><g class="chart-points series-2"><circle class="chart-point series-2" cx="0" cy="320" r="5"></circle><circle class="chart-point series-2" cx="250" cy="296" r="5"></circle><circle class="chart-point series-2" cx="500" cy="272" r="5"></circle><circle class="chart-point series-2" cx="750" cy="236" r="5"></circle><circle class="chart-point series-2" cx="1000" cy="208" r="5"></circle></g></svg><span class="line-end-label series-1" style="--x:100;--y:14">86</span><span class="line-end-label series-2" style="--x:100;--y:52">48</span></div></div><div class="line-x-labels" style="--points:5"><span>第 1 轮</span><span>第 2 轮</span><span>第 3 轮</span><span>第 4 轮</span><span>第 5 轮</span></div></div><div class="chart-foot"><span class="chart-source">Source · fictional fixture / style validation</span><span class="chart-note">同一量纲下的连续采样示例</span></div></div>
   </div>
 </section>
 
@@ -2741,11 +2743,10 @@ if(motion){
     const labels = [...slide.querySelectorAll('.row-lbl')];
     const values = [...slide.querySelectorAll('.row-val')];
     fills.forEach((fill, i)=>{
-      const target = fill.style.width;
-      fill.style.width = '0%';
+      fill.style.transformOrigin = 'left center';
       if(labels[i]) animate(labels[i], {opacity:[0,1], x:[-12,0]},
         {duration:.4, delay:.85 + i*.14, easing:EASE_PROD});
-      animate(fill, {width:['0%', target]},
+      animate(fill, {scaleX:[0,1]},
         {duration:.65, delay:.95 + i*.14, easing:EASE_ENTRY_EXP});
       if(values[i]) animate(values[i], {opacity:[0,1]},
         {duration:.3, delay:1.5 + i*.14, easing:EASE_PROD});
@@ -2809,7 +2810,7 @@ if(motion){
     points.forEach((point, i)=>animate(point, {opacity:[0,1], scale:[.4,1]},
       {duration:.25, delay:.82 + i*.035, easing:EASE_PROD}));
     const ends = [...slide.querySelectorAll('.line-end-label')];
-    ends.forEach((label, i)=>animate(label, {opacity:[0,1], x:[-8,0]},
+    ends.forEach((label, i)=>animate(label, {opacity:[0,1]},
       {duration:.3, delay:1 + i*.12, easing:EASE_PROD}));
     if(foot) animate(foot, {opacity:[0,1]}, {duration:.35, delay:1.18, easing:EASE_PROD});
   }

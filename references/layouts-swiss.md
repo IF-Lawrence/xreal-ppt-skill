@@ -378,7 +378,7 @@ XREAL Style 有 23 个正式登记版式（`S01-S08`、`S10-S24`）,生成时要
 **骨架**:左侧 24px axis 列 + 10px 实心节点 + 1px 贯穿轴 / 右侧统一列头与节点信息(年份 + 同口径大字数据 + 阶段名 + 体验影响)。
 **关键类**:`.timeline-v` `.tl-head` `.tl-node` `.tl-axis` `.dot` `.yr` `.multi` `.tl-copy` `.tl-stage` `.tl-impact` `.kpi-row-4`
 **动效 recipe**:`timeline-vertical` — 节点按时间顺序由上到下点亮(dot 先 pop 再扩 → 文字横向滑入)
-**清晰度规则**:必须给时间、指标和阶段解释加统一列头；每行的 `.tl-stage` 是主解释，`.tl-impact` 说明变化带来的体验结果。axis 列固定 24px，`.tl-axis` 使用 grid 居中 10px 实心 dot，使 dot 中心与贯穿轴误差不超过 2px。不要只放“年份 + 数字 + 一句混合描述”，否则会退化成含糊的三列表格。
+**清晰度规则**:必须给时间、指标和阶段解释加统一列头；每行的 `.tl-stage` 是主解释，`.tl-impact` 说明变化带来的体验结果。`.timeline-v` 占正文宽度的 72%-82%，axis 列固定 24px；贯穿轴由各 `.tl-node::before` 连续绘制，`.tl-axis` 使用 grid 居中 10px 实心 dot，使 dot 中心与轴误差不超过 2px。行分隔线只覆盖 timeline 自身宽度，不延伸到整页边缘。不要只放“年份 + 数字 + 一句混合描述”，否则会退化成含糊的三列表格。
 **示例代码**:
 ```html
 <section class="slide" data-animate="timeline-vertical">
@@ -514,13 +514,13 @@ XREAL Style 有 23 个正式登记版式（`S01-S08`、`S10-S24`）,生成时要
 **适用内容类型**:**5-10 项可比量化数据**(必须有真实百分比 / 评分 / 数值,bar 宽度由数据决定)。典型如:benchmark 排名、市场份额、问卷占比。⚠️ **严禁用于无量化数据的概念列举**(那是 P4/P5/P15)— 编造数字会被识破。
 **骨架**:顶部大标题 / 中段空 / 下半部条形列表(每行:文字标签 + 灰色 track + 数据 fill + 末端数字)。
 **关键类**:`.h-bar-chart` `.row-lbl` `.row-track` `.row-fill` `.row-val`
-**动效 recipe**:`hbar-grow` — 大标题先入 → 每行依序 width 0→target(transform-origin:left)+ 末端数字 count-up
+**动效 recipe**:`hbar-grow` — 大标题先入 → 每行保持 `width:var(--value)`，仅从左侧执行 `scaleX(0→1)` + 末端数字 count-up；动画不得覆盖持久数据宽度
 **圆角规则**:`.row-track` 与 `.row-fill` 统一使用 `border-radius:var(--radius-sm)`（8px）；圆角不得等于条高的一半，禁止胶囊化。
 **示例代码**:
 ```html
 <div class="h-bar-chart">
   <span class="row-lbl">Anthropic Advisor</span>
-  <span class="row-track"><span class="row-fill" style="width:84%"></span></span>
+  <span class="row-track"><span class="row-fill" style="--value:84%"></span></span>
   <span class="row-val">84</span>
   <!-- N more -->
 </div>
@@ -747,6 +747,7 @@ XREAL Style 有 23 个正式登记版式（`S01-S08`、`S10-S24`）,生成时要
 - 图片下方内容不要贴着图下沿,使用 `.image-hero-body` 统一给下半屏增加顶部缓冲
 - 三列 KPI 大字号要限高(`min(4.6vw, 7.6vh)`),小字用 `margin-top:auto` 锚定列底,防止溢到 nav 圆点
 - 三列 KPI 的 `°`、`in`、`Hz` 等单位统一使用 `.unit` / `.unit-degree` 右上肩位，不允许一项在上、一项贴底，也不得和数字拆行
+- `screen` 等多字符英文词单位使用 `.unit.unit-word`，恢复正常字距和词距，不得继承展示数字的负 tracking
 - 列高度统一(grid 不要 `align-items:start`,让列拉伸到同一高度)
 
 **示例代码**:
@@ -792,7 +793,7 @@ XREAL Style 有 23 个正式登记版式（`S01-S08`、`S10-S24`）,生成时要
 **注意**:
 - 柱高必须由 `data-value` 与 `--value` 对应真实数值；共同零基线不可截断。
 - 每个柱提供可见值或明确的 HTML 终值标签；纵轴单位与来源必填。
-- 使用 `--chart-safe-inline` 保护首末柱，使用 `--chart-value-headroom` 保护最高数值标签；不得让柱体或标签贴到绘图区边界。
+- 绘图区四边使用完整的 1px 中性 hairline；`--chart-safe-inline` 为首末柱保留至少 28px，`--chart-value-headroom` 保护最高数值标签。不得让柱体或标签贴到绘图区边界，也不能用 overflow 裁切制造“图表完整”的假象。
 - `.chart-value` 使用整柱宽定位 `left:0;right:0;text-align:center`，不要用水平 transform 居中；否则 `chart-rise` 的纵向 transform 会覆盖它。`.chart-x-labels` 使用与柱组相同的左右安全 padding。
 - 最多 4 个系列，黑/深灰/浅灰承担常规系列，只允许一个关键系列使用 XREAL 红色。
 - 网格线保持 1px 中性 hairline；禁止渐变、3D、阴影、图标柱和装饰性多色。
@@ -858,13 +859,14 @@ XREAL Style 有 23 个正式登记版式（`S01-S08`、`S10-S24`）,生成时要
 **用途**:展示时间或其他连续变量上的趋势、拐点与系列差距。
 **适用内容类型**:**1-3 个系列 × 4-12 个连续采样点**。典型如月度增长、季度留存、温度/距离/频率变化。横轴只是无顺序类别时禁止使用折线图,应改用 P23 或 P7。
 **骨架**:顶部左对齐结论标题 / 单位与紧凑图例 / 占主导面积的折线图 / HTML 横纵轴标签与终值 / 底部来源和关键拐点说明。
-**关键类**:`.xreal-line-chart` `.chart-legend` `.line-stage` `.chart-y-labels` `.line-plot` `.line-chart-svg` `.chart-line` `.chart-point` `.line-x-labels` `.line-end-label` `.chart-source`
+**关键类**:`.xreal-line-chart` `.chart-legend` `.line-stage` `.chart-y-labels` `.line-plot` `.line-geometry` `.line-chart-svg` `.chart-line` `.chart-point` `.line-x-labels` `.line-end-label` `.chart-source`
 **动效 recipe**:`line-draw` — 坐标结构先入 → 1-3 条线依次绘制 → 数据点与终值标签落定。
 **注意**:
 - SVG 只承载线、点和数据几何，不写 `<text>`；坐标与标注均用 HTML。
 - 不使用无说明的双轴；不同量纲默认拆页或使用共享尺度的小多图。
 - 折线不做面积渐变，不使用平滑曲线掩盖真实采样点；关键拐点可用一个红色点或一条红色系列。
 - 每条线必须可通过图例、线型/点型或直接终值标签识别，不能只依赖颜色。
+- 绘图区四边使用完整的 1px 中性 hairline；SVG、数据点与终值标签必须共同放入 `.line-geometry`，左右安全区至少 28px。`.line-x-labels` 使用相同左右 padding，首末点、描边和终值标签都必须完整落在 frame 内。
 
 ```html
 <section class="slide light" data-layout="S24" data-animate="line-draw">
@@ -892,6 +894,7 @@ XREAL Style 有 23 个正式登记版式（`S01-S08`、`S10-S24`）,生成时要
         <div class="chart-y-labels"><span>100</span><span>75</span><span>50</span><span>25</span><span>0</span></div>
         <div class="line-plot">
           <div class="chart-grid" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+          <div class="line-geometry">
           <svg class="line-chart-svg" data-svg-role="chart" viewBox="0 0 1000 400" preserveAspectRatio="none" role="img" aria-label="Core 与 Reference 从一月至五月的趋势">
             <title>Core and Reference trend</title>
             <desc>Core rises from 42 to 86, while Reference rises from 38 to 63.</desc>
@@ -906,6 +909,7 @@ XREAL Style 有 23 个正式登记版式（`S01-S08`、`S10-S24`）,生成时要
           </svg>
           <span class="line-end-label series-1" style="--x:100;--y:14">86</span>
           <span class="line-end-label series-2" style="--x:100;--y:44">63</span>
+          </div>
         </div>
         <div class="line-x-labels" style="--points:5"><span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span></div>
       </div>

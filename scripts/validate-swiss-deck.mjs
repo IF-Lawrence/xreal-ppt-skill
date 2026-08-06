@@ -379,6 +379,25 @@ slides.forEach((slide) => {
     });
   }
 
+  if (layout === 'S07') {
+    const labelCount = [...slide.html.matchAll(/<span\b(?=[^>]*\bclass=["'][^"']*\brow-lbl\b[^"']*["'])[^>]*>/gi)].length;
+    const trackCount = [...slide.html.matchAll(/<span\b(?=[^>]*\bclass=["'][^"']*\brow-track\b[^"']*["'])[^>]*>/gi)].length;
+    const fillTags = [...slide.html.matchAll(/<span\b(?=[^>]*\bclass=["'][^"']*\brow-fill\b[^"']*["'])[^>]*>/gi)].map((match) => match[0]);
+    const valueCount = [...slide.html.matchAll(/<span\b(?=[^>]*\bclass=["'][^"']*\brow-val\b[^"']*["'])[^>]*>/gi)].length;
+    if (labelCount < 5 || labelCount > 10 || trackCount !== labelCount || fillTags.length !== labelCount || valueCount !== labelCount) {
+      errors.push(`Slide ${slide.idx}: S07 requires 5-10 complete label + track + fill + value rows; found ${labelCount}/${trackCount}/${fillTags.length}/${valueCount}.`);
+    }
+    fillTags.forEach((tag, index) => {
+      const value = Number(tag.match(/--value\s*:\s*([0-9.]+)%/)?.[1]);
+      if (!Number.isFinite(value) || value <= 0 || value > 100) {
+        errors.push(`Slide ${slide.idx}: S07 row ${index + 1} must store its persistent width in --value:1%-100%; do not animate by overwriting inline width.`);
+      }
+      if (/\bwidth\s*:/i.test(tag)) {
+        errors.push(`Slide ${slide.idx}: S07 row ${index + 1} uses inline width. Use --value so the bar remains visible after animation and in static mode.`);
+      }
+    });
+  }
+
   if (layout === 'S04') {
     const cardMediaTags = [...slide.html.matchAll(/<img\b(?=[^>]*\bclass=["'][^"']*\bcard-media-slot\b[^"']*["'])[^>]*>/gi)].map((match) => match[0]);
     const mediaCards = [...slide.html.matchAll(/<article\b(?=[^>]*\bclass=["'][^"']*\bsub-card\b[^"']*\bhas-media\b[^"']*["'])[^>]*>/gi)].length;
@@ -704,7 +723,7 @@ slides.forEach((slide) => {
   }
 
   if (layout === 'S24' && !isECharts) {
-    const requiredClasses = ['xreal-line-chart', 'chart-unit', 'chart-legend', 'line-stage', 'chart-y-labels', 'line-plot', 'line-chart-svg', 'chart-line', 'line-x-labels', 'line-end-label', 'chart-source'];
+    const requiredClasses = ['xreal-line-chart', 'chart-unit', 'chart-legend', 'line-stage', 'chart-y-labels', 'line-plot', 'line-geometry', 'line-chart-svg', 'chart-line', 'line-x-labels', 'line-end-label', 'chart-source'];
     const missing = requiredClasses.filter((name) => !new RegExp(`\\b${name}\\b`).test(slide.html));
     if (missing.length) {
       errors.push(`Slide ${slide.idx}: S24 Line Chart is missing required structure (${missing.map((name) => `.${name}`).join(', ')}).`);
@@ -760,6 +779,14 @@ async function runRenderedMeasurements() {
         return nodes.length > 0 && nodes.every((node) => ['ready', 'error'].includes(node.dataset.echartsState));
       }, null, { timeout: 6000 }).catch(() => {});
     }
+    await page.evaluate(() => {
+      if (typeof window.__setLowPowerMode === 'function') {
+        window.__setLowPowerMode(true, { persist: false });
+      } else {
+        document.body.classList.add('low-power');
+      }
+    });
+    await page.waitForTimeout(100);
 
     const measures = await page.$$eval('section.slide', (els) => {
       const TRANSPARENT = /rgba?\(\s*0\s*,\s*0\s*,\s*0\s*,\s*0?\s*\)|transparent/;
@@ -1008,10 +1035,20 @@ async function runRenderedMeasurements() {
         const issues = [];
         const timelineRect = timeline.getBoundingClientRect();
         const canvasRect = el.querySelector('.canvas-card')?.getBoundingClientRect();
-        if (canvasRect && timelineRect.width / canvasRect.width < .72) {
-          issues.push(`timeline uses only ${(timelineRect.width / canvasRect.width * 100).toFixed(1)}% of canvas width; expected at least 72%`);
+        if (canvasRect) {
+          const widthRatio = timelineRect.width / canvasRect.width;
+          if (widthRatio < .72 || widthRatio > .82) {
+            issues.push(`timeline uses ${(widthRatio * 100).toFixed(1)}% of canvas width; expected 72%-82% so axes and row rules stay compact`);
+          }
         }
         const expectedAxisX = timelineRect.left + parseFloat(getComputedStyle(timeline).getPropertyValue('--tl-axis-w')) / 2;
+        timeline.querySelectorAll('.tl-node').forEach((node) => {
+          const nodeRect = node.getBoundingClientRect();
+          const axisStyle = getComputedStyle(node, '::before');
+          if (parseFloat(axisStyle.width) < .5 || Math.abs((nodeRect.left + parseFloat(axisStyle.left)) - expectedAxisX) > 2.5) {
+            issues.push('row-local vertical axis is missing or does not align with the node centers');
+          }
+        });
         timeline.querySelectorAll('.tl-node .dot').forEach((dot) => {
           const rect = dot.getBoundingClientRect();
           const centerX = rect.left + rect.width / 2;
@@ -1071,10 +1108,13 @@ async function runRenderedMeasurements() {
         const gapRatio = parseFloat(style.marginLeft) / fontSize;
         const opacity = parseFloat(style.opacity);
         const isDegree = node.classList.contains('unit-degree');
-        const gapInvalid = isDegree ? gapRatio < .01 || gapRatio > .07 : gapRatio < .14 || gapRatio > .24;
+        const isWord = node.classList.contains('unit-word');
+        const letterSpacing = style.letterSpacing === 'normal' ? 0 : parseFloat(style.letterSpacing) / fontSize;
+        const gapInvalid = isDegree ? gapRatio < .01 || gapRatio > .07 : isWord ? gapRatio < .18 || gapRatio > .32 : gapRatio < .14 || gapRatio > .24;
         return style.verticalAlign !== 'text-top'
           || !Number.isFinite(opacity) || opacity < .58 || opacity > .68
-          || !Number.isFinite(gapRatio) || gapInvalid;
+          || !Number.isFinite(gapRatio) || gapInvalid
+          || (isWord && (!Number.isFinite(letterSpacing) || Math.abs(letterSpacing) > .02));
       }).map((node) => {
         const style = getComputedStyle(node);
         return {
@@ -1082,7 +1122,21 @@ async function runRenderedMeasurements() {
           verticalAlign: style.verticalAlign,
           opacity: style.opacity,
           gapRatio: (parseFloat(style.marginLeft) / parseFloat(style.fontSize)).toFixed(2),
+          letterSpacing: style.letterSpacing,
         };
+      });
+
+      const horizontalBarChecks = (el) => Array.from(el.querySelectorAll('.h-bar-chart .row-fill')).flatMap((fill) => {
+        const track = fill.closest('.row-track');
+        if (!track) return [{ node: labelFor(fill), issue: 'has no .row-track parent' }];
+        const declared = parseFloat(getComputedStyle(fill).getPropertyValue('--value'));
+        // offsetWidth/clientWidth intentionally ignore an in-flight scaleX reveal so this
+        // check verifies the persistent data width rather than the current animation frame.
+        const actual = track.clientWidth ? fill.offsetWidth / track.clientWidth * 100 : 0;
+        const issues = [];
+        if (!Number.isFinite(declared) || declared <= 0 || declared > 100) issues.push(`declares invalid --value ${declared}`);
+        if (actual < 1 || Math.abs(actual - declared) > 2) issues.push(`renders at ${actual.toFixed(1)}% while --value is ${Number.isFinite(declared) ? declared : 'invalid'}%; the fill may have collapsed after animation`);
+        return issues.map((issue) => ({ node: labelFor(fill), issue }));
       });
 
       const baselineBarChecks = (el) => Array.from(el.querySelectorAll([
@@ -1120,6 +1174,10 @@ async function runRenderedMeasurements() {
         if (!plot || !bars.length) return [];
         const issues = [];
         const plotRect = plot.getBoundingClientRect();
+        const plotStyle = getComputedStyle(plot);
+        if (parseFloat(plotStyle.borderRightWidth) < .5 || parseFloat(plotStyle.borderTopWidth) < .5) {
+          issues.push('plot frame has no top/right hairline, making the final series look cropped');
+        }
         const ordered = bars.slice().sort((a, b) => a.getBoundingClientRect().left - b.getBoundingClientRect().left);
         const firstRect = ordered[0].getBoundingClientRect();
         const lastRect = ordered[ordered.length - 1].getBoundingClientRect();
@@ -1144,6 +1202,30 @@ async function runRenderedMeasurements() {
           if (valueRect.top < plotRect.top - 1) {
             issues.push(`bar ${index + 1} value extends ${(plotRect.top - valueRect.top).toFixed(1)}px above the plot; reserve chart-value headroom`);
           }
+        });
+        return issues.map((issue) => ({ node: labelFor(plot), issue }));
+      };
+
+      const lineChartChecks = (el) => {
+        const plot = el.querySelector('.line-plot');
+        const geometry = el.querySelector('.line-geometry');
+        const points = Array.from(el.querySelectorAll('.chart-point'));
+        if (!plot || !geometry || !points.length) return [];
+        const issues = [];
+        const plotRect = plot.getBoundingClientRect();
+        const geometryRect = geometry.getBoundingClientRect();
+        const plotStyle = getComputedStyle(plot);
+        const leftGap = geometryRect.left - plotRect.left;
+        const rightGap = plotRect.right - geometryRect.right;
+        if (leftGap < 28 || rightGap < 28) issues.push(`line geometry safety is ${leftGap.toFixed(1)}px left / ${rightGap.toFixed(1)}px right; expected at least 28px`);
+        if (parseFloat(plotStyle.borderRightWidth) < .5 || parseFloat(plotStyle.borderTopWidth) < .5) issues.push('plot frame has no top/right hairline');
+        points.forEach((point, index) => {
+          const rect = point.getBoundingClientRect();
+          if (rect.left < plotRect.left - 1 || rect.right > plotRect.right + 1) issues.push(`point ${index + 1} is clipped by the plot boundary`);
+        });
+        el.querySelectorAll('.line-end-label').forEach((label, index) => {
+          const rect = label.getBoundingClientRect();
+          if (rect.left < plotRect.left - 1 || rect.right > plotRect.right + 1) issues.push(`end label ${index + 1} extends outside the plot`);
         });
         return issues.map((issue) => ({ node: labelFor(plot), issue }));
       };
@@ -1203,12 +1285,14 @@ async function runRenderedMeasurements() {
           briefContrastIssues: briefContrastChecks(el),
           cardMediaIssues: cardMediaChecks(el),
           timelineIssues: timelineChecks(el),
+          horizontalBarIssues: horizontalBarChecks(el),
           productIdentityIssues: productIdentityChecks(el),
           closingMediaIssues: closingMediaChecks(el),
           systemRelationshipIssues: systemRelationshipChecks(el),
           unitAlignmentIssues: unitAlignmentChecks(el),
           baselineBarIssues: baselineBarChecks(el),
           dataChartIssues: dataChartChecks(el),
+          lineChartIssues: lineChartChecks(el),
           echartsIssues: Array.from(el.querySelectorAll('.xreal-echart')).filter((node) => node.dataset.echartsState !== 'ready').map((node) => ({
             state: node.dataset.echartsState || 'uninitialized',
             message: node.dataset.echartsMessage || 'Chart did not reach ready state.',
@@ -1264,6 +1348,9 @@ async function runRenderedMeasurements() {
       for (const issue of m.timelineIssues) {
         errors.push(`${prefix}: ${issue.node} ${issue.issue}. S02 must read as a directed timeline with visible aligned nodes, shared metric columns, and explicit stage meaning.`);
       }
+      for (const issue of m.horizontalBarIssues) {
+        errors.push(`${prefix}: ${issue.node} ${issue.issue}. S07 bars must retain their declared width after animation and remain visible in static mode.`);
+      }
       for (const issue of m.productIdentityIssues) {
         errors.push(`${prefix}: ${issue.node} ${issue.issue}. Use the official product mark in product-identity slots while keeping the enterprise XREAL Logo in page chrome; on S12 it remains a subordinate identity sign-off.`);
       }
@@ -1274,13 +1361,16 @@ async function runRenderedMeasurements() {
         errors.push(`${prefix}: ${issue.node} ${issue.issue}. S17 must use a top-aligned left conclusion and one dominant relationship structure, not competing information tracks.`);
       }
       for (const issue of m.unitAlignmentIssues) {
-        errors.push(`${prefix}: ${issue.node} uses vertical-align ${issue.verticalAlign}, opacity ${issue.opacity}, and gap ${issue.gapRatio}em. KPI/chart units must use the shared upper-right shoulder, .62 neutral opacity, .18em text-unit gap, or .03em degree gap.`);
+        errors.push(`${prefix}: ${issue.node} uses vertical-align ${issue.verticalAlign}, opacity ${issue.opacity}, gap ${issue.gapRatio}em, and letter-spacing ${issue.letterSpacing}. KPI/chart units must use the shared upper-right shoulder; word units also require normal internal tracking.`);
       }
       for (const issue of m.baselineBarIssues) {
         errors.push(`${prefix}: ${issue.node} uses corner radii ${issue.radii}. Baseline bars may round only the top corners (7-9px); bottom corners must be square and flush to the x-axis.`);
       }
       for (const issue of m.dataChartIssues) {
         errors.push(`${prefix}: ${issue.node} ${issue.issue}. S23 plots must protect edge bars and top labels, and every value must stay centered through the chart-rise animation.`);
+      }
+      for (const issue of m.lineChartIssues) {
+        errors.push(`${prefix}: ${issue.node} ${issue.issue}. S24 must inset line geometry, endpoints, and end labels from both plot edges so the complete trend remains visible.`);
       }
       for (const issue of m.echartsIssues) {
         errors.push(`${prefix}: ECharts runtime is ${issue.state}: ${issue.message}`);

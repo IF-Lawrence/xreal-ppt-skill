@@ -143,7 +143,7 @@ cp "<SKILL_ROOT>/assets/brand/xreal-logo-black.svg" "项目/XXX/ppt/assets/brand
 - 卡片型实体块、图片框和控件统一使用 `--radius-sm:8px`；S04 Six Cells、S05 Three Layers、S06 KPI Tower、S07 Horizontal Bar、S13 Three Forces、S16 Multi-card Brief 必须应用该 token。S06/S23 等接触 x 轴的垂直柱体只保留顶部 8px 圆角，底角为直角并贴齐共同基线；独立 KPI cap 仍为四角小圆角。S19 Bento 只圆整体外框，内部区块保持直角。页面画布、分割线和坐标轴保持直线；禁止装饰性渐变、阴影、发光、大圆角、胶囊形、玻璃拟态或多色高亮。唯一例外是 full-bleed 照片/技术媒体为保护压图文字而使用的中性黑透明蒙版，可按文字位置由浅到深，但不得形成彩色或可感知的装饰渐变
 - S16 Multi-card Brief 默认六卡等权、全部使用中性白底卡；不得为了制造视觉焦点而强行强调。只有内容本身存在明确的首选、推荐、关键或风险优先级时，才允许最多一张 `.is-accent`，并必须添加 `data-emphasis="primary|recommended|critical|risk"` 说明语义
 - S04 `.sub-card` 与 S16 `.brief-card` 分别使用 `--sub-card-pad:2.2vh`、`--brief-card-pad:2.2vh`，四边内边距保持一致；禁止重新写成不同的 `vh / vw` 横纵 padding。S04 右上编号的 `top / right` 也必须使用同一个 `--sub-card-pad`
-- KPI / 图表展示级大数字的单位（如 `°`、`%`、`ms`、`Hz`、`in`）统一挂在数字右上肩位，使用 `vertical-align:text-top`、`--unit-mark-opacity:.62` 且不得与数字拆行；文字单位统一间距 `--unit-mark-gap:.18em`，角度使用更紧的 `--unit-degree-gap:.03em`。正文句子中的单位作为普通文本随正文基线。角度使用 Unicode `°` 或 `<sup class="unit-degree">°</sup>`，绝不使用下标；只有科学指数与数学/化学语义允许真正的上标或下标
+- KPI / 图表展示级大数字的单位（如 `°`、`%`、`ms`、`Hz`、`in`）统一挂在数字右上肩位，使用 `vertical-align:text-top`、`--unit-mark-opacity:.62` 且不得与数字拆行；文字单位统一间距 `--unit-mark-gap:.18em`，角度使用更紧的 `--unit-degree-gap:.03em`。`screen` 等多字符英文词单位必须额外使用 `.unit-word`，恢复正常字距与词距，不得继承 KPI 数字的负 tracking。正文句子中的单位作为普通文本随正文基线。角度使用 Unicode `°` 或 `<sup class="unit-degree">°</sup>`，绝不使用下标；只有科学指数与数学/化学语义允许真正的上标或下标
 - 中文与中英混排标题保持正体，禁止在 `h1` / `h2` / `h3` 或标题类中使用斜体；纯英文标题如确有必要，只允许一次克制的斜体强调
 - 保留方向键翻页、`B` 静态模式和 `ESC` 索引功能，但不在页面右下角显示操作提示
 - 页面不显示 `01 / 09`、`06 / 07` 等页码；顺序通过底部导航和演讲结构表达
@@ -166,10 +166,12 @@ cp "<SKILL_ROOT>/assets/brand/xreal-logo-black.svg" "项目/XXX/ppt/assets/brand
 - 网格：`grid-12`、`grid-2-9`、`grid-2-9-5`、`span-N`
 - 卡片：`card-ink`、`card-accent`、`card-fill`、`card-outlined`
 - 图表：`kpi-tower-row`、`bar-tower`、`h-bar-chart`、`timeline-v`、`timeline-h`、`xreal-pie-layout`、`xreal-pie-legend`；复杂图表扩展使用 `xreal-echart-stage`、`xreal-echart`
-- S02 纵向时间线必须显式标出列含义，并让每个节点形成“时间 + 同口径指标 + 阶段名称 + 体验影响”四层语义。使用 `.tl-head`、`.tl-axis > .dot`、`.yr`、`.multi`、`.tl-copy > .tl-stage + .tl-impact`；节点圆点必须真实可见并与贯穿轴居中，不能退化成没有方向关系的三列表格。
+- S02 纵向时间线必须显式标出列含义，并让每个节点形成“时间 + 同口径指标 + 阶段名称 + 体验影响”四层语义。使用 `.tl-head`、`.tl-axis > .dot`、`.yr`、`.multi`、`.tl-copy > .tl-stage + .tl-impact`；节点圆点必须真实可见并与贯穿轴居中，不能退化成没有方向关系的三列表格。`.timeline-v` 只占正文宽度的 72%-82%，贯穿轴由每个 `.tl-node::before` 连续绘制并与 dot 对齐；不要用脱离行结构的全局轴线，也不要让横向分隔线无限延伸到整页边缘。
+- S07 横向条形图把真实宽度持久写入 `.row-fill` 的 `--value`，CSS 使用 `width:var(--value)`；动效只能从左侧执行 `scaleX(0→1)`，禁止把 inline `width` 改成 `0%` 或在动画结束后丢失数据宽度。静态模式和动效结束后 fill 都必须可见并与 `--value` 一致。
 - S17 系统关系图必须先声明 `data-system-grammar="flow|hierarchy|network|containment"`。默认优先使用可复用的 HTML 节点和连接语义；只有内容确实表达 core/middle/outer 的包含关系时才使用同心圆。因果传递使用 flow，组织分层使用 hierarchy，多对多依赖使用 network；不得为了“像系统图”而放三个没有信息增量的圆。
 - S17 左侧只保留 `.system-kicker + .system-thesis + .system-summary`，用于一句结论和一段解释；右侧 `[data-system-grammar]` 承载唯一关系结构，两列顶部误差不得超过 16px。flow 语法使用 `.system-flow`，禁止在左侧再复制 Process / Orchestrate / Deliver 等阶段列表，也禁止出现“这里表达的是”“不是套圈”“图的目的是”等制作说明式文案。
-- S23 分组柱图使用 `--chart-safe-inline` 为首末柱预留左右安全区，使用 `--chart-value-headroom` 为最高柱的数值标签预留顶部空间。`.chart-value` 必须以 `left:0;right:0;text-align:center` 覆盖整根柱宽，不使用 `translateX(-50%)` 居中，避免 `chart-rise` 的纵向 transform 覆盖后标签偏移；`.chart-x-labels` 使用相同左右 padding 保持类别中心对齐。
+- S23 分组柱图使用完整 1px hairline 绘图区边框，`--chart-safe-inline` 必须为首末柱预留至少 28px 左右安全区，`--chart-value-headroom` 为最高柱的数值标签预留顶部空间。`.chart-value` 必须以 `left:0;right:0;text-align:center` 覆盖整根柱宽，不使用 `translateX(-50%)` 居中，避免 `chart-rise` 的纵向 transform 覆盖后标签偏移；`.chart-x-labels` 使用相同左右 padding 保持类别中心对齐。
+- S24 折线图使用完整 1px hairline 绘图区边框，并在 `.line-plot` 内以 `.line-geometry` 包住 SVG、点和终值标签；该层左右安全区至少 28px，`.line-x-labels` 使用相同 padding。首末采样点、描边和终值标签都必须落在绘图区内部，不得依赖父容器裁切隐藏越界。
 - 信息组：`xreal-bento`；整体外框使用 `--radius-sm:8px`、内部区块直角、无阴影，一个红色语义点
 - 装饰：`hr-hairline`
 - 图片：`frame-img`、`fit-contain`、`r-21x9`、`r-16x9`、`r-16x10`、`h-22`、`h-26`、`swiss-lined`；卡片媒体使用 `card-media-slot`、`stack-card-media`、`bento-hero-media`
