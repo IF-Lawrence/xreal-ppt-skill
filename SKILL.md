@@ -173,7 +173,7 @@ cp "<SKILL_ROOT>/assets/brand/xreal-logo-black.svg" "项目/XXX/ppt/assets/brand
 - S17 系统关系图必须先声明 `data-system-grammar="flow|hierarchy|network|containment"`。默认优先使用可复用的 HTML 节点和连接语义；只有内容确实表达 core/middle/outer 的包含关系时才使用同心圆。因果传递使用 flow，组织分层使用 hierarchy，多对多依赖使用 network；不得为了“像系统图”而放三个没有信息增量的圆。
 - S17 左侧只保留 `.system-kicker + .system-thesis + .system-summary`，用于一句结论和一段解释；右侧 `[data-system-grammar]` 承载唯一关系结构，两列顶部误差不得超过 16px。flow 语法使用纵向弹性的 `.system-flow`，关系容器必须占 `.system-diagram` 至少 85% 高度并让 3-6 个节点均衡消费可用空间，禁止把节点全部堆在顶部；也禁止在左侧再复制 Process / Orchestrate / Deliver 等阶段列表或出现“这里表达的是”“不是套圈”“图的目的是”等制作说明式文案。
 - S23 分组柱图使用完整 1px hairline 绘图区边框，`--chart-safe-inline` 必须为首末柱预留至少 28px 左右安全区，`--chart-value-headroom` 为最高柱的数值标签预留顶部空间。`.chart-value` 必须以 `left:0;right:0;text-align:center` 覆盖整根柱宽，不使用 `translateX(-50%)` 居中，避免 `chart-rise` 的纵向 transform 覆盖后标签偏移；`.chart-x-labels` 使用相同左右 padding 保持类别中心对齐。
-- S24 折线图使用完整 1px hairline 绘图区边框，并在 `.line-plot` 内以 `.line-geometry` 包住 SVG、点和终值标签；该层左右安全区至少 28px，`.line-x-labels` 使用相同 padding。首末采样点、描边和终值标签都必须落在绘图区内部，不得依赖父容器裁切隐藏越界。
+- S24 折线图使用完整 1px hairline 绘图区边框，并在 `.line-plot` 内以 `.line-geometry` 包住 SVG、点和终值标签；该层左右安全区至少 28px，`.line-x-labels` 使用相同 padding。首末采样点、描边和终值标签都必须落在绘图区内部，不得依赖父容器裁切隐藏越界。`.line-end-label` 必须以透明底停在对应末端点的左上肩位，与点位横纵方向至少保持 4px 间距；禁止加白底/色块或压在线、点上。
 - 所有原生图表与 XREAL ECharts 共用 `--chart-series-1/2/3/4`、`--chart-critical`、`--chart-track`、`--chart-grid`、`--chart-frame`。稳定系列只按近黑→中性深灰→中性浅灰→最浅灰分配；不得混入蓝灰或临时色。红色不是默认第三系列色，只用于一个有明确结论、风险或警示依据的关键系列/数据点。S23/S24 的四边 frame 必须同色同粗，第一/最后网格线不得与 frame 重叠形成双描边。
 - 信息组：`xreal-bento`；整体外框使用 `--radius-sm:8px`、内部区块直角、无阴影，一个红色语义点。需要按真实优先级改变卡片面积时使用 S28 的 `priority-bento` / `priority-tile`，不要改写 S19
 - 装饰：`hr-hairline`
@@ -204,7 +204,7 @@ cp "<SKILL_ROOT>/assets/brand/xreal-logo-black.svg" "项目/XXX/ppt/assets/brand
 
 企业 XREAL Logo 继续使用 `assets/brand/xreal-logo-black.svg`；产品标志只能从当前产品线的 `00-product-marks/` 选择，用于封面、章节页、S12 宣言横幅或其他明确产品识别位，不替代每页 `chrome-min` 中的企业 Logo。不得重绘、改字距、变形、拼接或自行改色；优先使用资产库中与背景匹配的官方黑版/白版。缺少产品标志时使用产品名称文字，不要仿制 Logo。
 
-S12 manifesto 中的产品标志只承担身份落款，不是第二主标题。放在 `.ink-banner-full` 时，其渲染宽度控制在横幅宽度的 18%-26%，标准值为 `min(23vw,320px)`，并保持官方比例；不得通过放大产品标志与 manifesto 主标题争抢层级。
+S12 manifesto 中的产品标志只承担身份落款，不是第二主标题。放在透明的 `.ink-banner-full` 身份行时，其渲染宽度控制在页面内容宽度的 10%-16%，标准值为 `min(14vw,220px)`，并保持官方比例；不得通过放大产品标志与 manifesto 主标题争抢层级，也不得在底部增加整块黑色通栏。
 
 在图片媒体编排前先做一次产品身份审计：若整套内容明确围绕单一产品，给 `<body>` 添加 `data-product-line="<slug>"`，检查该产品线 `00-product-marks/`。存在官方标志时，至少在一个高价值产品识别位使用 `.xreal-product-mark[data-image-slot="product-mark"][data-media-role="product-identity"]`，并将选中的 SVG 复制到 `images/`；不得继续用手打产品名代替已有官方标志。不要每页重复产品标志，也不要把它塞进 `chrome-min`。
 
@@ -220,7 +220,7 @@ S12 manifesto 中的产品标志只承担身份落款，不是第二主标题。
 - 不设机械的“每页一图”配额；优先覆盖封面、封底、章节 Hero 和需要视觉证据的正文页。素材数量多时提高有效覆盖率，仍以语义匹配和可读性优先。
 - 技术卡片可以配图，但先判断媒体是否能解释该技术点，而不是只填空白。S04 最多为 1-2 张 `.sub-card.has-media` 增加 `.card-media-slot[data-media-role="technical-evidence"]`；紧边透明 cutout 使用 `data-media-fit="inset"` + contain，主体在画布内偏小或卡片留白明显时使用 `data-media-fit="inset-prominent"` + cover，高度约占父卡 28%-45%、宽度至少占父卡 80%，与文字分区且不加蒙版。
 - S05 最多为一个核心 `.stack-block.has-media` 增加 `.stack-card-media[data-media-role="technical-evidence"]`。短文案与低干扰横版媒体可使用 `.media-full-bleed`、`data-media-fit="full-bleed" data-media-contrast="darken"` 全幅铺底；通过渐变深色蒙版保护底部文字，同时保留 `.layer-icon` 作为语义标记。只有媒体主体与图标明显冲突时才调整图标位置，不因配图自动删除图标。若素材不适合压字，回退到 inset/contain，高度约占父卡 18%-45%。
-- S12 宣言页存在清晰语境匹配时，可使用横版 lifestyle、conceptual 或品牌 KV 作为 `.manifesto-media` 全幅背景；媒体不得是透明产品 cutout / packshot，必须以中性黑蒙版保护白字与页眉，并保留底部 ink 通栏和产品身份落款层级。无合适媒体时保持纯黑，不为填空白强行用图。
+- S12 宣言页存在清晰语境匹配时，可使用横版 lifestyle、conceptual 或品牌 KV 作为 `.manifesto-media` 全幅背景；媒体不得是透明产品 cutout / packshot，必须以中性黑蒙版保护白字与页眉。底部仅保留透明身份行，产品标志与少量支持信息直接叠在背景上，不增加整块黑色通栏。无合适媒体时保持纯黑，不为填空白强行用图。
 - S19 Bento 的大面积 `.hero` 主卡在存在合适 lifestyle / contextual 媒体且文字较少时，可以使用 `.hero.has-media + .bento-hero-media[data-media-role="context-evidence"]` 全幅铺底，并声明 `data-media-fit="full-bleed" data-media-contrast="darken"`。媒体应在宽高两个方向覆盖父卡至少 95%；文字直接反白，不叠白色或半透明面板。统一通过 `--media-scrim-alpha:.38` 加深色蒙版，可在 `.28-.48` 内按素材亮度微调，同时保留图片细节；S19 仍只圆整体外框，媒体和内部 article 不增加独立圆角。
 - 只有文字直接叠在照片或场景媒体上时才使用深色蒙版；图片与文字互不重叠的 inset / contain 证据图不加蒙版。若 `.48` 仍无法保证可读性，应更换图片、调整 `object-position` 或改为无图版式，而不是继续压暗。
 - 不给信息已经密集、没有清晰媒体对应关系或需要保真阅读的卡片硬塞图片；此时保留留白是正确选择。
@@ -266,7 +266,9 @@ S12 manifesto 中的产品标志只承担身份落款，不是第二主标题。
 
 产品组合同时包含时间/阶段和第二层级维度时，使用 `S25 Portfolio Roadmap Matrix`，而不是把媒体卡塞进 S23 柱图。S25 只允许 2-4 个 period、2-4 条中性泳道和 3-7 个媒体节点；纵轴标签列按内容收紧并左对齐，不为短标签预留大块空白；节点必须声明百分比 `--x/--y/--w/--h`，示意路线必须明确标注为 illustrative。需要用连续媒体证据讲述 4-6 个阶段时使用 `S26 Milestone Gallery`；每个 `.milestone-entry` 使用统一浅灰底、1px 边界、等距 padding 和 8px 小圆角，并包含阶段、媒体、标题和短说明。底部综合链保持扁平 hairline，不做按钮或 ribbon。
 
-当用户明确要求“一页总览”“不要拆分”，或内容只有同时可见才能完成比较、推演或共同判断时，使用 `S27 Dense Synthesis`。它固定为 1 个总述带 + 恰好 3 个主面板 + 7-12 个条目；三个面板可分别使用阶段比较、能力递进和特征解释，但必须共享同一结论。先删除重复措辞、调整列宽和内部网格，再处理溢出；不得删除关键内容或自动拆页。最多 1 个黑色焦点区和 1 张语义媒体；媒体只可作为焦点区的 `cover + darken` 背景，不缩成装饰缩略图。禁止 tab、badge、button、彩色面板、阴影和 dashboard 控件。
+S15 Matrix + Hero Stat 用于 8-12 个同类短项和一个汇总指标。`.matrix-fill` 必须以弹性行高主动消费正文剩余高度，至少约占页面高度 32%，矩阵到 `.hero-stat-bottom` 保持 8-40px 紧凑间距；不得让矩阵悬在上半页并在下方留下大块无意义空白。
+
+当用户明确要求“一页总览”“不要拆分”，或内容只有同时可见才能完成比较、推演或共同判断时，使用 `S27 Dense Synthesis`。它固定为 1 个总述带 + 恰好 3 个主面板 + 7-12 个条目；三个面板可分别使用阶段比较、能力递进和特征解释，但必须共享同一结论。总述标签与结论共享同一左轴，三个主面板通过统一中性底色、等高外框和留白建立结构；内部条目默认不重复添加分割线。先删除重复措辞、调整列宽和内部网格，再处理溢出；不得删除关键内容或自动拆页。最多 1 个黑色焦点区和 1 张语义媒体；媒体只可作为焦点区的 `cover + darken` 背景，不缩成装饰缩略图。禁止 tab、badge、button、彩色面板、阴影和 dashboard 控件。
 
 当同一主题中存在一个明确核心卖点、2-3 个次级技术点和若干支持信息，且面积差异能比颜色更准确地表达优先级时，使用 `S28 Priority Bento`。它固定为 12 列 × 6 行网格、6-9 张 `.priority-tile`、恰好 1 张 `.is-primary`、2-3 张 `.is-secondary`，并至少包含 3 种不同卡片面积。每张卡必须通过 `--col/--span/--row/--rows` 明确占位；主卡至少 5 列 × 3 行且占内容网格约 28%-48%。大小只能由内容优先级决定，不得随机拼贴。全页使用白、浅灰和近黑结构，所有卡片独立使用 8px 小圆角、1px 中性边界、无阴影；最多 1 个红色语义点。使用 1-4 张语义匹配媒体：压图文字必须 `cover + darken` 并直接反白，非压字媒体使用 `contain + none`，不得叠白色文字面板。禁止渐变、多彩卡片、pill、badge、button、tab、ribbon 与软件控件感。
 
@@ -283,10 +285,11 @@ S12 manifesto 中的产品标志只承担身份落款，不是第二主标题。
 - 配图只使用 `assets/media/` 或用户提供的 PNG/JPG/JPEG/WebP 文件；禁止用内联 SVG、Canvas 或 CSS 图形临时绘制插画配图
 - 如果素材自带与当前页面冲突的标题、页脚、页码、logo、角标或署名，换用其他资产或无图版式，不要重绘素材
 - 所有图片、caption、timeline label、footnote 都必须避开底部分页区，必要时使用 `.nav-safe-bottom`
+- 所有来源与说明注脚统一使用 `--footnote-size:max(11px,.62vw)` 和 `--footnote-bottom-offset`：左端与 `.canvas-card` 内容轴对齐，底部基线统一停在导航安全区上方。`.section-hero-foot`、`.chart-foot`、`.roadmap-source`、`.milestone-source`、`.dense-source`、`.priority-source` 均不得使用 border、分割线、底色或额外 padding。
 
 #### 3.5 · 投屏字号与字重
 
-最低字号：正文/主要说明 `18px`，卡片描述/列表/时间线/caption `16px`，meta/kicker/图表标签 `14px`。内容放不下时先删减重复文案或换版式，不要压到 10-13px；若用户要求同页保留且信息相互依赖，改用 S27 并重排，不自动拆页。
+最低字号：正文/主要说明 `18px`，卡片描述/列表/时间线/caption `16px`，meta/kicker/图表标签 `14px`。唯一明确例外是来源与说明注脚，统一使用 `max(11px,.62vw)`；它不是正文、图表标签或卡片说明。内容放不下时先删减重复文案或换版式，不要把其他内容压到 10-13px；若用户要求同页保留且信息相互依赖，改用 S27 并重排，不自动拆页。
 
 字重由信息角色固定，同一角色在整套 PPT 中保持一致：
 

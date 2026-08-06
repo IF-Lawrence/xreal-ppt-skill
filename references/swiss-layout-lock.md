@@ -28,6 +28,7 @@ XREAL Style 生成时,除用户明确要求实验版式外,只能从下面登记
 15. 页面画布、分割线和坐标轴保持直线；卡片型实体块统一使用 `--radius-sm:8px`。该规则明确覆盖 S04 Six Cells、S05 Three Layers、S06 KPI Tower、S07 Horizontal Bar、S13 Three Forces、S16 Multi-card Brief、S26 Milestone Gallery、S27 Dense Synthesis 主面板与 S28 Priority Bento 单卡；不得使用不同圆角值、大圆角或胶囊形。接触共同基线的垂直柱体是语义例外：只保留 8px 顶部圆角，底角必须为直角并贴齐 x 轴。S19 Bento 只圆整体外框，内部区块保持直角。
 16. 禁止任何霓虹、发光边缘、`text-shadow`、`drop-shadow` 或非 `none` 的 `box-shadow`。
 17. `XREAL-CLOSING-BLACK` 必须是最后一个 section，使用黑色基底 `.slide.accent`；大号 `.xreal-closing-thanks` 居中，小号 `.xreal-closing-logo` 通过 `.xreal-closing-mark` 固定在底部中央。可使用低干扰 lifestyle、conceptual 或品牌 KV 背景，但禁止直接产品 cutout / packshot、split、takeaway、作者日期、页码、CTA 或额外说明。
+18. 来源与说明注脚统一使用 `--footnote-size:max(11px,.62vw)`，左端对齐 `.canvas-card` 内容轴，底部统一停在 `--footnote-bottom-offset` 上方。`.section-hero-foot`、`.chart-foot`、`.roadmap-source`、`.milestone-source`、`.dense-source`、`.priority-source` 禁止 border、分割线、底色与额外 padding；该字号是来源注脚专用例外，不得用于正文、卡片说明或图表标签。
 
 ## 登记版式
 
@@ -42,10 +43,10 @@ XREAL Style 生成时,除用户明确要求实验版式外,只能从下面登记
 | S07 | 07 | Horizontal Bar | 左对齐标题,横向条形图；标签列使用内容宽度，标签到 track 保持 16-32px 紧凑间距；track 与 fill 使用小圆角但不得做成胶囊；fill 以 `--value` 持久保存真实宽度，动效只做 `scaleX`；普通条统一单一系列色，最多一个语义关键项使用红色 | 无 |
 | S08 | 08 | Duo Compare | `.duo-compare` 两列 + 中线 | 无;地点/路线内容可使用 `S08 + XREAL Map Component` 替换右侧插槽 |
 | S11 | 11 | Horizontal Timeline | 原始 `grid-template-columns:auto 1fr` 头部 + `.timeline-h` | 无 |
-| S12 | 12 | Manifesto + Ink Banner | 大字 statement + 底部通栏 ink 条；产品标志仅作身份落款，占横幅 18%-26% | 可按语境使用横版 lifestyle、conceptual 或品牌 KV 全幅背景并加深色蒙版；禁止透明产品 cutout / packshot；无合适媒体时保持纯黑 |
+| S12 | 12 | Manifesto + Identity Rail | 大字 statement + 底部透明身份行；产品标志仅作身份落款，占内容宽度 10%-16%，不使用整块黑色通栏 | 可按语境使用横版 lifestyle、conceptual 或品牌 KV 全幅背景并加深色蒙版；禁止透明产品 cutout / packshot；无合适媒体时保持纯黑 |
 | S13 | 13 | Three Forces | 左 ink hero 小圆角色块 + 右 3 张小圆角卡 | 无 |
 | S14 | 14 | Loop Form | 左 3-5 步列表 + 右单一细线闭环；灰色底环、方向段、HTML 节点与中心结论；最多一个返回段使用红色 | SVG 禁止文字,标签改 HTML；禁止粗圆环、浮动外标签与重复装饰点 |
-| S15 | 15 | Matrix + Hero Stat | 顶部左对齐标题,中段 6×2 矩阵,底部巨数 | 多图可改造矩阵格,同组统一 `21:9` |
+| S15 | 15 | Matrix + Hero Stat | 顶部左对齐标题,中段矩阵主动消费剩余高度,底部巨数；矩阵不得悬在上半页留下大块无意义空白 | 多图可改造矩阵格,同组统一 `21:9` |
 | S16 | 16 | Multi-card Brief | 顶部左对齐标题,下方 3×2 小圆角微卡；默认六卡等权。仅有明确优先级语义时，允许一张高对比卡并声明 `data-emphasis` | 多图可改造卡片内容,同组统一 `21:9` |
 | S17 | 17 | System Diagram | 先声明 `flow|hierarchy|network|containment`；左侧只放结论与解释，右侧为唯一关系图且至少占画布 42%；两列顶部误差 ≤16px；flow 使用 3-6 节点和明确连接，并纵向消费关系图区至少 85% 高度 | 禁止左侧复制阶段列表；同心圆仅限真实 containment；SVG 如使用则禁止文字，标签改 HTML |
 | S18 | 18 | Why Now | 三列递进 + 底部巨数 | 无 |
@@ -57,7 +58,7 @@ XREAL Style 生成时,除用户明确要求实验版式外,只能从下面登记
 | S24 | 新增 | Line Chart | 顶部结论标题 + 单位/图例 + 四边完整绘图区 + 主导折线图 + HTML 坐标标签 + 来源；SVG、端点与终值标签置于左右至少 28px 的 `.line-geometry` | 无；只承载时间或连续变量趋势 |
 | S25 | 新增 | Portfolio Roadmap Matrix | 顶部结论标题 + 时间轴 + 2-4 条中性能力泳道 + 3-7 个稀疏媒体节点 + 来源；节点以百分比坐标定位 | 每节点一张语义媒体；8px 小圆角，无阴影；示意路线必须明确声明 |
 | S26 | 新增 | Milestone Gallery | 顶部结论标题 + 4-6 张连续等高小圆角阶段卡；每卡含阶段、媒体、标题、短说明；底部综合结论 + 扁平能力链 + 来源 | 每阶段一张语义媒体；卡片与媒体框均为 8px，无阴影、无强调色卡 |
-| S27 | 新增 | Dense Synthesis | 顶部结论标题 + 全宽总述带 + 恰好 3 个并行主面板 + 来源；组内可分别使用比较、递进、解释语法 | 7-12 个条目；最多 1 个黑色焦点区与 1 张语义媒体；不得因密度自动拆页 |
+| S27 | 新增 | Dense Synthesis | 顶部结论标题 + 单一左轴总述带 + 恰好 3 个等高中性主面板 + 来源；组内可分别使用比较、递进、解释语法，条目间不重复画分割线 | 7-12 个条目；最多 1 个黑色焦点区与 1 张语义媒体；不得因密度自动拆页 |
 | S28 | 新增 | Priority Bento | 顶部结论标题 + 12×6 面积网格 + 1 个主卡 + 2-3 个中卡 + 支持卡 + 来源 | 6-9 卡、至少 3 种面积、1-4 张语义媒体；面积由内容优先级决定 |
 
 ### XREAL-CLOSING-BLACK · Brand Back Cover
@@ -82,7 +83,7 @@ XREAL Style 生成时,除用户明确要求实验版式外,只能从下面登记
 - 必须结构:`.xreal-line-chart` + `.chart-legend` + `.line-stage` + `.chart-y-labels` + `.line-plot` + `.line-geometry` + `svg[data-svg-role="chart"]` + `.chart-line` + `.line-x-labels` + `.chart-source`。
 - 数据约束:必须显示时间/连续变量标签、单位和来源；类别无连续顺序时不得使用折线图。不同量纲默认拆图，不使用无说明的双轴。
 - SVG 约束:SVG 只画折线、点和数据几何，不放 `<text>`；坐标、图例、终点值和注释全部使用 HTML。
-- 视觉约束:绘图区四边使用同色同粗的单一 1px `--chart-frame`，第一/最后网格线不得与 frame 重叠；折线按与 S23 相同的 `--chart-series-*` 映射。`.line-geometry` 左右安全区至少 28px，并与 `.line-x-labels` 对齐。首末点、描边和终值标签必须完整落在 frame 内，不得依赖裁切隐藏越界。
+- 视觉约束:绘图区四边使用同色同粗的单一 1px `--chart-frame`，第一/最后网格线不得与 frame 重叠；折线按与 S23 相同的 `--chart-series-*` 映射。`.line-geometry` 左右安全区至少 28px，并与 `.line-x-labels` 对齐。首末点、描边和终值标签必须完整落在 frame 内，不得依赖裁切隐藏越界。`.line-end-label` 使用透明底，停在对应端点的左上肩位，与端点横纵方向至少相隔 4px；不得压在线、点上。
 - 动效:使用 `data-animate="line-draw"`；坐标结构先出现，再依次绘制折线与关键点。
 
 ### S25 · Portfolio Roadmap Matrix
@@ -106,7 +107,7 @@ XREAL Style 生成时,除用户明确要求实验版式外,只能从下面登记
 
 - 使用场景:大量信息必须在同一页共同判断，拆开后会破坏比较、依赖或因果关系；不是普通三栏摘要。
 - 必须结构:`.dense-synthesis` + `.dense-thesis` + `.dense-columns` + 恰好 3 个 `.dense-panel` + `.dense-source`；每个面板含 `.dense-panel-title`、`.dense-panel-body` 和至少 2 个 `.dense-item`，全页共 7-12 项。
-- 视觉约束:三个主面板等高、四边等距 padding、1px 中性边界、8px 小圆角、无阴影；内部使用 hairline，不把每个条目继续做成彩色卡片。最多一个 `.is-focus` 黑色焦点区和一张 `.dense-media`；媒体只作为焦点区的 `cover + darken` 背景，不做小缩略图。
+- 视觉约束:总述标签与结论共享同一左轴；三个主面板等高、浅灰底、四边等距 padding、1px 中性外边界、8px 小圆角、无阴影。内部通过标题层级、列宽和留白组织，不为每个条目重复添加 hairline，也不把条目做成彩色卡片。最多一个 `.is-focus` 黑色焦点区和一张 `.dense-media`；媒体只作为焦点区的 `cover + darken` 背景，不做小缩略图。
 - 密度约束:正文不低于 16px，meta 不低于 14px。溢出时优先压缩重复措辞、调整列宽和内部网格；用户明确要求同页时不得删除关键内容或自动拆页。
 - 动效:使用 `data-animate="dense-synthesis"`；标题与总述带先出现，三主面板并行进入，再展开组内条目。
 

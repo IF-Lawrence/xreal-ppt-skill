@@ -60,8 +60,9 @@ XREAL Style 不是网页说明页,投屏时不能出现 10-12px 的注释字。�
 | 正文段落 / 主要说明 | `18px` |
 | 卡片描述 / 列表 / 时间线说明 / caption / 图注 | `16px` |
 | meta / kicker / mono label / 图表标签 | `14px` |
+| 来源 / 说明注脚（仅底部 footnote） | `max(11px,.62vw)` |
 
-内容过多时,先压缩重复文案或更换 Sxx 版式;禁止靠降低小字字号解决拥挤。若信息必须同时可见且拆开会破坏比较/依赖关系，使用 S27 调整列宽与内部语法，不自动拆页。图注、时间线说明、KPI 注释、底部 note 尤其要守住这个下限。
+内容过多时,先压缩重复文案或更换 Sxx 版式;禁止靠降低小字字号解决拥挤。来源/说明注脚是唯一 11px 级例外，不得把该字号借给图注、时间线说明、KPI 注释、正文或卡片描述。若信息必须同时可见且拆开会破坏比较/依赖关系，使用 S27 调整列宽与内部语法，不自动拆页。
 
 **角色字重层级（XREAL Style 核心）** — 字重由内容角色固定，同一角色在整套 PPT 中保持一致：
 
@@ -242,7 +243,7 @@ XREAL Style 有 26 个正式登记版式（`S01-S08`、`S11-S28`）,生成时要
 | 视觉锚点 | 原始 PPT 的实际做法 | 生成时的规则 |
 |---|---|---|
 | 大标题重量 | 纯英文标题 500，中文或中英混排标题 600，正文 400，标签 500 | 同一内容角色在整套 PPT 中保持固定字重 |
-| 留白 | 页面经常只占上半屏或中部,底部留给 nav 和少量 footnote | 不要为了"填满"而把内容推到底 |
+| 留白 | 页面经常只占上半屏或中部,底部留给 nav 和少量 footnote | 注脚统一停在导航安全区上方，不要为了"填满"而把内容推到底 |
 | 分割线 | 只在章节边界、证据墙、卡片层级处使用 1px hairline | 不要给每个内容块都加线 |
 | 描述性小标题 | 使用品牌主字体 500、自然大小写和标准字距 | 不使用全大写或夸张 tracking 制造“科技感” |
 | 列表 bullet | 使用实心圆点 | 不使用短横线代替 bullet |
@@ -266,7 +267,7 @@ XREAL Style 有 26 个正式登记版式（`S01-S08`、`S11-S28`）,生成时要
 | 发丝线 / border-bottom | 可选;只能用于建立层级,不能为了装饰堆线 |
 | KPI / 数字 | 只在有真实数据时使用;不要为概念解释编造数值 |
 | 图表单位 / 坐标 / 来源 | S23/S24 必选；SVG 只画几何，所有标签和来源使用 HTML |
-| `footnote` / 底部说明 | 可选;如果使用,必须避开 nav 安全区 |
+| `footnote` / 底部说明 | 可选；统一使用 `--footnote-size`、同一底部基线和内容左轴，不加分割线、底色或额外 padding |
 | `S08 + XREAL Map Component` | 地点/路线/人物住所关系专用;右侧地图必须有点、连线、卡片和 `+` / `-` / `Drag` 控制,详见 `swiss-map-component.md` |
 
 ### 通用版式 / 非通用版式
@@ -615,15 +616,15 @@ XREAL Style 有 26 个正式登记版式（`S01-S08`、`S11-S28`）,生成时要
 
 ---
 
-### P12 · Manifesto + Ink Banner · 宣言 + 通栏 ink 条
+### P12 · Manifesto + Identity Rail · 宣言 + 透明身份行
 
 **用途**:阶段性结论、章节封底、口号 + 视觉强收束。
-**适用内容类型**:**章节性收束 / 阶段性宣言**(用于 deck 中段而非结尾,P9 是 deck 终结)。承载「主张 + 简短说明 + ink 通栏宣言」三段结构,无数据。
-**骨架**:上半屏左侧 t-cat + 大字 4 行宣言 + 右侧短段说明 / 下半屏 ink 通栏(无左右下边距)+ 反白短句 + Material Symbols 图标矩阵。
-**关键类**:`.manifesto-top` `.ink-banner-full`(`margin:0 -5vw -4.4vh` 取消父级 padding)
+**适用内容类型**:**章节性收束 / 阶段性宣言**(用于 deck 中段而非结尾,P9 是 deck 终结)。承载「主张 + 简短说明 + 透明身份行」三段结构,无数据。
+**骨架**:上半屏左侧 t-cat + 大字 4 行宣言 + 右侧短段说明 / 底部透明身份行 + 小号产品标志 + 最多三条支持信息。身份行直接叠在当前背景上，不铺整块黑色或半透明色带。
+**关键类**:`.manifesto-top` `.ink-banner-full`（保留兼容类名，但 `margin:0;padding:0;background:transparent`）
 **媒体规则**:宣言与 lifestyle、conceptual 或品牌 KV 明确匹配时，可增加 `.manifesto-media[data-image-slot="s12-manifesto-background"][data-media-role="context-background"]` 作为全幅背景，并声明 `data-media-fit="full-bleed"`、`data-media-contrast="darken"`。媒体覆盖页面至少 95%，使用约 `.42-.58` 的中性黑蒙版保护白字；禁止透明产品 cutout、白底产品图与标准 packshot。无合适媒体时保持纯黑。
-**产品身份规则**:当宣言明确属于单一产品且 `00-product-marks/` 有官方标志时，横幅识别位优先使用 `.xreal-product-mark[data-image-slot="product-mark"][data-media-role="product-identity"]`，不要用手打产品名替代。企业 XREAL Logo 仍保留在页眉。产品标志只作为身份落款，宽度为横幅的 18%-26%（标准 `min(23vw,320px)`），不得成为第二主标题。
-**动效 recipe**:`manifesto` — 大字三段错峰升起 → 底 ink 条横向 scaleX 0→1 铺开 → 反白文字 fade in
+**产品身份规则**:当宣言明确属于单一产品且 `00-product-marks/` 有官方标志时，身份行优先使用 `.xreal-product-mark[data-image-slot="product-mark"][data-media-role="product-identity"]`，不要用手打产品名替代。企业 XREAL Logo 仍保留在页眉。产品标志只作为身份落款，宽度为页面内容宽度的 10%-16%（标准 `min(14vw,220px)`），不得成为第二主标题。
+**动效 recipe**:`manifesto` — 大字三段错峰升起 → 底部身份行轻量淡入，不用实体色带横向铺开
 **注意**:Skill File 那段小字 **顶对齐于右侧大字基线**(`align-items:flex-start;padding-top:1.2vw`)
 
 ---
@@ -654,10 +655,10 @@ XREAL Style 有 26 个正式登记版式（`S01-S08`、`S11-S28`）,生成时要
 
 **用途**:大量同类项展示(8-12 项 skill / 团队成员 / 案例图标),底部一个总数据收束。
 **适用内容类型**:**8-12 项同类型小项 + 一个汇总指标**。每项只承载短标题(无展开),底部巨数为「汇总值」(项目总数 / 总流量 / 总用户)。**项数过少改用 P4(6 项)**。
-**骨架**:顶部标题(留 9vh 间距)/ 中段 4×3 矩阵卡(每卡 12vh 固定高度)/ 底部巨数 + 标签(margin-top:auto 推到底)。
-**关键类**:`.matrix-fill`(grid-template-columns:repeat(4,1fr))`.matrix-cell`(`.card-fill` 灰底,**禁止描边**)`.hero-stat-bottom`
+**骨架**:顶部标题 / 中段 4×3 矩阵卡主动消费剩余正文高度 / 底部巨数 + 标签。矩阵不能只悬在上半页，再把大块空白留在巨数之前或页面底部。
+**关键类**:`.matrix-fill`(`display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(3,minmax(0,1fr));flex:1;min-height:0`) `.matrix-cell`(`.card-fill` 灰底,**禁止描边**) `.hero-stat-bottom`
 **动效 recipe**:`matrix-fill` — 12 格随机棋盘渐显(每格 random delay)→ 底部巨数 count-up
-**注意**:卡片高度限定(避免大数字溢出);**所有卡用 `.card-fill` 灰底**,只突出强调项时单独换 `.card-accent`
+**注意**:矩阵应占页面高度至少约 32%，通过弹性行高适应 16:9 画布并收紧矩阵到汇总区的间距；**所有卡用 `.card-fill` 灰底**,只突出强调项时单独换 `.card-accent`
 
 ---
 
@@ -874,6 +875,7 @@ XREAL Style 有 26 个正式登记版式（`S01-S08`、`S11-S28`）,生成时要
 - 折线不做面积渐变，不使用平滑曲线掩盖真实采样点；关键拐点可用一个红色点或一条红色系列。
 - 每条线必须可通过图例、线型/点型或直接终值标签识别，不能只依赖颜色。
 - 绘图区四边使用同色同粗的单一 1px `--chart-frame`，第一/最后网格线不得叠在 frame 上；SVG、数据点与终值标签必须共同放入 `.line-geometry`，左右安全区至少 28px。`.line-x-labels` 使用相同左右 padding，首末点、描边和终值标签都必须完整落在 frame 内。系列色与 S23 使用同一套 `--chart-series-*` 映射。
+- `.line-end-label` 使用透明底，停在对应末端点的左上肩位，横纵方向至少离开端点 4px；禁止添加白底/色块或压住折线、圆点。
 
 ```html
 <section class="slide light" data-layout="S24" data-animate="line-draw">
@@ -1194,7 +1196,7 @@ XREAL Style 有 26 个正式登记版式（`S01-S08`、`S11-S28`）,生成时要
 | Before/After / 双轨对照 | P8 Duo Compare |
 | 整 deck 收尾 | P9 Brand Back Cover |
 | 多步流程(横,4-7 步) | P11 Horizontal Timeline |
-| 阶段性结论 + ink 通栏 | P12 Manifesto + Banner |
+| 阶段性结论 + 透明身份行 | P12 Manifesto + Identity Rail |
 | 3 个对等概念深化 | P13 Three Forces Cards |
 | 闭环流程 / 自学循环 | P14 Loop Diagram |
 | 8-12 项矩阵 + 总数据 | P15 Image Matrix |

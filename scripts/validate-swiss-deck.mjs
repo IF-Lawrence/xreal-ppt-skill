@@ -478,6 +478,15 @@ slides.forEach((slide) => {
     });
   }
 
+  if (layout === 'S15') {
+    const matrixCount = [...slide.html.matchAll(/<[^>]+\bclass=["'][^"']*\bmatrix-cell\b[^"']*["'][^>]*>/gi)].length;
+    const fillCount = [...slide.html.matchAll(/<[^>]+\bclass=["'][^"']*\bmatrix-fill\b[^"']*["'][^>]*>/gi)].length;
+    const statCount = [...slide.html.matchAll(/<[^>]+\bclass=["'][^"']*\bhero-stat-bottom\b[^"']*["'][^>]*>/gi)].length;
+    if (fillCount !== 1 || statCount !== 1 || matrixCount < 6 || matrixCount > 16) {
+      errors.push(`Slide ${slide.idx}: S15 requires one flexible .matrix-fill with 6-16 cells and one .hero-stat-bottom; found ${fillCount} fill / ${matrixCount} cells / ${statCount} stat.`);
+    }
+  }
+
   if (layout === 'S14') {
     const classCount = (className) => [...slide.html.matchAll(new RegExp(`<[^>]+\\bclass=["'][^"']*\\b${className}\\b[^"']*["'][^>]*>`, 'gi'))].length;
     const nodeCount = classCount('loop-node');
@@ -1265,19 +1274,38 @@ async function runRenderedMeasurements() {
         const style = getComputedStyle(node);
         const rect = node.getBoundingClientRect();
         const issues = [];
+        const isManifestoMark = el.dataset.layout === 'S12' && Boolean(node.closest('.ink-banner-full'));
         if (node.closest('.chrome-min')) issues.push('product mark is placed inside chrome-min; enterprise XREAL Logo owns the page chrome');
         if (style.objectFit !== 'contain') issues.push(`object-fit is ${style.objectFit}; expected contain to preserve the official mark`);
-        if (rect.width < 240 || rect.height < 24) issues.push(`rendered product mark is only ${Math.round(rect.width)}×${Math.round(rect.height)}px`);
+        const minWidth = isManifestoMark ? 160 : 240;
+        const minHeight = isManifestoMark ? 18 : 24;
+        if (rect.width < minWidth || rect.height < minHeight) issues.push(`rendered product mark is only ${Math.round(rect.width)}×${Math.round(rect.height)}px`);
         const manifestoBanner = node.closest('.ink-banner-full');
         if (el.dataset.layout === 'S12' && manifestoBanner) {
           const bannerRect = manifestoBanner.getBoundingClientRect();
           const widthRatio = bannerRect.width ? rect.width / bannerRect.width : 0;
-          if (widthRatio < .18 || widthRatio > .26) {
-            issues.push(`S12 manifesto mark uses ${(widthRatio * 100).toFixed(1)}% of the banner width; expected 18%-26% so it reads as an identity sign-off, not a second headline`);
+          if (widthRatio < .10 || widthRatio > .16) {
+            issues.push(`S12 manifesto mark uses ${(widthRatio * 100).toFixed(1)}% of the identity row; expected 10%-16% so it reads as a quiet sign-off, not a second headline`);
           }
+          if (colorVisible(getComputedStyle(manifestoBanner).backgroundColor)) issues.push('S12 identity row uses a visible filled background; keep it transparent over the slide media or black base');
         }
         return issues.map((issue) => ({ node: labelFor(node), issue }));
       });
+
+      const matrixFillChecks = (el) => {
+        if (el.dataset.layout !== 'S15') return [];
+        const matrix = el.querySelector('.matrix-fill');
+        const stat = el.querySelector('.hero-stat-bottom');
+        if (!matrix || !stat) return [];
+        const issues = [];
+        const matrixRect = matrix.getBoundingClientRect();
+        const statRect = stat.getBoundingClientRect();
+        const slideRect = el.getBoundingClientRect();
+        const gap = statRect.top - matrixRect.bottom;
+        if (matrixRect.height / slideRect.height < .32) issues.push(`matrix field uses only ${(matrixRect.height / slideRect.height * 100).toFixed(1)}% of slide height; let the rows consume the available vertical field`);
+        if (gap < 8 || gap > 40) issues.push(`matrix-to-stat gap is ${gap.toFixed(1)}px; expected 8-40px without a loose empty band`);
+        return issues.map((issue) => ({ node: labelFor(matrix), issue }));
+      };
 
       const closingMediaChecks = (el) => Array.from(el.querySelectorAll('.xreal-closing-media')).flatMap((node) => {
         const style = getComputedStyle(node);
@@ -1511,8 +1539,50 @@ async function runRenderedMeasurements() {
         el.querySelectorAll('.line-end-label').forEach((label, index) => {
           const rect = label.getBoundingClientRect();
           if (rect.left < plotRect.left - 1 || rect.right > plotRect.right + 1) issues.push(`end label ${index + 1} extends outside the plot`);
+          const style = getComputedStyle(label);
+          if (colorVisible(style.backgroundColor)) issues.push(`end label ${index + 1} uses a visible background; terminal values must remain transparent`);
+          const seriesClass = Array.from(label.classList).find((name) => /^series-\d+$/.test(name)) || (label.classList.contains('critical') ? 'critical' : '');
+          const seriesPoints = seriesClass ? points.filter((point) => point.classList.contains(seriesClass)) : [];
+          const endpoint = seriesPoints[seriesPoints.length - 1] || points[index];
+          if (endpoint) {
+            const pointRect = endpoint.getBoundingClientRect();
+            const horizontalGap = pointRect.left - rect.right;
+            const verticalGap = pointRect.top - rect.bottom;
+            if (horizontalGap < 4 || verticalGap < 4) issues.push(`end label ${index + 1} is not on the upper-left shoulder of its endpoint (${horizontalGap.toFixed(1)}px horizontal / ${verticalGap.toFixed(1)}px vertical gap; expected at least 4px each)`);
+          }
         });
         return issues.map((issue) => ({ node: labelFor(plot), issue }));
+      };
+
+      const footnoteChecks = (el) => {
+        const selector = '.section-hero-foot,.chart-foot,.roadmap-source,.milestone-source,.dense-source,.priority-source';
+        const canvas = el.querySelector('.canvas-card');
+        if (!canvas) return [];
+        const canvasRect = canvas.getBoundingClientRect();
+        const canvasStyle = getComputedStyle(canvas);
+        const expectedLeft = canvasRect.left + parseFloat(canvasStyle.paddingLeft);
+        const contentBottom = canvasRect.bottom - parseFloat(canvasStyle.paddingBottom);
+        return Array.from(el.querySelectorAll(selector)).flatMap((node) => {
+          const issues = [];
+          const style = getComputedStyle(node);
+          const rect = node.getBoundingClientRect();
+          const fontSize = parseFloat(style.fontSize);
+          const marginBottom = parseFloat(style.marginBottom);
+          const borders = [style.borderTopWidth, style.borderRightWidth, style.borderBottomWidth, style.borderLeftWidth].map(parseFloat);
+          const paddings = [style.paddingTop, style.paddingRight, style.paddingBottom, style.paddingLeft].map(parseFloat);
+          if (!Number.isFinite(fontSize) || fontSize < 10.5 || fontSize > 12.5) issues.push(`renders at ${fontSize}px; expected the shared 11-12px source-note role`);
+          if (borders.some((value) => !Number.isFinite(value) || value > .1)) issues.push(`uses border widths ${borders.join('/')}; footnotes do not use separator lines`);
+          if (paddings.some((value) => !Number.isFinite(value) || value > .5)) issues.push(`uses padding ${paddings.join('/')}; footnotes use the parent layout gap, not internal padding`);
+          if (colorVisible(style.backgroundColor)) issues.push('uses a visible background; footnotes remain transparent');
+          if (Math.abs(rect.left - expectedLeft) > 2) issues.push(`starts ${Math.abs(rect.left - expectedLeft).toFixed(1)}px away from the canvas content axis`);
+          const expectedBottom = contentBottom - marginBottom;
+          if (!Number.isFinite(marginBottom) || Math.abs(rect.bottom - expectedBottom) > 2) issues.push(`ends at ${rect.bottom.toFixed(1)}px instead of the shared ${expectedBottom.toFixed(1)}px footnote baseline`);
+          Array.from(node.children).forEach((child, index) => {
+            const childSize = parseFloat(getComputedStyle(child).fontSize);
+            if (!Number.isFinite(childSize) || Math.abs(childSize - fontSize) > .5) issues.push(`child ${index + 1} renders at ${childSize}px instead of inheriting the shared footnote size`);
+          });
+          return issues.map((issue) => ({ node: labelFor(node), issue }));
+        });
       };
 
       const portfolioRoadmapChecks = (el) => {
@@ -1616,6 +1686,12 @@ async function runRenderedMeasurements() {
         const panels = Array.from(el.querySelectorAll('.dense-panel'));
         if (!synthesis || !columns || !panels.length) return [];
         const issues = [];
+        const thesisLabel = el.querySelector('.dense-thesis-label');
+        const thesisCopy = el.querySelector('.dense-thesis-copy');
+        if (thesisLabel && thesisCopy) {
+          const axisDelta = Math.abs(thesisLabel.getBoundingClientRect().left - thesisCopy.getBoundingClientRect().left);
+          if (axisDelta > 2) issues.push(`thesis label and conclusion are ${axisDelta.toFixed(1)}px off their shared left axis`);
+        }
         const panelRects = panels.map((panel) => panel.getBoundingClientRect());
         const topSpread = Math.max(...panelRects.map((rect) => rect.top)) - Math.min(...panelRects.map((rect) => rect.top));
         const bottomSpread = Math.max(...panelRects.map((rect) => rect.bottom)) - Math.min(...panelRects.map((rect) => rect.bottom));
@@ -1637,7 +1713,12 @@ async function runRenderedMeasurements() {
           const size = parseFloat(getComputedStyle(copy).fontSize);
           if (!Number.isFinite(size) || size < 15.5) issues.push(`item copy ${index + 1} renders at ${size}px; expected at least 16px`);
         });
-        el.querySelectorAll('.dense-item-kicker,.dense-progress-num,.dense-thesis-label,.dense-source').forEach((meta, index) => {
+        el.querySelectorAll('.dense-item').forEach((item, index) => {
+          const style = getComputedStyle(item);
+          const borders = [style.borderTopWidth, style.borderRightWidth, style.borderBottomWidth, style.borderLeftWidth].map(parseFloat);
+          if (borders.some((width) => Number.isFinite(width) && width > .1)) issues.push(`item ${index + 1} repeats internal divider lines; use spacing and hierarchy inside the panel`);
+        });
+        el.querySelectorAll('.dense-item-kicker,.dense-progress-num,.dense-thesis-label').forEach((meta, index) => {
           const size = parseFloat(getComputedStyle(meta).fontSize);
           if (!Number.isFinite(size) || size < 13.5) issues.push(`meta label ${index + 1} renders at ${size}px; expected at least 14px`);
         });
@@ -1688,7 +1769,7 @@ async function runRenderedMeasurements() {
           const size = parseFloat(getComputedStyle(copy).fontSize);
           if (!Number.isFinite(size) || size < 15.5) issues.push(`copy ${index + 1} renders at ${size}px; expected at least 16px`);
         });
-        el.querySelectorAll('.priority-kicker,.priority-source').forEach((meta, index) => {
+        el.querySelectorAll('.priority-kicker').forEach((meta, index) => {
           const size = parseFloat(getComputedStyle(meta).fontSize);
           if (!Number.isFinite(size) || size < 13.5) issues.push(`meta label ${index + 1} renders at ${size}px; expected at least 14px`);
         });
@@ -1758,6 +1839,7 @@ async function runRenderedMeasurements() {
           timelineIssues: timelineChecks(el),
           horizontalBarIssues: horizontalBarChecks(el),
           productIdentityIssues: productIdentityChecks(el),
+          matrixFillIssues: matrixFillChecks(el),
           closingMediaIssues: closingMediaChecks(el),
           manifestoMediaIssues: manifestoMediaChecks(el),
           loopDiagramIssues: loopDiagramChecks(el),
@@ -1766,6 +1848,7 @@ async function runRenderedMeasurements() {
           baselineBarIssues: baselineBarChecks(el),
           dataChartIssues: dataChartChecks(el),
           lineChartIssues: lineChartChecks(el),
+          footnoteIssues: footnoteChecks(el),
           portfolioRoadmapIssues: portfolioRoadmapChecks(el),
           milestoneGalleryIssues: milestoneGalleryChecks(el),
           denseSynthesisIssues: denseSynthesisChecks(el),
@@ -1831,6 +1914,9 @@ async function runRenderedMeasurements() {
       for (const issue of m.productIdentityIssues) {
         errors.push(`${prefix}: ${issue.node} ${issue.issue}. Use the official product mark in product-identity slots while keeping the enterprise XREAL Logo in page chrome; on S12 it remains a subordinate identity sign-off.`);
       }
+      for (const issue of m.matrixFillIssues) {
+        errors.push(`${prefix}: ${issue.node} ${issue.issue}. S15 should use its matrix rows to consume the available body height instead of leaving a large dead zone below the grid.`);
+      }
       for (const issue of m.closingMediaIssues) {
         errors.push(`${prefix}: ${issue.node} ${issue.issue}. Closing media should be a low-interference atmosphere layer behind Thanks, not a product display.`);
       }
@@ -1854,6 +1940,9 @@ async function runRenderedMeasurements() {
       }
       for (const issue of m.lineChartIssues) {
         errors.push(`${prefix}: ${issue.node} ${issue.issue}. S24 must inset line geometry, endpoints, and end labels from both plot edges so the complete trend remains visible.`);
+      }
+      for (const issue of m.footnoteIssues) {
+        errors.push(`${prefix}: ${issue.node} ${issue.issue}. Source and explanatory footnotes must share the small type token, canvas axis, nav-safe baseline, transparent surface, and no separator line.`);
       }
       for (const issue of m.portfolioRoadmapIssues) {
         errors.push(`${prefix}: ${issue.node} ${issue.issue}. S25 must keep a complete neutral two-axis plot with sparse, legible, non-overlapping media nodes.`);

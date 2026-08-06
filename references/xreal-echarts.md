@@ -72,7 +72,7 @@ window.XREAL_ECHARTS_OPTIONS = {
 
 - `<section>` 保留正式 `data-layout`，并添加 `data-chart-engine="echarts"` 与登记的 `data-chart-kind`。
 - 图表容器使用 `.xreal-echart[data-echarts-key]`，key 必须命中 `window.XREAL_ECHARTS_OPTIONS`。
-- 每张图必须在 ECharts 容器外显示 `.chart-unit`、`.chart-legend` 和 `.chart-source`。
+- 每张图必须在 ECharts 容器外显示 `.chart-unit`、`.chart-legend` 和 `.chart-source`。`.chart-foot` 继承全局注脚 token：`max(11px,.62vw)`、统一底部基线、透明底且不使用分割线或额外 padding。
 - 默认 `data-renderer="svg"`。只有图形元素超过约 1,000 或交互密集时才使用 `canvas`，并同时写 `data-large-data="true"`。
 - 默认 `data-interactive="false"`，演讲模式不显示 tooltip。确需现场探索时才设为 `true`。
 
