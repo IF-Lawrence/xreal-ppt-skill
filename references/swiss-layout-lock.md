@@ -4,9 +4,9 @@
 
 ## Golden Source
 
-版式基准是仓库内的 `assets/template-xreal.html`(由作者原始参考 PPT 派生;原始文件不随仓库分发)。当前正式登记 22 个版式：`S01-S08`、`S11-S24`；原 `S09 Dot Matrix Statement` 与 `S10 Split Closing` 已移除。
+版式基准是仓库内的 `assets/template-xreal.html`(由作者原始参考 PPT 派生;原始文件不随仓库分发)。当前正式登记 24 个版式：`S01-S08`、`S11-S26`；原 `S09 Dot Matrix Statement` 与 `S10 Split Closing` 已移除。
 
-XREAL Style 生成时,除用户明确要求实验版式外,只能从下面登记的 22 个版式中选择。新增首页/尾页可以使用 Skill 里的黑色基底版本 `XREAL-COVER-BLACK` / `XREAL-CLOSING-BLACK`，并按媒体匹配结果选择纯黑或官方媒体背景；正文页必须来自这 22 个版式。
+XREAL Style 生成时,除用户明确要求实验版式外,只能从下面登记的 24 个版式中选择。新增首页/尾页可以使用 Skill 里的黑色基底版本 `XREAL-COVER-BLACK` / `XREAL-CLOSING-BLACK`，并按媒体匹配结果选择纯黑或官方媒体背景；正文页必须来自这 24 个版式。
 
 ## 生成前硬规则
 
@@ -55,6 +55,8 @@ XREAL Style 生成时,除用户明确要求实验版式外,只能从下面登记
 | S22 | 22 | Image Hero | 顶部全宽图 + 左上白块标题 + 下方三列 KPI；压图标题约从 `top:10.5vh` 开始，保持与绝对定位页眉约 24px 的导航间距 | 主图按 `21:9` 生成,关键主体放中央安全区 |
 | S23 | 新增 | Data Chart | 顶部结论标题 + 单位/图例 + 四边完整绘图区 + 主导分组柱图 + HTML 坐标标签 + 来源；首末柱至少 28px 安全边距，顶部为数值留 headroom，数值以整柱宽文本层居中 | 无；只承载真实比较数据 |
 | S24 | 新增 | Line Chart | 顶部结论标题 + 单位/图例 + 四边完整绘图区 + 主导折线图 + HTML 坐标标签 + 来源；SVG、端点与终值标签置于左右至少 28px 的 `.line-geometry` | 无；只承载时间或连续变量趋势 |
+| S25 | 新增 | Portfolio Roadmap Matrix | 顶部结论标题 + 时间轴 + 2-4 条中性能力泳道 + 3-7 个稀疏媒体节点 + 来源；节点以百分比坐标定位 | 每节点一张语义媒体；8px 小圆角，无阴影；示意路线必须明确声明 |
+| S26 | 新增 | Milestone Gallery | 顶部结论标题 + 4-6 个连续阶段列；每列含阶段、媒体、标题、短说明；底部综合结论 + 扁平能力链 + 来源 | 每阶段一张语义媒体；媒体框 8px，阶段列本身无卡片圆角或阴影 |
 
 ### XREAL-CLOSING-BLACK · Brand Back Cover
 
@@ -80,6 +82,23 @@ XREAL Style 生成时,除用户明确要求实验版式外,只能从下面登记
 - SVG 约束:SVG 只画折线、点和数据几何，不放 `<text>`；坐标、图例、终点值和注释全部使用 HTML。
 - 视觉约束:绘图区四边使用同色同粗的单一 1px `--chart-frame`，第一/最后网格线不得与 frame 重叠；折线按与 S23 相同的 `--chart-series-*` 映射。`.line-geometry` 左右安全区至少 28px，并与 `.line-x-labels` 对齐。首末点、描边和终值标签必须完整落在 frame 内，不得依赖裁切隐藏越界。
 - 动效:使用 `data-animate="line-draw"`；坐标结构先出现，再依次绘制折线与关键点。
+
+### S25 · Portfolio Roadmap Matrix
+
+- 使用场景:产品组合沿时间/阶段和能力、定位、成熟度等第二维度共同迁移。
+- 必须结构:`.portfolio-roadmap` + `.roadmap-year-axis` + `.roadmap-y-axis` + `.roadmap-plot` + 2-4 个 `.roadmap-lane` + 3-7 个 `.roadmap-item` + `.roadmap-source`。
+- 节点约束:每个节点必须包含 `.roadmap-media`、`.roadmap-title`、`.roadmap-meta`，并以百分比声明 `--x/--y/--w/--h`；节点之间不得重叠或越过 plot。
+- 视觉约束:只使用白/浅灰泳道和 1px hairline；不得复制参考图的蓝色年份按钮、多彩背景、pill 标签、阴影或 dashboard 控件。最多一个有明确依据的 `.critical` 节点使用红色。
+- 数据边界:若位置是推演、示意或规划假设，必须在来源行明确标注 illustrative / scenario，不得伪装成正式发布、价格或路线承诺。
+- 动效:使用 `data-animate="portfolio-roadmap"`；轴线与泳道先出现，节点按时间顺序进入。
+
+### S26 · Milestone Gallery
+
+- 使用场景:用 4-6 张语义媒体证明一条技术、产品或组织能力的阶段演进。
+- 必须结构:`.milestone-gallery` + 4-6 个 `.milestone-entry`；每项含 `.milestone-year`、`.milestone-media`、`.milestone-title`、`.milestone-copy`；底部包含 `.milestone-synthesis`、`.milestone-chain` 和 `.milestone-source`。
+- 视觉约束:阶段列通过连续 1px 竖线组织，列本身保持扁平，不做独立白卡、大圆角或阴影。媒体框使用 8px 小圆角；底部能力链只用 hairline、自然文本与箭头，不做 filled ribbon、按钮或蓝色导航条。
+- 媒体约束:每个阶段必须有语义匹配媒体，比例与槽位一致；图片只作为证据，不用无关装饰图补齐数量。
+- 动效:使用 `data-animate="milestone-gallery"`；阶段列依次进入，最后呈现综合结论与能力链。
 
 ### XREAL ECharts Component
 

@@ -1,6 +1,6 @@
 # Layouts · XREAL Style
 
-22 个正式登记版式 · 严格模块化网格 · 每个版式说明用途、骨架、关键类名、专属动效。
+24 个正式登记版式 · 严格模块化网格 · 每个版式说明用途、骨架、关键类名、专属动效。
 
 > 这是本 skill 唯一支持的版式系统。类名和结构都以 `assets/template-xreal.html` 为准；一份 deck 只能使用 XREAL Style 版式。
 
@@ -8,9 +8,9 @@
 
 ## XREAL Style locked mode(必须先读)
 
-本主题的 golden source 是仓库内的 `assets/template-xreal.html`(由作者本机的原始参考 PPT 派生;原始文件不随仓库分发)。`swiss-layout-lock.md` 当前登记 `S01-S08`、`S11-S24`；原 `S09 Dot Matrix Statement` 与 `S10 Split Closing` 已移除。
+本主题的 golden source 是仓库内的 `assets/template-xreal.html`(由作者本机的原始参考 PPT 派生;原始文件不随仓库分发)。`swiss-layout-lock.md` 当前登记 `S01-S08`、`S11-S26`；原 `S09 Dot Matrix Statement` 与 `S10 Split Closing` 已移除。
 
-生成正文页时不要把 XREAL Style 当成“自由组合的风格包”。默认只能使用 `references/swiss-layout-lock.md` 登记的 22 个版式（`S01-S08`、`S11-S24`）。每个 slide 都必须在 `<section>` 上写 `data-layout="Sxx"`。
+生成正文页时不要把 XREAL Style 当成“自由组合的风格包”。默认只能使用 `references/swiss-layout-lock.md` 登记的 24 个版式（`S01-S08`、`S11-S26`）。每个 slide 都必须在 `<section>` 上写 `data-layout="Sxx"`。
 
 **关键约束**:
 
@@ -206,12 +206,13 @@ chrome-min(页眉)、主体内容、底部 footnote 都是 canvas-card 的子元
 - 资产自带元素与页面 chrome 冲突时换图或换版式,不要重绘原始资产
 
 **版式多样性硬规则**
-XREAL Style 有 22 个正式登记版式（`S01-S08`、`S11-S24`）,生成时要主动展示版式系统,不要把所有内容都做成 `head + grid-reveal + card`:
+XREAL Style 有 24 个正式登记版式（`S01-S08`、`S11-S26`）,生成时要主动展示版式系统,不要把所有内容都做成 `head + grid-reveal + card`:
 
 - 7-8 页 deck 至少使用 **6 个不同 S 编号版式**
 - 不允许连续 3 页使用同一种主体结构(如三页连续 S19 / 普通卡片)
 - 如果是"测试模板"或"我想看看效果",必须覆盖:封面、收尾、至少 1 个对比/时间线(S08/S11/S02)、至少 1 个结构图(S14/S17/S15)、至少 1 个图片版式(S22 或 S15/S16 图片格)
 - 如果材料包含跨类别多系列数据或连续时间序列,必须在规划阶段显式比较 S23/S24 与现有 S06/S07/P02 的适配性；散点、热力、瀑布、箱线、桑基、网络或层级数据还必须评估 XREAL ECharts Component，不能继续把所有数据压成 KPI 卡片
+- 如果材料同时包含时间/阶段与第二层级维度，显式评估 S25；如果叙事依赖 4-6 张阶段媒体证据，显式评估 S26，不要退化为普通卡片墙
 - 图片页不等于新发明一页。单图用 S22,多图用 S15/S16 的原始网格骨架改造
 - 每页写代码前先列 `内部页序（不渲染）→ data-layout → 为什么选它 → 图片槽位`;生成后用 validator 检查
 
@@ -273,11 +274,11 @@ XREAL Style 有 22 个正式登记版式（`S01-S08`、`S11-S24`）,生成时要
 | 通用 | S01, S03, S08, S11, S19 | 大多数叙事 deck 都能用,但仍要满足内容形状 |
 | 条件通用 | S04, S13, S16 | 取决于数量是否刚好匹配:3/6 项 |
 | 数据专用 | S02, S06, S07, S18, S20, S21, S22, S23, S24 | 必须有真实时间、数值、指标或案例数据；S24 还必须有连续横轴 |
-| 结构专用 | S05, S14, S15, S17 | 必须有三层、闭环、矩阵、层级/生态关系;不适合普通段落 |
+| 结构专用 | S05, S14, S15, S17, S25, S26 | 必须有三层、闭环、矩阵、层级/生态关系、二维路线或媒体化阶段序列；不适合普通段落 |
 
 ---
 
-## 22 个登记版式
+## 24 个登记版式
 
 ### P1 · Cover · 封面页
 
@@ -920,6 +921,72 @@ XREAL Style 有 22 个正式登记版式（`S01-S08`、`S11-S24`）,生成时要
 
       <div class="chart-foot"><span class="chart-source">Source · [必填] 数据来源与日期</span><span class="chart-note">[选填] 关键拐点说明</span></div>
     </div>
+  </div>
+</section>
+```
+
+---
+
+### P25 · Portfolio Roadmap Matrix · 产品组合路线矩阵
+
+**用途**:同时表达产品/方案在时间或阶段上的推进，以及能力、定位、成熟度等第二维度的迁移。
+**适用内容类型**:**2-4 个 period × 2-4 条 lane × 3-7 个媒体节点**。只有一维时间时改用 S02/S11；只有类别比较时改用 S23。
+**骨架**:左上结论标题 / 顶部阶段轴 / 左侧层级轴 / 中部中性泳道与稀疏媒体节点 / 底部来源或示意声明。
+**关键类**:`.portfolio-roadmap` `.roadmap-year-axis` `.roadmap-y-axis` `.roadmap-plot` `.roadmap-lane` `.roadmap-item` `.roadmap-media` `.roadmap-title` `.roadmap-meta` `.roadmap-source`
+**动效 recipe**:`portfolio-roadmap` — 轴线与泳道先入 → 节点按时间进入 → 来源落定。
+**注意**:
+- 参考图只提供二维信息骨架；禁止复制蓝色 tab、多彩泳道、pill 标签、阴影或大圆角。
+- 每个节点以百分比 `--x/--y/--w/--h` 定位并完整落在 plot 内；节点不得重叠。
+- 泳道只使用 `--paper` / `--grey-1` / `--grey-2`；最多一个有明确依据的关键节点使用红色。
+- 推演或示意位置必须在 `.roadmap-source` 明确声明，不得暗示正式发布日期、价格或产品承诺。
+
+```html
+<section class="slide light" data-layout="S25" data-animate="portfolio-roadmap">
+  <div class="canvas-card">
+    <header class="chrome-min">...</header>
+    <div data-anim="line"><div class="t-cat">[必填] 路线结论</div><h2 class="xreal-page-title">[必填] 时间与第二维度共同构成的结论</h2></div>
+    <div class="portfolio-roadmap" style="--periods:3;--lanes:3">
+      <div class="roadmap-year-axis"><span></span><div class="roadmap-periods"><span class="roadmap-period">2024</span><span class="roadmap-period">2025</span><span class="roadmap-period">2026</span></div></div>
+      <div class="roadmap-body">
+        <div class="roadmap-y-axis"><span>Platform</span><span>Compute</span><span>Optics</span></div>
+        <div class="roadmap-plot">
+          <div class="roadmap-lanes" aria-hidden="true"><div class="roadmap-lane"></div><div class="roadmap-lane"></div><div class="roadmap-lane"></div></div>
+          <div class="roadmap-period-grid" aria-hidden="true"><i></i><i></i><i></i></div>
+          <article class="roadmap-item" style="--x:6;--y:62;--w:25;--h:28"><img class="roadmap-media" data-image-slot="s25-roadmap-media" data-media-role="roadmap-evidence" data-media-fit="cover" data-media-contrast="none" src="images/item-a.jpg" alt="[必填]"><div class="roadmap-copy"><strong class="roadmap-title">Item A</strong><span class="roadmap-meta">[必填] 层级语义</span></div></article>
+          <!-- 再放 2-6 个不重叠节点 -->
+        </div>
+      </div>
+      <div class="roadmap-source">Source · [必填]；若为示意位置必须写 Illustrative</div>
+    </div>
+  </div>
+</section>
+```
+
+---
+
+### P26 · Milestone Gallery · 媒体化里程碑画廊
+
+**用途**:用连续媒体证据解释技术、产品或组织能力如何分阶段演进。
+**适用内容类型**:**4-6 个阶段**，每阶段都具备一张语义匹配媒体和一句独立说明。
+**骨架**:左上结论标题 / 连续可变宽阶段列 / 每列的阶段、媒体、标题和说明 / 底部综合结论与扁平能力链 / 来源。
+**关键类**:`.milestone-gallery` `.milestone-entry` `.milestone-year` `.milestone-media` `.milestone-title` `.milestone-copy` `.milestone-synthesis` `.milestone-chain` `.milestone-chain-step` `.milestone-source`
+**动效 recipe**:`milestone-gallery` — 阶段列依次入场 → 综合结论与能力链落定。
+**注意**:
+- 阶段列通过 1px 竖线形成连续序列，不做独立卡片墙、filled ribbon 或蓝色导航条。
+- `.milestone-media` 使用 8px 小圆角；阶段列本身保持直角、无阴影。
+- 只使用与阶段语义匹配的媒体；缺少证据时减少阶段，不用无关图片填空。
+
+```html
+<section class="slide light" data-layout="S26" data-animate="milestone-gallery">
+  <div class="canvas-card">
+    <header class="chrome-min">...</header>
+    <div data-anim="line"><div class="t-cat">[必填] 演进主题</div><h2 class="xreal-page-title">[必填] 阶段序列的结论</h2></div>
+    <div class="milestone-gallery" style="--milestone-columns:1fr 1.2fr 1fr 1fr">
+      <article class="milestone-entry"><span class="milestone-year">01 · Stage</span><img class="milestone-media" data-image-slot="s26-milestone-media" data-media-role="milestone-evidence" data-media-fit="cover" data-media-contrast="none" src="images/stage-01.jpg" alt="[必填]"><h3 class="milestone-title">[必填] 里程碑</h3><p class="milestone-copy">[必填] 一句证据说明。</p></article>
+      <!-- 共 4-6 个 milestone-entry -->
+    </div>
+    <div class="milestone-synthesis"><p class="milestone-synthesis-copy">[必填] 跨阶段综合结论。</p><div class="milestone-chain"><span class="milestone-chain-step">Stage A</span><span class="milestone-chain-step">Stage B</span><span class="milestone-chain-step">Stage C</span></div></div>
+    <div class="milestone-source">Source · [必填] 媒体与事实来源</div>
   </div>
 </section>
 ```

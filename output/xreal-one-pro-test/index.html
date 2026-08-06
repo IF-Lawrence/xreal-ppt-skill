@@ -1334,6 +1334,55 @@
   .slide.dark .chart-plot,.slide.dark .line-plot{border-color:rgba(255,255,255,.5)}
   .slide.dark .chart-grid i{border-top-color:rgba(255,255,255,.18)}
 
+  /* S25 Portfolio Roadmap Matrix: 时间 × 能力层级的二维组合路线，不使用 dashboard tabs 或彩色泳道。 */
+  .portfolio-roadmap{
+    display:grid;grid-template-rows:auto minmax(0,1fr) auto;gap:1.1vh;
+    flex:1;min-height:0;margin-top:3.6vh;font-feature-settings:"tnum"
+  }
+  .roadmap-year-axis,.roadmap-body{display:grid;grid-template-columns:minmax(88px,7.5vw) minmax(0,1fr);gap:1.2vw}
+  .roadmap-periods{display:grid;grid-template-columns:repeat(var(--periods),minmax(0,1fr));border-bottom:1px solid var(--border-strong)}
+  .roadmap-period{padding:0 0 .8vh;text-align:center;font-size:max(14px,.82vw);font-weight:var(--weight-label);color:var(--text-helper)}
+  .roadmap-y-axis{display:grid;grid-template-rows:repeat(var(--lanes),minmax(0,1fr));text-align:right}
+  .roadmap-y-axis span{display:flex;align-items:center;justify-content:flex-end;font-size:max(14px,.78vw);line-height:1.25;color:var(--text-helper)}
+  .roadmap-plot{position:relative;min-height:0;border:1px solid var(--border-strong);overflow:hidden;background:var(--paper)}
+  .roadmap-lanes{position:absolute;inset:0;display:grid;grid-template-rows:repeat(var(--lanes),minmax(0,1fr))}
+  .roadmap-lane{background:var(--paper);border-bottom:1px solid var(--border-subtle)}
+  .roadmap-lane:nth-child(even){background:var(--grey-1)}
+  .roadmap-lane:last-child{border-bottom:0}
+  .roadmap-period-grid{position:absolute;inset:0;display:grid;grid-template-columns:repeat(var(--periods),minmax(0,1fr));pointer-events:none}
+  .roadmap-period-grid i{border-left:1px solid var(--border-subtle)}
+  .roadmap-period-grid i:first-child{border-left:0}
+  .roadmap-item{
+    position:absolute;left:calc(var(--x) * 1%);top:calc(var(--y) * 1%);width:calc(var(--w) * 1%);height:calc(var(--h) * 1%);
+    display:grid;grid-template-columns:minmax(64px,42%) minmax(0,1fr);gap:.8vw;align-items:center;
+    padding:.8vh .7vw;background:var(--paper);border:1px solid var(--border-strong);border-radius:var(--radius-sm);overflow:hidden
+  }
+  .roadmap-item.critical{border-top-color:var(--chart-critical);border-top-width:2px}
+  .roadmap-media{display:block;width:100%;height:100%;min-height:0;object-fit:cover;border-radius:var(--radius-sm);background:var(--grey-1)}
+  .roadmap-media[data-media-fit="contain"]{object-fit:contain}
+  .roadmap-copy{min-width:0;display:flex;flex-direction:column;gap:.45vh}
+  .roadmap-title{font-size:max(16px,1vw);font-weight:var(--weight-title);line-height:1.08}
+  .roadmap-meta{font-size:max(13px,.7vw);line-height:1.3;color:var(--text-secondary)}
+  .roadmap-source,.milestone-source{font-size:max(13px,.72vw);line-height:1.35;color:var(--text-helper);border-top:1px solid var(--border-subtle);padding-top:.9vh}
+
+  /* S26 Milestone Gallery: 连续年份列 + 媒体证据 + 底部综合链；列本身保持扁平。 */
+  .milestone-gallery{
+    display:grid;grid-template-columns:var(--milestone-columns,repeat(4,minmax(0,1fr)));
+    flex:1;min-height:0;margin-top:3.6vh;border-top:1px solid var(--border-strong);border-bottom:1px solid var(--border-subtle)
+  }
+  .milestone-entry{min-width:0;padding:1.3vh 1.15vw 1.5vh;border-left:1px solid var(--border-subtle);display:grid;grid-template-rows:auto minmax(0,1fr) auto auto;gap:1.6vh}
+  .milestone-entry:first-child{border-left:0}
+  .milestone-year{font-size:max(16px,1.3vw);font-weight:var(--weight-emphasis);line-height:1;color:var(--text-helper)}
+  .milestone-media{display:block;width:100%;height:100%;min-height:12vh;max-height:24vh;object-fit:cover;border-radius:var(--radius-sm);background:var(--grey-1)}
+  .milestone-media[data-media-fit="contain"]{object-fit:contain}
+  .milestone-title{font-size:max(18px,1.25vw);font-weight:var(--weight-title);line-height:1.08}
+  .milestone-copy{font-size:max(14px,.78vw);line-height:1.38;color:var(--text-secondary)}
+  .milestone-synthesis{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:3vw;align-items:end;padding-top:1.5vh}
+  .milestone-synthesis-copy{font-size:max(16px,.94vw);line-height:1.42;font-weight:var(--weight-label);max-width:58ch}
+  .milestone-chain{display:flex;align-items:flex-start;justify-content:flex-end;gap:1.2vw}
+  .milestone-chain-step{position:relative;min-width:0;padding-top:.8vh;border-top:1px solid var(--ink);font-size:max(13px,.72vw);line-height:1.2;color:var(--text-secondary);white-space:nowrap}
+  .milestone-chain-step:not(:last-child)::after{content:"→";position:absolute;left:calc(100% + .35vw);top:.55vh;color:var(--text-helper)}
+
   /* XREAL ECharts 扩展：复杂图表使用现有版式骨架，不生成 dashboard 容器 */
   .xreal-echart-stage{
     position:relative;flex:1;min-height:0;margin-top:2.4vh;
@@ -1930,6 +1979,42 @@
     <header class="chrome-min"><div class="l brand"><img class="xreal-logo" src="assets/brand/xreal-logo-black.svg" alt="XREAL"><span>One Pro · Trend test</span></div><div class="r">Continuous series</div></header>
     <div data-anim="line" class="lab-head"><div class="t-cat lab-synthetic">虚构测试数据 · 趋势折线图</div><h2 class="xreal-page-title">低延迟体验在连续测试中逐步稳定</h2></div>
     <div data-anim="chart" class="xreal-line-chart" data-chart-unit="index" aria-label="空间显示稳定性与传统方案基线的虚构趋势"><div class="chart-meta-row"><span class="chart-unit">Unit · index</span><div class="chart-legend" aria-label="数据系列"><span class="chart-legend-item"><i class="chart-swatch series-1"></i>One Pro fixture</span><span class="chart-legend-item"><i class="chart-swatch series-2"></i>Baseline fixture</span></div></div><div class="line-stage"><div class="chart-y-labels"><span>100</span><span>75</span><span>50</span><span>25</span><span>0</span></div><div class="line-plot"><div class="chart-grid" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><div class="line-geometry"><svg class="line-chart-svg" data-svg-role="chart" viewBox="0 0 1000 400" preserveAspectRatio="none" role="img" aria-label="两条虚构稳定性趋势线"><path data-anim="chart-line" class="chart-line series-1" d="M0 300 L250 248 L500 202 L750 122 L1000 60"></path><path data-anim="chart-line" class="chart-line series-2" d="M0 320 L250 296 L500 272 L750 236 L1000 208"></path><g class="chart-points series-1"><circle class="chart-point series-1" cx="0" cy="300" r="5"></circle><circle class="chart-point series-1" cx="250" cy="248" r="5"></circle><circle class="chart-point series-1" cx="500" cy="202" r="5"></circle><circle class="chart-point series-1" cx="750" cy="122" r="5"></circle><circle class="chart-point series-1" cx="1000" cy="60" r="5"></circle></g><g class="chart-points series-2"><circle class="chart-point series-2" cx="0" cy="320" r="5"></circle><circle class="chart-point series-2" cx="250" cy="296" r="5"></circle><circle class="chart-point series-2" cx="500" cy="272" r="5"></circle><circle class="chart-point series-2" cx="750" cy="236" r="5"></circle><circle class="chart-point series-2" cx="1000" cy="208" r="5"></circle></g></svg><span class="line-end-label series-1" style="--x:100;--y:14">86</span><span class="line-end-label series-2" style="--x:100;--y:52">48</span></div></div><div class="line-x-labels" style="--points:5"><span>第 1 轮</span><span>第 2 轮</span><span>第 3 轮</span><span>第 4 轮</span><span>第 5 轮</span></div></div><div class="chart-foot"><span class="chart-source">Source · fictional fixture / style validation</span><span class="chart-note">同一量纲下的连续采样示例</span></div></div>
+  </div>
+</section>
+
+<section class="slide light layout-lab" data-layout="S25" data-animate="portfolio-roadmap">
+  <div class="canvas-card">
+    <header class="chrome-min"><div class="l brand"><img class="xreal-logo" src="assets/brand/xreal-logo-black.svg" alt="XREAL"><span>One Pro · Portfolio route</span></div><div class="r">Structure fixture</div></header>
+    <div data-anim="line" class="lab-head"><div class="t-cat lab-synthetic">示意结构 · 非发布或定价路线</div><h2 class="xreal-page-title">产品路线同时沿时间与能力层级展开</h2></div>
+    <div class="portfolio-roadmap" data-anim="roadmap" style="--periods:3;--lanes:3">
+      <div class="roadmap-year-axis"><span aria-hidden="true"></span><div class="roadmap-periods"><span class="roadmap-period">2024</span><span class="roadmap-period">2025</span><span class="roadmap-period">2026</span></div></div>
+      <div class="roadmap-body">
+        <div class="roadmap-y-axis"><span>体验平台</span><span>空间计算</span><span>光学显示</span></div>
+        <div class="roadmap-plot">
+          <div class="roadmap-lanes" aria-hidden="true"><div class="roadmap-lane"></div><div class="roadmap-lane"></div><div class="roadmap-lane"></div></div>
+          <div class="roadmap-period-grid" aria-hidden="true"><i></i><i></i><i></i></div>
+          <article class="roadmap-item" style="--x:5;--y:64;--w:25;--h:28"><img class="roadmap-media" data-image-slot="s25-roadmap-media" data-media-role="roadmap-evidence" data-media-fit="contain" data-media-contrast="none" src="images/26-roadmap-x1.png" alt="X1 芯片"><div class="roadmap-copy"><strong class="roadmap-title">X1 Chip</strong><span class="roadmap-meta">端侧空间计算</span></div></article>
+          <article class="roadmap-item" style="--x:37;--y:35;--w:26;--h:29"><img class="roadmap-media" data-image-slot="s25-roadmap-media" data-media-role="roadmap-evidence" data-media-fit="cover" data-media-contrast="none" src="images/26-roadmap-xprism.jpg" alt="X Prism 光机与镜片特写"><div class="roadmap-copy"><strong class="roadmap-title">X-Prism</strong><span class="roadmap-meta">光学引擎量产</span></div></article>
+          <article class="roadmap-item" style="--x:69;--y:7;--w:26;--h:31"><img class="roadmap-media" data-image-slot="s25-roadmap-media" data-media-role="roadmap-evidence" data-media-fit="contain" data-media-contrast="none" src="images/26-roadmap-one-pro.png" alt="XREAL One Pro 产品图"><div class="roadmap-copy"><strong class="roadmap-title">One Pro</strong><span class="roadmap-meta">日常空间体验</span></div></article>
+        </div>
+      </div>
+      <div class="roadmap-source">Illustrative positions · not launch or pricing guidance</div>
+    </div>
+  </div>
+</section>
+
+<section class="slide light layout-lab" data-layout="S26" data-animate="milestone-gallery">
+  <div class="canvas-card">
+    <header class="chrome-min"><div class="l brand"><img class="xreal-logo" src="assets/brand/xreal-logo-black.svg" alt="XREAL"><span>One Pro · Milestones</span></div><div class="r">Media evidence</div></header>
+    <div data-anim="line" class="lab-head"><div class="t-cat">能力演进 · 媒体证据序列</div><h2 class="xreal-page-title">每次能力跃迁，都由一项可见证据支撑</h2></div>
+    <div class="milestone-gallery" data-anim="gallery" style="--milestone-columns:1fr 1.08fr 1.08fr 1.16fr">
+      <article class="milestone-entry"><span class="milestone-year">01 · Optics</span><img class="milestone-media" data-image-slot="s26-milestone-media" data-media-role="milestone-evidence" data-media-fit="cover" data-media-contrast="none" src="images/27-milestone-optics.jpg" alt="One Pro 光机结构特写"><h3 class="milestone-title">光学结构</h3><p class="milestone-copy">从镜片与光机开始，先把画面边界和清晰度建立起来。</p></article>
+      <article class="milestone-entry"><span class="milestone-year">02 · Compute</span><img class="milestone-media" data-image-slot="s26-milestone-media" data-media-role="milestone-evidence" data-media-fit="cover" data-media-contrast="none" src="images/27-milestone-chip.png" alt="X1 芯片装配展示"><h3 class="milestone-title">X1 芯片</h3><p class="milestone-copy">把空间响应压到端侧，让显示、声音与连接同步运作。</p></article>
+      <article class="milestone-entry"><span class="milestone-year">03 · Display</span><img class="milestone-media" data-image-slot="s26-milestone-media" data-media-role="milestone-evidence" data-media-fit="cover" data-media-contrast="none" src="images/27-milestone-display.png" alt="One Pro 光机爆炸结构图"><h3 class="milestone-title">空间显示</h3><p class="milestone-copy">计算进入光学系统，形成稳定、可持续观看的空间画面。</p></article>
+      <article class="milestone-entry"><span class="milestone-year">04 · Everyday</span><img class="milestone-media" data-image-slot="s26-milestone-media" data-media-role="milestone-evidence" data-media-fit="cover" data-media-contrast="none" src="images/27-milestone-scene.png" alt="用户佩戴 One Pro 查看空间财报"><h3 class="milestone-title">日常应用</h3><p class="milestone-copy">能力最终进入工作与生活，而不是停留在参数表里。</p></article>
+    </div>
+    <div class="milestone-synthesis" data-anim="synthesis"><p class="milestone-synthesis-copy">路线不是功能堆叠，而是从光学、计算到真实场景的连续交付。</p><div class="milestone-chain" aria-label="能力演进链"><span class="milestone-chain-step">光学</span><span class="milestone-chain-step">计算</span><span class="milestone-chain-step">显示</span><span class="milestone-chain-step">场景</span></div></div>
+    <div class="milestone-source">Structure fixture · media selected for semantic evidence</div>
   </div>
 </section>
 
@@ -2821,6 +2906,34 @@ if(motion){
     if(foot) animate(foot, {opacity:[0,1]}, {duration:.35, delay:1.18, easing:EASE_PROD});
   }
 
+  /* ---------- recipe: portfolio-roadmap · S25 二维产品路线 ----------
+     坐标与泳道先建立，再按时间顺序呈现媒体节点。 */
+  function rPortfolioRoadmap(slide){
+    const head = slide.querySelector('[data-anim="line"]');
+    if(head) fade(head, {duration:.5, y:8});
+    const axis = slide.querySelector('.roadmap-year-axis');
+    const plot = slide.querySelector('.roadmap-plot');
+    const source = slide.querySelector('.roadmap-source');
+    if(axis) animate(axis, {opacity:[0,1]}, {duration:.3, delay:.2, easing:EASE_PROD});
+    if(plot) animate(plot, {opacity:[0,1]}, {duration:.35, delay:.28, easing:EASE_PROD});
+    slide.querySelectorAll('.roadmap-item').forEach((item, i)=>animate(item,
+      {opacity:[0,1], y:[12,0]}, {duration:.46, delay:.48 + i*.16, easing:EASE_ENTRY_EXP}));
+    if(source) animate(source, {opacity:[0,1]}, {duration:.3, delay:1.02, easing:EASE_PROD});
+  }
+
+  /* ---------- recipe: milestone-gallery · S26 媒体化里程碑 ----------
+     年份列按序进入，最后落定综合结论与能力链。 */
+  function rMilestoneGallery(slide){
+    const head = slide.querySelector('[data-anim="line"]');
+    if(head) fade(head, {duration:.5, y:8});
+    slide.querySelectorAll('.milestone-entry').forEach((entry, i)=>animate(entry,
+      {opacity:[0,1], y:[10,0]}, {duration:.48, delay:.3 + i*.13, easing:EASE_ENTRY_EXP}));
+    const synthesis = slide.querySelector('.milestone-synthesis');
+    const source = slide.querySelector('.milestone-source');
+    if(synthesis) animate(synthesis, {opacity:[0,1], y:[8,0]}, {duration:.4, delay:.95, easing:EASE_PROD});
+    if(source) animate(source, {opacity:[0,1]}, {duration:.3, delay:1.1, easing:EASE_PROD});
+  }
+
   /* ---------- recipe: duo-mirror · Latent vs Deterministic ----------
      左 80ms 入,vrule 从中心 scaleY 0→1,右 240ms 入 */
   function rDuoMirror(slide, all){
@@ -3246,12 +3359,14 @@ if(motion){
     'image-hero': rImageHero,
     'chart-rise': rChartRise,
     'line-draw': rLineDraw,
+    'portfolio-roadmap': rPortfolioRoadmap,
+    'milestone-gallery': rMilestoneGallery,
   };
 
   function revealStatic(slide){
     resetAnims(slide);
     document.getAnimations?.().forEach(a=>a.cancel());
-    slide.querySelectorAll('[data-anim],.row-fill,.tl-node,.stack-block,.bar-tower,.sub-card,.col,.vrule,.kpi-cell,.card-fill,.card-accent,.card-ink,.chart-bar,.chart-value,.chart-line,.chart-point,.line-end-label')
+    slide.querySelectorAll('[data-anim],.row-fill,.tl-node,.stack-block,.bar-tower,.sub-card,.col,.vrule,.kpi-cell,.card-fill,.card-accent,.card-ink,.chart-bar,.chart-value,.chart-line,.chart-point,.line-end-label,.roadmap-item,.milestone-entry,.milestone-synthesis')
       .forEach(el=>{
         el.style.opacity='1';
         el.style.transform='none';

@@ -8,15 +8,15 @@
 
 ## 🔴 P0 · 一定不能犯的错
 
-### 0-S. XREAL Style locked mode:正文页必须来自 22 个正式登记版式
+### 0-S. XREAL Style locked mode:正文页必须来自 24 个正式登记版式
 
 **现象**:颜色、字体看起来像 XREAL Style,但标题跑到中间、图片不在网格上、页面结构和正式登记版式完全不是一套东西。
 
-**根因**:生成时把 XREAL Style 当成风格包,自由组合了未登记结构或 SVG 插画页面,没有从 22 个正式登记版式里选。历史实验 `P23/P24` 与正式 `S23/S24` 不是同一组 ID。
+**根因**:生成时把 XREAL Style 当成风格包,自由组合了未登记结构或 SVG 插画页面,没有从 24 个正式登记版式里选。历史实验 `P23/P24` 与正式 `S23/S24` 不是同一组 ID。
 
 **做法**:
 - 先读 `references/swiss-layout-lock.md`
-- 正文页只能使用 `S01-S08`、`S11-S24`;`S09/S10` 已移除;新增首页/尾页只能使用 `XREAL-COVER-BLACK` / `XREAL-CLOSING-BLACK`
+- 正文页只能使用 `S01-S08`、`S11-S26`;`S09/S10` 已移除;新增首页/尾页只能使用 `XREAL-COVER-BLACK` / `XREAL-CLOSING-BLACK`
 - 每个 `<section class="slide">` 必须写 `data-layout="Sxx"`
 - 生成后必须运行:
 
@@ -34,6 +34,8 @@ node <SKILL_ROOT>/scripts/validate-swiss-deck.mjs path/to/index.html
 - S22 照片使用 `object-position:top center`
 - S23 缺少单位、图例、3-8 个类别、2-4 个系列、可见值或来源
 - S24 缺少连续横轴、1-3 条折线、每系列至少 4 个点、HTML 坐标标签、单位或来源
+- S25 缺少时间轴、能力轴、中性泳道、3-7 个百分比定位媒体节点或示意来源声明
+- S26 缺少 4-6 个完整里程碑、媒体证据、底部综合链或来源
 
 ### 0-S-2. XREAL Style 顶部标题默认左上,不是居中
 
@@ -201,7 +203,22 @@ node <SKILL_ROOT>/scripts/validate-swiss-deck.mjs path/to/index.html
 - `rg -n 'data-layout="S2[34]"' index.html` 后逐页确认 `.chart-unit`、`.chart-source` 和 HTML 坐标标签齐全。
 - `rg -n '<svg[^>]*class="[^"]*line-chart-svg[\s\S]*?<text' index.html`——应无结果。
 
-### 0-B-5. XREAL ECharts 只处理复杂数据形状
+### 0-B-5. S25/S26 必须保留结构语义，不复制参考图视觉
+
+**现象**:产品路线被做成蓝色 dashboard，或里程碑被做成一排独立白卡和 filled ribbon；虽然信息来自参考图，但已经破坏 XREAL 设计规范。
+
+**做法**:
+- `S25 Portfolio Roadmap Matrix` 只用于时间/阶段 × 第二层级维度；限制 2-4 个 period、2-4 条中性 lane、3-7 个媒体节点。
+- S25 每个节点都包含媒体、标题、meta 和百分比 `--x/--y/--w/--h`；节点不得重叠或越界。示意/推演位置必须在来源行声明 illustrative。
+- `S26 Milestone Gallery` 只用于 4-6 个有媒体证据的阶段；每项必须有阶段、媒体、标题和短说明。
+- S26 阶段列只用连续 1px 竖线组织；底部综合链保持 hairline + 文本 + 箭头，不做按钮、ribbon 或蓝色导航条。
+- 两者只使用黑白灰结构；媒体框和 S25 节点使用 8px 小圆角、无阴影。红色最多标记一个有语义依据的关键节点。
+
+**自检命令**:
+- `rg -n 'data-layout="S25"[^>]*data-animate="portfolio-roadmap"|data-layout="S26"[^>]*data-animate="milestone-gallery"' index.html`
+- `rg -n 'roadmap-(item|media|source)|milestone-(entry|media|synthesis|chain|source)' index.html` 后逐页确认数量与必填结构。
+
+### 0-B-6. XREAL ECharts 只处理复杂数据形状
 
 **现象**:为了“更专业”把所有柱图和折线都换成 ECharts，或直接复制官网示例，带入默认彩色主题、tooltip、toolbox、渐变、阴影和 dashboard 质感。
 
@@ -346,7 +363,7 @@ node <SKILL_ROOT>/scripts/validate-swiss-deck.mjs path/to/index.html
 - 再回代码看结构:该页是否用了正确版式,必选组件是否齐,可选组件是否过度
 - 对照原始 PPT 时以实际画面为准;raw CSS helper 只能辅助,不能替代视觉判断
 - 判断问题来源:版式选错 / 必选组件缺失 / 可选组件滥用 / 间距和安全区问题
-- 通用版式(S03/S08/S11/S19)可多用;数据专用(S06/S07/S20/S21/S22/S23/S24)必须有真实数据或案例,S24 还必须有连续横轴;结构专用(S14/S15/S17)必须有闭环、矩阵或层级关系
+- 通用版式(S03/S08/S11/S19)可多用;数据专用(S06/S07/S20/S21/S22/S23/S24)必须有真实数据或案例,S24 还必须有连续横轴;结构专用(S14/S15/S17/S25/S26)必须有闭环、矩阵、层级关系、二维路线或媒体化阶段证据
 ---
 
 ### 0. 生成前必须通过的类名校验(最重要)
@@ -638,7 +655,7 @@ JS 动态计算总页数并扩展底部翻页圆点；页面内容层不得再�
 预检(生成前)
   □ 新任务已完成 Skill 更新检查；如检测到更新，已询问用户并按其选择处理
   □ 已读过 template-xreal.html 的 <style>,确认所需类都存在
-  □ 已决定每页使用哪个正式登记版式（S01-S08、S11-S24；S09/S10 已移除）
+  □ 已决定每页使用哪个正式登记版式（S01-S08、S11-S26；S09/S10 已移除）
   □ 已画出"主题节奏表":每页明确 hero dark / hero light / light / dark
   □ 节奏表满足硬规则:无连续 3 页同主题 / 有 ≥1 hero dark + ≥1 hero light(8 页以上) / 至少有 1 个 dark 正文页
   □ `<title>` 已改为实际 deck 标题(grep "[必填]" 应无结果)
@@ -677,6 +694,8 @@ JS 动态计算总页数并扩展底部翻页圆点；页面内容层不得再�
   □ S07 每个 `.row-fill` 都以 `--value` 持久保存真实宽度；动效结束和 B 静态模式下仍可见，实际宽度与 `--value` 一致；标签列按内容收紧，标签到 track 间距 16-32px；普通条同色，最多一个有结论依据的 `.critical` 红色关键项
   □ S23 四边 plot frame 同色同粗且没有与首末网格线叠加；首末柱与边界至少 28px、没有贴边或裁切，最高数值留在 plot 内；每个 `.chart-value` 与对应柱体水平中心对齐，且不依赖水平 transform
   □ S24 横轴确实是时间或连续变量,没有把无顺序类别强行连线；四边 plot frame 同色同粗、首末网格线不重叠，`.line-geometry` 左右至少 28px，首末点、描边和终值标签都没有越界
+  □ S25 确实存在时间/阶段与第二层级维度；2-4 个 period、2-4 条中性 lane、3-7 个媒体节点均完整落在 plot 内，节点不重叠，示意位置已声明 illustrative
+  □ S26 有 4-6 个完整阶段，每阶段的媒体都与语义匹配；阶段列平整连续，底部综合链没有变成按钮或 filled ribbon
 
 排版
   □ 所有大标题没有出现 1 字 1 行的换行
@@ -697,6 +716,7 @@ JS 动态计算总页数并扩展底部翻页圆点；页面内容层不得再�
   □ S22 图片上的标题为直接叠加的高对比文本，没有白底卡片、色块或半透明面板
   □ S07/S23/S24 与 ECharts 共用 `--chart-series-1/2/3/4` 中性色阶和 `--chart-critical`；没有蓝灰/临时色或无语义红色，最多一个红色关键系列/点
   □ S24 SVG 只包含线、点和数据几何,没有 `<text>`、面积渐变或无说明双轴
+  □ S25/S26 没有复制参考图的蓝色 tabs、多彩泳道、卡片墙、大圆角或阴影；媒体框和 S25 节点保持 8px 小圆角
   □ ECharts 只用于登记的复杂图表类型,保留正式版式,使用离线 bundle 与 XREAL 受控主题
   □ ECharts 页面在 B 静态模式可读,无默认 tooltip/toolbox、彩虹色、阴影、渐变或 dashboard 控件
   □ 没有发光、霓虹、大圆角、胶囊形或 SVG/Canvas/CSS 插画配图
@@ -718,7 +738,7 @@ JS 动态计算总页数并扩展底部翻页圆点；页面内容层不得再�
   □ 大引用页 `<section>` 带 `data-animate="quote"`,每行 `<span data-anim="line">`
   □ Before/After 对比页 `<section>` 带 `data-animate="directional"`,左右列标 left/right
   □ Pipeline 页 `<section>` 带 `data-animate="pipeline"`,每 step 标 data-anim="step"
-  □ S23 使用 `chart-rise`,S24 使用 `line-draw`;低功耗模式下柱高、完整折线与终值仍可见
+  □ S23 使用 `chart-rise`,S24 使用 `line-draw`,S25 使用 `portfolio-roadmap`,S26 使用 `milestone-gallery`;低功耗模式下全部结构仍可见
   □ `grep -c 'data-anim' index.html` 数量 ≥ 页数 × 3(平均每页 3 个以上标记)
 ```
 

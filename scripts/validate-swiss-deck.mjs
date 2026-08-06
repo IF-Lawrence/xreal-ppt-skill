@@ -56,7 +56,7 @@ const allowedLayouts = new Set([
   'XREAL-CLOSING-BLACK',
   'S01', 'S02', 'S03', 'S04', 'S05', 'S06', 'S07', 'S08',
   'S11', 'S12', 'S13', 'S14', 'S15', 'S16', 'S17',
-  'S18', 'S19', 'S20', 'S21', 'S22', 'S23', 'S24',
+  'S18', 'S19', 'S20', 'S21', 'S22', 'S23', 'S24', 'S25', 'S26',
 ]);
 const echartsKindsByLayout = new Map([
   ['S23', new Set(['bar', 'mixed', 'scatter', 'bubble', 'heatmap', 'waterfall', 'boxplot', 'candlestick'])],
@@ -305,7 +305,7 @@ slides.forEach((slide) => {
   }
 
   if (!layout) {
-    errors.push(`Slide ${slide.idx}: missing data-layout. XREAL Style locked mode requires a registered layout (S01-S08 or S11-S24) or XREAL-COVER-BLACK/XREAL-CLOSING-BLACK.`);
+    errors.push(`Slide ${slide.idx}: missing data-layout. XREAL Style locked mode requires a registered layout (S01-S08 or S11-S26) or XREAL-COVER-BLACK/XREAL-CLOSING-BLACK.`);
   } else if (!allowedLayouts.has(layout)) {
     errors.push(`Slide ${slide.idx}: data-layout="${layout}" is not registered in swiss-layout-lock.md.`);
   }
@@ -782,6 +782,71 @@ slides.forEach((slide) => {
     if (/\b(?:dual-axis|secondary-axis|axis-right)\b/i.test(slide.html)) {
       errors.push(`Slide ${slide.idx}: S24 Line Chart uses a secondary/dual axis. Split unlike units into separate charts in the registered layout.`);
     }
+  }
+
+  if (layout === 'S25') {
+    const requiredClasses = ['portfolio-roadmap', 'roadmap-year-axis', 'roadmap-y-axis', 'roadmap-plot', 'roadmap-source'];
+    const missing = requiredClasses.filter((name) => !new RegExp(`\\b${name}\\b`).test(slide.html));
+    if (missing.length) {
+      errors.push(`Slide ${slide.idx}: S25 Portfolio Roadmap Matrix is missing required structure (${missing.map((name) => `.${name}`).join(', ')}).`);
+    }
+    if (!/\bdata-animate="portfolio-roadmap"/.test(slide.tag)) {
+      errors.push(`Slide ${slide.idx}: S25 Portfolio Roadmap Matrix must use data-animate="portfolio-roadmap".`);
+    }
+    const periodCount = [...slide.html.matchAll(/\bclass="[^"]*\broadmap-period\b[^"]*"/g)].length;
+    const laneCount = [...slide.html.matchAll(/\bclass="[^"]*\broadmap-lane\b[^"]*"/g)].length;
+    const itemTags = [...slide.html.matchAll(/<article\b(?=[^>]*\bclass="[^"]*\broadmap-item\b[^"]*")[^>]*>/g)].map((match) => match[0]);
+    const mediaTags = [...slide.html.matchAll(/<img\b(?=[^>]*\bclass="[^"]*\broadmap-media\b[^"]*")[^>]*>/g)].map((match) => match[0]);
+    const titleCount = [...slide.html.matchAll(/\bclass="[^"]*\broadmap-title\b[^"]*"/g)].length;
+    const metaCount = [...slide.html.matchAll(/\bclass="[^"]*\broadmap-meta\b[^"]*"/g)].length;
+    const criticalCount = itemTags.filter((tag) => /\bcritical\b/.test(tag)).length;
+    if (periodCount < 2 || periodCount > 4) errors.push(`Slide ${slide.idx}: S25 requires 2-4 .roadmap-period labels; found ${periodCount}.`);
+    if (laneCount < 2 || laneCount > 4) errors.push(`Slide ${slide.idx}: S25 requires 2-4 .roadmap-lane bands; found ${laneCount}.`);
+    if (itemTags.length < 3 || itemTags.length > 7) errors.push(`Slide ${slide.idx}: S25 requires 3-7 .roadmap-item nodes; found ${itemTags.length}.`);
+    if (mediaTags.length !== itemTags.length || titleCount !== itemTags.length || metaCount !== itemTags.length) {
+      errors.push(`Slide ${slide.idx}: every S25 item needs one .roadmap-media, .roadmap-title, and .roadmap-meta; found ${itemTags.length} items / ${mediaTags.length} media / ${titleCount} titles / ${metaCount} meta labels.`);
+    }
+    mediaTags.forEach((tag, index) => {
+      if (!/\bdata-image-slot="s25-roadmap-media"/.test(tag) || !/\bdata-media-role="roadmap-evidence"/.test(tag) || !/\bdata-media-fit="(?:cover|contain)"/.test(tag) || !/\bdata-media-contrast="none"/.test(tag)) {
+        errors.push(`Slide ${slide.idx}: S25 media ${index + 1} must declare the registered slot, roadmap-evidence role, cover|contain fit, and contrast="none".`);
+      }
+    });
+    itemTags.forEach((tag, index) => {
+      for (const key of ['x', 'y', 'w', 'h']) {
+        if (!new RegExp(`--${key}\\s*:\\s*[0-9.]+`).test(tag)) errors.push(`Slide ${slide.idx}: S25 item ${index + 1} must declare percentage --${key}.`);
+      }
+    });
+    if (criticalCount > 1) errors.push(`Slide ${slide.idx}: S25 allows at most one semantically justified .critical node; found ${criticalCount}.`);
+    if (!/illustrative|示意|scenario/i.test(slide.html)) errors.push(`Slide ${slide.idx}: S25 must identify whether roadmap positions are illustrative/scenario or sourced facts.`);
+    if (/\bclass="[^"]*\b(?:pill|badge|chip|tab|ribbon)\b[^"]*"/i.test(slide.html)) errors.push(`Slide ${slide.idx}: S25 contains dashboard/pill component classes. Keep the roadmap flat and structural.`);
+  }
+
+  if (layout === 'S26') {
+    const requiredClasses = ['milestone-gallery', 'milestone-synthesis', 'milestone-chain', 'milestone-source'];
+    const missing = requiredClasses.filter((name) => !new RegExp(`\\b${name}\\b`).test(slide.html));
+    if (missing.length) {
+      errors.push(`Slide ${slide.idx}: S26 Milestone Gallery is missing required structure (${missing.map((name) => `.${name}`).join(', ')}).`);
+    }
+    if (!/\bdata-animate="milestone-gallery"/.test(slide.tag)) {
+      errors.push(`Slide ${slide.idx}: S26 Milestone Gallery must use data-animate="milestone-gallery".`);
+    }
+    const entryCount = [...slide.html.matchAll(/\bclass="[^"]*\bmilestone-entry\b[^"]*"/g)].length;
+    const yearCount = [...slide.html.matchAll(/\bclass="[^"]*\bmilestone-year\b[^"]*"/g)].length;
+    const mediaTags = [...slide.html.matchAll(/<img\b(?=[^>]*\bclass="[^"]*\bmilestone-media\b[^"]*")[^>]*>/g)].map((match) => match[0]);
+    const titleCount = [...slide.html.matchAll(/\bclass="[^"]*\bmilestone-title\b[^"]*"/g)].length;
+    const copyCount = [...slide.html.matchAll(/\bclass="[^"]*\bmilestone-copy\b[^"]*"/g)].length;
+    const chainCount = [...slide.html.matchAll(/\bclass="[^"]*\bmilestone-chain-step\b[^"]*"/g)].length;
+    if (entryCount < 4 || entryCount > 6) errors.push(`Slide ${slide.idx}: S26 requires 4-6 .milestone-entry columns; found ${entryCount}.`);
+    if ([yearCount, mediaTags.length, titleCount, copyCount].some((count) => count !== entryCount)) {
+      errors.push(`Slide ${slide.idx}: every S26 entry needs one year, media, title, and copy; found ${entryCount} entries / ${yearCount} years / ${mediaTags.length} media / ${titleCount} titles / ${copyCount} copy blocks.`);
+    }
+    if (chainCount < 3 || chainCount > 6) errors.push(`Slide ${slide.idx}: S26 requires 3-6 .milestone-chain-step labels; found ${chainCount}.`);
+    mediaTags.forEach((tag, index) => {
+      if (!/\bdata-image-slot="s26-milestone-media"/.test(tag) || !/\bdata-media-role="milestone-evidence"/.test(tag) || !/\bdata-media-fit="(?:cover|contain)"/.test(tag) || !/\bdata-media-contrast="none"/.test(tag)) {
+        errors.push(`Slide ${slide.idx}: S26 media ${index + 1} must declare the registered slot, milestone-evidence role, cover|contain fit, and contrast="none".`);
+      }
+    });
+    if (/\bclass="[^"]*\b(?:pill|badge|tab|button|ribbon)\b[^"]*"/i.test(slide.html)) errors.push(`Slide ${slide.idx}: S26 contains button/ribbon component classes. Use continuous flat columns and a hairline synthesis chain.`);
   }
 });
 
@@ -1365,6 +1430,81 @@ async function runRenderedMeasurements() {
         return issues.map((issue) => ({ node: labelFor(plot), issue }));
       };
 
+      const portfolioRoadmapChecks = (el) => {
+        const plot = el.querySelector('.roadmap-plot');
+        const periods = el.querySelector('.roadmap-periods');
+        const items = Array.from(el.querySelectorAll('.roadmap-item'));
+        if (!plot || !items.length) return [];
+        const issues = [];
+        const plotRect = plot.getBoundingClientRect();
+        const periodRect = periods?.getBoundingClientRect();
+        if (periodRect && (Math.abs(periodRect.left - plotRect.left) > 2 || Math.abs(periodRect.right - plotRect.right) > 2)) {
+          issues.push('top period axis does not align with the roadmap plot boundaries');
+        }
+        items.forEach((item, index) => {
+          const rect = item.getBoundingClientRect();
+          if (rect.left < plotRect.left - 1 || rect.right > plotRect.right + 1 || rect.top < plotRect.top - 1 || rect.bottom > plotRect.bottom + 1) {
+            issues.push(`item ${index + 1} extends outside the roadmap plot`);
+          }
+          const media = item.querySelector('.roadmap-media');
+          const mediaRect = media?.getBoundingClientRect();
+          if (!mediaRect || mediaRect.width < 64 || mediaRect.height < 42) issues.push(`item ${index + 1} media renders below the 64×42px legibility floor`);
+          const radius = parseFloat(getComputedStyle(item).borderTopLeftRadius);
+          if (!Number.isFinite(radius) || radius < 7 || radius > 9) issues.push(`item ${index + 1} uses ${getComputedStyle(item).borderTopLeftRadius} radius; expected 8px`);
+        });
+        for (let i = 0; i < items.length; i += 1) {
+          const a = items[i].getBoundingClientRect();
+          for (let j = i + 1; j < items.length; j += 1) {
+            const b = items[j].getBoundingClientRect();
+            const overlapW = Math.max(0, Math.min(a.right, b.right) - Math.max(a.left, b.left));
+            const overlapH = Math.max(0, Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top));
+            if (overlapW * overlapH > 16) issues.push(`items ${i + 1} and ${j + 1} overlap by ${Math.round(overlapW)}×${Math.round(overlapH)}px`);
+          }
+        }
+        const rootStyle = getComputedStyle(document.documentElement);
+        const allowedLaneColors = new Set(['--paper', '--grey-1', '--grey-2'].map((token) => rootStyle.getPropertyValue(token).trim()).filter(Boolean).map((value) => {
+          const probe = document.createElement('span');
+          probe.style.color = value;
+          document.body.appendChild(probe);
+          const normalized = getComputedStyle(probe).color;
+          probe.remove();
+          return normalized;
+        }));
+        el.querySelectorAll('.roadmap-lane').forEach((lane, index) => {
+          if (!allowedLaneColors.has(getComputedStyle(lane).backgroundColor)) issues.push(`lane ${index + 1} uses a non-neutral background color`);
+        });
+        if (el.querySelectorAll('.roadmap-item.critical').length > 1) issues.push('more than one roadmap node uses critical red emphasis');
+        return issues.map((issue) => ({ node: labelFor(plot), issue }));
+      };
+
+      const milestoneGalleryChecks = (el) => {
+        const gallery = el.querySelector('.milestone-gallery');
+        const entries = Array.from(el.querySelectorAll('.milestone-entry'));
+        if (!gallery || !entries.length) return [];
+        const issues = [];
+        const entryRects = entries.map((entry) => entry.getBoundingClientRect());
+        const topSpread = Math.max(...entryRects.map((rect) => rect.top)) - Math.min(...entryRects.map((rect) => rect.top));
+        const bottomSpread = Math.max(...entryRects.map((rect) => rect.bottom)) - Math.min(...entryRects.map((rect) => rect.bottom));
+        if (topSpread > 2 || bottomSpread > 2) issues.push(`milestone columns do not share common top/bottom edges (${topSpread.toFixed(1)}px / ${bottomSpread.toFixed(1)}px spread)`);
+        entries.forEach((entry, index) => {
+          const entryRect = entry.getBoundingClientRect();
+          const media = entry.querySelector('.milestone-media');
+          const mediaRect = media?.getBoundingClientRect();
+          if (!mediaRect) return;
+          const ratio = mediaRect.height / entryRect.height;
+          if (ratio < .35 || ratio > .55) issues.push(`entry ${index + 1} media uses ${(ratio * 100).toFixed(1)}% of column height; expected 35%-55%`);
+          const radius = parseFloat(getComputedStyle(media).borderTopLeftRadius);
+          if (!Number.isFinite(radius) || radius < 7 || radius > 9) issues.push(`entry ${index + 1} media uses ${getComputedStyle(media).borderTopLeftRadius} radius; expected 8px`);
+          if (entry.scrollHeight - entry.clientHeight > 2) issues.push(`entry ${index + 1} text overflows its column`);
+        });
+        const chain = el.querySelector('.milestone-chain');
+        if (chain) {
+          const style = getComputedStyle(chain);
+          if (colorVisible(style.backgroundColor) || parseFloat(style.borderRadius) > .1) issues.push('milestone chain is rendered as a filled/rounded control instead of a flat hairline sequence');
+        }
+        return issues.map((issue) => ({ node: labelFor(gallery), issue }));
+      };
+
       return els.map((el, index) => {
         const er = el.getBoundingClientRect();
         const H = el.clientHeight;
@@ -1430,6 +1570,8 @@ async function runRenderedMeasurements() {
           baselineBarIssues: baselineBarChecks(el),
           dataChartIssues: dataChartChecks(el),
           lineChartIssues: lineChartChecks(el),
+          portfolioRoadmapIssues: portfolioRoadmapChecks(el),
+          milestoneGalleryIssues: milestoneGalleryChecks(el),
           echartsIssues: Array.from(el.querySelectorAll('.xreal-echart')).filter((node) => node.dataset.echartsState !== 'ready').map((node) => ({
             state: node.dataset.echartsState || 'uninitialized',
             message: node.dataset.echartsMessage || 'Chart did not reach ready state.',
@@ -1514,6 +1656,12 @@ async function runRenderedMeasurements() {
       }
       for (const issue of m.lineChartIssues) {
         errors.push(`${prefix}: ${issue.node} ${issue.issue}. S24 must inset line geometry, endpoints, and end labels from both plot edges so the complete trend remains visible.`);
+      }
+      for (const issue of m.portfolioRoadmapIssues) {
+        errors.push(`${prefix}: ${issue.node} ${issue.issue}. S25 must keep a complete neutral two-axis plot with sparse, legible, non-overlapping media nodes.`);
+      }
+      for (const issue of m.milestoneGalleryIssues) {
+        errors.push(`${prefix}: ${issue.node} ${issue.issue}. S26 must use aligned flat columns, 35%-55% media evidence, and a hairline synthesis chain.`);
       }
       for (const issue of m.echartsIssues) {
         errors.push(`${prefix}: ECharts runtime is ${issue.state}: ${issue.message}`);

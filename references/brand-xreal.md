@@ -90,6 +90,8 @@
 - 每张图必须显示单位、HTML 坐标标签和来源。SVG 只承载折线、点或必要数据几何，不写 `<text>`。
 - 原生 S23/S24 使用四边同色同粗的单一 1px `--chart-frame`；第一条和最后一条网格线不得与 frame 重叠形成双描边。S23 首末柱与边界至少留 28px；S24 的 SVG、端点和终值标签统一放入左右至少 28px 的 `.line-geometry`，横轴标签使用相同安全区，不能靠裁切掩盖越界。
 - `S23 Data Chart` 使用共同零基线比较 3-8 个类别 × 2-4 个同量纲系列；`S24 Line Chart` 只用于时间或连续变量,限制 1-3 条线。
+- `S25 Portfolio Roadmap Matrix` 只借用二维坐标与泳道的信息结构：年份/阶段使用自然文字和 hairline，不使用蓝色 tabs；泳道只使用白/中性灰，节点媒体和实体块统一 8px 小圆角、无阴影，最多一个有依据的关键节点使用红色。
+- `S26 Milestone Gallery` 使用连续平面阶段列和 1px 竖线；列本身不做卡片、圆角或阴影，只有媒体框使用 8px。底部综合链保持 hairline、自然文本与箭头，不使用 filled ribbon 或按钮。
 - 不同量纲默认拆图；不使用无说明双轴。折线通过线型、点型或终值标签辅助区分，不能只依赖颜色。
 - 复杂数据形状可使用登记的 XREAL ECharts Component，但必须由 XREAL 主题覆盖默认样式。ECharts 内部标题、图例、toolbox 默认关闭；单位、图例和来源继续使用版式中的 HTML。
 - ECharts 只允许黑/灰/银稳定系列和一个 `xrealCritical` 红色系列或数据项；禁止 `shadowBlur`、`colorStops`、面积填充、3D、发光、连续彩虹 visualMap 和 dashboard 控件。

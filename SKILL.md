@@ -1,6 +1,6 @@
 ---
 name: xreal-ppt-skill
-description: 生成、改版和校验 XREAL 品牌风格的横向翻页网页演示文稿（离线单文件 HTML）。使用 22 个锁定版式、XREAL 黑白灰与克制红色语义、XREAL Diatype 或 IBM Plex Sans SC、官方产品媒体资产、Motion One 动效以及受控 ECharts 复杂图表。用户要求制作或审查 XREAL 发布会、产品介绍、数据汇报、方法论、路线或地图类网页 PPT，或提到「XREAL Style」「XREAL PPT」「XREAL deck」「横向翻页 HTML PPT」时使用。
+description: 生成、改版和校验 XREAL 品牌风格的横向翻页网页演示文稿（离线单文件 HTML）。使用 24 个锁定版式、XREAL 黑白灰与克制红色语义、XREAL Diatype 或 IBM Plex Sans SC、官方产品媒体资产、Motion One 动效以及受控 ECharts 复杂图表。用户要求制作或审查 XREAL 发布会、产品介绍、数据汇报、方法论、路线或地图类网页 PPT，或提到「XREAL Style」「XREAL PPT」「XREAL deck」「横向翻页 HTML PPT」时使用。
 ---
 
 ## 这个 Skill 做什么
@@ -11,7 +11,7 @@ description: 生成、改版和校验 XREAL 品牌风格的横向翻页网页演
 - 按整套 PPT 的语言语境选择品牌字体：纯英文使用 XREAL Diatype，中文或中英混排使用 IBM Plex Sans SC
 - 12/16 列网格、非对称留白、统一 8px 小圆角色块和 1px hairline
 - 每份 deck 固定使用 XREAL 黑白灰品牌体系；红色只作为关键语义强调，不提供任意自定义颜色
-- 正文页使用 22 个锁定版式（`S01-S08`、`S11-S24`）；`S09 Dot Matrix Statement` 与 `S10 Split Closing` 已移除，首页/尾页使用明确登记的 XREAL 黑色基底变体
+- 正文页使用 24 个锁定版式（`S01-S08`、`S11-S26`）；`S09 Dot Matrix Statement` 与 `S10 Split Closing` 已移除，首页/尾页使用明确登记的 XREAL 黑色基底变体
 - 支持键盘、滚轮、触屏、ESC 索引、Google Material Symbols Outlined 图标和 Motion One 入场动效
 - 复杂散点、热力、瀑布、箱线、桑基、关系和层级图可使用受控的 XREAL ECharts Component；它扩展现有版式，不增加正文版式编号
 
@@ -239,7 +239,7 @@ S12 manifesto 中的产品标志只承担身份落款，不是第二主标题。
 
 #### 3.3 · 选择锁定版式
 
-正文页只能使用 22 个已登记版式（`S01-S08`、`S11-S24`）；`S09 Dot Matrix Statement` 与 `S10 Split Closing` 已移除。首页/尾页只能使用 `XREAL-COVER-BLACK` / `XREAL-CLOSING-BLACK`。每个 section 必须写 `data-layout="Sxx"`。
+正文页只能使用 24 个已登记版式（`S01-S08`、`S11-S26`）；`S09 Dot Matrix Statement` 与 `S10 Split Closing` 已移除。首页/尾页只能使用 `XREAL-COVER-BLACK` / `XREAL-CLOSING-BLACK`。每个 section 必须写 `data-layout="Sxx"`。
 
 封底 `XREAL-CLOSING-BLACK` 必须是整套 deck 的最后一个 section，并使用 `.slide.accent + .xreal-closing-lockup + .xreal-closing-thanks + .xreal-closing-mark + .xreal-closing-logo` 骨架与 `data-animate="closing-thanks"`。大号 `Thanks` 居中，小号企业 Logo 固定在底部中央；可按 `data-media-match` 使用安静的官方媒体背景。进入该页时隐藏底部分页导航。所有结论与行动建议应在封底前一页完成。
 
@@ -254,12 +254,15 @@ S12 manifesto 中的产品标志只承担身份落款，不是第二主标题。
 | S12 / S14 / S18 / S19 | Manifesto、闭环；S18 可挂载 XREAL Pie，S19 可挂载 XREAL Bento |
 | S16 / S22 | 多卡简报 / 21:9 Image Hero |
 | S23 / S24 | 分组数据比较图 / 时间或连续变量折线趋势图 |
+| S25 / S26 | 时间 × 层级的产品路线矩阵 / 媒体证据支持的里程碑画廊 |
 
 默认 XREAL Style locked mode：不要临时启用历史实验 `P23/P24`、Evidence Grid、自由 SVG 页面或未登记正文结构；它们与正式 `S23/S24` 图表版式无关。只有用户明确要求实验版式时才可例外，并在验证时显式允许。
 
 章节标题 Hero 变体必须使用 `.xreal-section-title` 和正文级 `chrome-min`,只放小型章节标识、单一主标题和一句引导语。可使用 `hero light`、浅灰或 `hero dark`,但禁止 `.xreal-cover-title`、`slide accent` 满屏纯黑、巨大章节编号、目录列表或三行 `cover-row`,以确保层级低于 S01 Index Cover。
 
 图表选版先判断数据形状：3-8 个无连续顺序类别 × 2-4 个同量纲系列使用 `S23 Data Chart`;时间或连续变量上的 1-3 个系列、每系列 4-12 个点使用 `S24 Line Chart`。简单柱图/折线优先使用原生组件；复杂分布、矩阵、流向、网络或层级数据才添加 `data-chart-engine="echarts"`，并按 `references/xreal-echarts.md` 映射到 S23/S24/S17/S08。所有图表必须提供单位、HTML 图例、数据来源和结论标题；不同量纲默认拆图，禁止无说明双轴。手写 SVG 只用于 S24 的折线与点且不写 `<text>`；ECharts 运行时生成的 SVG/Canvas 仅限合法图表几何。
+
+产品组合同时包含时间/阶段和第二层级维度时，使用 `S25 Portfolio Roadmap Matrix`，而不是把媒体卡塞进 S23 柱图。S25 只允许 2-4 个 period、2-4 条中性泳道和 3-7 个媒体节点；节点必须声明百分比 `--x/--y/--w/--h`，示意路线必须明确标注为 illustrative。需要用连续媒体证据讲述 4-6 个阶段时使用 `S26 Milestone Gallery`；每列必须包含阶段、媒体、标题和短说明，底部综合链保持扁平 hairline，不做按钮、ribbon 或独立卡片墙。
 
 硬规则：7-8 页至少使用 6 个不同 `S` 编号，10 页以上至少使用 8 个；数据专用版式必须有真实数据，结构专用版式必须有对应的闭环、矩阵或层级关系。
 
@@ -336,7 +339,7 @@ node "<SKILL_ROOT>/scripts/validate-swiss-deck.mjs" "项目/XXX/ppt/index.html"
 5. **角色化字体层级**：主标题与正文保持明显层级；纯英文主标题默认 500，中文或中英混排主标题默认 600，正文 400，标签 500。
 6. **图片是证据**：先匹配槽位和比例，再生成或适配图片。
 7. **动效可降级**：每页使用语义化 recipe；`B` 键必须能切换到静态可读状态。
-8. **版式必须登记**：正文只从 `S01-S08`、`S11-S24` 选择；`S09` 与 `S10` 已移除，实验结构必须显式标记。
+8. **版式必须登记**：正文只从 `S01-S08`、`S11-S26` 选择；`S09` 与 `S10` 已移除，实验结构必须显式标记。
 9. **复杂图表受控**：ECharts 只负责复杂数据几何、布局与交互，必须使用 XREAL 主题、类型白名单和离线单文件流程，不得带入默认 dashboard 视觉。
 10. **开场/收束媒体**：封面与封底使用 `#000000` 基底并声明 `data-media-match`；命中合适官方媒体时使用登记的背景类，不使用 ASCII、纹理、CSS 图形或动态背景。
 11. **减法优先**：移除无信息价值的角标、眉题和分割线；bullet 统一使用实心圆点。
