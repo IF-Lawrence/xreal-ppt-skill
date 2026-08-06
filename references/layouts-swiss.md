@@ -1,6 +1,6 @@
 # Layouts · XREAL Style
 
-25 个正式登记版式 · 严格模块化网格 · 每个版式说明用途、骨架、关键类名、专属动效。
+26 个正式登记版式 · 严格模块化网格 · 每个版式说明用途、骨架、关键类名、专属动效。
 
 > 这是本 skill 唯一支持的版式系统。类名和结构都以 `assets/template-xreal.html` 为准；一份 deck 只能使用 XREAL Style 版式。
 
@@ -8,9 +8,9 @@
 
 ## XREAL Style locked mode(必须先读)
 
-本主题的 golden source 是仓库内的 `assets/template-xreal.html`(由作者本机的原始参考 PPT 派生;原始文件不随仓库分发)。`swiss-layout-lock.md` 当前登记 `S01-S08`、`S11-S27`；原 `S09 Dot Matrix Statement` 与 `S10 Split Closing` 已移除。
+本主题的 golden source 是仓库内的 `assets/template-xreal.html`(由作者本机的原始参考 PPT 派生;原始文件不随仓库分发)。`swiss-layout-lock.md` 当前登记 `S01-S08`、`S11-S28`；原 `S09 Dot Matrix Statement` 与 `S10 Split Closing` 已移除。
 
-生成正文页时不要把 XREAL Style 当成“自由组合的风格包”。默认只能使用 `references/swiss-layout-lock.md` 登记的 25 个版式（`S01-S08`、`S11-S27`）。每个 slide 都必须在 `<section>` 上写 `data-layout="Sxx"`。
+生成正文页时不要把 XREAL Style 当成“自由组合的风格包”。默认只能使用 `references/swiss-layout-lock.md` 登记的 26 个版式（`S01-S08`、`S11-S28`）。每个 slide 都必须在 `<section>` 上写 `data-layout="Sxx"`。
 
 **关键约束**:
 
@@ -206,7 +206,7 @@ chrome-min(页眉)、主体内容、底部 footnote 都是 canvas-card 的子元
 - 资产自带元素与页面 chrome 冲突时换图或换版式,不要重绘原始资产
 
 **版式多样性硬规则**
-XREAL Style 有 25 个正式登记版式（`S01-S08`、`S11-S27`）,生成时要主动展示版式系统,不要把所有内容都做成 `head + grid-reveal + card`:
+XREAL Style 有 26 个正式登记版式（`S01-S08`、`S11-S28`）,生成时要主动展示版式系统,不要把所有内容都做成 `head + grid-reveal + card`:
 
 - 7-8 页 deck 至少使用 **6 个不同 S 编号版式**
 - 不允许连续 3 页使用同一种主体结构(如三页连续 S19 / 普通卡片)
@@ -214,6 +214,7 @@ XREAL Style 有 25 个正式登记版式（`S01-S08`、`S11-S27`）,生成时要
 - 如果材料包含跨类别多系列数据或连续时间序列,必须在规划阶段显式比较 S23/S24 与现有 S06/S07/P02 的适配性；散点、热力、瀑布、箱线、桑基、网络或层级数据还必须评估 XREAL ECharts Component，不能继续把所有数据压成 KPI 卡片
 - 如果材料同时包含时间/阶段与第二层级维度，显式评估 S25；如果叙事依赖 4-6 张阶段媒体证据，显式评估 S26，不要退化为缺少媒体证据的普通文本卡列表
 - 如果材料必须在一页内同时比较 3 组相互依赖的信息，显式评估 S27；用户要求“不要拆分”时，先重排和去重，不自动分页
+- 如果同一主题存在明确的主卖点、2-3 个次级技术点和支持信息，显式评估 S28；用卡片面积表达优先级，不靠多色强调
 - 图片页不等于新发明一页。单图用 S22,多图用 S15/S16 的原始网格骨架改造
 - 每页写代码前先列 `内部页序（不渲染）→ data-layout → 为什么选它 → 图片槽位`;生成后用 validator 检查
 
@@ -275,11 +276,11 @@ XREAL Style 有 25 个正式登记版式（`S01-S08`、`S11-S27`）,生成时要
 | 通用 | S01, S03, S08, S11, S19 | 大多数叙事 deck 都能用,但仍要满足内容形状 |
 | 条件通用 | S04, S13, S16 | 取决于数量是否刚好匹配:3/6 项 |
 | 数据专用 | S02, S06, S07, S18, S20, S21, S22, S23, S24 | 必须有真实时间、数值、指标或案例数据；S24 还必须有连续横轴 |
-| 结构专用 | S05, S14, S15, S17, S25, S26, S27 | 必须有三层、闭环、矩阵、层级/生态关系、二维路线、媒体化阶段序列或必须同页的三组综合；不适合普通段落 |
+| 结构专用 | S05, S14, S15, S17, S25, S26, S27, S28 | 必须有三层、闭环、矩阵、层级/生态关系、二维路线、媒体化阶段序列、必须同页的三组综合或真实卖点优先级；不适合普通段落 |
 
 ---
 
-## 25 个登记版式
+## 26 个登记版式
 
 ### P1 · Cover · 封面页
 
@@ -1029,6 +1030,44 @@ XREAL Style 有 25 个正式登记版式（`S01-S08`、`S11-S27`）,生成时要
 
 ---
 
+### P28 · Priority Bento · 面积优先级卖点组
+
+**用途**:当同一主题存在一个明确核心卖点、2-3 个次级技术点与若干支持信息时，用卡片面积直接表达优先级。
+**适用内容类型**:**1 个主卖点 + 2-3 个中层论点 + 3-5 个支持点**。所有卡片必须共享一个主题；如果只是把互不相关的指标拼在一起，应改用 S16/S19 或重新规划叙事。
+**骨架**:左上结论标题 / 12 列 × 6 行 Bento 网格 / 1 个主卡 / 2-3 个中卡 / 若干支持卡 / 来源。
+**关键类**:`.priority-bento` `.priority-tile` `.is-primary` `.is-secondary` `.is-support` `.priority-media` `.priority-kicker` `.priority-title` `.priority-copy` `.priority-value` `.priority-source`
+**动效 recipe**:`priority-bento` — 主卡先建立 → 中卡按阅读顺序进入 → 小卡补齐 → 来源落定。
+**注意**:
+- 全页 6-9 张 `.priority-tile`，恰好 1 张 `.is-primary`、2-3 张 `.is-secondary`；每卡以整数 `--col/--span/--row/--rows` 声明在 12×6 网格中的位置，不得重叠或越界。
+- 主卡至少 5 列 × 3 行，占网格面积约 28%-48%；全页至少 3 种不同卡片面积。面积必须对应真实内容优先级，不能随机拼图或让媒体尺寸反客为主。
+- 每张卡独立使用 `--radius-sm:8px`、1px 中性边界、四边等距 padding 和无阴影表面。黑、白、浅灰承担结构，最多一个有明确依据的红色语义点。
+- 允许 1-4 张语义媒体。压图文字使用 `cover + darken` 并直接反白；非压字媒体使用 `contain + none`。不得叠白色面板，也不得复制参考图的彩色渐变、超大圆角、软件控件、pill 或发光。
+- S28 不替代 S19：S19 仍用于固定的“主叙事 + 两指标 + 一说明”摘要；只有面积差异本身承载真实优先级时才使用 S28。
+
+```html
+<section class="slide light" data-layout="S28" data-animate="priority-bento">
+  <div class="canvas-card">
+    <header class="chrome-min">...</header>
+    <div data-anim="line"><div class="t-cat">[必填] 同一主题</div><h2 class="xreal-page-title">[必填] 核心卖点结论</h2></div>
+    <div class="priority-bento">
+      <article class="priority-tile is-primary has-media media-darken" style="--col:1;--span:6;--row:1;--rows:4">
+        <img class="priority-media" data-image-slot="s28-priority-media" data-media-role="feature-evidence" data-media-fit="cover" data-media-contrast="darken" src="images/primary.jpg" alt="[必填]">
+        <span class="priority-kicker">[必填] 主卖点类别</span><div><h3 class="priority-title">[必填] 主卖点</h3><p class="priority-copy">[必填] 一句证据说明。</p></div>
+      </article>
+      <article class="priority-tile is-secondary" style="--col:7;--span:3;--row:1;--rows:3">...</article>
+      <article class="priority-tile is-secondary" style="--col:10;--span:3;--row:1;--rows:3">...</article>
+      <article class="priority-tile is-secondary" style="--col:7;--span:6;--row:4;--rows:3">...</article>
+      <article class="priority-tile is-support" style="--col:1;--span:2;--row:5;--rows:2">...</article>
+      <article class="priority-tile is-support" style="--col:3;--span:2;--row:5;--rows:2">...</article>
+      <article class="priority-tile is-support" style="--col:5;--span:2;--row:5;--rows:2">...</article>
+    </div>
+    <div class="priority-source">Source · [必填] 事实与媒体来源</div>
+  </div>
+</section>
+```
+
+---
+
 ### XREAL ECharts Component · 复杂图表扩展
 
 **用途**:在不增加正文版式编号的前提下，用 Apache ECharts 处理复杂数据几何、布局、动画和必要交互。
@@ -1171,6 +1210,7 @@ XREAL Style 有 25 个正式登记版式（`S01-S08`、`S11-S27`）,生成时要
 | 时间 × 第二层级的产品组合迁移 | P25 Portfolio Roadmap Matrix |
 | 4-6 个阶段的媒体证据序列 | P26 Milestone Gallery |
 | 必须同页的三组相互依赖信息 | P27 Dense Synthesis |
+| 一个主卖点 + 2-3 个次级技术点 + 支持信息 | P28 Priority Bento |
 | 地点 / 路线 / 人物住所关系 | S08 + XREAL Map Component |
 | 单图解释论点 / 图文混排实验 | E01 XREAL Image Split（默认禁用） |
 | 2-3 张图片/截图证据链实验 | E02 XREAL Evidence Grid（默认禁用） |
@@ -1202,6 +1242,7 @@ XREAL Style 有 25 个正式登记版式（`S01-S08`、`S11-S27`）,生成时要
 | 1 张核心图片 + 一段解释 | S22 Image Hero 或用户明确启用 E01 | E01 默认禁用 |
 | 2-3 张同类图片 | S15/S16 图片格或用户明确启用 E02 | E02 默认禁用 |
 | 大量相互依赖信息必须同页 | P27 Dense Synthesis | 普通卡片网格 / 自动拆页 / dashboard 控件 |
+| 同一主题有明确卖点优先级 | P28 Priority Bento | 等权卡片 / 多彩强调 / 随机拼贴 |
 
 **雷区案例**:用 P7 H-Bar Chart 展示「智能补全 / 实时协作 / 自主代理」这种**无可比百分比的概念列举**,编造 96/88/78 之类数字 → **数据不可信,版式滥用**。这种内容应该用 P2(若有时间维度)或 P3 Statement(若是论断)。
 
@@ -1209,7 +1250,7 @@ XREAL Style 有 25 个正式登记版式（`S01-S08`、`S11-S27`）,生成时要
 
 ## 常犯错误(P0 检查项)
 
-1. ❌ 卡片各自使用不同圆角或保持生硬直角 → ✅ 卡片统一使用 `border-radius:var(--radius-sm)`（8px）；接触 x 轴的垂直柱体只圆顶部两角，底角保持直角；S19 Bento 只圆整体外框
+1. ❌ 卡片各自使用不同圆角或保持生硬直角 → ✅ 卡片统一使用 `border-radius:var(--radius-sm)`（8px）；接触 x 轴的垂直柱体只圆顶部两角，底角保持直角；S19 Bento 只圆整体外框，S28 每张独立卡使用 8px
 2. ❌ 在 `.card-accent` 上又加描边 → ✅ 卡片填充类型互斥
 3. ❌ 自己画 SVG 图标或 SVG 插画配图 → ✅ 图标用 Google Material Symbols Outlined；配图从 `assets/media/` 或用户素材中选择
 4. ❌ 时间线 dot 用 grid `justify-self` 对齐虚线 → ✅ axis 列固定 12px + dot 绝对定位

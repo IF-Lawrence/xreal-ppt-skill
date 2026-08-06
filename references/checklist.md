@@ -8,15 +8,15 @@
 
 ## 🔴 P0 · 一定不能犯的错
 
-### 0-S. XREAL Style locked mode:正文页必须来自 25 个正式登记版式
+### 0-S. XREAL Style locked mode:正文页必须来自 26 个正式登记版式
 
 **现象**:颜色、字体看起来像 XREAL Style,但标题跑到中间、图片不在网格上、页面结构和正式登记版式完全不是一套东西。
 
-**根因**:生成时把 XREAL Style 当成风格包,自由组合了未登记结构或 SVG 插画页面,没有从 25 个正式登记版式里选。历史实验 `P23/P24` 与正式 `S23/S24` 不是同一组 ID。
+**根因**:生成时把 XREAL Style 当成风格包,自由组合了未登记结构或 SVG 插画页面,没有从 26 个正式登记版式里选。历史实验 `P23/P24` 与正式 `S23/S24` 不是同一组 ID。
 
 **做法**:
 - 先读 `references/swiss-layout-lock.md`
-- 正文页只能使用 `S01-S08`、`S11-S27`;`S09/S10` 已移除;新增首页/尾页只能使用 `XREAL-COVER-BLACK` / `XREAL-CLOSING-BLACK`
+- 正文页只能使用 `S01-S08`、`S11-S28`;`S09/S10` 已移除;新增首页/尾页只能使用 `XREAL-COVER-BLACK` / `XREAL-CLOSING-BLACK`
 - 每个 `<section class="slide">` 必须写 `data-layout="Sxx"`
 - 生成后必须运行:
 
@@ -37,6 +37,7 @@ node <SKILL_ROOT>/scripts/validate-swiss-deck.mjs path/to/index.html
 - S25 缺少时间轴、能力轴、中性泳道、3-7 个百分比定位媒体节点或示意来源声明
 - S26 缺少 4-6 个完整里程碑、媒体证据、底部综合链或来源
 - S27 缺少总述带、恰好 3 个完整主面板、7-12 个条目或来源；出现多个焦点区、多个媒体或 dashboard 控件
+- S28 缺少 6-9 卡、恰好 1 个主卡、2-3 个中卡、至少 3 种面积或来源；卡片越界、重叠、媒体契约错误或面积与优先级无关
 
 ### 0-S-2. XREAL Style 顶部标题默认左上,不是居中
 
@@ -204,7 +205,7 @@ node <SKILL_ROOT>/scripts/validate-swiss-deck.mjs path/to/index.html
 - `rg -n 'data-layout="S2[34]"' index.html` 后逐页确认 `.chart-unit`、`.chart-source` 和 HTML 坐标标签齐全。
 - `rg -n '<svg[^>]*class="[^"]*line-chart-svg[\s\S]*?<text' index.html`——应无结果。
 
-### 0-B-5. S25/S26/S27 必须保留结构语义，不复制参考图视觉
+### 0-B-5. S25/S26/S27/S28 必须保留结构语义，不复制参考图视觉
 
 **现象**:产品路线被做成蓝色 dashboard，纵轴短标签占用过宽空列；或里程碑卡片使用大圆角、阴影、强调色和 filled ribbon，破坏 XREAL 设计规范。
 
@@ -214,11 +215,12 @@ node <SKILL_ROOT>/scripts/validate-swiss-deck.mjs path/to/index.html
 - `S26 Milestone Gallery` 只用于 4-6 个有媒体证据的阶段；每项必须有阶段、媒体、标题和短说明。
 - S26 每个阶段使用统一浅灰底、1px 边界、等距 padding 和 8px 小圆角卡片；卡片等高、间距一致，不使用阴影或单独强调色。底部综合链保持 hairline + 文本 + 箭头，不做按钮、ribbon 或蓝色导航条。
 - `S27 Dense Synthesis` 只用于三组相互依赖信息必须同页的情况；固定为总述带 + 3 个等高主面板 + 7-12 个条目。正文 ≥16px，meta ≥14px，最多 1 个黑色焦点区和 1 张语义媒体；媒体只能作为焦点区的 `cover + darken` 背景，不做小缩略图。
-- 三者只使用黑白灰结构；媒体框、S25 节点、S26 卡片和 S27 主面板使用 8px 小圆角、无阴影。红色最多标记一个有语义依据的关键节点。
+- `S28 Priority Bento` 只用于一个明确主卖点、2-3 个次级技术点和若干支持信息；固定为 12×6 网格、6-9 卡、恰好 1 个主卡、2-3 个中卡且至少 3 种面积。每卡必须声明 `--col/--span/--row/--rows`，面积必须对应真实优先级，不得随机拼贴。
+- 四者只使用黑白灰结构；媒体框、S25 节点、S26 卡片、S27 主面板和 S28 单卡使用 8px 小圆角、无阴影。红色最多标记一个有语义依据的关键节点。S28 媒体限 1-4 张，压图文字使用 `cover + darken`，非压字媒体使用 `contain + none`。
 
 **自检命令**:
-- `rg -n 'data-layout="S25"[^>]*data-animate="portfolio-roadmap"|data-layout="S26"[^>]*data-animate="milestone-gallery"|data-layout="S27"[^>]*data-animate="dense-synthesis"' index.html`
-- `rg -n 'roadmap-(item|media|source)|milestone-(entry|media|synthesis|chain|source)|dense-(thesis|panel|item|source)' index.html` 后逐页确认数量与必填结构。
+- `rg -n 'data-layout="S25"[^>]*data-animate="portfolio-roadmap"|data-layout="S26"[^>]*data-animate="milestone-gallery"|data-layout="S27"[^>]*data-animate="dense-synthesis"|data-layout="S28"[^>]*data-animate="priority-bento"' index.html`
+- `rg -n 'roadmap-(item|media|source)|milestone-(entry|media|synthesis|chain|source)|dense-(thesis|panel|item|source)|priority-(bento|tile|media|source)' index.html` 后逐页确认数量与必填结构。
 
 ### 0-B-6. XREAL ECharts 只处理复杂数据形状
 
@@ -365,7 +367,7 @@ node <SKILL_ROOT>/scripts/validate-swiss-deck.mjs path/to/index.html
 - 再回代码看结构:该页是否用了正确版式,必选组件是否齐,可选组件是否过度
 - 对照原始 PPT 时以实际画面为准;raw CSS helper 只能辅助,不能替代视觉判断
 - 判断问题来源:版式选错 / 必选组件缺失 / 可选组件滥用 / 间距和安全区问题
-- 通用版式(S03/S08/S11/S19)可多用;数据专用(S06/S07/S20/S21/S22/S23/S24)必须有真实数据或案例,S24 还必须有连续横轴;结构专用(S14/S15/S17/S25/S26/S27)必须有闭环、矩阵、层级关系、二维路线、媒体化阶段证据或必须同页的三组综合
+- 通用版式(S03/S08/S11/S19)可多用;数据专用(S06/S07/S20/S21/S22/S23/S24)必须有真实数据或案例,S24 还必须有连续横轴;结构专用(S14/S15/S17/S25/S26/S27/S28)必须有闭环、矩阵、层级关系、二维路线、媒体化阶段证据、必须同页的三组综合或真实卖点优先级
 ---
 
 ### 0. 生成前必须通过的类名校验(最重要)
@@ -657,7 +659,7 @@ JS 动态计算总页数并扩展底部翻页圆点；页面内容层不得再�
 预检(生成前)
   □ 新任务已完成 Skill 更新检查；如检测到更新，已询问用户并按其选择处理
   □ 已读过 template-xreal.html 的 <style>,确认所需类都存在
-  □ 已决定每页使用哪个正式登记版式（S01-S08、S11-S27；S09/S10 已移除）
+  □ 已决定每页使用哪个正式登记版式（S01-S08、S11-S28；S09/S10 已移除）
   □ 已画出"主题节奏表":每页明确 hero dark / hero light / light / dark
   □ 节奏表满足硬规则:无连续 3 页同主题 / 有 ≥1 hero dark + ≥1 hero light(8 页以上) / 至少有 1 个 dark 正文页
   □ `<title>` 已改为实际 deck 标题(grep "[必填]" 应无结果)
@@ -699,6 +701,7 @@ JS 动态计算总页数并扩展底部翻页圆点；页面内容层不得再�
   □ S25 确实存在时间/阶段与第二层级维度；2-4 个 period、2-4 条中性 lane、3-7 个媒体节点均完整落在 plot 内，节点不重叠；纵轴标签列收紧并左对齐，标签到 plot 为 12-24px；示意位置已声明 illustrative
   □ S26 有 4-6 个完整阶段，每阶段的媒体都与语义匹配；卡片统一浅灰底、1px 边界、等距 padding、8px 圆角且等高，底部综合链没有变成按钮或 filled ribbon
   □ S27 只在信息必须同时可见时使用；有 1 个总述带、恰好 3 个等高主面板、7-12 个条目和来源；每面板至少 2 项，正文 ≥16px、meta ≥14px，最多 1 个焦点区与 1 张 `cover + darken` 背景媒体，没有自动拆页
+  □ S28 只在存在真实卖点优先级时使用；12×6 网格中有 6-9 卡、恰好 1 个主卡、2-3 个中卡、至少 3 种面积且无重叠越界；主卡占约 28%-48%，1-4 张媒体均符合 cover/darken 或 contain/none 契约
 
 排版
   □ 所有大标题没有出现 1 字 1 行的换行
@@ -713,13 +716,13 @@ JS 动态计算总页数并扩展底部翻页圆点；页面内容层不得再�
 视觉
   □ hero 页和 non-hero 页交替
   □ hero 页使用静态纯色背景,没有 WebGL、ASCII、点阵、纹理或动态装饰
-  □ S04/S05/S06/S07/S13/S16/S26/S27 的卡片型实体块和图片统一使用 8px 小圆角；S06/S23 等基线柱体仅顶部圆角、底角为 0 且贴齐 x 轴；S19 Bento 只圆整体外框、内部直角
+  □ S04/S05/S06/S07/S13/S16/S26/S27/S28 的卡片型实体块和图片统一使用 8px 小圆角；S06/S23 等基线柱体仅顶部圆角、底角为 0 且贴齐 x 轴；S19 Bento 只圆整体外框、内部直角
   □ S04/S16 卡片四边 padding 相等，S04 编号的 top/right 相等；S16 默认六卡等权，若存在强调卡，其内容确有优先级依据、已声明 `data-emphasis`，且反白文字有足够反差
   □ KPI / 图表大数字的单位统一位于右上肩位且不拆行；`screen` 等英文词单位使用 `.unit-word` 与正常字距；正文单位随正文基线；角度没有使用下标；中文标题没有斜体
   □ S22 图片上的标题为直接叠加的高对比文本，没有白底卡片、色块或半透明面板
   □ S07/S23/S24 与 ECharts 共用 `--chart-series-1/2/3/4` 中性色阶和 `--chart-critical`；没有蓝灰/临时色或无语义红色，最多一个红色关键系列/点
   □ S24 SVG 只包含线、点和数据几何,没有 `<text>`、面积渐变或无说明双轴
-  □ S25/S26/S27 没有复制参考图的蓝色 tabs、多彩泳道、UI 控件、大圆角或阴影；媒体框、S25 节点、S26 阶段卡和 S27 主面板保持 8px 小圆角
+  □ S25/S26/S27/S28 没有复制参考图的蓝色 tabs、多彩泳道、彩色渐变、UI 控件、大圆角或阴影；媒体框、S25 节点、S26 阶段卡、S27 主面板和 S28 单卡保持 8px 小圆角
   □ ECharts 只用于登记的复杂图表类型,保留正式版式,使用离线 bundle 与 XREAL 受控主题
   □ ECharts 页面在 B 静态模式可读,无默认 tooltip/toolbox、彩虹色、阴影、渐变或 dashboard 控件
   □ 没有发光、霓虹、大圆角、胶囊形或 SVG/Canvas/CSS 插画配图
@@ -741,7 +744,7 @@ JS 动态计算总页数并扩展底部翻页圆点；页面内容层不得再�
   □ 大引用页 `<section>` 带 `data-animate="quote"`,每行 `<span data-anim="line">`
   □ Before/After 对比页 `<section>` 带 `data-animate="directional"`,左右列标 left/right
   □ Pipeline 页 `<section>` 带 `data-animate="pipeline"`,每 step 标 data-anim="step"
-  □ S23 使用 `chart-rise`,S24 使用 `line-draw`,S25 使用 `portfolio-roadmap`,S26 使用 `milestone-gallery`,S27 使用 `dense-synthesis`;低功耗模式下全部结构仍可见
+  □ S23 使用 `chart-rise`,S24 使用 `line-draw`,S25 使用 `portfolio-roadmap`,S26 使用 `milestone-gallery`,S27 使用 `dense-synthesis`,S28 使用 `priority-bento`;低功耗模式下全部结构仍可见
   □ `grep -c 'data-anim' index.html` 数量 ≥ 页数 × 3(平均每页 3 个以上标记)
 ```
 

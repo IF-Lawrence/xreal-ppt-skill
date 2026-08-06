@@ -463,6 +463,12 @@
   .unit-degree{display:inline-block;font-size:.34em;line-height:1;vertical-align:text-top;margin-left:var(--unit-degree-gap);letter-spacing:0;opacity:var(--unit-mark-opacity);white-space:nowrap}
   .ledger-num .unit{display:inline-block;font-size:.32em;font-weight:var(--weight-label);line-height:1;vertical-align:text-top;margin-left:var(--unit-mark-gap);letter-spacing:0;opacity:var(--unit-mark-opacity);white-space:nowrap}
   .ledger-num .unit-degree{margin-left:var(--unit-degree-gap)}
+  .priority-value .unit{
+    display:inline-block;font-size:.34em;font-weight:var(--weight-label);line-height:1;
+    vertical-align:text-top;margin-left:var(--unit-mark-gap);letter-spacing:0;
+    opacity:var(--unit-mark-opacity);white-space:nowrap
+  }
+  .priority-value .unit-degree{margin-left:var(--unit-degree-gap)}
   .kpi-hero,.kpi-big,.kpi-mid,.kpi-thin,.kpi-thin-sm,
   .kpi-cell .nb,.stat-card .stat-nb,.tl-node .multi,
   .bar-tower .nb,.h-bar-chart .row-val{white-space:nowrap}
@@ -1412,6 +1418,38 @@
   .dense-feature-icon{font-family:"Material Symbols Outlined";font-size:max(24px,1.55vw);font-weight:400;line-height:1;color:var(--ink)}
   .dense-feature .dense-item-copy{grid-column:2}
 
+  /* S28 Priority Bento: 面积表达真实卖点优先级；每张卡独立 8px 小圆角。 */
+  .priority-bento{
+    display:grid;grid-template-columns:repeat(12,minmax(0,1fr));grid-template-rows:repeat(6,minmax(0,1fr));
+    gap:clamp(12px,1vw,18px);flex:1;min-height:0;margin-top:3.6vh
+  }
+  .priority-tile{
+    grid-column:var(--col) / span var(--span);grid-row:var(--row) / span var(--rows);
+    position:relative;isolation:isolate;min-width:0;min-height:0;overflow:hidden;
+    display:flex;flex-direction:column;justify-content:space-between;gap:1vh;
+    padding:clamp(14px,1.25vw,22px);background:var(--paper);color:var(--ink);
+    border:1px solid var(--border-subtle);border-radius:var(--radius-sm);box-shadow:none
+  }
+  .priority-tile.is-primary{background:var(--ink);color:var(--paper)}
+  .priority-tile.is-secondary{background:var(--grey-1)}
+  .priority-tile.is-critical{border-top:2px solid var(--chart-critical)}
+  .priority-tile.has-media::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:transparent}
+  .priority-tile.has-media.media-darken::after{background:rgba(0,0,0,var(--priority-scrim-alpha,.38))}
+  .priority-media{position:absolute;z-index:0;display:block;min-width:0;min-height:0}
+  .priority-media[data-media-fit="cover"]{inset:0;width:100%;height:100%;object-fit:cover;object-position:center}
+  .priority-media[data-media-fit="contain"]{right:5%;bottom:5%;width:48%;height:72%;object-fit:contain;object-position:center}
+  .priority-tile.has-media > :not(.priority-media){position:relative;z-index:2}
+  .priority-tile.media-darken{color:var(--paper)}
+  .priority-kicker{font-size:max(14px,.72vw);font-weight:var(--weight-label);line-height:1.25;color:var(--text-helper)}
+  .priority-tile.is-primary .priority-kicker,.priority-tile.media-darken .priority-kicker{color:rgba(255,255,255,.66)}
+  .priority-title{font-size:max(18px,1.35vw);font-weight:var(--weight-title);line-height:1.08;letter-spacing:-.015em}
+  .priority-tile.is-primary .priority-title{font-size:min(2.75vw,4.8vh);max-width:14ch}
+  .priority-copy{font-size:max(16px,.82vw);line-height:1.38;color:var(--text-secondary);max-width:38ch;margin-top:1.6vh}
+  .priority-tile.is-primary .priority-copy,.priority-tile.media-darken .priority-copy{color:rgba(255,255,255,.74)}
+  .priority-value{font-size:min(3.5vw,6.1vh);font-weight:var(--weight-emphasis);line-height:.92;letter-spacing:-.035em;font-feature-settings:"tnum"}
+  .priority-tile.is-support .priority-value{font-size:min(2.65vw,4.7vh)}
+  .priority-source{margin-top:.8vh;padding-top:.8vh;border-top:1px solid var(--border-subtle);font-size:max(14px,.72vw);line-height:1.35;color:var(--text-helper)}
+
   /* XREAL ECharts 扩展：复杂图表使用现有版式骨架，不生成 dashboard 容器 */
   .xreal-echart-stage{
     position:relative;flex:1;min-height:0;margin-top:2.4vh;
@@ -2081,6 +2119,38 @@
       </div>
       <div class="dense-source">Structure fixture · illustrative synthesis, not product roadmap or sourced market claim</div>
     </div>
+  </div>
+</section>
+
+<section class="slide light layout-lab" data-layout="S28" data-animate="priority-bento">
+  <div class="canvas-card">
+    <header class="chrome-min"><div class="l brand"><img class="xreal-logo" src="assets/brand/xreal-logo-black.svg" alt="XREAL"><span>One Pro · Priority Bento</span></div><div class="r">Area-led hierarchy</div></header>
+    <div data-anim="line" class="lab-head"><div class="t-cat lab-synthetic">示意结构 · 面积对应真实卖点优先级</div><h2 class="xreal-page-title">面积，让核心卖点先被看见</h2></div>
+    <div class="priority-bento" aria-label="One Pro 核心卖点优先级示例">
+      <article class="priority-tile is-primary has-media media-darken" style="--col:1;--span:6;--row:1;--rows:4;--priority-scrim-alpha:.44">
+        <img class="priority-media" data-image-slot="s28-priority-media" data-media-role="feature-evidence" data-media-fit="cover" data-media-contrast="darken" src="images/29-priority-optics.jpg" alt="One Pro 光机与镜片正面特写">
+        <span class="priority-kicker">主卖点 · Optics</span>
+        <div><h3 class="priority-title">57<span class="unit unit-degree">°</span> FoV，更接近自然注视</h3><p class="priority-copy">让空间画面向视野边界延伸，成为整页最需要先被理解的体验变化。</p></div>
+      </article>
+      <article class="priority-tile is-secondary has-media media-darken" style="--col:7;--span:3;--row:1;--rows:3;--priority-scrim-alpha:.26">
+        <img class="priority-media" data-image-slot="s28-priority-media" data-media-role="feature-evidence" data-media-fit="cover" data-media-contrast="darken" src="images/29-priority-chip.jpg" alt="One Pro X1 芯片装配展示">
+        <span class="priority-kicker">X1 Chip</span>
+        <div><div class="priority-value">3<span class="unit">ms</span></div><h3 class="priority-title">端侧空间响应</h3></div>
+      </article>
+      <article class="priority-tile is-secondary" style="--col:10;--span:3;--row:1;--rows:3">
+        <span class="priority-kicker">Equivalent screen</span>
+        <div><div class="priority-value">171<span class="unit">in</span></div><h3 class="priority-title">4 米处的无界巨幕</h3></div>
+      </article>
+      <article class="priority-tile is-secondary has-media media-darken" style="--col:7;--span:6;--row:4;--rows:3;--priority-scrim-alpha:.38">
+        <img class="priority-media" data-image-slot="s28-priority-media" data-media-role="feature-evidence" data-media-fit="cover" data-media-contrast="darken" src="images/29-priority-lifestyle.jpg" alt="用户在明亮客厅佩戴 One Pro 观看空间视频">
+        <span class="priority-kicker">Everyday spatial</span>
+        <div><h3 class="priority-title">把大屏带进真实日常</h3><p class="priority-copy">媒体展示使用场景，面积仍由卖点重要性决定。</p></div>
+      </article>
+      <article class="priority-tile is-support" style="--col:1;--span:2;--row:5;--rows:2"><span class="priority-kicker">Refresh</span><div><div class="priority-value">120<span class="unit">Hz</span></div><h3 class="priority-title">流畅显示</h3></div></article>
+      <article class="priority-tile is-support" style="--col:3;--span:2;--row:5;--rows:2"><span class="priority-kicker">Dimming</span><div><div class="priority-value">3<span class="unit">档</span></div><h3 class="priority-title">电致变色</h3></div></article>
+      <article class="priority-tile is-support" style="--col:5;--span:2;--row:5;--rows:2"><span class="priority-kicker">Connect</span><div><div class="priority-value">USB-C</div><h3 class="priority-title">即插即用</h3></div></article>
+    </div>
+    <div class="priority-source">Structure fixture · values and media shown only for layout validation</div>
   </div>
 </section>
 
@@ -3014,6 +3084,20 @@ if(motion){
     if(source) animate(source, {opacity:[0,1]}, {duration:.28, delay:1.18, easing:EASE_PROD});
   }
 
+  /* ---------- recipe: priority-bento · S28 面积优先级 Bento ---------- */
+  function rPriorityBento(slide){
+    const head = slide.querySelector('[data-anim="line"]');
+    if(head) fade(head, {duration:.5, y:8});
+    const primary = slide.querySelector('.priority-tile.is-primary');
+    if(primary) animate(primary, {opacity:[0,1], y:[10,0]}, {duration:.52, delay:.24, easing:EASE_ENTRY_EXP});
+    slide.querySelectorAll('.priority-tile.is-secondary').forEach((tile, i)=>animate(tile,
+      {opacity:[0,1], y:[10,0]}, {duration:.46, delay:.46 + i*.13, easing:EASE_ENTRY_EXP}));
+    slide.querySelectorAll('.priority-tile.is-support').forEach((tile, i)=>animate(tile,
+      {opacity:[0,1]}, {duration:.32, delay:.82 + i*.08, easing:EASE_PROD}));
+    const source = slide.querySelector('.priority-source');
+    if(source) animate(source, {opacity:[0,1]}, {duration:.28, delay:1.14, easing:EASE_PROD});
+  }
+
   /* ---------- recipe: duo-mirror · Latent vs Deterministic ----------
      左 80ms 入,vrule 从中心 scaleY 0→1,右 240ms 入 */
   function rDuoMirror(slide, all){
@@ -3442,12 +3526,13 @@ if(motion){
     'portfolio-roadmap': rPortfolioRoadmap,
     'milestone-gallery': rMilestoneGallery,
     'dense-synthesis': rDenseSynthesis,
+    'priority-bento': rPriorityBento,
   };
 
   function revealStatic(slide){
     resetAnims(slide);
     document.getAnimations?.().forEach(a=>a.cancel());
-    slide.querySelectorAll('[data-anim],.row-fill,.tl-node,.stack-block,.bar-tower,.sub-card,.col,.vrule,.kpi-cell,.card-fill,.card-accent,.card-ink,.chart-bar,.chart-value,.chart-line,.chart-point,.line-end-label,.roadmap-item,.milestone-entry,.milestone-synthesis,.dense-thesis,.dense-panel,.dense-item,.dense-source')
+    slide.querySelectorAll('[data-anim],.row-fill,.tl-node,.stack-block,.bar-tower,.sub-card,.col,.vrule,.kpi-cell,.card-fill,.card-accent,.card-ink,.chart-bar,.chart-value,.chart-line,.chart-point,.line-end-label,.roadmap-item,.milestone-entry,.milestone-synthesis,.dense-thesis,.dense-panel,.dense-item,.dense-source,.priority-tile,.priority-source')
       .forEach(el=>{
         el.style.opacity='1';
         el.style.transform='none';

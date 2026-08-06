@@ -56,7 +56,7 @@ const allowedLayouts = new Set([
   'XREAL-CLOSING-BLACK',
   'S01', 'S02', 'S03', 'S04', 'S05', 'S06', 'S07', 'S08',
   'S11', 'S12', 'S13', 'S14', 'S15', 'S16', 'S17',
-  'S18', 'S19', 'S20', 'S21', 'S22', 'S23', 'S24', 'S25', 'S26', 'S27',
+  'S18', 'S19', 'S20', 'S21', 'S22', 'S23', 'S24', 'S25', 'S26', 'S27', 'S28',
 ]);
 const echartsKindsByLayout = new Map([
   ['S23', new Set(['bar', 'mixed', 'scatter', 'bubble', 'heatmap', 'waterfall', 'boxplot', 'candlestick'])],
@@ -305,7 +305,7 @@ slides.forEach((slide) => {
   }
 
   if (!layout) {
-    errors.push(`Slide ${slide.idx}: missing data-layout. XREAL Style locked mode requires a registered layout (S01-S08 or S11-S27) or XREAL-COVER-BLACK/XREAL-CLOSING-BLACK.`);
+    errors.push(`Slide ${slide.idx}: missing data-layout. XREAL Style locked mode requires a registered layout (S01-S08 or S11-S28) or XREAL-COVER-BLACK/XREAL-CLOSING-BLACK.`);
   } else if (!allowedLayouts.has(layout)) {
     errors.push(`Slide ${slide.idx}: data-layout="${layout}" is not registered in swiss-layout-lock.md.`);
   }
@@ -886,6 +886,52 @@ slides.forEach((slide) => {
       }
     });
     if (/\bclass="[^"]*\b(?:pill|badge|chip|tab|button|ribbon)\b[^"]*"/i.test(slide.html)) errors.push(`Slide ${slide.idx}: S27 contains dashboard/control classes. Keep the dense synthesis editorial and structural.`);
+  }
+
+  if (layout === 'S28') {
+    const classCount = (name) => [...slide.html.matchAll(/\bclass="([^"]*)"/g)]
+      .filter((match) => match[1].split(/\s+/).includes(name)).length;
+    if (classCount('priority-bento') !== 1) errors.push(`Slide ${slide.idx}: S28 requires exactly one .priority-bento.`);
+    if (classCount('priority-source') !== 1) errors.push(`Slide ${slide.idx}: S28 requires exactly one .priority-source.`);
+    if (!/\bdata-animate="priority-bento"/.test(slide.tag)) errors.push(`Slide ${slide.idx}: S28 Priority Bento must use data-animate="priority-bento".`);
+    const tileTags = [...slide.html.matchAll(/<article\b(?=[^>]*\bclass="[^"]*\bpriority-tile\b[^"]*")[^>]*>/g)].map((match) => match[0]);
+    const primaryTags = tileTags.filter((tag) => /\bclass="[^"]*\bis-primary\b/.test(tag));
+    const secondaryTags = tileTags.filter((tag) => /\bclass="[^"]*\bis-secondary\b/.test(tag));
+    const supportTags = tileTags.filter((tag) => /\bclass="[^"]*\bis-support\b/.test(tag));
+    if (tileTags.length < 6 || tileTags.length > 9) errors.push(`Slide ${slide.idx}: S28 requires 6-9 .priority-tile cards; found ${tileTags.length}.`);
+    if (primaryTags.length !== 1) errors.push(`Slide ${slide.idx}: S28 requires exactly one .priority-tile.is-primary; found ${primaryTags.length}.`);
+    if (secondaryTags.length < 2 || secondaryTags.length > 3) errors.push(`Slide ${slide.idx}: S28 requires 2-3 .priority-tile.is-secondary cards; found ${secondaryTags.length}.`);
+    if (primaryTags.length + secondaryTags.length + supportTags.length !== tileTags.length) errors.push(`Slide ${slide.idx}: every S28 tile must declare exactly one hierarchy role: is-primary, is-secondary, or is-support.`);
+    const placements = tileTags.map((tag, index) => {
+      const read = (name) => Number(tag.match(new RegExp(`--${name}\\s*:\\s*(\\d+)`))?.[1]);
+      const box = { index: index + 1, col: read('col'), span: read('span'), row: read('row'), rows: read('rows') };
+      if (Object.values(box).slice(1).some((value) => !Number.isInteger(value))) errors.push(`Slide ${slide.idx}: S28 tile ${index + 1} must declare integer --col/--span/--row/--rows values.`);
+      if (box.col < 1 || box.span < 1 || box.row < 1 || box.rows < 1 || box.col + box.span - 1 > 12 || box.row + box.rows - 1 > 6) errors.push(`Slide ${slide.idx}: S28 tile ${index + 1} falls outside the registered 12x6 grid.`);
+      return box;
+    });
+    placements.forEach((a, index) => placements.slice(index + 1).forEach((b) => {
+      const overlap = a.col < b.col + b.span && a.col + a.span > b.col && a.row < b.row + b.rows && a.row + a.rows > b.row;
+      if (overlap) errors.push(`Slide ${slide.idx}: S28 tiles ${a.index} and ${b.index} overlap in the 12x6 grid.`);
+    }));
+    const areaKinds = new Set(placements.map((box) => box.span * box.rows));
+    if (areaKinds.size < 3) errors.push(`Slide ${slide.idx}: S28 needs at least 3 distinct card areas; found ${areaKinds.size}.`);
+    const primaryIndex = tileTags.findIndex((tag) => /\bclass="[^"]*\bis-primary\b/.test(tag));
+    if (primaryIndex >= 0) {
+      const primary = placements[primaryIndex];
+      const ratio = primary.span * primary.rows / 72;
+      if (primary.span < 5 || primary.rows < 3 || ratio < .28 || ratio > .48) errors.push(`Slide ${slide.idx}: S28 primary tile must be at least 5x3 and occupy 28%-48% of the grid; found ${primary.span}x${primary.rows} (${(ratio * 100).toFixed(1)}%).`);
+    }
+    const mediaTags = [...slide.html.matchAll(/<img\b(?=[^>]*\bclass="[^"]*\bpriority-media\b[^"]*")[^>]*>/g)].map((match) => match[0]);
+    if (mediaTags.length < 1 || mediaTags.length > 4) errors.push(`Slide ${slide.idx}: S28 requires 1-4 semantic media items; found ${mediaTags.length}.`);
+    mediaTags.forEach((tag, index) => {
+      const fit = tag.match(/\bdata-media-fit="(cover|contain)"/)?.[1];
+      const contrast = tag.match(/\bdata-media-contrast="(darken|none)"/)?.[1];
+      if (!/\bdata-image-slot="s28-priority-media"/.test(tag) || !/\bdata-media-role="feature-evidence"/.test(tag) || !fit || !contrast) errors.push(`Slide ${slide.idx}: S28 media ${index + 1} must declare the registered slot, feature-evidence role, fit, and contrast.`);
+      if ((fit === 'cover' && contrast !== 'darken') || (fit === 'contain' && contrast !== 'none')) errors.push(`Slide ${slide.idx}: S28 media ${index + 1} must use cover + darken for text overlays or contain + none for inset evidence.`);
+    });
+    const criticalCount = tileTags.filter((tag) => /\bclass="[^"]*\bis-critical\b/.test(tag)).length;
+    if (criticalCount > 1) errors.push(`Slide ${slide.idx}: S28 allows at most one semantically justified .is-critical tile; found ${criticalCount}.`);
+    if (/\bclass="[^"]*\b(?:pill|badge|chip|tab|button|ribbon)\b[^"]*"/i.test(slide.html)) errors.push(`Slide ${slide.idx}: S28 contains dashboard/control classes. Keep the Bento editorial and area-led.`);
   }
 });
 
@@ -1600,6 +1646,61 @@ async function runRenderedMeasurements() {
         return issues.map((issue) => ({ node: labelFor(synthesis), issue }));
       };
 
+      const priorityBentoChecks = (el) => {
+        const bento = el.querySelector('.priority-bento');
+        const tiles = Array.from(el.querySelectorAll('.priority-tile'));
+        if (!bento || !tiles.length) return [];
+        const issues = [];
+        const bentoRect = bento.getBoundingClientRect();
+        const bentoStyle = getComputedStyle(bento);
+        const colGap = parseFloat(bentoStyle.columnGap);
+        const rowGap = parseFloat(bentoStyle.rowGap);
+        if (![colGap, rowGap].every(Number.isFinite) || colGap < 11.5 || colGap > 20.5 || rowGap < 11.5 || rowGap > 20.5) issues.push(`grid gaps render at ${colGap}px / ${rowGap}px; expected a consistent 12-20px rhythm`);
+        const rects = tiles.map((tile) => tile.getBoundingClientRect());
+        rects.forEach((rect, index) => {
+          if (rect.left < bentoRect.left - 1 || rect.top < bentoRect.top - 1 || rect.right > bentoRect.right + 1 || rect.bottom > bentoRect.bottom + 1) issues.push(`tile ${index + 1} falls outside the Bento bounds`);
+          rects.slice(index + 1).forEach((other, offset) => {
+            const overlapX = Math.min(rect.right, other.right) - Math.max(rect.left, other.left);
+            const overlapY = Math.min(rect.bottom, other.bottom) - Math.max(rect.top, other.top);
+            if (overlapX > 1 && overlapY > 1) issues.push(`tiles ${index + 1} and ${index + offset + 2} overlap after rendering`);
+          });
+          const tile = tiles[index];
+          const style = getComputedStyle(tile);
+          const radii = [style.borderTopLeftRadius, style.borderTopRightRadius, style.borderBottomRightRadius, style.borderBottomLeftRadius].map(parseFloat);
+          if (radii.some((value) => !Number.isFinite(value) || value < 7 || value > 9)) issues.push(`tile ${index + 1} uses corner radii ${radii.join('/')}; expected 8px`);
+          const borders = [style.borderTopWidth, style.borderRightWidth, style.borderBottomWidth, style.borderLeftWidth].map(parseFloat);
+          const topMax = tile.classList.contains('is-critical') ? 2.25 : 1.25;
+          if (!Number.isFinite(borders[0]) || borders[0] < .75 || borders[0] > topMax || borders.slice(1).some((value) => !Number.isFinite(value) || value < .75 || value > 1.25)) issues.push(`tile ${index + 1} does not use the registered flat 1px boundary`);
+          const paddings = [style.paddingTop, style.paddingRight, style.paddingBottom, style.paddingLeft].map(parseFloat);
+          if (paddings.some((value) => !Number.isFinite(value)) || Math.max(...paddings) - Math.min(...paddings) > 1.25) issues.push(`tile ${index + 1} must keep equal padding on all four sides`);
+          if (style.boxShadow !== 'none') issues.push(`tile ${index + 1} uses a box shadow`);
+          if (tile.scrollHeight - tile.clientHeight > 2 || tile.scrollWidth - tile.clientWidth > 2) issues.push(`tile ${index + 1} content overflows its region`);
+        });
+        const primary = el.querySelector('.priority-tile.is-primary');
+        if (primary) {
+          const rect = primary.getBoundingClientRect();
+          const ratio = rect.width * rect.height / (bentoRect.width * bentoRect.height);
+          if (ratio < .28 || ratio > .48) issues.push(`primary tile uses ${(ratio * 100).toFixed(1)}% of the rendered Bento; expected 28%-48%`);
+        }
+        const areaKinds = new Set(rects.map((rect) => `${Math.round(rect.width / 8)}x${Math.round(rect.height / 8)}`));
+        if (areaKinds.size < 3) issues.push(`only ${areaKinds.size} visibly distinct card areas render; expected at least 3`);
+        el.querySelectorAll('.priority-copy').forEach((copy, index) => {
+          const size = parseFloat(getComputedStyle(copy).fontSize);
+          if (!Number.isFinite(size) || size < 15.5) issues.push(`copy ${index + 1} renders at ${size}px; expected at least 16px`);
+        });
+        el.querySelectorAll('.priority-kicker,.priority-source').forEach((meta, index) => {
+          const size = parseFloat(getComputedStyle(meta).fontSize);
+          if (!Number.isFinite(size) || size < 13.5) issues.push(`meta label ${index + 1} renders at ${size}px; expected at least 14px`);
+        });
+        el.querySelectorAll('.priority-media[data-media-fit="cover"]').forEach((media, index) => {
+          const mediaRect = media.getBoundingClientRect();
+          const parentRect = media.parentElement?.getBoundingClientRect();
+          if (!parentRect || mediaRect.width / parentRect.width < .95 || mediaRect.height / parentRect.height < .95) issues.push(`cover media ${index + 1} does not cover at least 95% of its tile`);
+          if (!media.parentElement?.classList.contains('media-darken')) issues.push(`cover media ${index + 1} lacks the registered darkened text-overlay treatment`);
+        });
+        return issues.map((issue) => ({ node: labelFor(bento), issue }));
+      };
+
       return els.map((el, index) => {
         const er = el.getBoundingClientRect();
         const H = el.clientHeight;
@@ -1668,6 +1769,7 @@ async function runRenderedMeasurements() {
           portfolioRoadmapIssues: portfolioRoadmapChecks(el),
           milestoneGalleryIssues: milestoneGalleryChecks(el),
           denseSynthesisIssues: denseSynthesisChecks(el),
+          priorityBentoIssues: priorityBentoChecks(el),
           echartsIssues: Array.from(el.querySelectorAll('.xreal-echart')).filter((node) => node.dataset.echartsState !== 'ready').map((node) => ({
             state: node.dataset.echartsState || 'uninitialized',
             message: node.dataset.echartsMessage || 'Chart did not reach ready state.',
@@ -1761,6 +1863,9 @@ async function runRenderedMeasurements() {
       }
       for (const issue of m.denseSynthesisIssues) {
         errors.push(`${prefix}: ${issue.node} ${issue.issue}. S27 must preserve one-page comparison through three aligned neutral regions, readable type, and at most one focus block.`);
+      }
+      for (const issue of m.priorityBentoIssues) {
+        errors.push(`${prefix}: ${issue.node} ${issue.issue}. S28 must use a complete non-overlapping 12x6 area hierarchy, flat 8px cards, readable type, and restrained semantic media.`);
       }
       for (const issue of m.echartsIssues) {
         errors.push(`${prefix}: ECharts runtime is ${issue.state}: ${issue.message}`);

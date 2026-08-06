@@ -473,6 +473,12 @@
     opacity:var(--unit-mark-opacity);white-space:nowrap
   }
   .ledger-num .unit-degree{margin-left:var(--unit-degree-gap)}
+  .priority-value .unit{
+    display:inline-block;font-size:.34em;font-weight:var(--weight-label);line-height:1;
+    vertical-align:text-top;margin-left:var(--unit-mark-gap);letter-spacing:0;
+    opacity:var(--unit-mark-opacity);white-space:nowrap
+  }
+  .priority-value .unit-degree{margin-left:var(--unit-degree-gap)}
   .kpi-hero,.kpi-big,.kpi-mid,.kpi-thin,.kpi-thin-sm,
   .kpi-cell .nb,.stat-card .stat-nb,.tl-node .multi,
   .bar-tower .nb,.h-bar-chart .row-val{white-space:nowrap}
@@ -1472,6 +1478,38 @@
   .dense-feature-icon{font-family:"Material Symbols Outlined";font-size:max(24px,1.55vw);font-weight:400;line-height:1;color:var(--ink)}
   .dense-feature .dense-item-copy{grid-column:2}
 
+  /* S28 Priority Bento: 面积表达真实卖点优先级；每张卡独立 8px 小圆角。 */
+  .priority-bento{
+    display:grid;grid-template-columns:repeat(12,minmax(0,1fr));grid-template-rows:repeat(6,minmax(0,1fr));
+    gap:clamp(12px,1vw,18px);flex:1;min-height:0;margin-top:3.6vh
+  }
+  .priority-tile{
+    grid-column:var(--col) / span var(--span);grid-row:var(--row) / span var(--rows);
+    position:relative;isolation:isolate;min-width:0;min-height:0;overflow:hidden;
+    display:flex;flex-direction:column;justify-content:space-between;gap:1vh;
+    padding:clamp(14px,1.25vw,22px);background:var(--paper);color:var(--ink);
+    border:1px solid var(--border-subtle);border-radius:var(--radius-sm);box-shadow:none
+  }
+  .priority-tile.is-primary{background:var(--ink);color:var(--paper)}
+  .priority-tile.is-secondary{background:var(--grey-1)}
+  .priority-tile.is-critical{border-top:2px solid var(--chart-critical)}
+  .priority-tile.has-media::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:transparent}
+  .priority-tile.has-media.media-darken::after{background:rgba(0,0,0,var(--priority-scrim-alpha,.38))}
+  .priority-media{position:absolute;z-index:0;display:block;min-width:0;min-height:0}
+  .priority-media[data-media-fit="cover"]{inset:0;width:100%;height:100%;object-fit:cover;object-position:center}
+  .priority-media[data-media-fit="contain"]{right:5%;bottom:5%;width:48%;height:72%;object-fit:contain;object-position:center}
+  .priority-tile.has-media > :not(.priority-media){position:relative;z-index:2}
+  .priority-tile.media-darken{color:var(--paper)}
+  .priority-kicker{font-size:max(14px,.72vw);font-weight:var(--weight-label);line-height:1.25;color:var(--text-helper)}
+  .priority-tile.is-primary .priority-kicker,.priority-tile.media-darken .priority-kicker{color:rgba(255,255,255,.66)}
+  .priority-title{font-size:max(18px,1.35vw);font-weight:var(--weight-title);line-height:1.08;letter-spacing:-.015em}
+  .priority-tile.is-primary .priority-title{font-size:min(2.75vw,4.8vh);max-width:14ch}
+  .priority-copy{font-size:max(16px,.82vw);line-height:1.38;color:var(--text-secondary);max-width:38ch;margin-top:1.6vh}
+  .priority-tile.is-primary .priority-copy,.priority-tile.media-darken .priority-copy{color:rgba(255,255,255,.74)}
+  .priority-value{font-size:min(3.5vw,6.1vh);font-weight:var(--weight-emphasis);line-height:.92;letter-spacing:-.035em;font-feature-settings:"tnum"}
+  .priority-tile.is-support .priority-value{font-size:min(2.65vw,4.7vh)}
+  .priority-source{margin-top:.8vh;padding-top:.8vh;border-top:1px solid var(--border-subtle);font-size:max(14px,.72vw);line-height:1.35;color:var(--text-helper)}
+
   /* XREAL ECharts 扩展：复杂图表使用现有版式骨架，不生成 dashboard 容器 */
   .xreal-echart-stage{
     position:relative;flex:1;min-height:0;margin-top:2.4vh;
@@ -1654,7 +1692,7 @@
      ============================================================ -->
 <!-- SLIDES_HERE · 在此处粘贴 <section class="slide ..."> 页面块
      - 页面骨架直接从 references/layouts-swiss.md 拷贝
-     - data-animate="..." 必须命中下方 RECIPES 字典里的已有 recipe 名之一；S23-S27 分别使用 chart-rise / line-draw / portfolio-roadmap / milestone-gallery / dense-synthesis
+     - data-animate="..." 必须命中下方 RECIPES 字典里的已有 recipe 名之一；S23-S28 分别使用 chart-rise / line-draw / portfolio-roadmap / milestone-gallery / dense-synthesis / priority-bento
      - 主题色固定为本文件 :root 中的 XREAL 黑白灰体系 -->
 
 <!-- ============ 示例:第 1 页 · Hero Cover · 纯黑色满屏(默认推荐) ============
@@ -2566,6 +2604,21 @@ if(motion){
     if(source) animate(source, {opacity:[0,1]}, {duration:.28, delay:1.18, easing:EASE_PROD});
   }
 
+  /* ---------- recipe: priority-bento · S28 面积优先级 Bento ----------
+     主卡先建立，中卡按阅读顺序出现，小卡补齐，最后落定来源。 */
+  function rPriorityBento(slide){
+    const head = slide.querySelector('[data-anim="line"]');
+    if(head) fade(head, {duration:.5, y:8});
+    const primary = slide.querySelector('.priority-tile.is-primary');
+    if(primary) animate(primary, {opacity:[0,1], y:[10,0]}, {duration:.52, delay:.24, easing:EASE_ENTRY_EXP});
+    slide.querySelectorAll('.priority-tile.is-secondary').forEach((tile, i)=>animate(tile,
+      {opacity:[0,1], y:[10,0]}, {duration:.46, delay:.46 + i*.13, easing:EASE_ENTRY_EXP}));
+    slide.querySelectorAll('.priority-tile.is-support').forEach((tile, i)=>animate(tile,
+      {opacity:[0,1]}, {duration:.32, delay:.82 + i*.08, easing:EASE_PROD}));
+    const source = slide.querySelector('.priority-source');
+    if(source) animate(source, {opacity:[0,1]}, {duration:.28, delay:1.14, easing:EASE_PROD});
+  }
+
   /* ---------- recipe: duo-mirror · Latent vs Deterministic ----------
      左 80ms 入,vrule 从中心 scaleY 0→1,右 240ms 入 */
   function rDuoMirror(slide, all){
@@ -2994,12 +3047,13 @@ if(motion){
     'portfolio-roadmap': rPortfolioRoadmap,
     'milestone-gallery': rMilestoneGallery,
     'dense-synthesis': rDenseSynthesis,
+    'priority-bento': rPriorityBento,
   };
 
   function revealStatic(slide){
     resetAnims(slide);
     document.getAnimations?.().forEach(a=>a.cancel());
-    slide.querySelectorAll('[data-anim],.row-fill,.tl-node,.stack-block,.bar-tower,.sub-card,.col,.vrule,.kpi-cell,.card-fill,.card-accent,.card-ink,.chart-bar,.chart-value,.chart-line,.chart-point,.line-end-label,.roadmap-item,.milestone-entry,.milestone-synthesis,.dense-thesis,.dense-panel,.dense-item,.dense-source')
+    slide.querySelectorAll('[data-anim],.row-fill,.tl-node,.stack-block,.bar-tower,.sub-card,.col,.vrule,.kpi-cell,.card-fill,.card-accent,.card-ink,.chart-bar,.chart-value,.chart-line,.chart-point,.line-end-label,.roadmap-item,.milestone-entry,.milestone-synthesis,.dense-thesis,.dense-panel,.dense-item,.dense-source,.priority-tile,.priority-source')
       .forEach(el=>{
         el.style.opacity='1';
         el.style.transform='none';
