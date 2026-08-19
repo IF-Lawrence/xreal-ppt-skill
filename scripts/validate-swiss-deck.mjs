@@ -73,6 +73,117 @@ if (!slides.length) {
 }
 
 const deckDir = path.dirname(path.resolve(file));
+const contentMode = htmlForSlides.match(/<body\b[^>]*\bdata-content-mode=["']([^"']+)["']/i)?.[1]?.toLowerCase() ?? '';
+const allowedContentModes = new Set(['source-faithful', 'editorial-summary', 'brief-generated']);
+const sourceMode = contentMode === 'source-faithful' || contentMode === 'editorial-summary';
+let coverageSummary = null;
+
+if (!allowedContentModes.has(contentMode)) {
+  errors.push('Content mode missing or invalid: <body> must declare data-content-mode="source-faithful|editorial-summary|brief-generated".');
+}
+
+const slideIds = new Map();
+const duplicateSlideIds = new Set();
+const slideRefsById = new Map();
+for (const slide of slides) {
+  const slideId = slide.tag.match(/\bid=["']([^"']+)["']/i)?.[1] ?? '';
+  const sourceRefs = (slide.tag.match(/\bdata-source-refs=["']([^"']*)["']/i)?.[1] ?? '')
+    .split(/[\s,]+/)
+    .filter(Boolean);
+  if (slideId) {
+    if (slideIds.has(slideId)) duplicateSlideIds.add(slideId);
+    slideIds.set(slideId, slide.idx);
+    slideRefsById.set(slideId, new Set(sourceRefs));
+  } else if (sourceRefs.length) {
+    errors.push(`Slide ${slide.idx}: data-source-refs requires a stable section id.`);
+  }
+}
+if (duplicateSlideIds.size) {
+  errors.push(`Content coverage mismatch: duplicate slide id(s): ${[...duplicateSlideIds].join(', ')}.`);
+}
+
+if (sourceMode) {
+  const coveragePath = path.join(deckDir, 'content-coverage.json');
+  if (!existsSync(coveragePath)) {
+    errors.push(`Content coverage missing: ${contentMode} mode requires ${coveragePath}.`);
+  } else {
+    try {
+      const coverage = JSON.parse(readFileSync(coveragePath, 'utf8'));
+      const items = Array.isArray(coverage.items) ? coverage.items : [];
+      if (coverage.version !== 1) {
+        errors.push('Content coverage mismatch: content-coverage.json version must be 1.');
+      }
+      if (coverage.mode !== contentMode) {
+        errors.push(`Content coverage mismatch: manifest mode "${coverage.mode ?? ''}" does not match body data-content-mode="${contentMode}".`);
+      }
+      if (!items.length) {
+        errors.push('Content coverage mismatch: source mode requires at least one source item.');
+      }
+
+      const itemIds = new Set();
+      const itemDispositionById = new Map();
+      let includedCount = 0;
+      let omittedCount = 0;
+      for (const [index, item] of items.entries()) {
+        const itemLabel = `content-coverage.json item ${index + 1}`;
+        if (!/^SRC-\d{3,}$/i.test(item?.id ?? '')) {
+          errors.push(`${itemLabel}: id must use SRC-001 format.`);
+          continue;
+        }
+        if (itemIds.has(item.id)) {
+          errors.push(`${itemLabel}: duplicate source id ${item.id}.`);
+          continue;
+        }
+        itemIds.add(item.id);
+        itemDispositionById.set(item.id, item.disposition);
+        if (typeof item.label !== 'string' || !item.label.trim()) {
+          errors.push(`${itemLabel}: label is required for auditability.`);
+        }
+        if (!['claim', 'data', 'constraint', 'example', 'quote', 'decision', 'action', 'context'].includes(item.kind)) {
+          errors.push(`${itemLabel}: kind must be claim, data, constraint, example, quote, decision, action, or context.`);
+        }
+        if (item.disposition === 'included') {
+          includedCount += 1;
+          if (!Array.isArray(item.slideIds) || !item.slideIds.length) {
+            errors.push(`${itemLabel}: included source item ${item.id} requires at least one slideIds entry.`);
+          } else {
+            for (const slideId of item.slideIds) {
+              if (!slideIds.has(slideId)) {
+                errors.push(`${itemLabel}: source item ${item.id} references missing slide id "${slideId}".`);
+              } else if (!slideRefsById.get(slideId)?.has(item.id)) {
+                errors.push(`${itemLabel}: slide "${slideId}" must include ${item.id} in data-source-refs.`);
+              }
+            }
+          }
+        } else if (item.disposition === 'omitted') {
+          omittedCount += 1;
+          if (typeof item.reason !== 'string' || !item.reason.trim()) {
+            errors.push(`${itemLabel}: omitted source item ${item.id} requires a specific reason.`);
+          }
+          if (contentMode === 'source-faithful' && item.userApproved !== true) {
+            errors.push(`${itemLabel}: source-faithful mode cannot omit ${item.id} without userApproved:true.`);
+          }
+        } else {
+          errors.push(`${itemLabel}: disposition must be included or omitted.`);
+        }
+      }
+
+      for (const [slideId, refs] of slideRefsById.entries()) {
+        for (const ref of refs) {
+          if (!itemIds.has(ref)) {
+            errors.push(`Content coverage mismatch: slide "${slideId}" references unknown source id ${ref}.`);
+          } else if (itemDispositionById.get(ref) !== 'included') {
+            errors.push(`Content coverage mismatch: slide "${slideId}" references ${ref}, but that item is marked omitted.`);
+          }
+        }
+      }
+      coverageSummary = { total: items.length, included: includedCount, omitted: omittedCount };
+    } catch (error) {
+      errors.push(`Content coverage unreadable: ${error.message}`);
+    }
+  }
+}
+
 const imagesDir = path.join(deckDir, 'images');
 const copiedMedia = existsSync(imagesDir)
   ? readdirSync(imagesDir, { withFileTypes: true })
@@ -927,13 +1038,18 @@ slides.forEach((slide) => {
     if (classCount('priority-bento') !== 1) errors.push(`Slide ${slide.idx}: S28 requires exactly one .priority-bento.`);
     if (classCount('priority-source') !== 1) errors.push(`Slide ${slide.idx}: S28 requires exactly one .priority-source.`);
     if (!/\bdata-animate="priority-bento"/.test(slide.tag)) errors.push(`Slide ${slide.idx}: S28 Priority Bento must use data-animate="priority-bento".`);
+    const bentoTag = slide.html.match(/<div\b(?=[^>]*\bclass="[^"]*\bpriority-bento\b[^"]*")[^>]*>/)?.[0] ?? '';
+    const variant = bentoTag.match(/\bdata-bento-variant="([^"]+)"/)?.[1] ?? '';
+    const allowedVariants = new Set(['left-focus', 'right-focus', 'panorama', 'center-focus']);
+    if (!allowedVariants.has(variant)) errors.push(`Slide ${slide.idx}: S28 .priority-bento must declare data-bento-variant="left-focus|right-focus|panorama|center-focus".`);
     const tileTags = [...slide.html.matchAll(/<article\b(?=[^>]*\bclass="[^"]*\bpriority-tile\b[^"]*")[^>]*>/g)].map((match) => match[0]);
     const primaryTags = tileTags.filter((tag) => /\bclass="[^"]*\bis-primary\b/.test(tag));
     const secondaryTags = tileTags.filter((tag) => /\bclass="[^"]*\bis-secondary\b/.test(tag));
     const supportTags = tileTags.filter((tag) => /\bclass="[^"]*\bis-support\b/.test(tag));
-    if (tileTags.length < 6 || tileTags.length > 9) errors.push(`Slide ${slide.idx}: S28 requires 6-9 .priority-tile cards; found ${tileTags.length}.`);
+    if (tileTags.length < 5 || tileTags.length > 9) errors.push(`Slide ${slide.idx}: S28 requires 5-9 .priority-tile cards; found ${tileTags.length}.`);
     if (primaryTags.length !== 1) errors.push(`Slide ${slide.idx}: S28 requires exactly one .priority-tile.is-primary; found ${primaryTags.length}.`);
-    if (secondaryTags.length < 2 || secondaryTags.length > 3) errors.push(`Slide ${slide.idx}: S28 requires 2-3 .priority-tile.is-secondary cards; found ${secondaryTags.length}.`);
+    if (secondaryTags.length < 1 || secondaryTags.length > 4) errors.push(`Slide ${slide.idx}: S28 requires 1-4 .priority-tile.is-secondary cards; found ${secondaryTags.length}.`);
+    if (supportTags.length < 2) errors.push(`Slide ${slide.idx}: S28 requires at least 2 .priority-tile.is-support cards; found ${supportTags.length}.`);
     if (primaryTags.length + secondaryTags.length + supportTags.length !== tileTags.length) errors.push(`Slide ${slide.idx}: every S28 tile must declare exactly one hierarchy role: is-primary, is-secondary, or is-support.`);
     const placements = tileTags.map((tag, index) => {
       const read = (name) => Number(tag.match(new RegExp(`--${name}\\s*:\\s*(\\d+)`))?.[1]);
@@ -952,7 +1068,26 @@ slides.forEach((slide) => {
     if (primaryIndex >= 0) {
       const primary = placements[primaryIndex];
       const ratio = primary.span * primary.rows / 72;
-      if (primary.span < 5 || primary.rows < 3 || ratio < .28 || ratio > .48) errors.push(`Slide ${slide.idx}: S28 primary tile must be at least 5x3 and occupy 28%-48% of the grid; found ${primary.span}x${primary.rows} (${(ratio * 100).toFixed(1)}%).`);
+      if (primary.span < 3 || primary.rows < 3 || ratio < .25 || ratio > .5) errors.push(`Slide ${slide.idx}: S28 primary tile must be at least 3x3 and occupy 25%-50% of the grid; found ${primary.span}x${primary.rows} (${(ratio * 100).toFixed(1)}%).`);
+      const primaryLeft = primary.col - 1;
+      const primaryRight = primaryLeft + primary.span;
+      const primaryMid = (primaryLeft + primaryRight) / 2;
+      const otherPlacements = placements.filter((_, index) => index !== primaryIndex);
+      if (variant === 'left-focus' && (primaryMid >= 6 || !otherPlacements.some((box) => box.col - 1 >= primaryRight))) {
+        errors.push(`Slide ${slide.idx}: S28 left-focus requires the primary tile to sit left of center with supporting evidence to its right.`);
+      }
+      if (variant === 'right-focus' && (primaryMid <= 6 || !otherPlacements.some((box) => box.col - 1 + box.span <= primaryLeft))) {
+        errors.push(`Slide ${slide.idx}: S28 right-focus requires the primary tile to sit right of center with supporting evidence to its left.`);
+      }
+      if (variant === 'panorama' && (primary.span < 9 || primary.rows > 3)) {
+        errors.push(`Slide ${slide.idx}: S28 panorama requires a wide primary tile spanning at least 9 columns and no more than 3 rows.`);
+      }
+      if (variant === 'center-focus') {
+        const crossesCenter = primaryLeft < 6 && primaryRight > 6;
+        const hasLeftEvidence = otherPlacements.some((box) => box.col - 1 + box.span <= primaryLeft);
+        const hasRightEvidence = otherPlacements.some((box) => box.col - 1 >= primaryRight);
+        if (!crossesCenter || !hasLeftEvidence || !hasRightEvidence) errors.push(`Slide ${slide.idx}: S28 center-focus requires a centered primary tile with non-primary evidence on both sides.`);
+      }
     }
     const mediaTags = [...slide.html.matchAll(/<img\b(?=[^>]*\bclass="[^"]*\bpriority-media\b[^"]*")[^>]*>/g)].map((match) => match[0]);
     if (mediaTags.length < 1 || mediaTags.length > 4) errors.push(`Slide ${slide.idx}: S28 requires 1-4 semantic media items; found ${mediaTags.length}.`);
@@ -1872,7 +2007,7 @@ async function runRenderedMeasurements() {
         if (primary) {
           const rect = primary.getBoundingClientRect();
           const ratio = rect.width * rect.height / (bentoRect.width * bentoRect.height);
-          if (ratio < .28 || ratio > .48) issues.push(`primary tile uses ${(ratio * 100).toFixed(1)}% of the rendered Bento; expected 28%-48%`);
+          if (ratio < .25 || ratio > .5) issues.push(`primary tile uses ${(ratio * 100).toFixed(1)}% of the rendered Bento; expected 25%-50%`);
         }
         const areaKinds = new Set(rects.map((rect) => `${Math.round(rect.width / 8)}x${Math.round(rect.height / 8)}`));
         if (areaKinds.size < 3) issues.push(`only ${areaKinds.size} visibly distinct card areas render; expected at least 3`);
@@ -2093,4 +2228,7 @@ if (errors.length) {
   process.exit(1);
 }
 
-console.log(`XREAL Style deck validation passed: ${slides.length} slide(s).`);
+const coverageMessage = coverageSummary
+  ? ` Content coverage: ${coverageSummary.included}/${coverageSummary.total} included, ${coverageSummary.omitted} approved omission(s).`
+  : '';
+console.log(`XREAL Style deck validation passed: ${slides.length} slide(s).${coverageMessage}`);

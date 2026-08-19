@@ -1537,6 +1537,16 @@
   .priority-tile.is-primary .priority-copy,.priority-tile.media-darken .priority-copy{color:rgba(255,255,255,.74)}
   .priority-value{font-size:min(3.5vw,6.1vh);font-weight:var(--weight-emphasis);line-height:.92;letter-spacing:-.035em;font-feature-settings:"tnum"}
   .priority-tile.is-support .priority-value{font-size:min(2.65vw,4.7vh)}
+  .priority-bento[data-bento-variant="panorama"] .priority-tile.is-primary .priority-title{max-width:24ch}
+  .priority-bento[data-bento-variant="panorama"] .priority-tile.is-support{
+    display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:1vw;padding:clamp(10px,.8vw,14px)
+  }
+  .priority-bento[data-bento-variant="panorama"] .priority-tile.is-support>div{display:flex;align-items:baseline;justify-content:flex-end;gap:.8vw;min-width:0}
+  .priority-bento[data-bento-variant="panorama"] .priority-tile.is-support .priority-value{font-size:min(2.15vw,3.8vh);white-space:nowrap}
+  .priority-bento[data-bento-variant="panorama"] .priority-tile.is-support .priority-title{font-size:max(16px,1vw);white-space:nowrap}
+  .priority-bento[data-bento-variant="center-focus"] .priority-tile.is-primary{justify-content:center;text-align:center}
+  .priority-bento[data-bento-variant="center-focus"] .priority-tile.is-primary .priority-title,
+  .priority-bento[data-bento-variant="center-focus"] .priority-tile.is-primary .priority-copy{margin-inline:auto}
   .priority-source{color:var(--text-helper)}
 
   /* 全局注脚：统一字号、左右内容轴和底部基线；不使用分割线。 */
@@ -1696,7 +1706,7 @@
 </style>
 <!-- XREAL_ECHARTS_BUNDLE · 运行 scripts/inline-echarts.mjs 后替换为离线 ECharts 包 -->
 </head>
-<body class="canvas-mode">
+<body class="canvas-mode" data-content-mode="brief-generated">
 <script>
   // Windows 平台标记 — 保留平台类供其他兼容逻辑使用
   if(/Win/i.test(navigator.platform || navigator.userAgentData?.platform || '')){
@@ -1732,6 +1742,8 @@
      ============================================================ -->
 <!-- SLIDES_HERE · 在此处粘贴 <section class="slide ..."> 页面块
      - 页面骨架直接从 references/layouts-swiss.md 拷贝
+     - 用户提供成体系原始材料时，将 body 改为 data-content-mode="source-faithful"，先建立 content-coverage.json；承载原文的正文 section 添加稳定 id 与 data-source-refs="SRC-001 ..."
+     - 只有用户明确要求或批准摘要时才使用 data-content-mode="editorial-summary"；完整规则见 references/content-fidelity.md
      - data-animate="..." 必须命中下方 RECIPES 字典里的已有 recipe 名之一；S23-S28 分别使用 chart-rise / line-draw / portfolio-roadmap / milestone-gallery / dense-synthesis / priority-bento
      - 主题色固定为本文件 :root 中的 XREAL 黑白灰体系 -->
 
