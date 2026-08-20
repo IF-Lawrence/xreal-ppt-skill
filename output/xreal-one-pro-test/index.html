@@ -56,7 +56,7 @@
     --unit-degree-gap:.03em;
     --brief-card-pad:2.2vh;
     --sub-card-pad:2.2vh;
-    --media-scrim-alpha:.38;
+    --media-scrim-alpha:.56;
     --chart-safe-inline:max(28px,1.9vw);
     --chart-value-headroom:max(24px,2.8vh);
     --line-chart-safe-inline:max(36px,2.6vw);
@@ -76,7 +76,7 @@
        暗底:  inverse 自动反向 */
     --text-primary:#0a0a0a;        /* = ink, 100% */
     --text-secondary:#525252;      /* gray 70 */
-    --text-helper:#737373;         /* gray 60 */
+    --text-helper:#6e6e6e;         /* AA-safe helper on white and --grey-1 */
     --text-placeholder:#a3a3a3;    /* gray 40 */
     --text-on-color:#ffffff;       /* accent/dark 反色 */
     --border-subtle:#e0e0e0;       /* gray 20, 极细分隔 */
@@ -196,6 +196,7 @@
   .slide[data-layout="XREAL-CLOSING-BLACK"] .canvas-card{background:var(--pure-black)}
   .slide[data-media-match="matched"][data-layout="XREAL-COVER-BLACK"],
   .slide[data-media-match="matched"][data-layout="XREAL-CLOSING-BLACK"]{isolation:isolate}
+  .slide[data-media-match="matched"][data-layout="XREAL-COVER-BLACK"]::after{content:"";position:absolute;inset:0;z-index:0;background:rgba(0,0,0,.20);pointer-events:none}
   .slide[data-media-match="matched"][data-layout="XREAL-COVER-BLACK"] .canvas-card,
   .slide[data-media-match="matched"][data-layout="XREAL-CLOSING-BLACK"] .canvas-card{
     position:relative;z-index:1;background:transparent
@@ -813,7 +814,7 @@
     border-left:1px solid var(--grey-2)
   }
   .kpi-row-4 > .kpi-cell:first-child{padding-left:0;border-left:none}
-  .kpi-cell .lbl{font-family:var(--mono);font-size:max(14px,.78vw);letter-spacing:normal;text-transform:none;opacity:.55;margin-bottom:1.2vh}
+  .kpi-cell .lbl{font-family:var(--mono);font-size:max(14px,.78vw);letter-spacing:normal;text-transform:none;opacity:.60;margin-bottom:1.2vh}
   .kpi-cell .nb{font-family:var(--sans);font-weight:var(--weight-emphasis);font-size:3.2vw;line-height:1;letter-spacing:-.025em;font-feature-settings:"tnum"}
   .kpi-cell .nb .unit{display:inline-block;font-size:.32em;font-weight:var(--weight-label);line-height:1;opacity:var(--unit-mark-opacity);margin-left:var(--unit-mark-gap);vertical-align:text-top}
   .kpi-cell .note{font-family:var(--sans),var(--sans-zh);font-size:max(16px,.92vw);line-height:1.5;opacity:.7;margin-top:1.2vh}
@@ -970,7 +971,7 @@
   .sub-card .nb-corner{
     position:absolute;top:var(--sub-card-pad);right:var(--sub-card-pad);
     font-family:var(--mono);font-size:max(14px,.8vw);
-    letter-spacing:.04em;opacity:.55
+    letter-spacing:.04em;opacity:.60
   }
   .sub-card .ttl{font-family:var(--sans),var(--sans-zh);font-weight:500;font-size:max(17px,1.5vw);line-height:1.2;letter-spacing:-.015em;margin-bottom:1vh}
   .sub-card .desc{font-family:var(--sans),var(--sans-zh);font-size:max(16px,.94vw);line-height:1.55;opacity:.78;margin-top:auto}
@@ -1012,9 +1013,12 @@
   }
   .stack-block.has-media.media-full-bleed{overflow:hidden;isolation:isolate}
   .stack-block.has-media.media-full-bleed .layer-nb{margin-bottom:auto}
+  .stack-block.has-media.media-full-bleed .layer-nb,.stack-block.has-media.media-full-bleed .layer-tag{opacity:.90}
+  .stack-block.has-media.media-full-bleed .layer-desc{opacity:.92}
+  .stack-block.has-media.media-full-bleed .unit{opacity:1}
   .stack-block.has-media.media-full-bleed::after{
     content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
-    background:linear-gradient(180deg,rgba(0,0,0,.12) 8%,rgba(0,0,0,.18) 44%,rgba(0,0,0,.78) 100%)
+    background:linear-gradient(180deg,rgba(0,0,0,.56) 8%,rgba(0,0,0,.58) 44%,rgba(0,0,0,.78) 100%)
   }
   .stack-block.has-media.media-full-bleed .stack-card-media{
     position:absolute;inset:0;z-index:0;width:100%;height:100%;min-height:0;
@@ -1183,6 +1187,7 @@
     line-height:1
   }
   .h-bar-chart .row-val.critical{color:var(--chart-critical)}
+  .h-bar-chart .row-val.critical .unit{opacity:1}
   .h-bar-chart .row-val .unit{
     font-size:.5em;opacity:var(--unit-mark-opacity);font-weight:var(--weight-label);
     margin-left:var(--unit-mark-gap);letter-spacing:.04em;vertical-align:text-top
@@ -1414,10 +1419,10 @@
   .dense-progress-num{width:2.4ch;text-align:right;font-variant-numeric:tabular-nums;font-size:max(14px,.72vw);font-weight:var(--weight-label);line-height:1.25;color:var(--text-helper)}
   .dense-progression .dense-item-copy{grid-column:2}
   .dense-item.is-focus{position:relative;isolation:isolate;overflow:hidden;margin:.7vh 0;padding:1.15vh .9vw;border:0;border-radius:var(--radius-sm);grid-template-columns:2.4ch minmax(0,1fr);background:var(--ink);color:var(--paper)}
-  .dense-item.is-focus::after{content:"";position:absolute;inset:0;z-index:1;background:rgba(0,0,0,.34);pointer-events:none}
+  .dense-item.is-focus::after{content:"";position:absolute;inset:0;z-index:1;background:rgba(0,0,0,var(--media-scrim-alpha));pointer-events:none}
   .dense-item.is-focus > :not(.dense-media){position:relative;z-index:2}
-  .dense-item.is-focus .dense-progress-num,.dense-item.is-focus .dense-item-copy{color:rgba(255,255,255,.66)}
-  .dense-media{position:absolute;inset:-42% -8% -24% 24%;z-index:0;width:84%;height:166%;object-fit:cover;object-position:center 60%;filter:brightness(1.08) saturate(.78)}
+  .dense-item.is-focus .dense-progress-num,.dense-item.is-focus .dense-item-copy{color:rgba(255,255,255,.88)}
+  .dense-media{position:absolute;inset:-42% -8% -24% 24%;z-index:0;width:84%;height:166%;object-fit:cover;object-position:center 60%;filter:brightness(.82) saturate(.78)}
   .dense-feature{display:grid;grid-template-columns:minmax(28px,2vw) minmax(0,1fr);column-gap:.8vw;align-content:center}
   .dense-feature-icon{font-family:"Material Symbols Outlined";font-size:max(24px,1.55vw);font-weight:400;line-height:1;color:var(--ink)}
   .dense-feature .dense-item-copy{grid-column:2}
@@ -1438,18 +1443,21 @@
   .priority-tile.is-secondary{background:var(--grey-1)}
   .priority-tile.is-critical{border-top:2px solid var(--chart-critical)}
   .priority-tile.has-media::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:transparent}
-  .priority-tile.has-media.media-darken::after{background:rgba(0,0,0,var(--priority-scrim-alpha,.38))}
+  .priority-tile.has-media.media-darken::after{background:rgba(0,0,0,var(--priority-scrim-alpha,var(--media-scrim-alpha)))}
   .priority-media{position:absolute;z-index:0;display:block;min-width:0;min-height:0}
   .priority-media[data-media-fit="cover"]{inset:0;width:100%;height:100%;object-fit:cover;object-position:center}
   .priority-media[data-media-fit="contain"]{right:5%;bottom:5%;width:48%;height:72%;object-fit:contain;object-position:center}
   .priority-tile.has-media > :not(.priority-media){position:relative;z-index:2}
-  .priority-tile.media-darken{color:var(--paper)}
+  .priority-tile.media-darken{--priority-scrim-alpha:.60;color:var(--paper)}
   .priority-kicker{font-size:max(14px,.72vw);font-weight:var(--weight-label);line-height:1.25;color:var(--text-helper)}
-  .priority-tile.is-primary .priority-kicker,.priority-tile.media-darken .priority-kicker{color:rgba(255,255,255,.66)}
+  .priority-tile.is-primary .priority-kicker{color:rgba(255,255,255,.66)}
+  .priority-tile.media-darken .priority-kicker{color:rgba(255,255,255,.92)}
   .priority-title{font-size:max(18px,1.35vw);font-weight:var(--weight-title);line-height:1.08;letter-spacing:-.015em}
   .priority-tile.is-primary .priority-title{font-size:min(2.75vw,4.8vh);max-width:14ch}
   .priority-copy{font-size:max(16px,.82vw);line-height:1.38;color:var(--text-secondary);max-width:38ch;margin-top:1.6vh}
-  .priority-tile.is-primary .priority-copy,.priority-tile.media-darken .priority-copy{color:rgba(255,255,255,.74)}
+  .priority-tile.is-primary .priority-copy{color:rgba(255,255,255,.74)}
+  .priority-tile.media-darken .priority-copy{color:rgba(255,255,255,.92)}
+  .priority-tile.media-darken .unit{opacity:1}
   .priority-value{font-size:min(3.5vw,6.1vh);font-weight:var(--weight-emphasis);line-height:.92;letter-spacing:-.035em;font-feature-settings:"tnum"}
   .priority-tile.is-support .priority-value{font-size:min(2.65vw,4.7vh)}
   .priority-bento[data-bento-variant="panorama"] .priority-tile.is-primary .priority-title{max-width:24ch}
@@ -1507,10 +1515,12 @@
   .xreal-bento .wide{grid-column:span 6}
   .xreal-bento .eyebrow{font-size:max(14px,.78vw);font-weight:500;color:var(--text-helper)}
   .xreal-bento .hero .eyebrow{color:rgba(255,255,255,.62)}
+  .xreal-bento .hero.has-media .eyebrow{color:rgba(255,255,255,.90)}
   .xreal-bento h3{font-size:min(3.2vw,5.6vh);line-height:1.04;font-weight:var(--weight-title);letter-spacing:-.025em;margin-top:auto}
   .xreal-bento .metric-value{font-size:min(4.8vw,8.4vh);line-height:.95;font-weight:var(--weight-emphasis);letter-spacing:-.035em;margin-top:auto}
   .xreal-bento p{font-size:max(16px,.94vw);line-height:1.42;color:var(--text-secondary);margin-top:1.2vh}
   .xreal-bento .hero p{color:rgba(255,255,255,.72)}
+  .xreal-bento .hero.has-media p{color:rgba(255,255,255,.92)}
   .xreal-bento .hero.has-media{position:relative;overflow:hidden;isolation:isolate}
   .xreal-bento .hero.has-media::after{
     content:"";position:absolute;inset:0;z-index:1;background:rgba(0,0,0,var(--media-scrim-alpha));pointer-events:none
@@ -1528,7 +1538,7 @@
   .layout-lab .lab-lead{font-size:max(18px,1.15vw);line-height:1.5;color:var(--text-secondary);max-width:52ch}
   .layout-lab .lab-note{font-size:max(16px,.82vw);line-height:1.45;color:var(--text-helper)}
   .layout-lab.manifesto-media-slide{position:relative;isolation:isolate;overflow:hidden}
-  .layout-lab.manifesto-media-slide::after{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(90deg,rgba(0,0,0,.56) 0%,rgba(0,0,0,.46) 58%,rgba(0,0,0,.54) 100%);pointer-events:none}
+  .layout-lab.manifesto-media-slide::after{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(90deg,rgba(0,0,0,.58) 0%,rgba(0,0,0,.56) 58%,rgba(0,0,0,.58) 100%);pointer-events:none}
   .layout-lab .manifesto-media{position:absolute;inset:0;z-index:0;width:100%;height:100%;object-fit:cover;object-position:center 42%;filter:brightness(.82) saturate(.82)}
   .layout-lab.manifesto-media-slide .canvas-card{position:relative;z-index:2;background:transparent}
   .layout-lab .manifesto-top{flex:1;display:grid;grid-template-columns:2fr 10fr;align-items:center;gap:3vw}
@@ -1538,7 +1548,8 @@
   .layout-lab .ink-banner-full .banner-title{font-size:min(3.5vw,6vh);line-height:1;font-weight:var(--weight-title);letter-spacing:-.03em}
   .layout-lab .ink-banner-full .xreal-product-mark{width:min(14vw,220px);max-height:3.4vh}
   .layout-lab .ink-banner-full .banner-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.4vw;min-width:42vw}
-  .layout-lab .ink-banner-full .banner-grid span{border-left:1px solid rgba(255,255,255,.3);padding-left:1vw;font-size:max(16px,.9vw);line-height:1.35;color:rgba(255,255,255,.72)}
+  .layout-lab .ink-banner-full .banner-grid span{border-left:1px solid rgba(255,255,255,.3);padding-left:1vw;font-size:max(16px,.9vw);line-height:1.35;color:rgba(255,255,255,.90)}
+  .slide.accent.layout-lab.manifesto-media-slide .canvas-card .chrome-min,.slide.accent.layout-lab.manifesto-media-slide .canvas-card .t-cat{color:rgba(255,255,255,.90)}
   .layout-lab .three-forces{flex:1;min-height:0;display:grid;grid-template-columns:5fr 11fr;gap:1.2vw;margin-top:3vh}
   .layout-lab .hero-ink-col{background:var(--ink);color:var(--paper);border-radius:var(--radius-sm);padding:2.4vw;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden}
   .layout-lab .hero-ink-col h3{font-size:min(4.5vw,7.8vh);line-height:.97;letter-spacing:-.045em;font-weight:var(--weight-display);max-width:8ch}
@@ -1743,14 +1754,14 @@
   <div class="canvas-card">
     <div class="chrome-min">
       <div class="l brand"><img class="xreal-logo" src="assets/brand/xreal-logo-black.svg" onerror="this.onerror=null;this.src='brand/xreal-logo-black.svg'" alt="XREAL"></div>
-      <div class="r">Wear Every World</div>
+      <div class="r" style="color:rgba(255,255,255,.88)">Wear Every World</div>
     </div>
     <div style="flex:1;padding:0;display:grid;grid-template-rows:auto 1fr auto;gap:2.6vh">
-      <div data-anim="kicker" class="t-meta" style="color:rgba(255,255,255,.78)">XREAL One Pro · Product brief</div>
+      <div data-anim="kicker" class="t-meta" style="color:rgba(255,255,255,.90)">XREAL One Pro · Product brief</div>
       <h1 data-anim="title" class="xreal-cover-title" style="align-self:center;color:#fff">Wear Every World<br><span>戴上，即是万界</span></h1>
       <div data-anim="bottom" style="display:grid;grid-template-rows:auto auto;gap:1.6vh">
         <div data-anim="lead" class="lead" style="max-width:52ch;color:rgba(255,255,255,.86)">突破现实与虚拟的边界，把巨幕、空间与声音，收进一副日常眼镜。</div>
-        <div class="t-meta" style="color:rgba(255,255,255,.6)">Spatial computing · AR eyewear · Stay X. Stay real.</div>
+        <div class="t-meta" style="color:rgba(255,255,255,.88)">Spatial computing · AR eyewear · Stay X. Stay real.</div>
       </div>
     </div>
   </div>
@@ -2001,7 +2012,7 @@
   <img class="manifesto-media" data-image-slot="s12-manifesto-background" data-media-role="context-background" data-media-kind="lifestyle" data-media-fit="full-bleed" data-media-contrast="darken" src="images/15-manifesto-lifestyle.jpg" alt="女性在美术馆佩戴 XREAL 眼镜观看沉浸式空间影像">
   <div class="canvas-card">
     <header class="chrome-min" data-anim="line"><div class="l brand"><img class="xreal-logo" src="assets/brand/xreal-logo-black.svg" alt="XREAL"></div><div class="r">Manifesto test</div></header>
-    <div class="manifesto-top" data-anim="line"><div></div><div><div class="t-cat" style="color:rgba(255,255,255,.62)">虚构测试宣言</div><div class="manifesto-title">Wear the world.<br>Keep the moment.</div><p class="manifesto-copy" style="margin-top:3vh">把巨幕、工作和游戏带入空间，但不把现实从视野里拿走。</p></div></div>
+    <div class="manifesto-top" data-anim="line"><div></div><div><div class="t-cat" style="color:rgba(255,255,255,.90)">虚构测试宣言</div><div class="manifesto-title">Wear the world.<br>Keep the moment.</div><p class="manifesto-copy" style="margin-top:3vh">把巨幕、工作和游戏带入空间，但不把现实从视野里拿走。</p></div></div>
     <div class="ink-banner-full" data-anim="up"><img class="xreal-product-mark mark-inverse" data-image-slot="product-mark" data-media-role="product-identity" src="images/15-one-pro-mark.svg" alt="XREAL One Pro"><div class="banner-grid"><span>57° 视野</span><span>3ms 响应</span><span>3 档透光</span></div></div>
   </div>
 </section>
@@ -2149,12 +2160,12 @@
     <header class="chrome-min"><div class="l brand"><img class="xreal-logo" src="assets/brand/xreal-logo-black.svg" alt="XREAL"><span>One Pro · Priority Bento</span></div><div class="r">Area-led hierarchy</div></header>
     <div data-anim="line" class="lab-head"><div class="t-cat lab-synthetic">示意结构 · 面积对应真实卖点优先级</div><h2 class="xreal-page-title">面积，让核心卖点先被看见</h2></div>
     <div class="priority-bento" data-bento-variant="panorama" aria-label="One Pro 核心卖点优先级示例">
-      <article class="priority-tile is-primary has-media media-darken" style="--col:1;--span:12;--row:1;--rows:3;--priority-scrim-alpha:.44">
+      <article class="priority-tile is-primary has-media media-darken" style="--col:1;--span:12;--row:1;--rows:3;--priority-scrim-alpha:.60">
         <img class="priority-media" data-image-slot="s28-priority-media" data-media-role="feature-evidence" data-media-fit="cover" data-media-contrast="darken" src="images/29-priority-optics.jpg" alt="One Pro 光机与镜片正面特写">
         <span class="priority-kicker">主卖点 · Optics</span>
         <div><h3 class="priority-title">57<span class="unit unit-degree">°</span> FoV，更接近自然注视</h3><p class="priority-copy">让空间画面向视野边界延伸，成为整页最需要先被理解的体验变化。</p></div>
       </article>
-      <article class="priority-tile is-secondary has-media media-darken" style="--col:1;--span:4;--row:4;--rows:2;--priority-scrim-alpha:.26">
+      <article class="priority-tile is-secondary has-media media-darken" style="--col:1;--span:4;--row:4;--rows:2;--priority-scrim-alpha:.60">
         <img class="priority-media" data-image-slot="s28-priority-media" data-media-role="feature-evidence" data-media-fit="cover" data-media-contrast="darken" src="images/29-priority-chip.jpg" alt="One Pro X1 芯片装配展示">
         <span class="priority-kicker">X1 Chip</span>
         <div><div class="priority-value">3<span class="unit">ms</span></div><h3 class="priority-title">端侧空间响应</h3></div>
@@ -2163,7 +2174,7 @@
         <span class="priority-kicker">Equivalent screen</span>
         <div><div class="priority-value">171<span class="unit">in</span></div><h3 class="priority-title">4 米处的无界巨幕</h3></div>
       </article>
-      <article class="priority-tile is-secondary has-media media-darken" style="--col:9;--span:4;--row:4;--rows:2;--priority-scrim-alpha:.38">
+      <article class="priority-tile is-secondary has-media media-darken" style="--col:9;--span:4;--row:4;--rows:2;--priority-scrim-alpha:.60">
         <img class="priority-media" data-image-slot="s28-priority-media" data-media-role="feature-evidence" data-media-fit="cover" data-media-contrast="darken" src="images/29-priority-lifestyle.jpg" alt="用户在明亮客厅佩戴 One Pro 观看空间视频">
         <span class="priority-kicker">Everyday spatial</span>
         <div><h3 class="priority-title">把大屏带进真实日常</h3><p class="priority-copy">媒体展示使用场景，面积仍由卖点重要性决定。</p></div>

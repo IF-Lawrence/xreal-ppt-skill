@@ -627,7 +627,7 @@ XREAL Style 有 26 个正式登记版式（`S01-S08`、`S11-S28`）,生成时要
 **适用内容类型**:**章节性收束 / 阶段性宣言**(用于 deck 中段而非结尾,P9 是 deck 终结)。承载「主张 + 简短说明 + 透明身份行」三段结构,无数据。
 **骨架**:上半屏左侧 t-cat + 大字 4 行宣言 + 右侧短段说明 / 底部透明身份行 + 小号产品标志 + 最多三条支持信息。身份行直接叠在当前背景上，不铺整块黑色或半透明色带。
 **关键类**:`.manifesto-top` `.ink-banner-full`（保留兼容类名，但 `margin:0;padding:0;background:transparent`）
-**媒体规则**:宣言与 lifestyle、conceptual 或品牌 KV 明确匹配时，可增加 `.manifesto-media[data-image-slot="s12-manifesto-background"][data-media-role="context-background"]` 作为全幅背景，并声明 `data-media-fit="full-bleed"`、`data-media-contrast="darken"`。媒体覆盖页面至少 95%，使用约 `.42-.58` 的中性黑蒙版保护白字；禁止透明产品 cutout、白底产品图与标准 packshot。无合适媒体时保持纯黑。
+**媒体规则**:宣言与 lifestyle、conceptual 或品牌 KV 明确匹配时，可增加 `.manifesto-media[data-image-slot="s12-manifesto-background"][data-media-role="context-background"]` 作为全幅背景，并声明 `data-media-fit="full-bleed"`、`data-media-contrast="darken"`。媒体覆盖页面至少 95%，默认使用不低于 `.56` 的中性黑蒙版保护白字，并保证 `image brightness × (1 - 最浅蒙版 alpha) <= .44`；禁止透明产品 cutout、白底产品图与标准 packshot。无合适媒体时保持纯黑。
 **产品身份规则**:当宣言明确属于单一产品且 `00-product-marks/` 有官方标志时，身份行优先使用 `.xreal-product-mark[data-image-slot="product-mark"][data-media-role="product-identity"]`，不要用手打产品名替代。企业 XREAL Logo 仍保留在页眉。产品标志只作为身份落款，宽度为页面内容宽度的 10%-16%（标准 `min(14vw,220px)`），不得成为第二主标题。
 **动效 recipe**:`manifesto` — 大字三段错峰升起 → 底部身份行轻量淡入，不用实体色带横向铺开
 **注意**:Skill File 那段小字 **顶对齐于右侧大字基线**(`align-items:flex-start;padding-top:1.2vw`)
@@ -720,7 +720,7 @@ XREAL Style 有 26 个正式登记版式（`S01-S08`、`S11-S28`）,生成时要
 - `.xreal-bento` 整体外框使用 `--radius-sm:8px`，内部区块保持直角，以 1px 间隙分隔；无阴影，不模拟大圆角软件卡片或胶囊按钮。
 - 黑白灰承担结构；全页只允许一个红色关键数字。
 - 当主卡存在大面积闲置区域、正文仅有短标题与一行说明，并且有能直接支撑语境的 lifestyle / contextual 媒体时，可使用 `.hero.has-media` 与 `.bento-hero-media[data-image-slot="s19-bento-hero-media"][data-media-role="context-evidence"][data-media-fit="full-bleed"][data-media-contrast="darken"]` 全幅铺底；媒体在宽高两个方向都应覆盖父卡至少 95%。
-- 文字直接叠图时使用统一深色蒙版 `--media-scrim-alpha:.38`，允许按素材在 `.28-.48` 内微调；保留图片细节，不通过极端 brightness 把媒体压成黑块。文字直接反白，不添加白底或半透明内容面板。媒体、hero article 和其余内部块都保持直角，只有 `.xreal-bento` 外框使用 8px 圆角。
+- 文字直接叠图时默认使用统一深色蒙版 `--media-scrim-alpha:.56`，并保证 `image brightness × (1 - 最浅蒙版 alpha) <= .44`；眉题、正文与单位等小字最终对比仍须 `>=4.5:1`。保留图片细节，不通过极端 brightness 把媒体压成黑块；若安全阈值下主体不可辨识则换图或改裁切。文字直接反白，不添加白底或半透明内容面板。媒体、hero article 和其余内部块都保持直角，只有 `.xreal-bento` 外框使用 8px 圆角。
 
 ---
 

@@ -290,7 +290,8 @@ node <SKILL_ROOT>/scripts/validate-swiss-deck.mjs path/to/index.html
 - 稀疏卡片媒体:S04 最多 1-2 张技术卡、S05 最多一个核心层、S19 仅 Bento hero 主卡可按语境配图。媒体必须解释内容并使用登记槽位；不能只因为有空白就填图。
 - S04 卡内证据图:紧边 cutout 使用 `inset` + contain；源画布留白大时使用 `inset-prominent` + cover，高度占父卡 28%-45%、宽度至少 80%。与文字不重叠，不加蒙版。
 - S05 大卡媒体:有低干扰文字区的横版技术图可使用 `.media-full-bleed` + `full-bleed/darken`，宽高覆盖父卡至少 95%，通过渐变蒙版保护文字；否则使用 inset/contain。默认保留 `.layer-icon`，不因配图自动删除。
-- 全幅背景媒体:S19 hero 使用 `data-media-fit="full-bleed" data-media-contrast="darken"` + `object-fit:cover`，宽高覆盖父卡至少 95%；反白文字直接压图时用 `.28-.48` 的统一深色蒙版（标准 `.38`），不叠白底/半透明文字面板。若仍不可读，换图或改裁切，不继续压暗。
+- 全幅背景媒体:S19 hero 使用 `data-media-fit="full-bleed" data-media-contrast="darken"` + `object-fit:cover`，宽高覆盖父卡至少 95%；默认 `--media-scrim-alpha:.56`，并保证 `image brightness × (1 - 最浅蒙版 alpha) <= .44`。逐项检查标题、眉题、正文与单位的最终反白对比，不叠白底/半透明文字面板；若仍不可读，换图、改裁切或回退无图版式。
+- 全局文字对比:普通文字最终对比度 `>=4.5:1`，大字 `>=3:1`。验证基于最终计算色与实际祖先表面，不只检查 token；透明文字、继承色、灰底 helper、红色单位和压图文字都必须覆盖。
 
 **做法**:
 - 先选版式:单张大图 + KPI 用 `S22`;多图用 `S15/S16` 的原始网格骨架改造

@@ -334,8 +334,8 @@ if (!Number.isFinite(briefCardPad) || briefCardPad < 1.8 || briefCardPad > 2.6) 
 if (!Number.isFinite(subCardPad) || subCardPad < 1.8 || subCardPad > 2.6) {
   errors.push('S04 card padding mismatch: define --sub-card-pad between 1.8vh and 2.6vh; the XREAL standard is 2.2vh on all four sides.');
 }
-if (!Number.isFinite(mediaScrimAlpha) || mediaScrimAlpha < .28 || mediaScrimAlpha > .48) {
-  errors.push('Media scrim mismatch: define --media-scrim-alpha between .28 and .48; the XREAL standard is .38 for direct inverse text on full-bleed media.');
+if (!Number.isFinite(mediaScrimAlpha) || mediaScrimAlpha < .54 || mediaScrimAlpha > .64) {
+  errors.push('Media scrim mismatch: define --media-scrim-alpha between .54 and .64; the XREAL standard is .56 for small inverse text on full-bleed media. A lighter scrim is only acceptable when a lower image brightness keeps brightness × (1 - scrim) <= .44.');
 }
 if (![baseCoverTitleVw, baseSectionTitleVw, basePageTitleVw].every(Number.isFinite) || !(basePageTitleVw < baseSectionTitleVw && baseSectionTitleVw < baseCoverTitleVw)) {
   errors.push('Title hierarchy mismatch: define --page-title-size < --section-hero-title-size < --cover-title-size so chapter Heroes remain below Index Cover.');
@@ -1352,12 +1352,20 @@ async function runRenderedMeasurements() {
         right: getComputedStyle(node).right,
       }));
 
-      const parseRgb = (value) => {
-        const parts = value.match(/[\d.]+/g)?.slice(0, 3).map(Number) ?? [];
-        return parts.length === 3 ? parts : null;
+      const parseRgba = (value) => {
+        if (!value || value === 'transparent') return { r: 0, g: 0, b: 0, a: 0 };
+        const parts = value.match(/[\d.]+/g)?.map(Number) ?? [];
+        if (parts.length < 3) return null;
+        return { r: parts[0], g: parts[1], b: parts[2], a: parts.length >= 4 ? parts[3] : 1 };
       };
+      const composite = (foreground, background) => ({
+        r: foreground.r * foreground.a + background.r * (1 - foreground.a),
+        g: foreground.g * foreground.a + background.g * (1 - foreground.a),
+        b: foreground.b * foreground.a + background.b * (1 - foreground.a),
+        a: 1,
+      });
       const luminance = (rgb) => {
-        const linear = rgb.map((channel) => {
+        const linear = [rgb.r, rgb.g, rgb.b].map((channel) => {
           const value = channel / 255;
           return value <= .03928 ? value / 12.92 : ((value + .055) / 1.055) ** 2.4;
         });
@@ -1368,14 +1376,129 @@ async function runRenderedMeasurements() {
         const l2 = luminance(b);
         return (Math.max(l1, l2) + .05) / (Math.min(l1, l2) + .05);
       };
+      const directTextElements = (el) => Array.from(el.querySelectorAll('*')).filter((node) => {
+        if (!hasDirectText(node) || node.closest('svg,canvas')) return false;
+        const style = getComputedStyle(node);
+        const rect = node.getBoundingClientRect();
+        return style.display !== 'none' && style.visibility !== 'hidden' && parseFloat(style.opacity) > 0 && rect.width > 1 && rect.height > 1;
+      });
+      const directDarkenMedia = (node) => Array.from(node.children).find((child) => child.matches?.('img[data-media-contrast="darken"]')) || null;
+      const mediaSurfaceFor = (node, slide) => {
+        let cursor = node;
+        while (cursor && cursor !== slide.parentElement) {
+          const media = directDarkenMedia(cursor);
+          if (media) return { surface: cursor, media };
+          const background = parseRgba(getComputedStyle(cursor).backgroundColor);
+          if (cursor !== node && background?.a >= .96) return null;
+          if (cursor === slide) break;
+          cursor = cursor.parentElement;
+        }
+        return null;
+      };
+      const effectiveSolidBackground = (node) => {
+        const chain = [];
+        let cursor = node;
+        while (cursor) {
+          chain.push(cursor);
+          if (cursor === document.documentElement) break;
+          cursor = cursor.parentElement;
+        }
+        let background = { r: 255, g: 255, b: 255, a: 1 };
+        let complex = false;
+        const textRect = node.getBoundingClientRect();
+        const centerX = textRect.left + textRect.width / 2;
+        const centerY = textRect.top + textRect.height / 2;
+        chain.reverse().forEach((layer) => {
+          const style = getComputedStyle(layer);
+          if (style.backgroundImage && style.backgroundImage !== 'none') complex = true;
+          const color = parseRgba(style.backgroundColor);
+          const rect = layer.getBoundingClientRect();
+          const coversText = layer === node || (centerX >= rect.left && centerX <= rect.right && centerY >= rect.top && centerY <= rect.bottom);
+          if (coversText && color && color.a > 0) background = composite(color, background);
+        });
+        return { background, complex };
+      };
+      const textOpacity = (node, stopAt) => {
+        let opacity = 1;
+        let cursor = node;
+        while (cursor && cursor !== stopAt?.parentElement) {
+          const value = parseFloat(getComputedStyle(cursor).opacity);
+          if (Number.isFinite(value)) opacity *= value;
+          if (cursor === stopAt) break;
+          cursor = cursor.parentElement;
+        }
+        return opacity;
+      };
+      const requiredTextContrast = (style) => {
+        const size = parseFloat(style.fontSize);
+        const weight = Number(style.fontWeight) || 400;
+        return size >= 24 || (size >= 18.66 && weight >= 600) ? 3 : 4.5;
+      };
+      const textContrastChecks = (el) => directTextElements(el).flatMap((node) => {
+        if (mediaSurfaceFor(node, el)) return [];
+        const style = getComputedStyle(node);
+        const { background, complex } = effectiveSolidBackground(node);
+        if (complex) return [];
+        const color = parseRgba(style.color);
+        if (!color) return [{ node: labelFor(node), issue: `has an unreadable computed color ${style.color}` }];
+        color.a *= textOpacity(node, el);
+        const rendered = composite(color, background);
+        const ratio = contrast(rendered, background);
+        const required = requiredTextContrast(style);
+        return ratio + .01 < required ? [{
+          node: labelFor(node),
+          issue: `final text/background contrast is ${ratio.toFixed(2)}:1; expected at least ${required.toFixed(1)}:1`,
+          foreground: style.color,
+          background: `rgb(${Math.round(background.r)}, ${Math.round(background.g)}, ${Math.round(background.b)})`,
+        }] : [];
+      });
+      const pseudoScrimAlpha = (surface) => {
+        const pseudo = getComputedStyle(surface, '::after');
+        if (!pseudo || pseudo.content === 'none' || pseudo.display === 'none') return 0;
+        const values = [];
+        const solid = parseRgba(pseudo.backgroundColor);
+        if (solid?.a > 0 && solid.r <= 8 && solid.g <= 8 && solid.b <= 8) values.push(solid.a);
+        for (const match of pseudo.backgroundImage.matchAll(/rgba?\(([^)]+)\)/g)) {
+          const color = parseRgba(`rgba(${match[1]})`);
+          if (color && color.r <= 8 && color.g <= 8 && color.b <= 8) values.push(color.a);
+        }
+        return values.length ? Math.min(...values) : 0;
+      };
+      const mediaTextContrastChecks = (el) => directTextElements(el).flatMap((node) => {
+        const match = mediaSurfaceFor(node, el);
+        if (!match) return [];
+        const { surface, media } = match;
+        const mediaRect = media.getBoundingClientRect();
+        const textRect = node.getBoundingClientRect();
+        const overlaps = Math.min(mediaRect.right, textRect.right) - Math.max(mediaRect.left, textRect.left) > 1 &&
+          Math.min(mediaRect.bottom, textRect.bottom) - Math.max(mediaRect.top, textRect.top) > 1;
+        if (!overlaps) return [];
+        const mediaStyle = getComputedStyle(media);
+        const brightnessValue = mediaStyle.filter.match(/brightness\(([^)]+)\)/)?.[1];
+        const brightness = brightnessValue ? Number(brightnessValue.replace('%', '')) / (brightnessValue.includes('%') ? 100 : 1) : 1;
+        const scrim = pseudoScrimAlpha(surface);
+        const attenuation = Math.max(0, Math.min(1, brightness * (1 - scrim)));
+        const channel = 255 * attenuation;
+        const worstBackground = { r: channel, g: channel, b: channel, a: 1 };
+        const style = getComputedStyle(node);
+        const color = parseRgba(style.color);
+        if (!color) return [{ node: labelFor(node), issue: `has an unreadable computed color ${style.color} over media` }];
+        color.a *= textOpacity(node, surface);
+        const rendered = composite(color, worstBackground);
+        const ratio = contrast(rendered, worstBackground);
+        const required = requiredTextContrast(style);
+        const issues = [];
+        if (!Number.isFinite(brightness) || attenuation > .44 + .001) {
+          issues.push(`media protection leaves a worst-case brightness of ${Number.isFinite(attenuation) ? attenuation.toFixed(2) : 'unknown'}; require brightness × (1 - minimum neutral-black scrim) <= .44`);
+        }
+        if (ratio + .01 < required) {
+          issues.push(`final text/media contrast is ${ratio.toFixed(2)}:1; expected at least ${required.toFixed(1)}:1 (text color ${style.color}, minimum scrim ${scrim.toFixed(2)})`);
+        }
+        return issues.map((issue) => ({ node: labelFor(node), surface: labelFor(surface), issue }));
+      });
       const briefContrastChecks = (el) => Array.from(el.querySelectorAll('.brief-card')).flatMap((node) => {
         const style = getComputedStyle(node);
-        if (node.classList.contains('is-accent')) {
-          const foreground = parseRgb(style.color);
-          const background = parseRgb(style.backgroundColor);
-          const ratio = foreground && background ? contrast(foreground, background) : 0;
-          return ratio < 4.5 ? [{ node: labelFor(node), issue: `accent text contrast is ${ratio.toFixed(2)}:1` }] : [];
-        }
+        if (node.classList.contains('is-accent')) return [];
         const borderWidth = parseFloat(style.borderTopWidth);
         return style.borderTopStyle === 'none' || !Number.isFinite(borderWidth) || borderWidth < .9
           ? [{ node: labelFor(node), issue: 'neutral card has no visible 1px boundary' }]
@@ -1406,8 +1529,8 @@ async function runRenderedMeasurements() {
           if (parentRect && (rect.width / parentRect.width < .95 || rect.height / parentRect.height < .95)) {
             issues.push(`full-bleed coverage is ${(rect.width / parentRect.width).toFixed(2)}× width and ${(rect.height / parentRect.height).toFixed(2)}× height; expected at least 95% on both axes`);
           }
-          if (isBento && (!Number.isFinite(scrimAlpha) || scrimAlpha < .28 || scrimAlpha > .48)) {
-            issues.push(`dark scrim alpha is ${Number.isFinite(scrimAlpha) ? scrimAlpha : scrimColor || 'missing'}; expected .28-.48`);
+          if (isBento && (!Number.isFinite(scrimAlpha) || scrimAlpha < .54 || scrimAlpha > .64)) {
+            issues.push(`dark scrim alpha is ${Number.isFinite(scrimAlpha) ? scrimAlpha : scrimColor || 'missing'}; expected .54-.64 for small inverse text`);
           }
           if (!isBento && scrimImage === 'none' && (!Number.isFinite(scrimAlpha) || scrimAlpha < .28)) {
             issues.push('S05 full-bleed media has no visible ::after scrim or gradient protecting its text');
@@ -1624,10 +1747,14 @@ async function runRenderedMeasurements() {
         const opacity = parseFloat(style.opacity);
         const isDegree = node.classList.contains('unit-degree');
         const isWord = node.classList.contains('unit-word');
+        const needsFullOpacity = Boolean(mediaSurfaceFor(node, el) || node.closest('.critical,.xreal-critical,.media-darken'));
+        const opacityInvalid = needsFullOpacity
+          ? !Number.isFinite(opacity) || opacity < .98 || opacity > 1
+          : !Number.isFinite(opacity) || opacity < .58 || opacity > .68;
         const letterSpacing = style.letterSpacing === 'normal' ? 0 : parseFloat(style.letterSpacing) / fontSize;
         const gapInvalid = isDegree ? gapRatio < .01 || gapRatio > .07 : isWord ? gapRatio < .18 || gapRatio > .32 : gapRatio < .14 || gapRatio > .24;
         return style.verticalAlign !== 'text-top'
-          || !Number.isFinite(opacity) || opacity < .58 || opacity > .68
+          || opacityInvalid
           || !Number.isFinite(gapRatio) || gapInvalid
           || (isWord && (!Number.isFinite(letterSpacing) || Math.abs(letterSpacing) > .02));
       }).map((node) => {
@@ -2183,6 +2310,8 @@ async function runRenderedMeasurements() {
           horizontalBarCapsuleIssues: horizontalBarCapsuleChecks(el),
           equalCardPaddingIssues: equalCardPaddingChecks(el),
           subCardCornerOffsetIssues: subCardCornerOffsetChecks(el),
+          textContrastIssues: textContrastChecks(el),
+          mediaTextContrastIssues: mediaTextContrastChecks(el),
           briefContrastIssues: briefContrastChecks(el),
           cardMediaIssues: cardMediaChecks(el),
           timelineIssues: timelineChecks(el),
@@ -2249,6 +2378,12 @@ async function runRenderedMeasurements() {
       }
       for (const issue of m.subCardCornerOffsetIssues) {
         errors.push(`${prefix}: ${issue.node} uses top ${issue.top} and right ${issue.right}. S04 corner numbers must use the same --sub-card-pad offset on both axes.`);
+      }
+      for (const issue of m.textContrastIssues) {
+        errors.push(`${prefix}: ${issue.node} ${issue.issue} (computed ${issue.foreground} on ${issue.background}). Every visible text role must meet WCAG AA on its final rendered surface; set an explicit inverse/primary color instead of relying on inherited color.`);
+      }
+      for (const issue of m.mediaTextContrastIssues) {
+        errors.push(`${prefix}: ${issue.node} ${issue.issue}. Its media surface is ${issue.surface}. Text over media must use data-media-contrast="darken", neutral-black protection, and readable inverse text; adjust text color, image brightness, scrim, crop, or media choice without adding a white text panel.`);
       }
       for (const issue of m.briefContrastIssues) {
         errors.push(`${prefix}: ${issue.node} ${issue.issue}. Multi-card Brief requires visible neutral-card boundaries; when semantic emphasis is justified, its single accent card must keep high-contrast inverse text.`);
