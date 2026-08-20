@@ -12,6 +12,8 @@
 
 生成正文页时不要把 XREAL Style 当成“自由组合的风格包”。默认只能使用 `references/swiss-layout-lock.md` 登记的 26 个版式（`S01-S08`、`S11-S28`）。每个 slide 都必须在 `<section>` 上写 `data-layout="Sxx"`。
 
+正式登记锁定的是信息语法与视觉规范，不是冻结每一个容器尺寸。每次生成都必须重新做 content-to-container fit：比较各块的语义优先级、文字量、数据量和媒体构图，在该版式登记范围内调整卡数、列宽、行高、跨度和媒体占比。短内容只有在承担主结论、关键数字、风险、转折或语义媒体时才占大容器；长内容不得塞进小卡、窄列或固定等高行。示例坐标、卡片顺序和强调位置均不可机械继承。
+
 **关键约束**:
 
 - 顶部中文标题默认左对齐并处在左上内容轴;不要把标题放到页面中间。
@@ -801,7 +803,7 @@ XREAL Style 有 26 个正式登记版式（`S01-S08`、`S11-S28`）,生成时要
 **关键类**:`.xreal-data-chart` `.chart-legend` `.chart-stage` `.chart-y-labels` `.chart-plot` `.chart-groups` `.chart-group` `.chart-bar` `.chart-x-labels` `.chart-source`
 **动效 recipe**:`chart-rise` — 坐标结构先入 → 各类别柱从共同零基线生长 → 值、图例和来源落定。
 **注意**:
-- 柱高必须由 `data-value` 与 `--value` 对应真实数值；共同零基线不可截断。
+- `.xreal-data-chart` 默认声明 `data-scale-mode="auto"`，`.chart-bar[data-value]` 保存原始数值；运行时从当前数据域生成 5 级 nice scale 与柱高，共同零基线不可截断。`--value` 只保存同一计算结果作为离线/无脚本 fallback。只有需要与其他图严格共享纵轴时才使用 `fixed`，并同时声明 `data-axis-min` / `data-axis-max`。
 - 每个柱提供可见值或明确的 HTML 终值标签；纵轴单位与来源必填。
 - 绘图区四边使用同色同粗的单一 1px `--chart-frame`，第一/最后网格线不得叠在 frame 上；`--chart-safe-inline` 为首末柱保留至少 28px，`--chart-value-headroom` 保护最高数值标签。不得让柱体或标签贴到绘图区边界，也不能用 overflow 裁切制造“图表完整”的假象。
 - `.chart-value` 使用整柱宽定位 `left:0;right:0;text-align:center`，不要用水平 transform 居中；否则 `chart-rise` 的纵向 transform 会覆盖它。`.chart-x-labels` 使用与柱组相同的左右安全 padding。
@@ -822,7 +824,7 @@ XREAL Style 有 26 个正式登记版式（`S01-S08`、`S11-S28`）,生成时要
       <h2 class="xreal-page-title">[必填] 用一句结论说明比较结果</h2>
     </div>
 
-    <div data-anim="chart" class="xreal-data-chart" data-chart-unit="%" aria-label="[必填] 图表摘要">
+    <div data-anim="chart" class="xreal-data-chart" data-chart-unit="%" data-scale-mode="auto" aria-label="[必填] 图表摘要">
       <div class="chart-meta-row">
         <span class="chart-unit">Unit · %</span>
         <div class="chart-legend" aria-label="数据系列">
@@ -1012,7 +1014,8 @@ XREAL Style 有 26 个正式登记版式（`S01-S08`、`S11-S28`）,生成时要
 **注意**:
 - 参考图只提供“总述 + 三组并行 + 组内异构”的信息骨架；禁止复制蓝色主色、UI 控件、彩色面板、大圆角、阴影、pill 或不统一的图标风格。
 - 三个 `.dense-panel` 使用统一白/浅灰底、1px 中性边界、四边等距 padding、8px 小圆角和一致间距；内部条目不重复堆 hairline。`.dense-comparison` 的三项若需要增强区分，可使用三个等宽、无边框、无阴影的浅中性子区域，且各项内容在顶部紧凑成组；其他语法保持扁平，不继续堆多层卡片。
-- 全页共 7-12 个 `.dense-item`，每面板至少 2 项；正文 ≥16px，meta ≥14px。最多一个有明确依据的 `.is-focus` 黑色焦点区和一张 `.dense-media`；媒体仅可作为该焦点区的 full-bleed 背景，并声明 `cover + darken`，不得缩成装饰缩略图。
+- 全页共 7-12 个 `.dense-item`，每面板至少 2 项；正文 ≥16px，meta ≥14px。面板列宽和组内行高必须按内容量调整；`.dense-progression` 可声明 `data-row-profile="lead-heavy|middle-heavy|closing-heavy"`，不把长短明显不同的三项强制等高。最多一个有明确依据的 `.is-focus` 黑色焦点区和一张 `.dense-media`；焦点位置由主结论、风险或关键转折决定，并必须添加非空 `data-focus-reason`，不得固定强调第 2 项。媒体仅可作为该焦点区的 full-bleed 背景，并声明 `cover + darken`，不得缩成装饰缩略图。
+- 递进编号使用固定 `2.4ch` 列、tabular numerals 与右对齐，编号后的标题和正文共享同一左轴；此规则同样适用于纯英文页面。
 - 用户要求“一页总览”或“不要拆分”时，溢出优先通过合并真正重复且无信息增量的措辞、缩短标签、调整列宽和内部网格解决；被合并的来源项仍保留独立 `SRC-xxx` 映射。不得删除关键内容或自动拆页。
 - 三组信息必须共享一个可表述的共同结论；若三个面板互不相关，只是为了塞满页面，则应重新规划叙事。
 
@@ -1025,7 +1028,7 @@ XREAL Style 有 26 个正式登记版式（`S01-S08`、`S11-S28`）,生成时要
       <div class="dense-thesis"><span class="dense-thesis-label">共同判断</span><p class="dense-thesis-copy">[必填] 先说明为什么三组信息需要同时被理解。</p></div>
       <div class="dense-columns" style="--dense-columns:1.08fr 1fr 1.16fr">
         <article class="dense-panel"><h3 class="dense-panel-title">[必填] 比较维度</h3><div class="dense-panel-body dense-comparison"><div class="dense-item">...</div><div class="dense-item">...</div><div class="dense-item">...</div></div></article>
-        <article class="dense-panel"><h3 class="dense-panel-title">[必填] 能力递进</h3><div class="dense-panel-body dense-progression"><div class="dense-item">...</div><div class="dense-item is-focus">...</div><div class="dense-item">...</div></div></article>
+        <article class="dense-panel"><h3 class="dense-panel-title">[必填] 能力递进</h3><div class="dense-panel-body dense-progression" data-row-profile="lead-heavy"><div class="dense-item">...</div><div class="dense-item">...</div><div class="dense-item">...</div></div></article>
         <article class="dense-panel"><h3 class="dense-panel-title">[必填] 解释列表</h3><div class="dense-panel-body dense-feature-list"><div class="dense-item dense-feature">...</div><div class="dense-item dense-feature">...</div><div class="dense-item dense-feature">...</div></div></article>
       </div>
       <div class="dense-source">Source · [必填]；示意内容明确写 Illustrative</div>

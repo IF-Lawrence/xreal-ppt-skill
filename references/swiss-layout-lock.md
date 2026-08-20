@@ -75,7 +75,7 @@ XREAL Style 生成时,除用户明确要求实验版式外,只能从下面登记
 - 使用场景:3-8 个类别、2-4 个系列的同尺度比较；例如区域 × 产品、季度 × 渠道或方案 × 指标。
 - 必须结构:`.xreal-data-chart` + `.chart-legend` + `.chart-stage` + `.chart-y-labels` + `.chart-plot` + `.chart-groups` + `.chart-x-labels` + `.chart-source`。
 - 数据约束:每个柱必须对应真实数值并带 `data-value` / 可见值；必须显示单位和来源。不同量纲禁止强行共用一个纵轴。
-- 视觉约束:图表占页面主导面积；使用四边同色同粗的单一 1px `--chart-frame`、共同零基线、1px `--chart-grid` 和最多 4 个按 `--chart-series-1/2/3/4` 映射的稳定系列；第一/最后网格线不得与 frame 重叠。柱体只保留顶部 8px 小圆角，底角为直角并贴齐 x 轴；红色不是默认系列色，只允许一个有明确结论依据的关键系列/点使用。首末柱与绘图区边界至少保留 28px，最高数值标签不得越过 plot 顶部；数值标签中心与柱体中心误差不超过 2px。
+- 视觉约束:图表占页面主导面积；使用四边同色同粗的单一 1px `--chart-frame`、共同零基线、1px `--chart-grid` 和最多 4 个按 `--chart-series-1/2/3/4` 映射的稳定系列；第一/最后网格线不得与 frame 重叠。柱体只保留顶部 8px 小圆角，底角为直角并贴齐 x 轴；红色不是默认系列色，只允许一个有明确结论依据的关键系列/点使用。首末柱与绘图区边界至少保留 28px，最高数值标签不得越过 plot 顶部；数值标签中心与柱体中心误差不超过 2px。默认 `data-scale-mode="auto"` 并用原始 `data-value` 生成 5 级 nice scale；只有跨图共享量纲时才可声明 fixed min/max。
 - 动效:使用 `data-animate="chart-rise"`；柱从共同基线生长，图例与来源随后出现。
 
 ### S24 · Line Chart
@@ -108,7 +108,7 @@ XREAL Style 生成时,除用户明确要求实验版式外,只能从下面登记
 
 - 使用场景:大量信息必须在同一页共同判断，拆开后会破坏比较、依赖或因果关系；不是普通三栏摘要。
 - 必须结构:`.dense-synthesis` + `.dense-thesis` + `.dense-columns` + 恰好 3 个 `.dense-panel` + `.dense-source`；每个面板含 `.dense-panel-title`、`.dense-panel-body` 和至少 2 个 `.dense-item`，全页共 7-12 项。
-- 视觉约束:总述标签与结论共享同一左轴；三个主面板等高、浅灰底、四边等距 padding、1px 中性外边界、8px 小圆角、无阴影。内部通过标题层级、列宽和留白组织，不为每个条目重复添加 hairline，也不使用彩色卡片。`.dense-comparison` 可用三个等宽、无边框、无阴影的浅中性子区域增强区分，各项内容必须紧凑聚合在顶部。最多一个 `.is-focus` 黑色焦点区和一张 `.dense-media`；媒体只作为焦点区的 `cover + darken` 背景，不做小缩略图。
+- 视觉约束:总述标签与结论共享同一左轴；三个主面板等高、浅灰底、四边等距 padding、1px 中性外边界、8px 小圆角、无阴影。面板列宽与组内行高按内容量调整；递进组可声明 `data-row-profile="lead-heavy|middle-heavy|closing-heavy"`。内部通过标题层级、列宽和留白组织，不为每个条目重复添加 hairline，也不使用彩色卡片。`.dense-comparison` 可用三个等宽、无边框、无阴影的浅中性子区域增强区分，各项内容必须紧凑聚合在顶部。最多一个 `.is-focus` 黑色焦点区和一张 `.dense-media`；焦点项必须有非空 `data-focus-reason`，由主结论、风险或关键转折决定而不是固定顺序。媒体只作为焦点区的 `cover + darken` 背景，不做小缩略图。编号使用固定 `ch` 列和 tabular numerals，后方文本共享同一左轴。
 - 密度约束:正文不低于 16px，meta 不低于 14px。溢出时优先合并真正重复且无信息增量的措辞、调整列宽和内部网格；来源模式中被合并的每项仍保留独立覆盖 ID。用户明确要求同页时不得删除关键内容或自动拆页。
 - 动效:使用 `data-animate="dense-synthesis"`；标题与总述带先出现，三主面板并行进入，再展开组内条目。
 

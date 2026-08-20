@@ -877,6 +877,11 @@ slides.forEach((slide) => {
       errors.push(`Slide ${slide.idx}: S23 Data Chart must declare data-chart-unit and show the unit in .chart-unit.`);
     }
     const groupCount = [...slide.html.matchAll(/<[^>]+\bclass="[^"]*\bchart-group\b[^"]*"[^>]*>/g)].length;
+    const chartTag = slide.html.match(/<div\b(?=[^>]*\bclass="[^"]*\bxreal-data-chart\b[^"]*")[^>]*>/)?.[0] ?? '';
+    const scaleMode = chartTag.match(/\bdata-scale-mode="([^"]+)"/)?.[1] ?? '';
+    if (!['auto', 'fixed'].includes(scaleMode)) {
+      errors.push(`Slide ${slide.idx}: S23 must declare data-scale-mode="auto" or "fixed"; use auto unless multiple charts require one shared axis.`);
+    }
     const barTags = [...slide.html.matchAll(/<div\b(?=[^>]*\bclass="[^"]*\bchart-bar\b[^"]*")[^>]*>/g)].map((match) => match[0]);
     const valueCount = [...slide.html.matchAll(/\bclass="[^"]*\bchart-value\b[^"]*"/g)].length;
     if (groupCount < 3 || groupCount > 8) {
@@ -888,13 +893,48 @@ slides.forEach((slide) => {
     if (valueCount !== barTags.length) {
       errors.push(`Slide ${slide.idx}: S23 Data Chart requires one visible .chart-value for every bar; found ${valueCount} values for ${barTags.length} bars.`);
     }
+    const rawValues = barTags.map((tag) => Number(tag.match(/\bdata-value="([+-]?[0-9.]+)"/)?.[1]));
+    const fallbackValues = barTags.map((tag) => Number(tag.match(/--value\s*:\s*([0-9.]+)/)?.[1]));
+    const visibleValues = [...slide.html.matchAll(/<span\b[^>]*\bclass="[^"]*\bchart-value\b[^"]*"[^>]*>([^<]+)<\/span>/g)].map((match) => Number(match[1].trim()));
+    const axisMin = Number(chartTag.match(/\bdata-axis-min="([+-]?[0-9.]+)"/)?.[1]);
+    const axisMax = Number(chartTag.match(/\bdata-axis-max="([+-]?[0-9.]+)"/)?.[1]);
+    if (scaleMode === 'fixed' && (!Number.isFinite(axisMin) || !Number.isFinite(axisMax) || axisMax <= axisMin)) {
+      errors.push(`Slide ${slide.idx}: S23 fixed scale requires numeric data-axis-min and data-axis-max with max > min.`);
+    }
     barTags.forEach((tag, barIndex) => {
-      const value = Number(tag.match(/\bdata-value="([+-]?[0-9.]+)"/)?.[1]);
-      const normalized = Number(tag.match(/--value\s*:\s*([0-9.]+)/)?.[1]);
-      if (!Number.isFinite(value) || !Number.isFinite(normalized) || normalized < 0 || normalized > 100) {
-        errors.push(`Slide ${slide.idx}: S23 chart bar ${barIndex + 1} must provide numeric data-value and normalized --value from 0-100.`);
+      const value = rawValues[barIndex];
+      const normalized = fallbackValues[barIndex];
+      if (!Number.isFinite(value) || value < 0 || !Number.isFinite(normalized) || normalized < 0 || normalized > 100) {
+        errors.push(`Slide ${slide.idx}: S23 chart bar ${barIndex + 1} must provide a non-negative raw data-value and a normalized --value fallback from 0-100.`);
+      }
+      if (scaleMode === 'fixed' && Number.isFinite(value) && Number.isFinite(axisMin) && Number.isFinite(axisMax) && (value < axisMin || value > axisMax)) {
+        errors.push(`Slide ${slide.idx}: S23 chart bar ${barIndex + 1} value ${value} falls outside the fixed axis ${axisMin}-${axisMax}.`);
+      }
+      if (!Number.isFinite(visibleValues[barIndex]) || Math.abs(visibleValues[barIndex] - value) > 1e-6) {
+        errors.push(`Slide ${slide.idx}: S23 chart bar ${barIndex + 1} data-value ${value} must match its visible raw .chart-value; found ${visibleValues[barIndex]}.`);
       }
     });
+    if (scaleMode === 'auto' && rawValues.every(Number.isFinite) && rawValues.length) {
+      const dataMax = Math.max(...rawValues, 1);
+      const rough = dataMax / 4;
+      const power = 10 ** Math.floor(Math.log10(rough));
+      const scaled = rough / power;
+      const factor = [1, 1.25, 1.5, 2, 2.5, 3, 4, 5, 7.5, 10].find((candidate) => candidate >= scaled) ?? 10;
+      const step = factor * power;
+      const niceMax = Math.ceil(dataMax / step) * step;
+      const tallest = dataMax / niceMax * 100;
+      if (tallest < 68) errors.push(`Slide ${slide.idx}: S23 auto scale resolves the tallest bar to only ${tallest.toFixed(1)}%; choose a tighter valid scale or a different chart form.`);
+      rawValues.forEach((value, index) => {
+        const expected = value / niceMax * 100;
+        if (Number.isFinite(fallbackValues[index]) && Math.abs(fallbackValues[index] - expected) > 1.5) errors.push(`Slide ${slide.idx}: S23 chart bar ${index + 1} --value fallback ${fallbackValues[index]} does not match the auto-scaled raw value ${value} (expected ${expected.toFixed(1)}).`);
+      });
+    }
+    if (scaleMode === 'fixed' && Number.isFinite(axisMin) && Number.isFinite(axisMax)) {
+      rawValues.forEach((value, index) => {
+        const expected = (value - axisMin) / (axisMax - axisMin) * 100;
+        if (Number.isFinite(fallbackValues[index]) && Math.abs(fallbackValues[index] - expected) > 1.5) errors.push(`Slide ${slide.idx}: S23 chart bar ${index + 1} --value fallback ${fallbackValues[index]} does not match the fixed axis (expected ${expected.toFixed(1)}).`);
+      });
+    }
   }
 
   if (layout === 'S24' && !isECharts) {
@@ -1013,6 +1053,8 @@ slides.forEach((slide) => {
       const classes = match[1].split(/\s+/);
       return classes.includes('dense-item') && classes.includes('is-focus');
     }).length;
+    const focusTags = [...slide.html.matchAll(/<div\b(?=[^>]*\bclass="[^"]*\bdense-item\b[^"]*\bis-focus\b[^"]*")[^>]*>/g)].map((match) => match[0]);
+    const progressionTags = [...slide.html.matchAll(/<div\b(?=[^>]*\bclass="[^"]*\bdense-progression\b[^"]*")[^>]*>/g)].map((match) => match[0]);
     const mediaTags = [...slide.html.matchAll(/<img\b(?=[^>]*\bclass="[^"]*\bdense-media\b[^"]*")[^>]*>/g)].map((match) => match[0]);
     if (panelCount !== 3 || titleCount !== 3 || bodyCount !== 3) {
       errors.push(`Slide ${slide.idx}: S27 requires 3 complete .dense-panel regions; found ${panelCount} panels / ${titleCount} titles / ${bodyCount} bodies.`);
@@ -1023,6 +1065,13 @@ slides.forEach((slide) => {
       if (count < 2) errors.push(`Slide ${slide.idx}: S27 panel ${index + 1} has only ${count} .dense-item block(s); each panel needs at least 2.`);
     });
     if (focusCount > 1) errors.push(`Slide ${slide.idx}: S27 allows at most one semantically justified .is-focus item; found ${focusCount}.`);
+    focusTags.forEach((tag) => {
+      if (!/\bdata-focus-reason="[^"]{4,}"/.test(tag)) errors.push(`Slide ${slide.idx}: S27 .is-focus must declare a specific data-focus-reason; emphasis cannot be inherited from the template position.`);
+    });
+    progressionTags.forEach((tag) => {
+      const profile = tag.match(/\bdata-row-profile="([^"]+)"/)?.[1];
+      if (profile && !['lead-heavy', 'middle-heavy', 'closing-heavy'].includes(profile)) errors.push(`Slide ${slide.idx}: S27 data-row-profile must be lead-heavy, middle-heavy, or closing-heavy.`);
+    });
     if (mediaTags.length > 1) errors.push(`Slide ${slide.idx}: S27 allows at most one semantic media item; found ${mediaTags.length}.`);
     mediaTags.forEach((tag) => {
       if (!/\bdata-image-slot="s27-dense-media"/.test(tag) || !/\bdata-media-role="dense-evidence"/.test(tag) || !/\bdata-media-fit="cover"/.test(tag) || !/\bdata-media-contrast="darken"/.test(tag)) {
@@ -1696,6 +1745,8 @@ async function runRenderedMeasurements() {
         if (leftGap < 20 || rightGap < 20) {
           issues.push(`outer plot safety is ${leftGap.toFixed(1)}px left / ${rightGap.toFixed(1)}px right; expected at least 20px on both sides`);
         }
+        const tallestRatio = Math.max(...bars.map((bar) => bar.getBoundingClientRect().height)) / Math.max(1, plotRect.height);
+        if (tallestRatio < .68) issues.push(`tallest bar uses only ${(tallestRatio * 100).toFixed(1)}% of the plot height; recompute the y-axis from the supplied data instead of reusing a fixed sample scale`);
         bars.forEach((bar, index) => {
           const value = bar.querySelector('.chart-value');
           if (!value) return;
@@ -1968,9 +2019,61 @@ async function runRenderedMeasurements() {
           const size = parseFloat(getComputedStyle(meta).fontSize);
           if (!Number.isFinite(size) || size < 13.5) issues.push(`meta label ${index + 1} renders at ${size}px; expected at least 14px`);
         });
+        const progressionItems = Array.from(el.querySelectorAll('.dense-progression > .dense-item'));
+        const progressionNums = progressionItems.map((item) => item.querySelector('.dense-progress-num')).filter(Boolean);
+        const progressionBodies = progressionItems.map((item) => item.querySelector('.dense-progress-num + div')).filter(Boolean);
+        if (progressionNums.length > 1) {
+          const lefts = progressionNums.map((node) => node.getBoundingClientRect().left);
+          const rights = progressionNums.map((node) => node.getBoundingClientRect().right);
+          if (Math.max(...lefts) - Math.min(...lefts) > 2 || Math.max(...rights) - Math.min(...rights) > 2) issues.push('progression numbers do not share one fixed-width aligned number column');
+        }
+        if (progressionBodies.length > 1) {
+          const lefts = progressionBodies.map((node) => node.getBoundingClientRect().left);
+          if (Math.max(...lefts) - Math.min(...lefts) > 2) issues.push('progression titles and copy do not share one text start axis after the number column');
+        }
         if (el.querySelectorAll('.dense-item.is-focus').length > 1) issues.push('more than one dense item uses high-contrast focus styling');
         if (columns.getBoundingClientRect().height / synthesis.getBoundingClientRect().height < .58) issues.push('three-panel field uses too little of the available synthesis height');
         return issues.map((issue) => ({ node: labelFor(synthesis), issue }));
+      };
+
+      const contentFitChecks = (el) => {
+        const selector = '.sub-card,.stack-block,.brief-card,.xreal-bento > article,.dense-item,.priority-tile,.milestone-entry';
+        const cards = Array.from(el.querySelectorAll(selector));
+        if (!cards.length) return [];
+        const issues = [];
+        const slideArea = Math.max(1, el.getBoundingClientRect().width * el.getBoundingClientRect().height);
+        const contentUnits = (node) => {
+          const text = (node.innerText || '').replace(/\s+/g, ' ').trim();
+          const cjk = text.match(/[\u3040-\u30ff\u3400-\u9fff\uf900-\ufaff]/g)?.length ?? 0;
+          const latin = text.replace(/[\u3040-\u30ff\u3400-\u9fff\uf900-\ufaff]/g, ' ').match(/[A-Za-z0-9%°+./-]+/g)?.length ?? 0;
+          return cjk + latin * 1.35;
+        };
+        const cardStats = cards.map((card) => {
+          const rect = card.getBoundingClientRect();
+          const areaRatio = Math.max(0, rect.width * rect.height / slideArea);
+          const units = contentUnits(card);
+          const hasMedia = !!card.querySelector('img,video,.xreal-echart,svg[data-svg-role="chart"]');
+          const fontSizes = Array.from(card.querySelectorAll('*')).map((node) => parseFloat(getComputedStyle(node).fontSize)).filter(Number.isFinite);
+          const hasDisplayType = fontSizes.some((size) => size >= 34);
+          const semanticLarge = card.matches('.is-primary,.hero,.ink,.is-focus,[data-emphasis],[data-space-reason]');
+          if ((areaRatio < .055 && units > 48) || (areaRatio < .08 && units > 78)) issues.push({ level: 'error', node: labelFor(card), issue: `high content load (${units.toFixed(0)} units) is assigned to only ${(areaRatio * 100).toFixed(1)}% of the slide` });
+          if (areaRatio > .14 && units < 20 && !hasMedia && !hasDisplayType && !semanticLarge) issues.push({ level: 'warning', node: labelFor(card), issue: `a large ${(areaRatio * 100).toFixed(1)}% card contains only ${units.toFixed(0)} content units without a primary, data, media, or spacing rationale` });
+          return { card, area: Math.max(1, rect.width * rect.height), units };
+        });
+        const groups = Array.from(el.querySelectorAll('.sub-grid-3-2,.brief-grid,.dense-panel-body,.priority-bento,.milestone-gallery,.xreal-bento'));
+        groups.forEach((group) => {
+          const members = cardStats.filter(({ card }) => card.parentElement === group && cardStats.length > 1);
+          if (members.length < 2) return;
+          const areas = members.map(({ area }) => area);
+          const areaSpread = Math.max(...areas) / Math.max(1, Math.min(...areas));
+          const nonTrivial = members.filter(({ units }) => units >= 6);
+          if (areaSpread <= 1.18 && nonTrivial.length >= 2) {
+            const loads = nonTrivial.map(({ units }) => units);
+            const loadSpread = Math.max(...loads) / Math.max(1, Math.min(...loads));
+            if (loadSpread > 3.2) issues.push({ level: 'warning', node: labelFor(group), issue: `equal-size regions carry a ${loadSpread.toFixed(1)}× content-load difference; rebalance spans/rows or choose a better registered layout` });
+          }
+        });
+        return issues;
       };
 
       const priorityBentoChecks = (el) => {
@@ -2100,6 +2203,7 @@ async function runRenderedMeasurements() {
           milestoneGalleryIssues: milestoneGalleryChecks(el),
           denseSynthesisIssues: denseSynthesisChecks(el),
           priorityBentoIssues: priorityBentoChecks(el),
+          contentFitIssues: contentFitChecks(el),
           echartsIssues: Array.from(el.querySelectorAll('.xreal-echart')).filter((node) => node.dataset.echartsState !== 'ready').map((node) => ({
             state: node.dataset.echartsState || 'uninitialized',
             message: node.dataset.echartsMessage || 'Chart did not reach ready state.',
@@ -2205,6 +2309,11 @@ async function runRenderedMeasurements() {
       }
       for (const issue of m.priorityBentoIssues) {
         errors.push(`${prefix}: ${issue.node} ${issue.issue}. S28 must use a complete non-overlapping 12x6 area hierarchy, flat 8px cards, readable type, and restrained semantic media.`);
+      }
+      for (const issue of m.contentFitIssues) {
+        const message = `${prefix}: ${issue.node} ${issue.issue}. Match container area to content load and semantic priority instead of forcing copy into frozen template geometry.`;
+        if (issue.level === 'warning') warnings.push(message);
+        else errors.push(message);
       }
       for (const issue of m.echartsIssues) {
         errors.push(`${prefix}: ECharts runtime is ${issue.state}: ${issue.message}`);
