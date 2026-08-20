@@ -1491,13 +1491,16 @@
   .dense-comparison .dense-item{display:grid;grid-template-rows:auto auto auto;align-content:start;gap:.65vh;padding:1.15vh .8vw;background:rgba(255,255,255,.72);border-radius:var(--radius-sm)}
   .dense-comparison .dense-item-kicker{margin-bottom:0}
   .dense-stage-mark{font-size:max(22px,1.55vw);font-weight:var(--weight-emphasis);line-height:1;letter-spacing:-.03em;margin:.35vh 0 .55vh}
-  .dense-progression,.dense-feature-list{display:grid;grid-template-rows:repeat(3,minmax(0,1fr));gap:.7vh;height:100%}
-  .dense-progression .dense-item{display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:.8vw;align-content:center}
-  .dense-progress-num{font-size:max(14px,.72vw);font-weight:var(--weight-label);line-height:1.25;color:var(--text-helper)}
+  .dense-progression,.dense-feature-list{display:grid;grid-template-rows:var(--dense-rows,repeat(3,minmax(0,1fr)));gap:.7vh;height:100%}
+  .dense-progression[data-row-profile="lead-heavy"]{--dense-rows:1.3fr .9fr .8fr}
+  .dense-progression[data-row-profile="middle-heavy"]{--dense-rows:.85fr 1.3fr .85fr}
+  .dense-progression[data-row-profile="closing-heavy"]{--dense-rows:.8fr .9fr 1.3fr}
+  .dense-progression .dense-item{display:grid;grid-template-columns:2.4ch minmax(0,1fr);column-gap:.8vw;align-content:center;padding:.7vh .9vw}
+  .dense-progress-num{width:2.4ch;text-align:right;font-variant-numeric:tabular-nums;font-size:max(14px,.72vw);font-weight:var(--weight-label);line-height:1.25;color:var(--text-helper)}
   .dense-progression .dense-item-copy{grid-column:2}
   .dense-item.is-focus{
     position:relative;isolation:isolate;overflow:hidden;margin:.7vh 0;padding:1.15vh .9vw;border:0;border-radius:var(--radius-sm);
-    grid-template-columns:auto minmax(0,1fr);background:var(--ink);color:var(--paper)
+    grid-template-columns:2.4ch minmax(0,1fr);background:var(--ink);color:var(--paper)
   }
   .dense-item.is-focus::after{content:"";position:absolute;inset:0;z-index:1;background:rgba(0,0,0,.34);pointer-events:none}
   .dense-item.is-focus > :not(.dense-media){position:relative;z-index:2}
@@ -1537,6 +1540,16 @@
   .priority-tile.is-primary .priority-copy,.priority-tile.media-darken .priority-copy{color:rgba(255,255,255,.74)}
   .priority-value{font-size:min(3.5vw,6.1vh);font-weight:var(--weight-emphasis);line-height:.92;letter-spacing:-.035em;font-feature-settings:"tnum"}
   .priority-tile.is-support .priority-value{font-size:min(2.65vw,4.7vh)}
+  .priority-bento[data-bento-variant="panorama"] .priority-tile.is-primary .priority-title{max-width:24ch}
+  .priority-bento[data-bento-variant="panorama"] .priority-tile.is-support{
+    display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:1vw;padding:clamp(10px,.8vw,14px)
+  }
+  .priority-bento[data-bento-variant="panorama"] .priority-tile.is-support>div{display:flex;align-items:baseline;justify-content:flex-end;gap:.8vw;min-width:0}
+  .priority-bento[data-bento-variant="panorama"] .priority-tile.is-support .priority-value{font-size:min(2.15vw,3.8vh);white-space:nowrap}
+  .priority-bento[data-bento-variant="panorama"] .priority-tile.is-support .priority-title{font-size:max(16px,1vw);white-space:nowrap}
+  .priority-bento[data-bento-variant="center-focus"] .priority-tile.is-primary{justify-content:center;text-align:center}
+  .priority-bento[data-bento-variant="center-focus"] .priority-tile.is-primary .priority-title,
+  .priority-bento[data-bento-variant="center-focus"] .priority-tile.is-primary .priority-copy{margin-inline:auto}
   .priority-source{color:var(--text-helper)}
 
   /* 全局注脚：统一字号、左右内容轴和底部基线；不使用分割线。 */
@@ -1696,7 +1709,7 @@
 </style>
 <!-- XREAL_ECHARTS_BUNDLE · 运行 scripts/inline-echarts.mjs 后替换为离线 ECharts 包 -->
 </head>
-<body class="canvas-mode">
+<body class="canvas-mode" data-content-mode="brief-generated">
 <script>
   // Windows 平台标记 — 保留平台类供其他兼容逻辑使用
   if(/Win/i.test(navigator.platform || navigator.userAgentData?.platform || '')){
@@ -1732,6 +1745,8 @@
      ============================================================ -->
 <!-- SLIDES_HERE · 在此处粘贴 <section class="slide ..."> 页面块
      - 页面骨架直接从 references/layouts-swiss.md 拷贝
+     - 用户提供成体系原始材料时，将 body 改为 data-content-mode="source-faithful"，先建立 content-coverage.json；承载原文的正文 section 添加稳定 id 与 data-source-refs="SRC-001 ..."
+     - 只有用户明确要求或批准摘要时才使用 data-content-mode="editorial-summary"；完整规则见 references/content-fidelity.md
      - data-animate="..." 必须命中下方 RECIPES 字典里的已有 recipe 名之一；S23-S28 分别使用 chart-rise / line-draw / portfolio-roadmap / milestone-gallery / dense-synthesis / priority-bento
      - 主题色固定为本文件 :root 中的 XREAL 黑白灰体系 -->
 
@@ -2374,6 +2389,50 @@ if(motion){
     {duration:opts.duration ?? .6, delay:opts.delay ?? 0,
      easing:opts.easing ?? EASE_ENTRY_EXP});
 
+  /* S23 自适应数轴：柱体保存原始 data-value，默认按当前数据域生成 5 个刻度。
+     只有跨页固定量纲比较时才使用 data-scale-mode="fixed" + 显式 min/max。 */
+  function prepareDataChartScale(slide){
+    const chart = slide.querySelector('.xreal-data-chart');
+    if(!chart) return;
+    const bars = [...chart.querySelectorAll('.chart-bar')];
+    const rawValue = (bar)=>Number(bar.dataset.rawValue ?? bar.querySelector('.chart-value')?.textContent ?? bar.dataset.value);
+    const values = bars.map(rawValue).filter(Number.isFinite);
+    if(!values.length) return;
+    const mode = chart.dataset.scaleMode === 'fixed' ? 'fixed' : 'auto';
+    const niceStep = (maxValue)=>{
+      if(!(maxValue > 0)) return 1;
+      const rough = maxValue / 4;
+      const power = 10 ** Math.floor(Math.log10(rough));
+      const scaled = rough / power;
+      const factor = [1,1.25,1.5,2,2.5,3,4,5,7.5,10].find(value=>value >= scaled) || 10;
+      return factor * power;
+    };
+    let min = mode === 'fixed' ? Number(chart.dataset.axisMin) : 0;
+    let max = mode === 'fixed' ? Number(chart.dataset.axisMax) : NaN;
+    if(!Number.isFinite(min)) min = 0;
+    if(!Number.isFinite(max) || max <= min){
+      const dataMax = Math.max(...values, min + 1);
+      const step = niceStep(dataMax - min);
+      max = min + Math.ceil((dataMax - min) / step) * step;
+    }
+    const span = Math.max(max - min, Number.EPSILON);
+    bars.forEach(bar=>{
+      const raw = rawValue(bar);
+      const scaled = Number.isFinite(raw) ? Math.max(0,Math.min(100,(raw-min)/span*100)) : 0;
+      bar.dataset.scaledValue = scaled.toFixed(4);
+      bar.style.setProperty('--value',scaled.toFixed(4));
+    });
+    const formatTick = (value)=>{
+      const abs = Math.abs(value);
+      const digits = abs >= 100 ? 0 : abs >= 10 ? 1 : 2;
+      return Number(value.toFixed(digits)).toString();
+    };
+    const labels = [...chart.querySelectorAll('.chart-y-labels span')];
+    labels.forEach((label,index)=>{ label.textContent = formatTick(max - span * index / Math.max(1,labels.length-1)); });
+    chart.dataset.resolvedAxisMin = String(min);
+    chart.dataset.resolvedAxisMax = String(max);
+  }
+
   /* ---------- recipe: hero · 封面索引 ----------
      大编号一个个亮起 → 索引行最后落定 */
   function rHero(slide, all){
@@ -2556,7 +2615,7 @@ if(motion){
 
     const bars = [...slide.querySelectorAll('.chart-bar')];
     bars.forEach((bar, i)=>{
-      const value = Number(bar.dataset.value);
+      const value = Number(bar.dataset.scaledValue);
       const target = Number.isFinite(value) ? Math.max(0, Math.min(100, value)) : 0;
       bar.style.height = '0%';
       const label = bar.querySelector('.chart-value');
@@ -3113,6 +3172,7 @@ if(motion){
     const slide = slides[i];
     if(!slide) return;
     lastIdx = i;
+    prepareDataChartScale(slide);
 
     if(window.__lowPowerMode){
       revealStatic(slide);

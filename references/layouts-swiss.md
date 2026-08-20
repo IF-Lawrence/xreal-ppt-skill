@@ -12,6 +12,8 @@
 
 生成正文页时不要把 XREAL Style 当成“自由组合的风格包”。默认只能使用 `references/swiss-layout-lock.md` 登记的 26 个版式（`S01-S08`、`S11-S28`）。每个 slide 都必须在 `<section>` 上写 `data-layout="Sxx"`。
 
+正式登记锁定的是信息语法与视觉规范，不是冻结每一个容器尺寸。每次生成都必须重新做 content-to-container fit：比较各块的语义优先级、文字量、数据量和媒体构图，在该版式登记范围内调整卡数、列宽、行高、跨度和媒体占比。短内容只有在承担主结论、关键数字、风险、转折或语义媒体时才占大容器；长内容不得塞进小卡、窄列或固定等高行。示例坐标、卡片顺序和强调位置均不可机械继承。
+
 **关键约束**:
 
 - 顶部中文标题默认左对齐并处在左上内容轴;不要把标题放到页面中间。
@@ -48,7 +50,7 @@
 | 1 行,≤ 8 个中文字符 | `min(6.4vw,11.2vh)` |
 | 2 行,每行≤ 8 个中文字符 | `min(5.8vw,10.2vh)` |
 | 2 行,任一行 9-12 个中文字符 | `min(5.2vw,9.2vh)` |
-| 3 行或更长标题 | 改写标题;实在不能改时用 `min(4.6vw,8.2vh)` |
+| 3 行或更长标题 | 在不改变事实、范围和语气的前提下缩短标题，并把限定信息保留在正文；实在不能改时用 `min(4.6vw,8.2vh)` |
 
 规则:中文标题优先改短,其次降字号;不要让标题挤占下方图文区域。英文、数字型 hero 可以更大,中文方法论页必须更克制。
 
@@ -62,7 +64,7 @@ XREAL Style 不是网页说明页,投屏时不能出现 10-12px 的注释字。�
 | meta / kicker / mono label / 图表标签 | `14px` |
 | 来源 / 说明注脚（仅底部 footnote） | `max(11px,.62vw)` |
 
-内容过多时,先压缩重复文案或更换 Sxx 版式;禁止靠降低小字字号解决拥挤。来源/说明注脚是唯一 11px 级例外，不得把该字号借给图注、时间线说明、KPI 注释、正文或卡片描述。若信息必须同时可见且拆开会破坏比较/依赖关系，使用 S27 调整列宽与内部语法，不自动拆页。
+内容过多时,先清理视觉填充、合并真正重复且无信息增量的表述或更换 Sxx 版式，再增加正文页/附录；来源模式中保留全部覆盖 ID。禁止靠降低小字字号解决拥挤。来源/说明注脚是唯一 11px 级例外，不得把该字号借给图注、时间线说明、KPI 注释、正文或卡片描述。固定页数冲突时先询问用户，不自动删减。
 
 **角色字重层级（XREAL Style 核心）** — 字重由内容角色固定，同一角色在整套 PPT 中保持一致：
 
@@ -216,7 +218,7 @@ XREAL Style 有 26 个正式登记版式（`S01-S08`、`S11-S28`）,生成时要
 - 如果材料包含跨类别多系列数据或连续时间序列,必须在规划阶段显式比较 S23/S24 与现有 S06/S07/P02 的适配性；散点、热力、瀑布、箱线、桑基、网络或层级数据还必须评估 XREAL ECharts Component，不能继续把所有数据压成 KPI 卡片
 - 如果材料同时包含时间/阶段与第二层级维度，显式评估 S25；如果叙事依赖 4-6 张阶段媒体证据，显式评估 S26，不要退化为缺少媒体证据的普通文本卡列表
 - 如果材料必须在一页内同时比较 3 组相互依赖的信息，显式评估 S27；用户要求“不要拆分”时，先重排和去重，不自动分页
-- 如果同一主题存在明确的主卖点、2-3 个次级技术点和支持信息，显式评估 S28；用卡片面积表达优先级，不靠多色强调
+- 如果同一主题存在明确的主卖点、1-4 个次级技术点和支持信息，显式评估 S28；先按内容关系和媒体构图选择登记剪影，再用卡片面积表达优先级，不靠多色强调或固定复用一套坐标
 - 图片页不等于新发明一页。单图用 S22,多图用 S15/S16 的原始网格骨架改造
 - 每页写代码前先列 `内部页序（不渲染）→ data-layout → 为什么选它 → 图片槽位`;生成后用 validator 检查
 
@@ -411,7 +413,7 @@ XREAL Style 有 26 个正式登记版式（`S01-S08`、`S11-S28`）,生成时要
 ### P3 · Statement · 极简陈述
 
 **用途**:中心论点、章节起始、口号。一页只放一句话 + 简单装饰。
-**适用内容类型**:**纯定性论断 / 口号 / 章节切换**。一句话压缩到 8-12 词,**不承载任何数据或列表**。如果需要数据支撑,改用 P18 Why Now;如果是封面,用 P1。
+**适用内容类型**:**纯定性论断 / 口号 / 章节切换**。只有原始内容本身就是一句核心论断，或用户已经授权提炼时，才压缩到 8-12 词；不得为了套用本版式把一段包含事实、限定条件、数据或列表的原文摘要成口号。如果需要数据支撑,改用 P18 Why Now;如果是封面,用 P1。
 **骨架**:左 1/3 空白 + 中段巨字陈述(8-10vw, `var(--weight-display)`) + 可选的真实来源/解释注脚；不默认添加底部 hairline、口号或产品名填充栏。
 **关键类**:`.h-statement`(9.6vw,letter-spacing:-.05em) `.stmt-anchor`
 **动效 recipe**:`statement-rise` — 大字按词序错峰升起(每词延迟 180ms)+ 注脚 fade in
@@ -713,7 +715,7 @@ XREAL Style 有 26 个正式登记版式（`S01-S08`、`S11-S28`）,生成时要
 **注意**:装饰节点统一使用 8×8 方块或 `.t-meta` 文字，不使用 9px 圆点
 
 **登记扩展: XREAL Bento Component**
-- 需要“一个主叙事 + 两项指标 + 一条行动说明”的摘要时，可在 S19 中使用 `.xreal-bento`。
+- 需要“一个主叙事 + 两项指标 + 一条行动说明”的摘要时，可在 S19 中使用 `.xreal-bento`；来源材料模式下仅当这些信息已完整覆盖，或用户明确进入 `editorial-summary` 时使用，不得把其余原文静默丢弃。
 - 使用 12 列非对称布局：主块 6 列 × 2 行，指标块 3 列，行动块 6 列。
 - `.xreal-bento` 整体外框使用 `--radius-sm:8px`，内部区块保持直角，以 1px 间隙分隔；无阴影，不模拟大圆角软件卡片或胶囊按钮。
 - 黑白灰承担结构；全页只允许一个红色关键数字。
@@ -801,7 +803,7 @@ XREAL Style 有 26 个正式登记版式（`S01-S08`、`S11-S28`）,生成时要
 **关键类**:`.xreal-data-chart` `.chart-legend` `.chart-stage` `.chart-y-labels` `.chart-plot` `.chart-groups` `.chart-group` `.chart-bar` `.chart-x-labels` `.chart-source`
 **动效 recipe**:`chart-rise` — 坐标结构先入 → 各类别柱从共同零基线生长 → 值、图例和来源落定。
 **注意**:
-- 柱高必须由 `data-value` 与 `--value` 对应真实数值；共同零基线不可截断。
+- `.xreal-data-chart` 默认声明 `data-scale-mode="auto"`，`.chart-bar[data-value]` 保存原始数值；运行时从当前数据域生成 5 级 nice scale 与柱高，共同零基线不可截断。`--value` 只保存同一计算结果作为离线/无脚本 fallback。只有需要与其他图严格共享纵轴时才使用 `fixed`，并同时声明 `data-axis-min` / `data-axis-max`。
 - 每个柱提供可见值或明确的 HTML 终值标签；纵轴单位与来源必填。
 - 绘图区四边使用同色同粗的单一 1px `--chart-frame`，第一/最后网格线不得叠在 frame 上；`--chart-safe-inline` 为首末柱保留至少 28px，`--chart-value-headroom` 保护最高数值标签。不得让柱体或标签贴到绘图区边界，也不能用 overflow 裁切制造“图表完整”的假象。
 - `.chart-value` 使用整柱宽定位 `left:0;right:0;text-align:center`，不要用水平 transform 居中；否则 `chart-rise` 的纵向 transform 会覆盖它。`.chart-x-labels` 使用与柱组相同的左右安全 padding。
@@ -822,7 +824,7 @@ XREAL Style 有 26 个正式登记版式（`S01-S08`、`S11-S28`）,生成时要
       <h2 class="xreal-page-title">[必填] 用一句结论说明比较结果</h2>
     </div>
 
-    <div data-anim="chart" class="xreal-data-chart" data-chart-unit="%" aria-label="[必填] 图表摘要">
+    <div data-anim="chart" class="xreal-data-chart" data-chart-unit="%" data-scale-mode="auto" aria-label="[必填] 图表摘要">
       <div class="chart-meta-row">
         <span class="chart-unit">Unit · %</span>
         <div class="chart-legend" aria-label="数据系列">
@@ -1012,8 +1014,9 @@ XREAL Style 有 26 个正式登记版式（`S01-S08`、`S11-S28`）,生成时要
 **注意**:
 - 参考图只提供“总述 + 三组并行 + 组内异构”的信息骨架；禁止复制蓝色主色、UI 控件、彩色面板、大圆角、阴影、pill 或不统一的图标风格。
 - 三个 `.dense-panel` 使用统一白/浅灰底、1px 中性边界、四边等距 padding、8px 小圆角和一致间距；内部条目不重复堆 hairline。`.dense-comparison` 的三项若需要增强区分，可使用三个等宽、无边框、无阴影的浅中性子区域，且各项内容在顶部紧凑成组；其他语法保持扁平，不继续堆多层卡片。
-- 全页共 7-12 个 `.dense-item`，每面板至少 2 项；正文 ≥16px，meta ≥14px。最多一个有明确依据的 `.is-focus` 黑色焦点区和一张 `.dense-media`；媒体仅可作为该焦点区的 full-bleed 背景，并声明 `cover + darken`，不得缩成装饰缩略图。
-- 用户要求“一页总览”或“不要拆分”时，溢出优先通过删除重复措辞、缩短标签、调整列宽和内部网格解决；不得删除关键内容或自动拆页。
+- 全页共 7-12 个 `.dense-item`，每面板至少 2 项；正文 ≥16px，meta ≥14px。面板列宽和组内行高必须按内容量调整；`.dense-progression` 可声明 `data-row-profile="lead-heavy|middle-heavy|closing-heavy"`，不把长短明显不同的三项强制等高。最多一个有明确依据的 `.is-focus` 黑色焦点区和一张 `.dense-media`；焦点位置由主结论、风险或关键转折决定，并必须添加非空 `data-focus-reason`，不得固定强调第 2 项。媒体仅可作为该焦点区的 full-bleed 背景，并声明 `cover + darken`，不得缩成装饰缩略图。
+- 递进编号使用固定 `2.4ch` 列、tabular numerals 与右对齐，编号后的标题和正文共享同一左轴；此规则同样适用于纯英文页面。
+- 用户要求“一页总览”或“不要拆分”时，溢出优先通过合并真正重复且无信息增量的措辞、缩短标签、调整列宽和内部网格解决；被合并的来源项仍保留独立 `SRC-xxx` 映射。不得删除关键内容或自动拆页。
 - 三组信息必须共享一个可表述的共同结论；若三个面板互不相关，只是为了塞满页面，则应重新规划叙事。
 
 ```html
@@ -1025,7 +1028,7 @@ XREAL Style 有 26 个正式登记版式（`S01-S08`、`S11-S28`）,生成时要
       <div class="dense-thesis"><span class="dense-thesis-label">共同判断</span><p class="dense-thesis-copy">[必填] 先说明为什么三组信息需要同时被理解。</p></div>
       <div class="dense-columns" style="--dense-columns:1.08fr 1fr 1.16fr">
         <article class="dense-panel"><h3 class="dense-panel-title">[必填] 比较维度</h3><div class="dense-panel-body dense-comparison"><div class="dense-item">...</div><div class="dense-item">...</div><div class="dense-item">...</div></div></article>
-        <article class="dense-panel"><h3 class="dense-panel-title">[必填] 能力递进</h3><div class="dense-panel-body dense-progression"><div class="dense-item">...</div><div class="dense-item is-focus">...</div><div class="dense-item">...</div></div></article>
+        <article class="dense-panel"><h3 class="dense-panel-title">[必填] 能力递进</h3><div class="dense-panel-body dense-progression" data-row-profile="lead-heavy"><div class="dense-item">...</div><div class="dense-item">...</div><div class="dense-item">...</div></div></article>
         <article class="dense-panel"><h3 class="dense-panel-title">[必填] 解释列表</h3><div class="dense-panel-body dense-feature-list"><div class="dense-item dense-feature">...</div><div class="dense-item dense-feature">...</div><div class="dense-item dense-feature">...</div></div></article>
       </div>
       <div class="dense-source">Source · [必填]；示意内容明确写 Illustrative</div>
@@ -1038,34 +1041,46 @@ XREAL Style 有 26 个正式登记版式（`S01-S08`、`S11-S28`）,生成时要
 
 ### P28 · Priority Bento · 面积优先级卖点组
 
-**用途**:当同一主题存在一个明确核心卖点、2-3 个次级技术点与若干支持信息时，用卡片面积直接表达优先级。
-**适用内容类型**:**1 个主卖点 + 2-3 个中层论点 + 3-5 个支持点**。所有卡片必须共享一个主题；如果只是把互不相关的指标拼在一起，应改用 S16/S19 或重新规划叙事。
-**骨架**:左上结论标题 / 12 列 × 6 行 Bento 网格 / 1 个主卡 / 2-3 个中卡 / 若干支持卡 / 来源。
+**用途**:当同一主题存在一个明确核心卖点、1-4 个次级技术点与若干支持信息时，用卡片面积直接表达优先级，并让剪影响应内容关系与媒体构图。
+**适用内容类型**:**1 个主卖点 + 1-4 个中层论点 + 至少 2 个支持点**。所有卡片必须共享一个主题；如果只是把互不相关的指标拼在一起，应改用 S16/S19 或重新规划叙事。
+**骨架**:左上结论标题 / 12 列 × 6 行 Bento 网格 / 4 种登记剪影之一 / 1 个主卡 / 1-4 个中卡 / 支持卡 / 来源。
 **关键类**:`.priority-bento` `.priority-tile` `.is-primary` `.is-secondary` `.is-support` `.priority-media` `.priority-kicker` `.priority-title` `.priority-copy` `.priority-value` `.priority-source`
 **动效 recipe**:`priority-bento` — 主卡先建立 → 中卡按阅读顺序进入 → 小卡补齐 → 来源落定。
 **注意**:
-- 全页 6-9 张 `.priority-tile`，恰好 1 张 `.is-primary`、2-3 张 `.is-secondary`；每卡以整数 `--col/--span/--row/--rows` 声明在 12×6 网格中的位置，不得重叠或越界。
-- 主卡至少 5 列 × 3 行，占网格面积约 28%-48%；全页至少 3 种不同卡片面积。面积必须对应真实内容优先级，不能随机拼图或让媒体尺寸反客为主。
+- 全页 5-9 张 `.priority-tile`，恰好 1 张 `.is-primary`、1-4 张 `.is-secondary`、至少 2 张 `.is-support`；每卡以整数 `--col/--span/--row/--rows` 声明在 12×6 网格中的位置，不得重叠或越界。
+- `.priority-bento` 必须声明 `data-bento-variant="left-focus|right-focus|panorama|center-focus"`。先判断阅读顺序、论据如何指向结论、主媒体的主体位置与 quiet zone，再选择变体；不得为了“看起来不一样”随机轮换、无语义镜像或先套坐标再压缩内容。
+- 主卡两边均不少于 3 个网格单元，占网格面积约 25%-50%；全页至少 3 种不同卡片面积。面积必须对应真实内容优先级，不能让媒体尺寸反客为主。
 - 每张卡独立使用 `--radius-sm:8px`、1px 中性边界、四边等距 padding 和无阴影表面。黑、白、浅灰承担结构，最多一个有明确依据的红色语义点。
 - 允许 1-4 张语义媒体。压图文字使用 `cover + darken` 并直接反白；非压字媒体使用 `contain + none`。不得叠白色面板，也不得复制参考图的彩色渐变、超大圆角、软件控件、pill 或发光。
 - S28 不替代 S19：S19 仍用于固定的“主叙事 + 两指标 + 一说明”摘要；只有面积差异本身承载真实优先级时才使用 S28。
+
+**登记剪影与选择条件**:
+
+| 变体 | 选择条件 | 参考坐标（`col/span/row/rows`） |
+|---|---|---|
+| `left-focus` | 阅读从核心主张开始；主媒体的可用文字区在左，或右侧适合承载次级证据 | 主卡 `1/6/1/4`；右上两个中卡 `7/3/1/3`、`10/3/1/3`；右下中卡 `7/6/4/3`；左下支持卡按 `2×2` 排列 |
+| `right-focus` | 左侧先给证据再导向右侧结论；主媒体主体偏右，或右侧 quiet zone 更适合主张 | 将 `left-focus` 的语义关系镜像，主卡 `7/6/1/4`；只有媒体构图和阅读关系确实匹配时才可使用 |
+| `panorama` | 宽场景媒体、长主张、横向过程或系统能力需要先占据全幅 | 主卡 `1/12/1/3`；中层三卡 `1/4/4/2`、`5/4/4/2`、`9/4/4/2`；底部三张 `4×1` 支持卡 |
+| `center-focus` | 一个核心能力需要被左右或四周的证据、模块、结果共同解释 | 主卡 `4/6/2/4`；左右证据分别占 `1/3/...` 与 `10/3/...`；顶部/底部以短卡补足，且主卡左右都必须存在非主卡 |
+
+这些坐标是可校验的起点而不是强制逐字复制的唯一排布；可以在同一变体内调整卡数和跨度，但不得改变该变体的语义位置关系，也必须继续满足网格、面积、层级和媒体契约。
 
 ```html
 <section class="slide light" data-layout="S28" data-animate="priority-bento">
   <div class="canvas-card">
     <header class="chrome-min">...</header>
     <div data-anim="line"><div class="t-cat">[必填] 同一主题</div><h2 class="xreal-page-title">[必填] 核心卖点结论</h2></div>
-    <div class="priority-bento">
-      <article class="priority-tile is-primary has-media media-darken" style="--col:1;--span:6;--row:1;--rows:4">
+    <div class="priority-bento" data-bento-variant="panorama">
+      <article class="priority-tile is-primary has-media media-darken" style="--col:1;--span:12;--row:1;--rows:3">
         <img class="priority-media" data-image-slot="s28-priority-media" data-media-role="feature-evidence" data-media-fit="cover" data-media-contrast="darken" src="images/primary.jpg" alt="[必填]">
         <span class="priority-kicker">[必填] 主卖点类别</span><div><h3 class="priority-title">[必填] 主卖点</h3><p class="priority-copy">[必填] 一句证据说明。</p></div>
       </article>
-      <article class="priority-tile is-secondary" style="--col:7;--span:3;--row:1;--rows:3">...</article>
-      <article class="priority-tile is-secondary" style="--col:10;--span:3;--row:1;--rows:3">...</article>
-      <article class="priority-tile is-secondary" style="--col:7;--span:6;--row:4;--rows:3">...</article>
-      <article class="priority-tile is-support" style="--col:1;--span:2;--row:5;--rows:2">...</article>
-      <article class="priority-tile is-support" style="--col:3;--span:2;--row:5;--rows:2">...</article>
-      <article class="priority-tile is-support" style="--col:5;--span:2;--row:5;--rows:2">...</article>
+      <article class="priority-tile is-secondary" style="--col:1;--span:4;--row:4;--rows:2">...</article>
+      <article class="priority-tile is-secondary" style="--col:5;--span:4;--row:4;--rows:2">...</article>
+      <article class="priority-tile is-secondary" style="--col:9;--span:4;--row:4;--rows:2">...</article>
+      <article class="priority-tile is-support" style="--col:1;--span:4;--row:6;--rows:1">...</article>
+      <article class="priority-tile is-support" style="--col:5;--span:4;--row:6;--rows:1">...</article>
+      <article class="priority-tile is-support" style="--col:9;--span:4;--row:6;--rows:1">...</article>
     </div>
     <div class="priority-source">Source · [必填] 事实与媒体来源</div>
   </div>
@@ -1216,7 +1231,7 @@ XREAL Style 有 26 个正式登记版式（`S01-S08`、`S11-S28`）,生成时要
 | 时间 × 第二层级的产品组合迁移 | P25 Portfolio Roadmap Matrix |
 | 4-6 个阶段的媒体证据序列 | P26 Milestone Gallery |
 | 必须同页的三组相互依赖信息 | P27 Dense Synthesis |
-| 一个主卖点 + 2-3 个次级技术点 + 支持信息 | P28 Priority Bento |
+| 一个主卖点 + 1-4 个次级技术点 + 支持信息 | P28 Priority Bento |
 | 地点 / 路线 / 人物住所关系 | S08 + XREAL Map Component |
 | 单图解释论点 / 图文混排实验 | E01 XREAL Image Split（默认禁用） |
 | 2-3 张图片/截图证据链实验 | E02 XREAL Evidence Grid（默认禁用） |

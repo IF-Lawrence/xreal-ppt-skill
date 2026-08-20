@@ -1406,11 +1406,14 @@
   .dense-comparison .dense-item{display:grid;grid-template-rows:auto auto auto;align-content:start;gap:.65vh;padding:1.15vh .8vw;background:rgba(255,255,255,.72);border-radius:var(--radius-sm)}
   .dense-comparison .dense-item-kicker{margin-bottom:0}
   .dense-stage-mark{font-size:max(22px,1.55vw);font-weight:var(--weight-emphasis);line-height:1;letter-spacing:-.03em;margin:.35vh 0 .55vh}
-  .dense-progression,.dense-feature-list{display:grid;grid-template-rows:repeat(3,minmax(0,1fr));gap:.7vh;height:100%}
-  .dense-progression .dense-item{display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:.8vw;align-content:center}
-  .dense-progress-num{font-size:max(14px,.72vw);font-weight:var(--weight-label);line-height:1.25;color:var(--text-helper)}
+  .dense-progression,.dense-feature-list{display:grid;grid-template-rows:var(--dense-rows,repeat(3,minmax(0,1fr)));gap:.7vh;height:100%}
+  .dense-progression[data-row-profile="lead-heavy"]{--dense-rows:1.3fr .9fr .8fr}
+  .dense-progression[data-row-profile="middle-heavy"]{--dense-rows:.85fr 1.3fr .85fr}
+  .dense-progression[data-row-profile="closing-heavy"]{--dense-rows:.8fr .9fr 1.3fr}
+  .dense-progression .dense-item{display:grid;grid-template-columns:2.4ch minmax(0,1fr);column-gap:.8vw;align-content:center;padding:.7vh .9vw}
+  .dense-progress-num{width:2.4ch;text-align:right;font-variant-numeric:tabular-nums;font-size:max(14px,.72vw);font-weight:var(--weight-label);line-height:1.25;color:var(--text-helper)}
   .dense-progression .dense-item-copy{grid-column:2}
-  .dense-item.is-focus{position:relative;isolation:isolate;overflow:hidden;margin:.7vh 0;padding:1.15vh .9vw;border:0;border-radius:var(--radius-sm);grid-template-columns:auto minmax(0,1fr);background:var(--ink);color:var(--paper)}
+  .dense-item.is-focus{position:relative;isolation:isolate;overflow:hidden;margin:.7vh 0;padding:1.15vh .9vw;border:0;border-radius:var(--radius-sm);grid-template-columns:2.4ch minmax(0,1fr);background:var(--ink);color:var(--paper)}
   .dense-item.is-focus::after{content:"";position:absolute;inset:0;z-index:1;background:rgba(0,0,0,.34);pointer-events:none}
   .dense-item.is-focus > :not(.dense-media){position:relative;z-index:2}
   .dense-item.is-focus .dense-progress-num,.dense-item.is-focus .dense-item-copy{color:rgba(255,255,255,.66)}
@@ -1449,6 +1452,16 @@
   .priority-tile.is-primary .priority-copy,.priority-tile.media-darken .priority-copy{color:rgba(255,255,255,.74)}
   .priority-value{font-size:min(3.5vw,6.1vh);font-weight:var(--weight-emphasis);line-height:.92;letter-spacing:-.035em;font-feature-settings:"tnum"}
   .priority-tile.is-support .priority-value{font-size:min(2.65vw,4.7vh)}
+  .priority-bento[data-bento-variant="panorama"] .priority-tile.is-primary .priority-title{max-width:24ch}
+  .priority-bento[data-bento-variant="panorama"] .priority-tile.is-support{
+    display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:1vw;padding:clamp(10px,.8vw,14px)
+  }
+  .priority-bento[data-bento-variant="panorama"] .priority-tile.is-support>div{display:flex;align-items:baseline;justify-content:flex-end;gap:.8vw;min-width:0}
+  .priority-bento[data-bento-variant="panorama"] .priority-tile.is-support .priority-value{font-size:min(2.15vw,3.8vh);white-space:nowrap}
+  .priority-bento[data-bento-variant="panorama"] .priority-tile.is-support .priority-title{font-size:max(16px,1vw);white-space:nowrap}
+  .priority-bento[data-bento-variant="center-focus"] .priority-tile.is-primary{justify-content:center;text-align:center}
+  .priority-bento[data-bento-variant="center-focus"] .priority-tile.is-primary .priority-title,
+  .priority-bento[data-bento-variant="center-focus"] .priority-tile.is-primary .priority-copy{margin-inline:auto}
   .priority-source{color:var(--text-helper)}
 
   /* 全局注脚：统一字号、左右内容轴和底部基线；不使用分割线。 */
@@ -1686,7 +1699,7 @@
 </style>
 <!-- XREAL_ECHARTS_BUNDLE · 运行 scripts/inline-echarts.mjs 后替换为离线 ECharts 包 -->
 </head>
-<body class="canvas-mode" data-product-line="one-pro">
+<body class="canvas-mode" data-product-line="one-pro" data-content-mode="brief-generated">
 <script>
   // Windows 平台标记 — 保留平台类供其他兼容逻辑使用
   if(/Win/i.test(navigator.platform || navigator.userAgentData?.platform || '')){
@@ -2046,7 +2059,7 @@
   <div class="canvas-card">
     <header class="chrome-min"><div class="l brand"><img class="xreal-logo" src="assets/brand/xreal-logo-black.svg" alt="XREAL"><span>One Pro · Data test</span></div><div class="r">Grouped comparison</div></header>
     <div data-anim="line" class="lab-head"><div class="t-cat lab-synthetic">虚构测试数据 · 分组柱状图</div><h2 class="xreal-page-title">三种模式在不同场景下的虚构舒适指数</h2></div>
-    <div data-anim="chart" class="xreal-data-chart" data-chart-unit="score" aria-label="Theater、Shade、Clear 三种模式在三类场景中的虚构舒适指数比较"><div class="chart-meta-row"><span class="chart-unit">Unit · score / 5</span><div class="chart-legend" aria-label="数据系列"><span class="chart-legend-item"><i class="chart-swatch series-1"></i>Theater</span><span class="chart-legend-item"><i class="chart-swatch series-2"></i>Shade</span><span class="chart-legend-item"><i class="chart-swatch series-3"></i>Clear</span></div></div><div class="chart-stage"><div class="chart-y-labels"><span>5.0</span><span>3.8</span><span>2.5</span><span>1.3</span><span>0</span></div><div class="chart-plot"><div class="chart-grid" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><div class="chart-groups" style="--groups:3;--series-count:3"><div class="chart-group"><div data-anim="chart-bar" class="chart-bar series-1" data-value="88" style="--value:88" aria-label="Cinema Theater 4.4"><span class="chart-value">4.4</span></div><div data-anim="chart-bar" class="chart-bar series-2" data-value="76" style="--value:76" aria-label="Cinema Shade 3.8"><span class="chart-value">3.8</span></div><div data-anim="chart-bar" class="chart-bar series-3" data-value="62" style="--value:62" aria-label="Cinema Clear 3.1"><span class="chart-value">3.1</span></div></div><div class="chart-group"><div data-anim="chart-bar" class="chart-bar series-1" data-value="70" style="--value:70" aria-label="Commute Theater 3.5"><span class="chart-value">3.5</span></div><div data-anim="chart-bar" class="chart-bar series-2" data-value="90" style="--value:90" aria-label="Commute Shade 4.5"><span class="chart-value">4.5</span></div><div data-anim="chart-bar" class="chart-bar series-3" data-value="80" style="--value:80" aria-label="Commute Clear 4.0"><span class="chart-value">4.0</span></div></div><div class="chart-group"><div data-anim="chart-bar" class="chart-bar series-1" data-value="55" style="--value:55" aria-label="Work Theater 2.8"><span class="chart-value">2.8</span></div><div data-anim="chart-bar" class="chart-bar series-2" data-value="84" style="--value:84" aria-label="Work Shade 4.2"><span class="chart-value">4.2</span></div><div data-anim="chart-bar" class="chart-bar series-3" data-value="94" style="--value:94" aria-label="Work Clear 4.7"><span class="chart-value">4.7</span></div></div></div></div><div class="chart-x-labels" style="--groups:3"><span>观影</span><span>通勤</span><span>工作</span></div></div><div class="chart-foot"><span class="chart-source">Source · fictional fixture / style validation</span><span class="chart-note">三组系列使用统一中性色阶</span></div></div>
+    <div data-anim="chart" class="xreal-data-chart" data-chart-unit="score" data-scale-mode="auto" aria-label="Theater、Shade、Clear 三种模式在三类场景中的虚构舒适指数比较"><div class="chart-meta-row"><span class="chart-unit">Unit · score / 5</span><div class="chart-legend" aria-label="数据系列"><span class="chart-legend-item"><i class="chart-swatch series-1"></i>Theater</span><span class="chart-legend-item"><i class="chart-swatch series-2"></i>Shade</span><span class="chart-legend-item"><i class="chart-swatch series-3"></i>Clear</span></div></div><div class="chart-stage"><div class="chart-y-labels"><span>5.0</span><span>3.8</span><span>2.5</span><span>1.3</span><span>0</span></div><div class="chart-plot"><div class="chart-grid" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div><div class="chart-groups" style="--groups:3;--series-count:3"><div class="chart-group"><div data-anim="chart-bar" class="chart-bar series-1" data-value="4.4" style="--value:88" aria-label="Cinema Theater 4.4"><span class="chart-value">4.4</span></div><div data-anim="chart-bar" class="chart-bar series-2" data-value="3.8" style="--value:76" aria-label="Cinema Shade 3.8"><span class="chart-value">3.8</span></div><div data-anim="chart-bar" class="chart-bar series-3" data-value="3.1" style="--value:62" aria-label="Cinema Clear 3.1"><span class="chart-value">3.1</span></div></div><div class="chart-group"><div data-anim="chart-bar" class="chart-bar series-1" data-value="3.5" style="--value:70" aria-label="Commute Theater 3.5"><span class="chart-value">3.5</span></div><div data-anim="chart-bar" class="chart-bar series-2" data-value="4.5" style="--value:90" aria-label="Commute Shade 4.5"><span class="chart-value">4.5</span></div><div data-anim="chart-bar" class="chart-bar series-3" data-value="4.0" style="--value:80" aria-label="Commute Clear 4.0"><span class="chart-value">4.0</span></div></div><div class="chart-group"><div data-anim="chart-bar" class="chart-bar series-1" data-value="2.8" style="--value:56" aria-label="Work Theater 2.8"><span class="chart-value">2.8</span></div><div data-anim="chart-bar" class="chart-bar series-2" data-value="4.2" style="--value:84" aria-label="Work Shade 4.2"><span class="chart-value">4.2</span></div><div data-anim="chart-bar" class="chart-bar series-3" data-value="4.7" style="--value:94" aria-label="Work Clear 4.7"><span class="chart-value">4.7</span></div></div></div></div><div class="chart-x-labels" style="--groups:3"><span>观影</span><span>通勤</span><span>工作</span></div></div><div class="chart-foot"><span class="chart-source">Source · fictional fixture / style validation</span><span class="chart-note">三组系列使用统一中性色阶</span></div></div>
   </div>
 </section>
 
@@ -2111,9 +2124,9 @@
         </article>
         <article class="dense-panel">
           <h3 class="dense-panel-title">空间智能能力链</h3>
-          <div class="dense-panel-body dense-progression">
-            <div class="dense-item"><span class="dense-progress-num">01</span><div><span class="dense-item-title">注意力入口</span><p class="dense-item-copy">第一人称视角持续捕捉用户正在关注的对象。</p></div></div>
-            <div class="dense-item is-focus"><span class="dense-progress-num">02</span><div><span class="dense-item-title">感知叠加</span><p class="dense-item-copy">设备将场景信号与空间显示同步编排。</p></div><img class="dense-media" data-image-slot="s27-dense-media" data-media-role="dense-evidence" data-media-fit="cover" data-media-contrast="darken" src="images/28-dense-one-pro.png" alt="XREAL One Pro 正面三分之四视角产品图"></div>
+          <div class="dense-panel-body dense-progression" data-row-profile="lead-heavy">
+            <div class="dense-item is-focus" data-focus-reason="第一人称注意力入口是后续空间理解成立的前提"><span class="dense-progress-num">01</span><div><span class="dense-item-title">注意力入口</span><p class="dense-item-copy">第一人称视角持续捕捉用户正在关注的对象。</p></div><img class="dense-media" data-image-slot="s27-dense-media" data-media-role="dense-evidence" data-media-fit="cover" data-media-contrast="darken" src="images/28-dense-one-pro.png" alt="XREAL One Pro 正面三分之四视角产品图"></div>
+            <div class="dense-item"><span class="dense-progress-num">02</span><div><span class="dense-item-title">感知叠加</span><p class="dense-item-copy">设备将场景信号与空间显示同步编排。</p></div></div>
             <div class="dense-item"><span class="dense-progress-num">03</span><div><span class="dense-item-title">个人助理</span><p class="dense-item-copy">理解上下文后，系统才能主动提供连续协作。</p></div></div>
           </div>
         </article>
@@ -2135,29 +2148,29 @@
   <div class="canvas-card">
     <header class="chrome-min"><div class="l brand"><img class="xreal-logo" src="assets/brand/xreal-logo-black.svg" alt="XREAL"><span>One Pro · Priority Bento</span></div><div class="r">Area-led hierarchy</div></header>
     <div data-anim="line" class="lab-head"><div class="t-cat lab-synthetic">示意结构 · 面积对应真实卖点优先级</div><h2 class="xreal-page-title">面积，让核心卖点先被看见</h2></div>
-    <div class="priority-bento" aria-label="One Pro 核心卖点优先级示例">
-      <article class="priority-tile is-primary has-media media-darken" style="--col:1;--span:6;--row:1;--rows:4;--priority-scrim-alpha:.44">
+    <div class="priority-bento" data-bento-variant="panorama" aria-label="One Pro 核心卖点优先级示例">
+      <article class="priority-tile is-primary has-media media-darken" style="--col:1;--span:12;--row:1;--rows:3;--priority-scrim-alpha:.44">
         <img class="priority-media" data-image-slot="s28-priority-media" data-media-role="feature-evidence" data-media-fit="cover" data-media-contrast="darken" src="images/29-priority-optics.jpg" alt="One Pro 光机与镜片正面特写">
         <span class="priority-kicker">主卖点 · Optics</span>
         <div><h3 class="priority-title">57<span class="unit unit-degree">°</span> FoV，更接近自然注视</h3><p class="priority-copy">让空间画面向视野边界延伸，成为整页最需要先被理解的体验变化。</p></div>
       </article>
-      <article class="priority-tile is-secondary has-media media-darken" style="--col:7;--span:3;--row:1;--rows:3;--priority-scrim-alpha:.26">
+      <article class="priority-tile is-secondary has-media media-darken" style="--col:1;--span:4;--row:4;--rows:2;--priority-scrim-alpha:.26">
         <img class="priority-media" data-image-slot="s28-priority-media" data-media-role="feature-evidence" data-media-fit="cover" data-media-contrast="darken" src="images/29-priority-chip.jpg" alt="One Pro X1 芯片装配展示">
         <span class="priority-kicker">X1 Chip</span>
         <div><div class="priority-value">3<span class="unit">ms</span></div><h3 class="priority-title">端侧空间响应</h3></div>
       </article>
-      <article class="priority-tile is-secondary" style="--col:10;--span:3;--row:1;--rows:3">
+      <article class="priority-tile is-secondary" style="--col:5;--span:4;--row:4;--rows:2">
         <span class="priority-kicker">Equivalent screen</span>
         <div><div class="priority-value">171<span class="unit">in</span></div><h3 class="priority-title">4 米处的无界巨幕</h3></div>
       </article>
-      <article class="priority-tile is-secondary has-media media-darken" style="--col:7;--span:6;--row:4;--rows:3;--priority-scrim-alpha:.38">
+      <article class="priority-tile is-secondary has-media media-darken" style="--col:9;--span:4;--row:4;--rows:2;--priority-scrim-alpha:.38">
         <img class="priority-media" data-image-slot="s28-priority-media" data-media-role="feature-evidence" data-media-fit="cover" data-media-contrast="darken" src="images/29-priority-lifestyle.jpg" alt="用户在明亮客厅佩戴 One Pro 观看空间视频">
         <span class="priority-kicker">Everyday spatial</span>
         <div><h3 class="priority-title">把大屏带进真实日常</h3><p class="priority-copy">媒体展示使用场景，面积仍由卖点重要性决定。</p></div>
       </article>
-      <article class="priority-tile is-support" style="--col:1;--span:2;--row:5;--rows:2"><span class="priority-kicker">Refresh</span><div><div class="priority-value">120<span class="unit">Hz</span></div><h3 class="priority-title">流畅显示</h3></div></article>
-      <article class="priority-tile is-support" style="--col:3;--span:2;--row:5;--rows:2"><span class="priority-kicker">Dimming</span><div><div class="priority-value">3<span class="unit">档</span></div><h3 class="priority-title">电致变色</h3></div></article>
-      <article class="priority-tile is-support" style="--col:5;--span:2;--row:5;--rows:2"><span class="priority-kicker">Connect</span><div><div class="priority-value">USB-C</div><h3 class="priority-title">即插即用</h3></div></article>
+      <article class="priority-tile is-support" style="--col:1;--span:4;--row:6;--rows:1"><span class="priority-kicker">Refresh</span><div><div class="priority-value">120<span class="unit">Hz</span></div><h3 class="priority-title">流畅显示</h3></div></article>
+      <article class="priority-tile is-support" style="--col:5;--span:4;--row:6;--rows:1"><span class="priority-kicker">Dimming</span><div><div class="priority-value">3<span class="unit">档</span></div><h3 class="priority-title">电致变色</h3></div></article>
+      <article class="priority-tile is-support" style="--col:9;--span:4;--row:6;--rows:1"><span class="priority-kicker">Connect</span><div><div class="priority-value">USB-C</div><h3 class="priority-title">即插即用</h3></div></article>
     </div>
     <div class="priority-source">Structure fixture · values and media shown only for layout validation</div>
   </div>
@@ -2819,6 +2832,50 @@ if(motion){
     {duration:opts.duration ?? .6, delay:opts.delay ?? 0,
      easing:opts.easing ?? EASE_ENTRY_EXP});
 
+  /* S23 自适应数轴：柱体保存原始 data-value，默认按当前数据域生成 5 个刻度。
+     只有跨页固定量纲比较时才使用 data-scale-mode="fixed" + 显式 min/max。 */
+  function prepareDataChartScale(slide){
+    const chart = slide.querySelector('.xreal-data-chart');
+    if(!chart) return;
+    const bars = [...chart.querySelectorAll('.chart-bar')];
+    const rawValue = (bar)=>Number(bar.dataset.rawValue ?? bar.querySelector('.chart-value')?.textContent ?? bar.dataset.value);
+    const values = bars.map(rawValue).filter(Number.isFinite);
+    if(!values.length) return;
+    const mode = chart.dataset.scaleMode === 'fixed' ? 'fixed' : 'auto';
+    const niceStep = (maxValue)=>{
+      if(!(maxValue > 0)) return 1;
+      const rough = maxValue / 4;
+      const power = 10 ** Math.floor(Math.log10(rough));
+      const scaled = rough / power;
+      const factor = [1,1.25,1.5,2,2.5,3,4,5,7.5,10].find(value=>value >= scaled) || 10;
+      return factor * power;
+    };
+    let min = mode === 'fixed' ? Number(chart.dataset.axisMin) : 0;
+    let max = mode === 'fixed' ? Number(chart.dataset.axisMax) : NaN;
+    if(!Number.isFinite(min)) min = 0;
+    if(!Number.isFinite(max) || max <= min){
+      const dataMax = Math.max(...values, min + 1);
+      const step = niceStep(dataMax - min);
+      max = min + Math.ceil((dataMax - min) / step) * step;
+    }
+    const span = Math.max(max - min, Number.EPSILON);
+    bars.forEach(bar=>{
+      const raw = rawValue(bar);
+      const scaled = Number.isFinite(raw) ? Math.max(0,Math.min(100,(raw-min)/span*100)) : 0;
+      bar.dataset.scaledValue = scaled.toFixed(4);
+      bar.style.setProperty('--value',scaled.toFixed(4));
+    });
+    const formatTick = (value)=>{
+      const abs = Math.abs(value);
+      const digits = abs >= 100 ? 0 : abs >= 10 ? 1 : 2;
+      return Number(value.toFixed(digits)).toString();
+    };
+    const labels = [...chart.querySelectorAll('.chart-y-labels span')];
+    labels.forEach((label,index)=>{ label.textContent = formatTick(max - span * index / Math.max(1,labels.length-1)); });
+    chart.dataset.resolvedAxisMin = String(min);
+    chart.dataset.resolvedAxisMax = String(max);
+  }
+
   /* ---------- recipe: hero · 封面索引 ----------
      大编号一个个亮起 → 索引行最后落定 */
   function rHero(slide, all){
@@ -3001,7 +3058,7 @@ if(motion){
 
     const bars = [...slide.querySelectorAll('.chart-bar')];
     bars.forEach((bar, i)=>{
-      const value = Number(bar.dataset.value);
+      const value = Number(bar.dataset.scaledValue);
       const target = Number.isFinite(value) ? Math.max(0, Math.min(100, value)) : 0;
       bar.style.height = '0%';
       const label = bar.querySelector('.chart-value');
@@ -3556,6 +3613,7 @@ if(motion){
     const slide = slides[i];
     if(!slide) return;
     lastIdx = i;
+    prepareDataChartScale(slide);
 
     if(window.__lowPowerMode){
       revealStatic(slide);
