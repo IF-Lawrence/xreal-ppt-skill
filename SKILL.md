@@ -376,7 +376,7 @@ node <SKILL_ROOT>/scripts/validate-swiss-deck.mjs path/to/index.html
 4. 最低内容是否进入分页安全区
 5. 动效稳定后再判断版式；需要时按 `B` 验证静态模式仍可读
 
-### Step 5 · 本地预览与迭代
+### Step 5 · 本地预览、交付与使用说明
 
 ```bash
 open "项目/XXX/ppt/index.html"
@@ -390,6 +390,34 @@ open "项目/XXX/ppt/index.html"
 node "<SKILL_ROOT>/scripts/prepare-echarts.mjs"
 node "<SKILL_ROOT>/scripts/inline-echarts.mjs" "项目/XXX/ppt/index.source.html" "项目/XXX/ppt/index.html"
 node "<SKILL_ROOT>/scripts/validate-swiss-deck.mjs" "项目/XXX/ppt/index.html"
+```
+
+完成验证后，必须把“如何使用、如何保存、如何分享”作为交付的一部分主动告诉用户，不得只回复“已完成”或只给文件名。
+
+交付前先解析并确认项目输出目录与最终 `index.html` 的**绝对路径**。最终回复必须包含：
+
+1. **输出文件夹**：直接给出项目交付目录的绝对路径；在支持本地文件链接的客户端中使用可点击的 Markdown 文件夹链接
+2. **演示文件**：直接给出最终 `index.html` 的绝对路径和可点击链接
+3. **如何打开**：说明双击 `index.html`，或在浏览器中打开；若收到 ZIP，必须先完整解压再打开
+4. **如何保存**：说明需要保留整个输出文件夹及其内部目录结构，不要只移动或另存 `index.html`，也不要改动 `assets/`、`images/` 的相对位置
+5. **如何分享**：说明将整个输出文件夹压缩为 ZIP 后发送；`file:///...` 是本机地址，不能作为他人可访问的分享链接
+6. **网页链接**：用户需要点击即看的链接时，说明必须把整个输出目录部署到静态网站或公司批准的内部服务器；涉及内部或未发布信息时，不得擅自公开部署
+7. **验证结果**：简要报告 validator、离线打开、内容覆盖与视觉 QA 状态；未执行的检查必须如实说明
+
+用户明确要求可分享文件、交付包或压缩包时，完成验证后生成包含整个输出目录的 ZIP，并同时给出 ZIP 的绝对路径。用户未要求生成 ZIP 时，至少说明“压缩整个输出文件夹再分享”，不得暗示只发送 `index.html` 一定可用。
+
+最终回复使用下面的最小交付结构，并将占位路径替换为真实绝对路径：
+
+```text
+已完成。
+
+输出文件夹：/absolute/path/to/project/
+演示文件：/absolute/path/to/project/index.html
+
+使用：完整保留当前文件夹，双击 index.html 即可离线演示。
+保存：不要单独移动 index.html；assets、images 等目录需要与它一起保留。
+分享：压缩整个输出文件夹后发送。不要分享 file:/// 本地地址。
+验证：validator 已通过；已完成离线打开、内容覆盖和逐页视觉检查。
 ```
 
 ## XREAL Style 核心原则
