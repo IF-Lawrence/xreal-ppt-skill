@@ -102,6 +102,7 @@ git -C "<SKILL_ROOT>" log --oneline --no-decorate 'HEAD..@{upstream}'
 - 写 slide 前将原始材料拆成稳定的 `SRC-001...` 语义单元，在项目根目录建立 `content-coverage.json`
 - 每个承载原始内容的正文 section 使用稳定 `id` 与 `data-source-refs`，将成稿页回指到覆盖清单
 - 未经用户明确同意，不得删除事实、数据、统计口径、限定条件、反例、风险、案例、引用、决策或行动项；逐字引用、法务措辞、数字、公式、专有名词、责任人与截止时间默认不得改写
+- `source-faithful` 只约束语义内容，不继承原材料的配色、背景、字体、装饰、版式或页面截图；成稿页面仍必须完整遵循 XREAL Style 的颜色 token、版式锁定和视觉规范。只有用户明确要求视觉保真，或原始视觉本身是必须保真的证据时，才可保留局部视觉元素，并不得因此改变全局主题
 - 内容放不下时依次调整版式、增加页数/附录、忠实合并真正重复的表述；固定页数与完整保留冲突时先报告冲突，不得静默摘要
 - 交付时报告内容模式、覆盖项总数、包含项数和经批准遗漏项；自动校验通过后仍需人工核对转述是否改变语气、因果、范围、时间或数字
 
@@ -162,6 +163,7 @@ cp "<SKILL_ROOT>/assets/brand/xreal-logo-black.svg" "项目/XXX/ppt/assets/brand
 - 禁止 AI 或页面代码把人物、设备、场景、抽象科技图形绘制成 SVG、Canvas 或 CSS 插画配图；SVG 仅用于已有品牌资产和承担信息表达的图表、地图、流程、数据几何，并标记 `data-svg-role`
 - 黑、白、灰承担结构与信息层级；XREAL 红色仅用于关键数据/警示/关键操作语义，银色/金色仅作为极少量技术或价值标记
 - 卡片型实体块、图片框和控件统一使用 `--radius-sm:8px`；S04 Six Cells、S05 Three Layers、S06 KPI Tower、S07 Horizontal Bar、S13 Three Forces、S16 Multi-card Brief、S26 Milestone Gallery、S27 Dense Synthesis 主面板与 S28 Priority Bento 单卡必须应用该 token。S06/S23 等接触 x 轴的垂直柱体只保留顶部 8px 圆角，底角为直角并贴齐共同基线；独立 KPI cap 仍为四角小圆角。S19 Bento 只圆整体外框，内部区块保持直角。页面画布、分割线和坐标轴保持直线；禁止装饰性渐变、阴影、发光、大圆角、胶囊形、玻璃拟态或多色高亮。唯一例外是 full-bleed 照片/技术媒体为保护压图文字而使用的中性黑透明蒙版，可按文字位置由浅到深，但不得形成彩色或可感知的装饰渐变
+- 所有可见文字必须按浏览器最终计算样式满足 WCAG AA：普通文字 `>=4.5:1`，大字（≥24px，或 ≥18.66px 且字重 ≥600）`>=3:1`。检查对象包括继承色、alpha / opacity、透明子卡、祖先背景和压图表面；深色表面显式反白，浅色表面显式使用 `--text-primary / secondary / helper`，禁止依赖偶然继承。对比不足时改文字角色、表面色、媒体蒙版/亮度、裁切或素材，不加白色/半透明文字面板。
 - S16 Multi-card Brief 默认六卡等权、全部使用中性白底卡；不得为了制造视觉焦点而强行强调。只有内容本身存在明确的首选、推荐、关键或风险优先级时，才允许最多一张 `.is-accent`，并必须添加 `data-emphasis="primary|recommended|critical|risk"` 说明语义
 - S04 `.sub-card` 与 S16 `.brief-card` 分别使用 `--sub-card-pad:2.2vh`、`--brief-card-pad:2.2vh`，四边内边距保持一致；禁止重新写成不同的 `vh / vw` 横纵 padding。S04 右上编号的 `top / right` 也必须使用同一个 `--sub-card-pad`
 - KPI / 图表展示级大数字的单位（如 `°`、`%`、`ms`、`Hz`、`in`）统一挂在数字右上肩位，使用 `vertical-align:text-top`、`--unit-mark-opacity:.62` 且不得与数字拆行；文字单位统一间距 `--unit-mark-gap:.18em`，角度使用更紧的 `--unit-degree-gap:.03em`。`screen` 等多字符英文词单位必须额外使用 `.unit-word`，恢复正常字距与词距，不得继承 KPI 数字的负 tracking。正文句子中的单位作为普通文本随正文基线。角度使用 Unicode `°` 或 `<sup class="unit-degree">°</sup>`，绝不使用下标；只有科学指数与数学/化学语义允许真正的上标或下标
@@ -245,8 +247,8 @@ S12 manifesto 中的产品标志只承担身份落款，不是第二主标题。
 - 技术卡片可以配图，但先判断媒体是否能解释该技术点，而不是只填空白。S04 最多为 1-2 张 `.sub-card.has-media` 增加 `.card-media-slot[data-media-role="technical-evidence"]`；紧边透明 cutout 使用 `data-media-fit="inset"` + contain，主体在画布内偏小或卡片留白明显时使用 `data-media-fit="inset-prominent"` + cover，高度约占父卡 28%-45%、宽度至少占父卡 80%，与文字分区且不加蒙版。
 - S05 最多为一个核心 `.stack-block.has-media` 增加 `.stack-card-media[data-media-role="technical-evidence"]`。短文案与低干扰横版媒体可使用 `.media-full-bleed`、`data-media-fit="full-bleed" data-media-contrast="darken"` 全幅铺底；通过渐变深色蒙版保护底部文字，同时保留 `.layer-icon` 作为语义标记。只有媒体主体与图标明显冲突时才调整图标位置，不因配图自动删除图标。若素材不适合压字，回退到 inset/contain，高度约占父卡 18%-45%。
 - S12 宣言页存在清晰语境匹配时，可使用横版 lifestyle、conceptual 或品牌 KV 作为 `.manifesto-media` 全幅背景；媒体不得是透明产品 cutout / packshot，必须以中性黑蒙版保护白字与页眉。底部仅保留透明身份行，产品标志与少量支持信息直接叠在背景上，不增加整块黑色通栏。无合适媒体时保持纯黑，不为填空白强行用图。
-- S19 Bento 的大面积 `.hero` 主卡在存在合适 lifestyle / contextual 媒体且文字较少时，可以使用 `.hero.has-media + .bento-hero-media[data-media-role="context-evidence"]` 全幅铺底，并声明 `data-media-fit="full-bleed" data-media-contrast="darken"`。媒体应在宽高两个方向覆盖父卡至少 95%；文字直接反白，不叠白色或半透明面板。统一通过 `--media-scrim-alpha:.38` 加深色蒙版，可在 `.28-.48` 内按素材亮度微调，同时保留图片细节；S19 仍只圆整体外框，媒体和内部 article 不增加独立圆角。
-- 只有文字直接叠在照片或场景媒体上时才使用深色蒙版；图片与文字互不重叠的 inset / contain 证据图不加蒙版。若 `.48` 仍无法保证可读性，应更换图片、调整 `object-position` 或改为无图版式，而不是继续压暗。
+- S19 Bento 的大面积 `.hero` 主卡在存在合适 lifestyle / contextual 媒体且文字较少时，可以使用 `.hero.has-media + .bento-hero-media[data-media-role="context-evidence"]` 全幅铺底，并声明 `data-media-fit="full-bleed" data-media-contrast="darken"`。媒体应在宽高两个方向覆盖父卡至少 95%；文字直接反白，不叠白色或半透明面板。默认使用 `--media-scrim-alpha:.56`，并保证 `image brightness × (1 - 最浅蒙版 alpha) <= .44`；每个小字号眉题、正文与单位仍须分别通过 `4.5:1`，不能只检查标题。S19 仍只圆整体外框，媒体和内部 article 不增加独立圆角。
+- 只有文字直接叠在照片或场景媒体上时才使用深色蒙版；图片与文字互不重叠的 inset / contain 证据图不加蒙版。媒体细节与可读性通过图片亮度、最浅蒙版、`object-position` 和反白透明度共同平衡；若安全阈值下主体细节仍不可接受，应换图、改裁切或回退无图版式，而不是继续压暗。
 - 不给信息已经密集、没有清晰媒体对应关系或需要保真阅读的卡片硬塞图片；此时保留留白是正确选择。
 
 媒体文件名使用 `场景-人物-行为-构图-比例.ext` 顺序；人物或行为不适用时可以省略，但必须保留可检索语义。构图统一使用 `横版`、`竖版`、`方图`，常用比例使用 `21x9`、`16x9`、`4x3`、`3x2`、`2x3`、`3x4` 或 `1x1`；不属于常用比例时按实际像素比写成简化值，例如 `2.47x1`，不要沿用原文件名中的误标比例。产品线和资产类型由父级目录表达，不在文件名中重复；同语义不同版本追加 `-v2`、`-detail` 等后缀。
@@ -358,7 +360,15 @@ node <SKILL_ROOT>/scripts/validate-swiss-deck.mjs path/to/index.html
 
 `source-faithful` 与 `editorial-summary` 模式还会自动读取 HTML 同目录的 `content-coverage.json`，检查来源 ID、slide 引用与遗漏审批。自动检查不能判断转述是否忠实；必须再按 `references/content-fidelity.md` 做语义核对。
 
-再打开 HTML 逐页查看：
+随后执行交付前渲染审阅：
+
+1. 在真实浏览器中以统一的 16:9 演示视口渲染每个 section；等待字体和图片加载完成、入场动效稳定后再截图，不得截取转场中间态或只审阅索引缩略图
+2. 如果当前模型支持图像输入，必须实际查看全部页面的最终截图，不得抽样或仅凭 HTML/CSS 推断视觉结果；检查文字、图片、图表和 Logo 是否完整可见，是否存在裁切、重叠、缺图、异常空白、对比度不足、主体误裁、层级或网格错位，以及内容进入分页安全区
+3. DOM/Playwright 测量用于判断溢出、尺寸、间距和安全线；多模态审阅用于判断构图、可读性、视觉层级和媒体是否正确。两者必须结合，不能用肉眼估算替代测量，也不能以 validator 通过替代视觉检查
+4. 按 `slide id → 问题 → 修复` 记录审阅结果；修复后重新运行 validator，并重新渲染、复审所有改动页。若修改了全局 CSS、模板 token、字体或共用组件，必须重新渲染并复审全部页面
+5. 支持图像输入时，仍有未审阅页面或阻断性视觉问题不得交付。若环境不支持图像输入，仍须完成真实渲染测量，并在交付说明中明确披露“未执行多模态视觉审阅”，不得宣称已完成视觉 QA
+
+逐页审阅至少检查：
 
 1. 标题是否左上对齐，并使用与语言语境一致的 500/600 稳定字重
 2. 图片、正文、caption 是否吸附到同一网格轴
@@ -366,7 +376,7 @@ node <SKILL_ROOT>/scripts/validate-swiss-deck.mjs path/to/index.html
 4. 最低内容是否进入分页安全区
 5. 动效稳定后再判断版式；需要时按 `B` 验证静态模式仍可读
 
-### Step 5 · 本地预览与迭代
+### Step 5 · 本地预览、交付与使用说明
 
 ```bash
 open "项目/XXX/ppt/index.html"
@@ -380,6 +390,34 @@ open "项目/XXX/ppt/index.html"
 node "<SKILL_ROOT>/scripts/prepare-echarts.mjs"
 node "<SKILL_ROOT>/scripts/inline-echarts.mjs" "项目/XXX/ppt/index.source.html" "项目/XXX/ppt/index.html"
 node "<SKILL_ROOT>/scripts/validate-swiss-deck.mjs" "项目/XXX/ppt/index.html"
+```
+
+完成验证后，必须把“如何使用、如何保存、如何分享”作为交付的一部分主动告诉用户，不得只回复“已完成”或只给文件名。
+
+交付前先解析并确认项目输出目录与最终 `index.html` 的**绝对路径**。最终回复必须包含：
+
+1. **输出文件夹**：直接给出项目交付目录的绝对路径；在支持本地文件链接的客户端中使用可点击的 Markdown 文件夹链接
+2. **演示文件**：直接给出最终 `index.html` 的绝对路径和可点击链接
+3. **如何打开**：说明双击 `index.html`，或在浏览器中打开；若收到 ZIP，必须先完整解压再打开
+4. **如何保存**：说明需要保留整个输出文件夹及其内部目录结构，不要只移动或另存 `index.html`，也不要改动 `assets/`、`images/` 的相对位置
+5. **如何分享**：说明将整个输出文件夹压缩为 ZIP 后发送；`file:///...` 是本机地址，不能作为他人可访问的分享链接
+6. **网页链接**：用户需要点击即看的链接时，说明必须把整个输出目录部署到静态网站或公司批准的内部服务器；涉及内部或未发布信息时，不得擅自公开部署
+7. **验证结果**：简要报告 validator、离线打开、内容覆盖与视觉 QA 状态；未执行的检查必须如实说明
+
+用户明确要求可分享文件、交付包或压缩包时，完成验证后生成包含整个输出目录的 ZIP，并同时给出 ZIP 的绝对路径。用户未要求生成 ZIP 时，至少说明“压缩整个输出文件夹再分享”，不得暗示只发送 `index.html` 一定可用。
+
+最终回复使用下面的最小交付结构，并将占位路径替换为真实绝对路径：
+
+```text
+已完成。
+
+输出文件夹：/absolute/path/to/project/
+演示文件：/absolute/path/to/project/index.html
+
+使用：完整保留当前文件夹，双击 index.html 即可离线演示。
+保存：不要单独移动 index.html；assets、images 等目录需要与它一起保留。
+分享：压缩整个输出文件夹后发送。不要分享 file:/// 本地地址。
+验证：validator 已通过；已完成离线打开、内容覆盖和逐页视觉检查。
 ```
 
 ## XREAL Style 核心原则

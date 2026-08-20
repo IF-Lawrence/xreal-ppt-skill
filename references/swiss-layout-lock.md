@@ -51,7 +51,7 @@ XREAL Style 生成时,除用户明确要求实验版式外,只能从下面登记
 | S16 | 16 | Multi-card Brief | 顶部左对齐标题,下方 3×2 小圆角微卡；默认六卡等权。仅有明确优先级语义时，允许一张高对比卡并声明 `data-emphasis` | 多图可改造卡片内容,同组统一 `21:9` |
 | S17 | 17 | System Diagram | 先声明 `flow|hierarchy|network|containment`；左侧只放结论与解释，右侧为唯一关系图且至少占画布 42%；两列顶部误差 ≤16px；flow 使用 3-6 节点和明确连接，并纵向消费关系图区至少 85% 高度；连接器独占上下节点间区域，箭头 ≥24px 并位于左侧阶段栏，关系标签对齐右侧正文列 | 禁止左侧复制阶段列表；同心圆仅限真实 containment；SVG 如使用则禁止文字，标签改 HTML |
 | S18 | 18 | Why Now | 三列递进 + 底部巨数 | 无 |
-| S19 | 19 | Four Cards | 顶部黑线 + 四列均分 | Bento 扩展的稀疏 hero 主卡可使用全幅 contextual/lifestyle 媒体；宽高覆盖父卡至少 95%，文字压图时使用 `.28-.48` 深色蒙版；内部仍直角 |
+| S19 | 19 | Four Cards | 顶部黑线 + 四列均分 | Bento 扩展的稀疏 hero 主卡可使用全幅 contextual/lifestyle 媒体；宽高覆盖父卡至少 95%，文字压图默认使用 `.56` 中性黑蒙版并满足最终 AA 对比；内部仍直角 |
 | S20 | 20 | Stacked KPI Ledger | 纵向账单式巨数 | 无 |
 | S21 | 21 | Tech Spec Sheet | 大标题 + 三 KPI + 右下竖线矩阵 | 无 |
 | S22 | 22 | Image Hero | 顶部全宽图 + 左上白块标题 + 下方三列 KPI；压图标题约从 `top:10.5vh` 开始，保持与绝对定位页眉约 24px 的导航间距 | 主图按 `21:9` 生成,关键主体放中央安全区 |

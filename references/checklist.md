@@ -290,7 +290,8 @@ node <SKILL_ROOT>/scripts/validate-swiss-deck.mjs path/to/index.html
 - 稀疏卡片媒体:S04 最多 1-2 张技术卡、S05 最多一个核心层、S19 仅 Bento hero 主卡可按语境配图。媒体必须解释内容并使用登记槽位；不能只因为有空白就填图。
 - S04 卡内证据图:紧边 cutout 使用 `inset` + contain；源画布留白大时使用 `inset-prominent` + cover，高度占父卡 28%-45%、宽度至少 80%。与文字不重叠，不加蒙版。
 - S05 大卡媒体:有低干扰文字区的横版技术图可使用 `.media-full-bleed` + `full-bleed/darken`，宽高覆盖父卡至少 95%，通过渐变蒙版保护文字；否则使用 inset/contain。默认保留 `.layer-icon`，不因配图自动删除。
-- 全幅背景媒体:S19 hero 使用 `data-media-fit="full-bleed" data-media-contrast="darken"` + `object-fit:cover`，宽高覆盖父卡至少 95%；反白文字直接压图时用 `.28-.48` 的统一深色蒙版（标准 `.38`），不叠白底/半透明文字面板。若仍不可读，换图或改裁切，不继续压暗。
+- 全幅背景媒体:S19 hero 使用 `data-media-fit="full-bleed" data-media-contrast="darken"` + `object-fit:cover`，宽高覆盖父卡至少 95%；默认 `--media-scrim-alpha:.56`，并保证 `image brightness × (1 - 最浅蒙版 alpha) <= .44`。逐项检查标题、眉题、正文与单位的最终反白对比，不叠白底/半透明文字面板；若仍不可读，换图、改裁切或回退无图版式。
+- 全局文字对比:普通文字最终对比度 `>=4.5:1`，大字 `>=3:1`。验证基于最终计算色与实际祖先表面，不只检查 token；透明文字、继承色、灰底 helper、红色单位和压图文字都必须覆盖。
 
 **做法**:
 - 先选版式:单张大图 + KPI 用 `S22`;多图用 `S15/S16` 的原始网格骨架改造
@@ -384,6 +385,14 @@ node <SKILL_ROOT>/scripts/validate-swiss-deck.mjs path/to/index.html
 - 对照原始 PPT 时以实际画面为准;raw CSS helper 只能辅助,不能替代视觉判断
 - 判断问题来源:版式选错 / 必选组件缺失 / 可选组件滥用 / 间距和安全区问题
 - 通用版式(S03/S08/S11/S19)可多用;数据专用(S06/S07/S20/S21/S22/S23/S24)必须有真实数据或案例,S24 还必须有连续横轴;结构专用(S14/S15/S17/S25/S26/S27/S28)必须有闭环、矩阵、层级关系、二维路线、媒体化阶段证据、必须同页的三组综合或真实卖点优先级
+
+### 0-G. 交付门禁:全页渲染与多模态复审
+
+- 在统一的 16:9 演示视口中渲染全部 section,等待 `document.fonts.ready`、图片加载和入场动效稳定后逐页截图;不能用 ESC 索引缩略图代替最终页面截图
+- 当前模型支持图像输入时,必须查看每一页截图,不得抽样。逐页检查文字/数字/单位/来源是否可辨认,图片和图表是否加载,主体是否误裁,是否存在截断、重叠、异常空白、低对比度、错位或内容进入 nav 安全区
+- 几何问题先依据 validator/Playwright 的测量结果处理;多模态用于判断构图、层级、视觉一致性和媒体语义。任何一方通过都不能替代另一方
+- 建立 `slide id → 问题 → 修复` 的审阅记录。修复后重新运行 validator,重新截图并复审改动页;修改全局 CSS、token、字体或共用组件后必须重审全部页面
+- 支持图像输入时,未查看全部截图或仍存在阻断性问题不得交付。环境不支持图像输入时,完成真实渲染测量并在交付报告中明确说明未执行多模态视觉审阅,不得声称视觉 QA 已完成
 ---
 
 ### 0. 生成前必须通过的类名校验(最重要)
@@ -768,6 +777,14 @@ JS 动态计算总页数并扩展底部翻页圆点；页面内容层不得再�
   □ Pipeline 页 `<section>` 带 `data-animate="pipeline"`,每 step 标 data-anim="step"
   □ S23 使用 `chart-rise`,S24 使用 `line-draw`,S25 使用 `portfolio-roadmap`,S26 使用 `milestone-gallery`,S27 使用 `dense-synthesis`,S28 使用 `priority-bento`;低功耗模式下全部结构仍可见
   □ `grep -c 'data-anim' index.html` 数量 ≥ 页数 × 3(平均每页 3 个以上标记)
+
+交付
+  □ 已解析并确认输出文件夹与最终 `index.html` 的绝对路径
+  □ 最终回复直接给出可点击的输出文件夹地址和 `index.html` 地址，不只写文件名或“已完成”
+  □ 已说明完整解压后打开 `index.html`，并提醒保存时保留整个目录结构
+  □ 已说明分享时压缩整个输出文件夹；没有把 `file:///` 本地地址当作可访问链接
+  □ 用户要求分享包或 ZIP 时，已生成压缩包并给出 ZIP 的绝对路径
+  □ 已如实汇报 validator、离线打开、内容覆盖与逐页视觉 QA 状态
 ```
 
 全勾完，才是合格的 PPT。
