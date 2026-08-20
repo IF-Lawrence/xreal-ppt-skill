@@ -689,7 +689,7 @@ JS 动态计算总页数并扩展底部翻页圆点；页面内容层不得再�
   □ 已画出"主题节奏表":每页明确 hero dark / hero light / light / dark
   □ 节奏表满足硬规则:无连续 3 页同主题 / 有 ≥1 hero dark + ≥1 hero light(8 页以上) / 至少有 1 个 dark 正文页
   □ `<title>` 已改为实际 deck 标题(grep "[必填]" 应无结果)
-  □ XREAL:已复制 `assets/fonts/` 与 `assets/brand/xreal-logo-black.svg`
+  □ XREAL:已复制 `assets/brand/xreal-logo-black.svg`；字体已按最终页面实际渲染的字体族、字重和字形同步
   □ XREAL:已按整套 PPT 语境选择主字体——纯英文为 XREAL Diatype，中文或中英混排为 IBM Plex Sans SC，日语或日英混排为 IBM Plex Sans JP
   □ XREAL:语言标记正确——英文 `lang="en"`，中文 `lang="zh-CN"`，日语 `lang="ja"`
   □ XREAL:未按字符、文本框或页面混用两套品牌字体
@@ -779,6 +779,9 @@ JS 动态计算总页数并扩展底部翻页圆点；页面内容层不得再�
   □ `grep -c 'data-anim' index.html` 数量 ≥ 页数 × 3(平均每页 3 个以上标记)
 
 交付
+  □ 已运行 `sync-font-assets.mjs --apply`；`assets/fonts/` 只包含最终页面实际引用的完整 OTF
+  □ 没有按语言机械打包整个字体族，也没有保留未引用字体
+  □ 没有进行字体子集化、按字符裁剪、重编码或生成精简字体文件
   □ 已解析并确认输出文件夹与最终 `index.html` 的绝对路径
   □ 最终回复直接给出可点击的输出文件夹地址和 `index.html` 地址，不只写文件名或“已完成”
   □ 已说明完整解压后打开 `index.html`，并提醒保存时保留整个目录结构
