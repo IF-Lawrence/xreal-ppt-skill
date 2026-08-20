@@ -777,6 +777,14 @@ JS 动态计算总页数并扩展底部翻页圆点；页面内容层不得再�
   □ Pipeline 页 `<section>` 带 `data-animate="pipeline"`,每 step 标 data-anim="step"
   □ S23 使用 `chart-rise`,S24 使用 `line-draw`,S25 使用 `portfolio-roadmap`,S26 使用 `milestone-gallery`,S27 使用 `dense-synthesis`,S28 使用 `priority-bento`;低功耗模式下全部结构仍可见
   □ `grep -c 'data-anim' index.html` 数量 ≥ 页数 × 3(平均每页 3 个以上标记)
+
+交付
+  □ 已解析并确认输出文件夹与最终 `index.html` 的绝对路径
+  □ 最终回复直接给出可点击的输出文件夹地址和 `index.html` 地址，不只写文件名或“已完成”
+  □ 已说明完整解压后打开 `index.html`，并提醒保存时保留整个目录结构
+  □ 已说明分享时压缩整个输出文件夹；没有把 `file:///` 本地地址当作可访问链接
+  □ 用户要求分享包或 ZIP 时，已生成压缩包并给出 ZIP 的绝对路径
+  □ 已如实汇报 validator、离线打开、内容覆盖与逐页视觉 QA 状态
 ```
 
 全勾完，才是合格的 PPT。
