@@ -36,11 +36,13 @@ git clone https://github.com/IF-Lawrence/xreal-ppt-skill.git
 
 ## 快速使用
 
-安装后，直接向 Agent 描述演示目标和素材。例如：
+对于第一次使用的用户，建议先阅读[中文用户教程](./docs/user-guide.zh-CN.md)。教程包含素材准备、PDF/OCR 预处理、可复制指令、内容保真模式、验收方法和常见错误处理。
+
+安装和制作最好分成两个任务。安装完成并确认 Skill 可见后，在新任务中显式调用 `$xreal-ppt-skill`，同时明确最终交付物是 `index.html`：
 
 ```text
-用 xreal-ppt-skill 把这份产品分析制作成 8 页 XREAL Style 网页 PPT。
-保留原始截图，重点展示产品定位、核心卖点、对比数据和路线图。
+使用 $xreal-ppt-skill，把这份产品分析制作成 XREAL Style 网页演示文稿。
+最终交付 index.html 及必要本地资产，不要生成 PPTX。保留原始截图、关键文本、数据和限定条件；内容放不下时优先增加页面，不要自行摘要。
 ```
 
 适合的任务包括产品发布、数据汇报、年度总结、benchmark、流程/系统关系、路线图、高密度综合页和重点卖点 Bento。
