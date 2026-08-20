@@ -114,6 +114,7 @@ git -C "<SKILL_ROOT>" log --oneline --no-decorate 'HEAD..@{upstream}'
 mkdir -p "项目/XXX/ppt/images"
 mkdir -p "项目/XXX/ppt/assets/fonts" "项目/XXX/ppt/assets/brand"
 cp "<SKILL_ROOT>/assets/template-xreal.html" "项目/XXX/ppt/index.html"
+# 制作阶段可临时复制模板引用字体；最终交付必须在 Step 5 按实际渲染引用清理
 cp "<SKILL_ROOT>/assets/fonts/"*.otf "项目/XXX/ppt/assets/fonts/"
 cp "<SKILL_ROOT>/assets/brand/xreal-logo-black.svg" "项目/XXX/ppt/assets/brand/"
 ```
@@ -392,6 +393,20 @@ node "<SKILL_ROOT>/scripts/inline-echarts.mjs" "项目/XXX/ppt/index.source.html
 node "<SKILL_ROOT>/scripts/validate-swiss-deck.mjs" "项目/XXX/ppt/index.html"
 ```
 
+最终视觉样式稳定后、最后一次 validator 之前，必须在浏览器中检查全部可见文本的最终计算样式，收集实际出现的“字体族 + 字重 + normal/italic”组合。根据审计结果删除未使用的本地 `@font-face` 声明，再同步声明仍引用的字体资产：
+
+```bash
+node "<SKILL_ROOT>/scripts/sync-font-assets.mjs" \
+  "项目/XXX/ppt/index.html" \
+  --font-source "<SKILL_ROOT>/assets/fonts" \
+  --apply
+node "<SKILL_ROOT>/scripts/validate-swiss-deck.mjs" "项目/XXX/ppt/index.html"
+```
+
+字体交付以成稿中实际渲染的组合为准，不得仅按语言机械复制某一整套字体，也不得全量保留模板声明的所有字体。`sync-font-assets.mjs` 只复制最终 HTML 中仍由 `@font-face` 引用的完整 OTF，并删除输出目录中未引用的 OTF；它不会替 Agent 判断哪些字体实际使用，因此运行脚本前必须完成浏览器计算样式审计和声明清理。若页面确实使用多个字体族或多个字重，应完整保留对应文件。
+
+**禁止字体子集化**：不得按字符裁剪、subset、重编码或生成精简字体文件。交付的每个字体都必须是 `assets/fonts/` 中对应的完整原始 OTF，确保用户后续修改文字时仍可正常显示。字体同步后必须重新运行 validator，并重新打开成稿确认字体加载与版式没有变化。
+
 完成验证后，必须把“如何使用、如何保存、如何分享”作为交付的一部分主动告诉用户，不得只回复“已完成”或只给文件名。
 
 交付前先解析并确认项目输出目录与最终 `index.html` 的**绝对路径**。最终回复必须包含：
@@ -456,6 +471,7 @@ xreal-ppt-skill/
 ├── scripts/
 │   ├── prepare-echarts.mjs
 │   ├── inline-echarts.mjs
+│   ├── sync-font-assets.mjs
 │   └── validate-swiss-deck.mjs
 └── references/
     ├── swiss-layout-lock.md

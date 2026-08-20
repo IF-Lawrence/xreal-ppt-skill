@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 import path from 'node:path';
 import { createRequire } from 'node:module';
-import { pathToFileURL } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const file = process.argv[2];
 const allowExperimental = process.argv.includes('--allow-experimental');
@@ -73,6 +74,37 @@ if (!slides.length) {
 }
 
 const deckDir = path.dirname(path.resolve(file));
+const deckFontDir = path.join(deckDir, 'assets', 'fonts');
+const skillFontDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', 'assets', 'fonts');
+const localFontUrls = new Set(
+  [...htmlForStatic.matchAll(/url\(\s*["']?(assets\/fonts\/[^"')?#]+\.otf)["']?\s*\)/gi)]
+    .map((match) => match[1]),
+);
+const referencedFontFiles = new Set([...localFontUrls].map((fontUrl) => path.basename(fontUrl)));
+const deliveredFontFiles = existsSync(deckFontDir)
+  ? readdirSync(deckFontDir).filter((name) => /\.otf$/i.test(name))
+  : [];
+for (const filename of referencedFontFiles) {
+  const deliveredPath = path.join(deckFontDir, filename);
+  const sourcePath = path.join(skillFontDir, filename);
+  if (!existsSync(deliveredPath)) {
+    errors.push(`Font asset missing: ${path.join('assets', 'fonts', filename)} is referenced by HTML but not delivered.`);
+    continue;
+  }
+  if (!existsSync(sourcePath)) {
+    errors.push(`Font source mismatch: referenced font ${filename} does not exist in the Skill font library.`);
+    continue;
+  }
+  const digest = (fontPath) => createHash('sha256').update(readFileSync(fontPath)).digest('hex');
+  if (digest(deliveredPath) !== digest(sourcePath)) {
+    errors.push(`Font integrity mismatch: ${filename} must be the complete original OTF from the Skill library; font subsetting or rewriting is forbidden.`);
+  }
+}
+for (const filename of deliveredFontFiles) {
+  if (!referencedFontFiles.has(filename)) {
+    errors.push(`Unused font asset: assets/fonts/${filename} is not referenced by the final HTML. Run sync-font-assets.mjs --apply.`);
+  }
+}
 const contentMode = htmlForSlides.match(/<body\b[^>]*\bdata-content-mode=["']([^"']+)["']/i)?.[1]?.toLowerCase() ?? '';
 const allowedContentModes = new Set(['source-faithful', 'editorial-summary', 'brief-generated']);
 const sourceMode = contentMode === 'source-faithful' || contentMode === 'editorial-summary';
@@ -263,8 +295,8 @@ if (!hasJapaneseKana && !hasHanContent && !isEnglishDeck) {
 const japaneseTypographyBlock = htmlForStatic.match(/html\[lang\^?=["']ja["']\]\s*\{([^}]*)\}/i)?.[1] ?? '';
 const japaneseFontFaces = [...htmlForStatic.matchAll(/@font-face\s*\{[^}]*font-family\s*:\s*["']IBM Plex Sans JP["'][^}]*\}/gi)];
 if (isJapaneseDeck) {
-  if (japaneseFontFaces.length < 8) {
-    errors.push(`Japanese font bundle mismatch: expected 8 IBM Plex Sans JP @font-face declarations; found ${japaneseFontFaces.length}.`);
+  if (japaneseFontFaces.length < 1) {
+    errors.push('Japanese font bundle mismatch: the final deck must retain the IBM Plex Sans JP @font-face declarations actually used by rendered text.');
   }
   if (!/--font-ibm-plex-jp\s*:\s*["']IBM Plex Sans JP["']/i.test(htmlForStatic)) {
     errors.push('Japanese font token missing: define --font-ibm-plex-jp with IBM Plex Sans JP.');
